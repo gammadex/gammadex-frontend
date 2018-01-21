@@ -1,0 +1,106 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Titillium+Web" rel="stylesheet">
+    <script src="../build/ether-gamma.js"></script>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Titillium Web', sans-serif;
+        }
+
+        footer {
+            margin: 50px;
+        }
+
+        #table {
+            margin: 50px;
+        }
+
+        #metamaskWarning {
+            text-align: center;
+        }
+
+        #game {
+            margin: auto;
+            width: 800px;
+            text-align: left;
+            /* display: none; */
+        }
+
+        #game .left {
+            flex: 0;
+        }
+
+        #game .right {
+            flex: 1;
+        }
+
+        #game #blocks {
+            border: 1px solid #999999;
+            margin-top: 5px;
+            height: 420px;
+            background: #EEEEEE;
+            padding: 4px;
+        }
+
+        #game #blocks div {
+            border: 1px solid #999999;
+            margin: 4px;
+            padding: 4px;
+            height: 18px;
+            background: white;
+        }
+
+        #message {
+            padding: 4px;
+            text-align: center;
+            font-size: 120%;
+        }
+
+        #send {
+            background: none;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            cursor: pointer;
+        }
+
+        .played {
+            background: #99FF99 !important;
+        }
+
+        .startOfGame {
+            background: #FF9999 !important;
+        }
+
+        .winningBlock {
+            background: #9999FF !important;
+        }
+
+        .inlineTable {
+            display: inline-block;
+            border-collapse: collapse;
+            margin: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>EtherGamma Prototype: Order Book</h1>
+    <div id="message"></div>
+    <div id="event"></div>
+    <div id="table">
+    </div>
+</body>
+
+</html>
