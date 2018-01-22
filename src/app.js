@@ -73,7 +73,7 @@ function askHeader() {
 }
 
 function orderToAskTableRow(order) {
-    return `<tr><td>${order.price}</td><td>${order.ethAvailableVolume}</td><td>${order.ethAvailableVolumeBase}</td<td>${order.user}</td></tr>`
+    return `<tr><td>${order.price}</td><td>${order.ethAvailableVolume}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.user}</td></tr>`
 }
 
 function setMessage(message) {
