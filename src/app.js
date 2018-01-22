@@ -29,13 +29,22 @@ function start() {
         if(message.slice(0,2) === '42') {
             const payload = JSON.parse(message.slice(2))
             console.log(`on message 42: ${payload[0]}`)
-            const orders = payload[1].orders
-            if(orders) {
-                setEvent(`received orders event with ${orders.buys.length} BUYs and ${orders.sells.length} SELLs`)
-                console.log(orders.buys[0])
-                console.log(orders.sells[0])
-                const tables = `${bidTable(orders.buys.slice(0,10))}${askTable(orders.sells.slice(0,10))}`
-                document.getElementById('table').innerHTML = tables;
+            if(payload[0] === "market") {
+                const orders = payload[1].orders
+                if(orders) {
+                    setEvent(`received orders event with ${orders.buys.length} BUYs and ${orders.sells.length} SELLs`)
+                    console.log(orders.buys[0])
+                    console.log(orders.sells[0])
+                    const tables = `${bidTable(orders.buys.slice(0,10))}${askTable(orders.sells.slice(0,10))}`
+                    document.getElementById('table').innerHTML = tables;
+                } else {
+                    console.log("market response did not contain the orderbook, need to retry")
+                    setEvent(`order book initial snapshot not received, please reload page`);
+                }
+            }
+            else if(payload[0] === "orders") {
+                console.log(`orders update:`)
+                console.log(payload[1])
             }
         } else {
             console.log(`on message: ${message}`)
@@ -48,11 +57,11 @@ function bidTable(bidOrders) {
 }
 
 function bidHeader() {
-    return `<tr><td>TOTAL (ETH)</td><td>SIZE (VERI)</td><td>BID (ETH)</td></tr>`
+    return `<tr><td>USER</td><td>TOTAL (ETH)</td><td>SIZE (VERI)</td><td>BID (ETH)</td></tr>`
 }
 
 function orderToBidTableRow(order) {
-    return `<tr><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
+    return `<tr><td>${order.user}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
 }
 
 function askTable(askOrders) {
@@ -60,11 +69,11 @@ function askTable(askOrders) {
 }
 
 function askHeader() {
-    return `<tr><td>ASK (ETH)</td><td>SIZE (VERI)</td><td>TOTAL (ETH)</td></tr>`
+    return `<tr><td>ASK (ETH)</td><td>SIZE (VERI)</td><td>TOTAL (ETH)</td><td>USER</td></tr>`
 }
 
 function orderToAskTableRow(order) {
-    return `<tr><td>${order.price}</td><td>${order.ethAvailableVolume}</td><td>${order.ethAvailableVolumeBase}</td></tr>`
+    return `<tr><td>${order.price}</td><td>${order.ethAvailableVolume}</td><td>${order.ethAvailableVolumeBase}</td<td>${order.user}</td></tr>`
 }
 
 function setMessage(message) {
