@@ -1,107 +1,93 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Titillium+Web" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="../build/ether-gamma.js"></script>
     <style>
-        body {
-            text-align: center;
-            font-family: 'Open Sans', sans-serif;
-        }
-
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: 'Titillium Web', sans-serif;
-        }
-
-        footer {
-            margin: 50px;
-        }
-
-        #table {
-            margin: 50px;
-        }
-
-        #metamaskWarning {
-            text-align: center;
-        }
-
-        #game {
-            margin: auto;
-            width: 800px;
-            text-align: left;
-            /* display: none; */
-        }
-
-        #game .left {
-            flex: 0;
-        }
-
-        #game .right {
-            flex: 1;
-        }
-
-        #game #blocks {
-            border: 1px solid #999999;
-            margin-top: 5px;
-            height: 420px;
-            background: #EEEEEE;
-            padding: 4px;
-        }
-
-        #game #blocks div {
-            border: 1px solid #999999;
-            margin: 4px;
-            padding: 4px;
-            height: 18px;
-            background: white;
-        }
-
-        #message {
-            padding: 4px;
-            text-align: center;
-            font-size: 120%;
-        }
-
-        #send {
-            background: none;
-            margin: 0;
-            padding: 0;
-            border: 0;
-            cursor: pointer;
-        }
-
-        .played {
-            background: #99FF99 !important;
-        }
-
-        .startOfGame {
-            background: #FF9999 !important;
-        }
-
-        .winningBlock {
-            background: #9999FF !important;
-        }
-
-        .inlineTable {
-            display: inline-block;
-            border-collapse: collapse;
-            margin: 4px;
-            font-size:0.75em;
+        .select2-container {
+            width:180px !important;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>EtherGamma Prototype: Order Book</h1>
-    <div id="message"></div>
-    <div id="event"></div>
-    <div id="table">
-    </div>
-</body>
+<h1>EtherGamma Prototype</h1>
 
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <label for="tokens"><b>Token:</b></label>
+
+            <select id="tokens" name="Tokens">
+            </select>
+        </div>
+    </div>
+
+    <h2>Order Book</h2>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>Bids</h3>
+            <table id="bids" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total (ETH)</th>
+                    <th>Size (<span id="bidsToken">VERI</span>)</th>
+                    <th>Bid (ETH)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <ul class="pagination float-right">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </div>
+
+        <div class="col-lg-6">
+            <h3>Offers</h3>
+            <table id="offers" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total (ETH)</th>
+                    <th>Size (<span id="offersToken">VERI</span>)</th>
+                    <th>Offer (ETH)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <ul class="pagination float-right">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>Events</h3>
+            <table id="events" class="table table-striped">
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
 </html>

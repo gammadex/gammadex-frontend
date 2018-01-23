@@ -1,90 +1,74 @@
-const _ = require('lodash')
 const $ = require('jquery')
+const EtherDeltaWebSocket = require('./etherdelta-web-socket.js')
+const tokenSelector = require('./token-selector.js')
+const page = require('./page.js')
 
-const socketAddress = 'wss://socket.etherdelta.com/socket.io/?transport=websocket'
-const socket = new WebSocket(socketAddress);
+let webSocket = null;
 
-function getMarket() {
-    console.log("calling getMarket")
-    // 0x8f3470a7388c05ee4e7af3d01d8c722b0ff52374 = VERI
-    // (see https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json)
-    socket.send(`42["getMarket",{"token":"0x8f3470a7388c05ee4e7af3d01d8c722b0ff52374"}]`)
+function loadMarket(address) {
+    if (webSocket) {
+        page.choseTokenByAddress(address)
+        webSocket.getMarket(address)
+    } else {
+        console.warn("WebSocket not initialised")
+    }
+}
+
+function initTokenDropDown() {
+    tokenSelector.bind("#tokens", (selection) => loadMarket(selection.target.value))
 }
 
 function start() {
-    setMessage(`connecting to ${socketAddress}...`)
-    
-    socket.onopen = function (event) {
-        setMessage(`connected to ${socketAddress}`)
-        getMarket();
-    };
+    initTokenDropDown()
 
-    socket.onerror = function () {
-        setMessage(`connection to ${socketAddress} FAILED`)
-    };
-
-    socket.onmessage = function (event) {
-        const message = event.data;
-
-        if(message.slice(0,2) === '42') {
-            const payload = JSON.parse(message.slice(2))
-            console.log(`on message 42: ${payload[0]}`)
-            if(payload[0] === "market") {
-                const orders = payload[1].orders
-                if(orders) {
-                    setEvent(`received orders event with ${orders.buys.length} BUYs and ${orders.sells.length} SELLs`)
-                    console.log(orders.buys[0])
-                    console.log(orders.sells[0])
-                    const tables = `${bidTable(orders.buys.slice(0,10))}${askTable(orders.sells.slice(0,10))}`
-                    document.getElementById('table').innerHTML = tables;
+    webSocket = new EtherDeltaWebSocket(
+        'wss://socket04.etherdelta.com/socket.io/?transport=websocket',
+        (event) => {
+            logEvent(`connected`)
+            initTokenDropDown();
+        },
+        (event) => {
+            log.error("failed to connect")
+            logEvent(`connection failed`)
+        },
+        {
+            'market': (message) => {
+                const orders = message.orders
+                if (orders) {
+                    logEvent(`received orders event with ${orders.buys.length} BUYs and ${orders.sells.length} SELLs`)
+                    addOrdersToBidTableRow(orders.buys.slice(0, 10))
+                    addOrdersToAskTableRow(orders.sells.slice(0, 10))
                 } else {
                     console.log("market response did not contain the orderbook, need to retry")
-                    setEvent(`order book initial snapshot not received, please reload page`);
+                    logEvent(`order book initial snapshot not received, please reload page`)
                 }
-            }
-            else if(payload[0] === "orders") {
+            },
+            'orders': (message) => {
                 console.log(`orders update:`)
-                console.log(payload[1])
+                console.log(message)
             }
-        } else {
-            console.log(`on message: ${message}`)
         }
-    };
+    )
 }
 
-function bidTable(bidOrders) {
-    return `<table border=1 class="inlineTable"><caption>BIDS</caption>${bidHeader()}${bidOrders.map(orderToBidTableRow).join(" ")}</table>`
+function addOrdersToBidTableRow(orders) {
+    const tbody = $('#bids').find('tbody:last-child')
+    $(tbody).empty();
+    orders.forEach(order => {
+        const row = `<tr><td>${order.user}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
+        tbody.append(row)
+    })
 }
 
-function bidHeader() {
-    return `<tr><td>USER</td><td>TOTAL (ETH)</td><td>SIZE (VERI)</td><td>BID (ETH)</td></tr>`
+function addOrdersToAskTableRow(orders) {
+    const row = `<tr><td>${order.user}</td><td>${order.ethAvailableVolume}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.price}</td></tr>`
+    const tbody = $('#offers').find('tbody:last-child')
 }
 
-function orderToBidTableRow(order) {
-    return `<tr><td>${order.user}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
+function logEvent(event) {
+    $('#events').find('> tbody:last-child').append(`<tr><td>${event}</td></tr>`);
 }
 
-function askTable(askOrders) {
-    return `<table border=1 class="inlineTable"><caption>ASKS</caption>${askHeader()}${askOrders.map(orderToAskTableRow).join(" ")}</table>`
-}
-
-function askHeader() {
-    return `<tr><td>ASK (ETH)</td><td>SIZE (VERI)</td><td>TOTAL (ETH)</td><td>USER</td></tr>`
-}
-
-function orderToAskTableRow(order) {
-    return `<tr><td>${order.price}</td><td>${order.ethAvailableVolume}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.user}</td></tr>`
-}
-
-function setMessage(message) {
-    $('#message')[0].innerText = message
-}
-
-function setEvent(event) {
-    $('#event')[0].innerText = event
-}
 module.exports = {
-    'start': start,
-    'setMessage': setMessage,
-    'setEvent': setEvent,
+    'start': start
 }
