@@ -10,7 +10,7 @@ function choseTokenByAddress(address) {
 
 function logEvent(eventMessage) {
     console.log(eventMessage)
-    $('#events').find('> tbody:last-child').append(`<tr><td>${eventMessage}</td></tr>`);
+    $('#events').find('> tbody:first-child').prepend(`<tr><td>${eventMessage}</td></tr>`);
 }
 
 function setBidOrders(orders) {
