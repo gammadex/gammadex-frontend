@@ -19,8 +19,6 @@ function initTokenDropDown() {
 }
 
 function start() {
-    initTokenDropDown()
-
     webSocket = new EtherDeltaWebSocket(
         'wss://socket04.etherdelta.com/socket.io/?transport=websocket',
         (event) => {
