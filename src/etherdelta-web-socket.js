@@ -18,10 +18,10 @@ class EtherDeltaWebSocket {
                 if (this.messageHandlers[messageType]) {
                     this.messageHandlers[messageType](message)
                 } else {
-                    console.warn(`Unknown message type '${messageType}'`)
+                    console.warn(`Unknown message type '${messageType}'. payload: ${payload}`)
                 }
             } else {
-                console.warn(`Unknown message code (not 42)`)
+                console.warn(`Unknown message code '${messageCode}'. data: ${data}`)
             }
         }
     }

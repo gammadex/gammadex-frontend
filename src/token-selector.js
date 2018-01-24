@@ -2,8 +2,10 @@ const $ = require('jquery')
 require('select2')(window, $)
 const configHelper = require('./config-helper.js')
 
+let select = null
+
 function bind(selectElementId, onChange) {
-    const select = $(selectElementId)
+    select = $(selectElementId)
     select.select2()
 
     // TODO - sort me
@@ -12,11 +14,18 @@ function bind(selectElementId, onChange) {
         select.append(new Option(tk.name, tk.addr, false, false))
     })
 
-    select.val(configHelper.defaultTokenAddress())
     select.change(onChange)
-    select.trigger('change')
+}
+
+function setValue(value, triggerChange) {
+    select.val(value)
+
+    if (triggerChange) {
+        select.trigger('change')
+    }
 }
 
 module.exports = {
-    'bind': bind
+    'bind': bind,
+    'setValue': setValue
 }

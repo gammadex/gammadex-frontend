@@ -1,0 +1,18 @@
+{
+  "token": {
+    "name": "PPT",
+    "address": "0xd4fa1460f537bb9085d22c7bccb5dd450ef28e3a"
+  },
+  "orderBookPageSize": 10,
+  "orderBook": {
+    "bidsTable": {
+      "bids": [],
+      "page": 1
+    },
+    "offersTable": {
+      "offers": [],
+      "page": 1
+    }
+  },
+  "events": []
+}

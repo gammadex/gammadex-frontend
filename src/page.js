@@ -1,29 +1,53 @@
-const configHelper = require('./config-helper.js')
 const $ = require('jquery')
+const _ = require('lodash')
+const model = require("./model-store.js").get()
+const tokenSelector = require('./token-selector.js')
 
-function choseTokenByAddress(address) {
-    const tokenName = configHelper.getTokenName(address)
-
-    $('#bidsToken')[0].innerText = tokenName
-    $('#offersToken')[0].innerText = tokenName
+function updateAll() {
+    updateToken()
+    updateEvents()
+    updateBids()
+    updateOffers()
 }
 
-function logEvent(eventMessage) {
-    console.log(eventMessage)
-    $('#events').find('> tbody:first-child').prepend(`<tr><td>${eventMessage}</td></tr>`);
+function updateToken() {
+    $('#bidsToken')[0].innerText = model.token.name
+    $('#offersToken')[0].innerText = model.token.name
+    tokenSelector.setValue(model.token.address, false)
 }
 
-function setBidOrders(orders) {
+function updateBids() {
+    const {page, bids} = model.orderBook.bidsTable
+    const orders = _getOrders(page, bids)
     _setOrderRows('#bids', orders)
 }
 
-function setAskOrders(orders) {
+function updateOffers() {
+    const {page, offers} = model.orderBook.offersTable
+    const orders = _getOrders(page, offers)
     _setOrderRows('#asks', orders)
+}
+
+function updateEvents() {
+    const tBody = $('#events').find('> tbody:first-child')
+    tBody.empty()
+
+    _.take(model.events, 10).forEach((eventMessage) => {
+        tBody.prepend(`<tr><td>${eventMessage}</td></tr>`)
+    })
+}
+
+function _getOrders(page, orders) {
+    const pageSize = model.orderBookPageSize
+    const numPagesTotal = Math.ceil(orders.length / pageSize)
+    const actualPage = numPagesTotal < page ? page : numPagesTotal
+
+    return orders.slice(actualPage * pageSize, actualPage + 1 * pageSize)
 }
 
 function _setOrderRows(tableId, orders) {
     const tbody = $(tableId).find('tbody:last-child')
-    $(tbody).empty();
+    $(tbody).empty()
     orders.forEach(order => {
         const row = `<tr><td>${order.user}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
         tbody.append(row)
@@ -31,8 +55,9 @@ function _setOrderRows(tableId, orders) {
 }
 
 module.exports = {
-    'choseTokenByAddress': choseTokenByAddress,
-    'logEvent': logEvent,
-    'setBidOrders': setBidOrders,
-    'setAskOrders': setAskOrders
+    'updateAll': updateAll,
+    'updateToken': updateToken,
+    'updateBids': updateBids,
+    'updateOffers': updateOffers,
+    'updateEvents': updateEvents
 }
