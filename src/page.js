@@ -28,6 +28,11 @@ function updateOffers() {
     _setOrderRows('#offers', orders)
 }
 
+function clearBidsAndoffers() {
+    $('#bids').find('tbody:last-child').empty()
+    $('#offers').find('tbody:last-child').empty()
+}
+
 function updateEvents() {
     const tBody = $('#events').find('> tbody:first-child')
     tBody.empty()
@@ -59,5 +64,6 @@ module.exports = {
     'updateToken': updateToken,
     'updateBids': updateBids,
     'updateOffers': updateOffers,
-    'updateEvents': updateEvents
+    'updateEvents': updateEvents,
+    'clearBidsAndoffers': clearBidsAndoffers
 }

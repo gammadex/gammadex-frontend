@@ -29,6 +29,7 @@ function initTokenDropDown() {
             'address': address
         }
         page.updateToken()
+        page.clearBidsAndoffers()
         chooseToken(address)
     })
 }
@@ -63,14 +64,7 @@ function start() {
                 }
             },
             'orders': (message) => {
-                console.log(`orders update:`)
-                console.log(message)
-                // lame attempt to get the table displaying something
-                const {buys, sells} = message
-                model.orderBook.bidsTable.bids = buys
-                page.updateBids()
-                model.orderBook.offersTable.offers = sells
-                page.updateOffers()
+                console.log("Ignoring orders updates for now")
             }
         }
     )
