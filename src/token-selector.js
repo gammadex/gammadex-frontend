@@ -9,7 +9,7 @@ function bind(selectElementId, onChange) {
     select = $(selectElementId)
     select.select2()
 
-    const tokens = _.sortBy(configHelper.tokens(), function(tk) { return tk.name })
+    const tokens = _.sortBy(configHelper.tokens(), (tk) => tk.name)
     tokens.forEach((tk) => {
         select.append(new Option(tk.name, tk.addr, false, false))
     })
