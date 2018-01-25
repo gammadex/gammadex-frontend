@@ -25,7 +25,7 @@ function updateBids() {
 function updateOffers() {
     const {page, offers} = model.orderBook.offersTable
     const orders = _getOrders(page, offers)
-    _setOrderRows('#asks', orders)
+    _setOrderRows('#offers', orders)
 }
 
 function updateEvents() {
@@ -40,17 +40,17 @@ function updateEvents() {
 function _getOrders(page, orders) {
     const pageSize = model.orderBookPageSize
     const numPagesTotal = Math.ceil(orders.length / pageSize)
-    const actualPage = numPagesTotal < page ? page : numPagesTotal
+    const actualPage = numPagesTotal < page ? numPagesTotal : page
 
     return orders.slice(actualPage * pageSize, actualPage + 1 * pageSize)
 }
 
 function _setOrderRows(tableId, orders) {
-    const tbody = $(tableId).find('tbody:last-child')
+    const tbody = $(tableId).find('tbody:last-child')[0]
     $(tbody).empty()
     orders.forEach(order => {
-        const row = `<tr><td>${order.user}</td><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
-        tbody.append(row)
+        const row = `<tr><td>${order.user.substring(0, 10)}...</td><td>${order.ethAvailableVolumeBase}</td><td>${order.ethAvailableVolume}</td><td>${order.price}</td></tr>`
+        $(tbody).append(row)
     })
 }
 

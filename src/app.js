@@ -38,8 +38,8 @@ function start() {
     page.updateAll()
 
     webSocket = new EtherDeltaWebSocket(
-        //'wss://socket03.etherdelta.com/socket.io/?transport=websocket',
-        'wss://socket.etherdelta.com/socket.io/?transport=websocket',
+        'wss://socket01.etherdelta.com/socket.io/?transport=websocket',
+        //'wss://socket.etherdelta.com/socket.io/?transport=websocket',
         (event) => {
             chooseToken(model.token.address)
             logEvent("connected")
@@ -56,7 +56,7 @@ function start() {
                     logEvent(`received orders event with ${orders.buys.length} BUYs and ${orders.sells.length} SELLs`)
                     model.orderBook.bidsTable.bids = orders.buys
                     page.updateBids()
-                    model.orderBook.offerTable.offers = orders.sells
+                    model.orderBook.offersTable.offers = orders.sells
                     page.updateOffers()
                 } else {
                     logEvent("market response did not contain the orderbook, need to retry")
@@ -65,6 +65,12 @@ function start() {
             'orders': (message) => {
                 console.log(`orders update:`)
                 console.log(message)
+                // lame attempt to get the table displaying something
+                const {buys, sells} = message
+                model.orderBook.bidsTable.bids = buys
+                page.updateBids()
+                model.orderBook.offersTable.offers = sells
+                page.updateOffers()
             }
         }
     )
