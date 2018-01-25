@@ -42,7 +42,7 @@ function _getOrders(page, orders) {
     const numPagesTotal = Math.ceil(orders.length / pageSize)
     const actualPage = numPagesTotal < page ? numPagesTotal : page
 
-    return orders.slice(actualPage * pageSize, actualPage + 1 * pageSize)
+    return orders.slice((actualPage - 1) * pageSize, actualPage * pageSize)
 }
 
 function _setOrderRows(tableId, orders) {
