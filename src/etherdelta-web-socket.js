@@ -29,10 +29,10 @@ class EtherDeltaWebSocket {
     getMarket(tokenAddress, userAddress) {
         const message = {}
         if (tokenAddress) {
-            message['tokenAddress'] = tokenAddress
+            message['token'] = tokenAddress
         }
         if (userAddress) {
-            message['userAddress'] = userAddress
+            message['user'] = userAddress
         }
 
         const payload = JSON.stringify(message)
