@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Titillium+Web" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="../build/ether-gamma.js"></script>
+    <style>
+        .select2-container {
+            width: 180px !important;
+        }
+    </style>
+    <title>EtherGamma Prototype</title>
+</head>
+
+<body>
+
+<h1>EtherGamma Prototype</h1>
+
+<div class="container-fluid">
+    <div id="app"></div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <label for="tokens"><b>Token:</b></label>
+
+            <select id="tokens" name="Tokens">
+            </select>
+        </div>
+    </div>
+
+    <h2>Order Book</h2>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h3>Bids</h3>
+            <table id="bids" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total (ETH)</th>
+                    <th>Size (<span id="bidsToken">VERI</span>)</th>
+                    <th>Bid (ETH)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <ul class="pagination float-right">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </div>
+
+        <div class="col-lg-6">
+            <h3>Offers</h3>
+            <table id="offers" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Total (ETH)</th>
+                    <th>Size (<span id="offersToken">VERI</span>)</th>
+                    <th>Offer (ETH)</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <ul class="pagination float-right">
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+</html>
