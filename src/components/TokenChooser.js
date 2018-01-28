@@ -1,43 +1,37 @@
 import React from "react"
-import ConfigStore from '../stores/ConfigStore'
 import TokenStore from '../stores/TokenStore'
 import * as TokenActions from "../actions/TokenActions"
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import _ from "lodash"
+import Config from '../Config'
 
 export default class TokenChooser extends React.Component {
     constructor() {
         super()
 
         this.state = {
-            selectedToken: {},
-            tokenOptions: []
+            selectedToken: Config.getDefaultToken(),
+            tokenOptions: this.getTokens()
         }
 
-        this.saveTokens = this.saveTokens.bind(this)
         this.saveSelectedToken = this.saveSelectedToken.bind(this)
     }
 
     componentWillMount() {
         TokenStore.on("change", this.saveSelectedToken)
-        ConfigStore.on("change", this.saveTokens)
     }
 
-    saveTokens() {
-        const tokens = ConfigStore.getTokens().map((tk) => {
+    getTokens() {
+        // TODO this sorting should fgo in the config object
+        const tokens = Config.getTokens().map((tk) => {
             return {
                 value: tk.address,
                 label: tk.name
             }
         })
-        const tokenOptions = _.sortBy(tokens, (tk) => tk.label)
-        const selectedToken = ConfigStore.getDefaultToken()
 
-        this.setState({
-            tokenOptions,
-            selectedToken
-        })
+        return _.sortBy(tokens, (tk) => tk.label)
     }
 
     saveSelectedToken() {
@@ -72,7 +66,7 @@ export default class TokenChooser extends React.Component {
                     />
                 </div>
             </div>
-        );
+        )
     }
 }
 

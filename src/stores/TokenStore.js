@@ -1,11 +1,13 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
-import Actions from "../actions/ActionNames"
+import ActionNames from "../actions/ActionNames"
+import WebSocketStore from '../stores/WebSocketStore'
+import Config from '../Config'
 
 class TokenStore extends EventEmitter {
     constructor() {
         super()
-        this.selectedToken = {}
+        this.selectedToken = Config.getDefaultToken()
     }
 
     getSelectedToken() {
@@ -13,15 +15,18 @@ class TokenStore extends EventEmitter {
     }
 
     emitChange() {
-        this.emit("change");
+        this.emit("change")
     }
 
     handleActions(action) {
         switch (action.type) {
-            case Actions.TOKEN_SELECTED: {
+            case ActionNames.TOKEN_SELECTED: {
                 this.selectedToken = action.token
                 this.emitChange()
-                break;
+                break
+            }
+            case ActionNames.WEB_SOCKET_OPENED: {
+                WebSocketStore.getEtherDeltaWebSocket().getMarket(this.selectedToken.address)
             }
         }
     }

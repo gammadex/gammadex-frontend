@@ -22,12 +22,12 @@ class EtherDeltaWebSocket {
                 const payload = JSON.parse(data.slice(2))
                 const messageType = payload[0]
                 const message = payload[1]
-                console.log(`Received message type '${messageType}'`)
+                console.log(`Received message type '${messageType}'`, payload)
 
                 if (this.messageHandlers[messageType]) {
                     this.messageHandlers[messageType](message)
                 } else {
-                    console.log(`Unknown message type '${messageType}'`, payload)
+                    console.log(`Unknown message type '${messageType}'`)
                 }
             } else {
                 console.log(`Unknown message code '${messageCode}'`, data)
@@ -36,9 +36,11 @@ class EtherDeltaWebSocket {
     }
 
     getMarket(tokenAddress, userAddress) {
+        console.log(`Requesting market ${tokenAddress}`)
+
         const message = {}
         if (tokenAddress) {
-            message['selectedToken'] = tokenAddress
+            message['token'] = tokenAddress
         }
         if (userAddress) {
             message['user'] = userAddress

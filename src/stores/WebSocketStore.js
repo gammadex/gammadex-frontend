@@ -24,38 +24,63 @@ class WebSocketStore extends EventEmitter {
         return {
             url: this.url,
             connected: this.connected,
+            connecting: this.connecting,
             requestedToken: this.requestedToken
         }
     }
 
     emitChange() {
-        this.emit("change");
+        this.emit("change")
     }
 
     handleActions(action) {
         switch (action.type) {
+            case ActionNames.WEB_SOCKET_CONSTRUCTED: {
+                this.url = action.url
+                this.etherDeltaWebSocket = action.etherDeltaWebSocket
+                this.connected = false
+                this.connecting = true
+                this.emitChange()
+                break;
+            }
             case ActionNames.WEB_SOCKET_OPENED: {
                 console.log("WebSocket opened")
                 this.url = action.url
                 this.etherDeltaWebSocket = action.etherDeltaWebSocket
                 this.connected = true
+                this.connecting = false
                 this.emitChange()
-                break;
+                break
             }
             case ActionNames.WEB_SOCKET_CLOSED: {
                 console.log("WebSocket closed")
                 this.url = null
                 this.etherDeltaWebSocket = null
                 this.connected = false
+                this.connecting = false
                 this.requestedToken = null
                 this.emitChange()
-                break;
+                break
+            }
+            case ActionNames.TOKEN_SELECTED: {
+                const {token} = action
+
+                if (this.etherDeltaWebSocket) {
+                    console.log(`Getting market for `, token)
+                    this.etherDeltaWebSocket.getMarket(token.address)
+                } else {
+                    // TODO - reconnect
+                    console.log("No websocket - can't get market")
+                }
+
+                this.emitChange()
+                break
             }
         }
     }
 }
 
-const webSocketStore = new WebSocketStore();
-dispatcher.register(webSocketStore.handleActions.bind(webSocketStore));
+const webSocketStore = new WebSocketStore()
+dispatcher.register(webSocketStore.handleActions.bind(webSocketStore))
 
-export default webSocketStore;
+export default webSocketStore

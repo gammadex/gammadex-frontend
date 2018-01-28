@@ -5,4 +5,4 @@ import LifecycleEventHandler from './LifecycleEventHandler'
 
 ReactDOM.render(<App />, document.getElementById('app'), () => {
     LifecycleEventHandler.start()
-});
+})

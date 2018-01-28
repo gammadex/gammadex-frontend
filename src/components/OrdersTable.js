@@ -1,20 +1,30 @@
 import React from "react"
+import OrderRow from './OrderRow'
 
-export default class OrderBook extends React.Component {
+export default class OrdersTable extends React.Component {
     render() {
-        const {base, token, orderTypeTitle} = this.props
+        const {base, token, pendingToken, orderTypeTitle, orders, orderTypeColName} = this.props
+
+        const rows = orders.map((order) => {
+            return <OrderRow key={order.id} order={order}/>
+        })
+
+        let tokenSpan = <span className="text-warning">{pendingToken}</span>
+        if (token != null) {
+            tokenSpan = <span className="text-success">{token}</span>
+        }
 
         return (
             <div className="col-lg-6">
                 <h3>{orderTypeTitle}</h3>
-                <table id="bids" className="table table-striped">
+                <table className="table table-striped">
                     <thead>
                     <tr>
-                        <th>User</th>
                         <th>Total ({base})</th>
-                        <th>Size (<span id="bidsToken">{token}</span>)</th>
-                        <th>Bid ({base})</th>
+                        <th>Size ({tokenSpan})</th>
+                        <th>{orderTypeColName} ({base})</th>
                     </tr>
+                    {rows}
                     </thead>
                     <tbody>
                     </tbody>
@@ -27,6 +37,6 @@ export default class OrderBook extends React.Component {
                     <li className="page-item"><a className="page-link" href="#">Next</a></li>
                 </ul>
             </div>
-        );
+        )
     }
 }

@@ -11,8 +11,8 @@ class App extends Component {
                 <TokenChooser/>
                 <OrderBook/>
             </div>
-        );
+        )
     }
 }
 
-export default App;
+export default App

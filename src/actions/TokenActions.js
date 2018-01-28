@@ -6,5 +6,5 @@ export function selectToken(name, address) {
     dispatcher.dispatch({
         type: ActionNames.TOKEN_SELECTED,
         token
-    });
+    })
 }

@@ -11,8 +11,8 @@ export default class EventsMessagesTable extends React.Component {
 
     render() {
         const eventMessageRows = this.state.eventMessages.map((eventMessage) => {
-            return <EventMessage key={eventMessage.id} {...eventMessage}/>;
-        });
+            return <EventMessage key={eventMessage.id} {...eventMessage}/>
+        })
 
         return (
             <div>
@@ -27,6 +27,6 @@ export default class EventsMessagesTable extends React.Component {
                     </div>
                 </div>
             </div>
-        );
+        )
     }
 }

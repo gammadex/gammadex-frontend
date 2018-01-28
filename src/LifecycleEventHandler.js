@@ -4,7 +4,6 @@ import * as ConfigActions from "./actions/ConfigActions"
 import * as WebSocketActions from "./actions/WebSocketActions"
 import WebSocketStore from './stores/WebSocketStore'
 import TokenStore from './stores/TokenStore'
-import ConfigStore from './stores/ConfigStore'
 
 /**
  * TODO - not sure this class needs to exist
@@ -16,16 +15,14 @@ class LifecycleEventHandler {
         this.onConfigChange = this.onConfigChange.bind(this)
         this.onTokenSelected = this.onTokenSelected.bind(this)
 
-        ConfigStore.on("change", this.onConfigChange)
         TokenStore.on("change", this.onTokenSelected)
     }
 
     start() {
-        ConfigActions.loadConfig()
     }
 
     onConfigChange() {
-        WebSocketActions.connect()
+        //WebSocketActions.connect()
     }
 
     onTokenSelected() {

@@ -1,5 +1,6 @@
 import React from "react"
 import WebSocketStore from '../stores/WebSocketStore'
+import * as WebSocketActions from "../actions/WebSocketActions"
 
 export default class WebSocketDetail extends React.Component {
     constructor() {
@@ -13,17 +14,21 @@ export default class WebSocketDetail extends React.Component {
     }
 
     componentWillMount() {
-        WebSocketStore.on("change", this.saveConnectionState);
+        WebSocketStore.on("change", this.saveConnectionState)
     }
 
     saveConnectionState() {
         this.setState(WebSocketStore.getConnectionState())
     }
 
+    connectToWebSocket() {
+        WebSocketActions.connect()
+    }
+
     render() {
         const {url, connecting, connected} = this.state
 
-        let status = <span className="text-danger">No connection</span>
+        let status = <span><span className="text-danger">No connection  </span> <button className="btn" onClick={this.connectToWebSocket}>Connect</button></span>
         if (connecting) {
             status = <span className="text-warning">Connecting to {url}</span>
         } else if (connected) {
@@ -36,6 +41,6 @@ export default class WebSocketDetail extends React.Component {
                     Websocket status: {status}
                 </div>
             </div>
-        );
+        )
     }
 }
