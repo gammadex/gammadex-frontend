@@ -1,5 +1,5 @@
-import {EventEmitter} from "events";
-import dispatcher from "../dispatcher";
+import {EventEmitter} from "events"
+import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 
 class WebSocketStore extends EventEmitter {

@@ -1,4 +1,4 @@
-import dispatcher from "../dispatcher";
+import dispatcher from "../dispatcher"
 import EtherDeltaWebSocket from "../EtherDeltaWebSocket"
 import ActionNames from "./ActionNames"
 

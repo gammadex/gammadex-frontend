@@ -1,4 +1,4 @@
-import dispatcher from "../dispatcher";
+import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
 export function loadConfig() {

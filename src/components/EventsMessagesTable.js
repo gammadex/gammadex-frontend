@@ -1,4 +1,5 @@
-import React from "react";
+import React from "react"
+import EventMessage from './EventMessage'
 
 export default class EventsMessagesTable extends React.Component {
     constructor() {

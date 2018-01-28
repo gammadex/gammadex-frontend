@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import WebSocketStore from '../stores/WebSocketStore'
 
 export default class WebSocketDetail extends React.Component {

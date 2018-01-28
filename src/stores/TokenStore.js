@@ -1,5 +1,5 @@
-import { EventEmitter } from "events";
-import dispatcher from "../dispatcher";
+import { EventEmitter } from "events"
+import dispatcher from "../dispatcher"
 import Actions from "../actions/ActionNames"
 
 class TokenStore extends EventEmitter {

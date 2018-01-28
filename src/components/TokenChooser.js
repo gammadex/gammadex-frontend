@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import ConfigStore from '../stores/ConfigStore'
 import TokenStore from '../stores/TokenStore'
 import * as TokenActions from "../actions/TokenActions"
