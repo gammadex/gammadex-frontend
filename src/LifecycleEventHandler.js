@@ -1,7 +1,5 @@
 import React from "react"
 import 'react-select/dist/react-select.css'
-import * as ConfigActions from "./actions/ConfigActions"
-import * as WebSocketActions from "./actions/WebSocketActions"
 import WebSocketStore from './stores/WebSocketStore'
 import TokenStore from './stores/TokenStore'
 

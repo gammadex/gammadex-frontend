@@ -1,7 +1,6 @@
 import dispatcher from "../dispatcher"
 import EtherDeltaWebSocket from "../EtherDeltaWebSocket"
 import ActionNames from "./ActionNames"
-import TokenStore from '../stores/TokenStore'
 
 export function connect() {
     const url = 'wss://socket01.etherdelta.com/socket.io/?transport=websocket'

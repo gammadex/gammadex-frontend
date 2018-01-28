@@ -74,6 +74,7 @@ export default class OrderBook extends React.Component {
                                     text: '10', value: 10
                                 }]
                             })}
+                            striped
                         />
                     </div>
 
@@ -88,6 +89,7 @@ export default class OrderBook extends React.Component {
                                     text: '10', value: 10
                                 }]
                             })}
+                            striped
                         />
                     </div>
                 </div>

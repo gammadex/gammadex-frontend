@@ -1,12 +1,7 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
-import uuid from 'uuid'
 import ActionNames from "../actions/ActionNames"
-import Config from '../Config'
 
-/**
- * TODO - move all the token shit into the TokenStore
- */
 class OrderBookStore extends EventEmitter {
     constructor() {
         super()
@@ -36,8 +31,12 @@ class OrderBookStore extends EventEmitter {
                     const {buys=[], sells=[]} = orders
                     this.bids = buys
                     this.offers = sells
-                    this.emitChange()
+                } else {
+                    this.bids = []
+                    this.offers = []
                 }
+
+                this.emitChange()
 
                 break
             }
