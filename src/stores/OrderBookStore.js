@@ -4,38 +4,27 @@ import uuid from 'uuid'
 import ActionNames from "../actions/ActionNames"
 import Config from '../Config'
 
+/**
+ * TODO - move all the token shit into the TokenStore
+ */
 class OrderBookStore extends EventEmitter {
     constructor() {
         super()
         this.pendingToken = Config.getDefaultToken().name
         this.currentToken = null
-        this.bids = [
-            {
-                id: uuid.v4(),
-                ethAvailableVolumeBase: 1,
-                ethAvailableVolume: 4567,
-                price: 0.00123456
-            },
-        ]
-        this.offers = [
-            {
-                id: uuid.v4(),
-                ethAvailableVolumeBase: 1,
-                ethAvailableVolume: 564,
-                price: 0.00124000
-            },
-        ]
+        this.bids = []
+        this.offers = []
         this.pageSize = 10
         this.bidsPage = 1
         this.offersPage = 1
     }
 
-    // 1 indexed pages
-    sliceForPage(list, page, pageSize) {
-        const numPagesTotal = Math.ceil(list.length / pageSize)
-        const actualPage = numPagesTotal < page ? numPagesTotal : page
+    getBids() {
+        return this.bids
+    }
 
-        return list.slice((actualPage - 1) * pageSize, actualPage * pageSize)
+    getOffers() {
+        return this.offers
     }
 
     getBidsOnCurrentPage() {
@@ -53,6 +42,15 @@ class OrderBookStore extends EventEmitter {
     getCurrentToken() {
         return this.currentToken
     }
+
+    // 1 indexed pages
+    sliceForPage(list, page, pageSize) {
+        const numPagesTotal = Math.ceil(list.length / pageSize)
+        const actualPage = numPagesTotal < page ? numPagesTotal : page
+
+        return list.slice((actualPage - 1) * pageSize, actualPage * pageSize)
+    }
+
 
     emitChange() {
         this.emit("change")

@@ -37,6 +37,7 @@ export default class OrdersTable extends React.Component {
                     <li className="page-item"><a className="page-link" href="#">Next</a></li>
                 </ul>
             </div>
+
         )
     }
 }
