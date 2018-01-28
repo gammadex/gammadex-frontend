@@ -4,6 +4,7 @@ import ActionNames from "../actions/ActionNames"
 import WebSocketStore from '../stores/WebSocketStore'
 import Config from '../Config'
 
+// TODO add pending token - token for which getMarkets  has been requested
 class TokenStore extends EventEmitter {
     constructor() {
         super()

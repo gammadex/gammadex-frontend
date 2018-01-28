@@ -1,7 +1,6 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
-import OrdersTable from '../components/OrdersTable'
-import uuid from 'uuid'
+import TokenStore from '../stores/TokenStore'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import Config from '../Config'
 import BootstrapTable from 'react-bootstrap-table-next'
@@ -14,25 +13,28 @@ export default class OrderBook extends React.Component {
             token: Config.getDefaultToken(),
             pendingToken: null,
             bids: [],
-            bidsPage: 0,
-            numBidsPages: 1,
             offers: [],
-            offersPage: 0,
-            numOffersPages: 1,
         }
-        this.saveTokenBidsAndOffers = this.saveTokenBidsAndOffers.bind(this)
+
+        this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
+        this.saveToken = this.saveToken.bind(this)
     }
 
     componentWillMount() {
-        OrderBookStore.on("change", this.saveTokenBidsAndOffers)
+        OrderBookStore.on("change", this.saveBidsAndOffers)
+        TokenStore.on("change", this.saveToken)
     }
 
-    saveTokenBidsAndOffers() {
+    saveBidsAndOffers() {
         const state = this.state
-        state.pendingToken = OrderBookStore.getPendingToken()
-        state.token = OrderBookStore.getCurrentToken()
         state.bids = OrderBookStore.getBids()
         state.offers = OrderBookStore.getOffers()
+        this.setState(state)
+    }
+
+    saveToken() {
+        const state = this.state
+        state.token = TokenStore.getSelectedToken()
         this.setState(state)
     }
 
