@@ -2,6 +2,7 @@ import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 
+// TODO - etherDeltaWebSocket should move out of here. This should be view fields only
 class WebSocketStore extends EventEmitter {
     constructor() {
         super()
