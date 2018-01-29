@@ -45,21 +45,20 @@ export default class OrderBook extends React.Component {
 
     static getTradesTableColumns(token) {
         return [{
-            dataField: 'side',
-            text: `Side`
-        }, {
+            dataField: 'price',
+            text: `Price`
+        },{
             dataField: 'amountBase',
             text: `Total (ETH)`
         }, {
             dataField: 'amount',
             text: `Total (${token && token.name ? token.name : '...'})`
         }, {
+            dataField: 'side',
+            text: `Side`
+        }, {
             dataField: 'date',
             text: `Time`
-        }, {
-            dataField: 'txHash',
-            text: `Transaction ID`,
-            classes: 'txId'
         }];
     }
 
