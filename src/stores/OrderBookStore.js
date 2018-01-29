@@ -7,6 +7,7 @@ class OrderBookStore extends EventEmitter {
         super()
         this.bids = []
         this.offers = []
+        this.trades = []
     }
 
     getBids() {
@@ -17,6 +18,10 @@ class OrderBookStore extends EventEmitter {
         return this.offers
     }
 
+    getTrades() {
+        return this.trades
+    }
+
     emitChange() {
         this.emit("change")
     }
@@ -24,20 +29,22 @@ class OrderBookStore extends EventEmitter {
     handleActions(action) {
         switch (action.type) {
             case ActionNames.MESSAGE_RECEIVED_MARKET: {
-                // TODO use destructuring with defaults to clean this up
-                if (action.message && action.message.orders && action.message.orders.buys) {
-                    const {message} = action
-                    const {orders} = message
-                    const {buys=[], sells=[]} = orders
-                    this.bids = buys
-                    this.offers = sells
-                } else {
-                    this.bids = []
-                    this.offers = []
+                // TODO use destructuring with defaults to clean this up (maybe)
+
+                this.bids = []
+                this.offers = []
+                this.trades = []
+
+                if (action.message
+                    && action.message.orders
+                    && action.message.orders.buys) {
+
+                    this.bids = action.message.orders.buys
+                    this.offers = action.message.orders.sells
+                    this.trades = action.message.trades
                 }
 
                 this.emitChange()
-
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_ORDERS: {

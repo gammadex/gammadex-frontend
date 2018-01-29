@@ -33,6 +33,11 @@ class EtherDeltaWebSocket {
     }
 
     getMarket(tokenAddress, userAddress) {
+        if (! this.socket) {
+            console.warn("Can't request market - not connected")
+            return
+        }
+
         console.log(`Requesting market ${tokenAddress}`)
 
         const message = {}

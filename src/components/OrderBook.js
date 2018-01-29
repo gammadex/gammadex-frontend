@@ -12,6 +12,7 @@ export default class OrderBook extends React.Component {
         this.state = {
             bids: [],
             offers: [],
+            trades: [],
         }
 
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
@@ -24,11 +25,12 @@ export default class OrderBook extends React.Component {
     saveBidsAndOffers() {
         this.setState((prevState, props) => ({
             bids: OrderBookStore.getBids(),
-            offers: OrderBookStore.getOffers()
+            offers: OrderBookStore.getOffers(),
+            trades: OrderBookStore.getTrades()
         }))
     }
 
-    static getColumns(tableType, token) {
+    static getOrderTableColumns(tableType, token) {
         return [{
             dataField: 'ethAvailableVolumeBase',
             text: `Total (ETH)`
@@ -41,11 +43,32 @@ export default class OrderBook extends React.Component {
         }];
     }
 
+    static getTradesTableColumns(token) {
+        return [{
+            dataField: 'side',
+            text: `Side`
+        }, {
+            dataField: 'amountBase',
+            text: `Total (ETH)`
+        }, {
+            dataField: 'amount',
+            text: `Total (${token && token.name ? token.name : '...'})`
+        }, {
+            dataField: 'date',
+            text: `Time`
+        }, {
+            dataField: 'txHash',
+            text: `Transaction ID`,
+            classes: 'txId'
+        }];
+    }
+
     render() {
         const {token} = this.props
-        const {bids, offers} = this.state
-        const bidColumns = OrderBook.getColumns("Bids", token)
-        const offersColumns = OrderBook.getColumns("Offers", token)
+        const {bids, offers, trades} = this.state
+        const bidColumns = OrderBook.getOrderTableColumns("Bids", token)
+        const offersColumns = OrderBook.getOrderTableColumns("Offers", token)
+        const tradesColumns = OrderBook.getTradesTableColumns(token)
 
         return (
             <div>
@@ -72,6 +95,23 @@ export default class OrderBook extends React.Component {
                             keyField='id'
                             data={offers}
                             columns={offersColumns}
+                            pagination={paginationFactory({
+                                sizePerPageList: [{
+                                    text: '10', value: 10
+                                }]
+                            })}
+                            striped
+                        />
+                    </div>
+                </div>
+
+                <h2>Trade History</h2>
+                <div className="row">
+                    <div className="col-lg-12">
+                        <BootstrapTable
+                            keyField='txHash'
+                            data={trades}
+                            columns={tradesColumns}
                             pagination={paginationFactory({
                                 sizePerPageList: [{
                                     text: '10', value: 10
