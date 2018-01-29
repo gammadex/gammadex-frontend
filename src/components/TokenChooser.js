@@ -1,46 +1,11 @@
 import React from "react"
-import TokenStore from '../stores/TokenStore'
 import * as TokenActions from "../actions/TokenActions"
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
-import _ from "lodash"
-import Config from '../Config'
 
 export default class TokenChooser extends React.Component {
-    constructor() {
-        super()
-
-        this.state = {
-            selectedToken: Config.getDefaultToken(),
-            tokenOptions: this.getTokens()
-        }
-
-        this.saveSelectedToken = this.saveSelectedToken.bind(this)
-    }
-
-    componentWillMount() {
-        TokenStore.on("change", this.saveSelectedToken)
-    }
-
-    getTokens() {
-        // TODO this sorting should fgo in the config object
-        const tokens = Config.getTokens().map((tk) => {
-            return {
-                value: tk.address,
-                label: tk.name
-            }
-        })
-
-        return _.sortBy(tokens, (tk) => tk.label)
-    }
-
-    saveSelectedToken() {
-        const state = this.state
-        const selectedToken = TokenStore.getSelectedToken()
-        if (selectedToken && selectedToken.address) {
-            state.selectedToken = selectedToken
-            this.setState(state)
-        }
+    constructor(props) {
+        super(props)
     }
 
     handleSelect(select) {
@@ -50,7 +15,7 @@ export default class TokenChooser extends React.Component {
     }
 
     render() {
-        const {selectedToken, tokenOptions} = this.state
+        const {token, tokenOptions} = this.props
 
         return (
             <div className="row">
@@ -59,7 +24,7 @@ export default class TokenChooser extends React.Component {
 
                     <Select
                         name="form-field-name"
-                        value={selectedToken.address}
+                        value={token.address}
                         onChange={this.handleSelect.bind(this)}
                         options={tokenOptions}
                         clearable={false}

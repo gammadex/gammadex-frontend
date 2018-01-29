@@ -12,10 +12,6 @@ class WebSocketStore extends EventEmitter {
         this.requestedToken = null
     }
 
-    isConnnected() {
-        return this.connected
-    }
-
     getEtherDeltaWebSocket() {
         return this.etherDeltaWebSocket
     }
@@ -62,7 +58,7 @@ class WebSocketStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-            case ActionNames.TOKEN_SELECTED: {
+            case ActionNames.SELECT_TOKEN: {
                 const {token} = action
 
                 if (this.etherDeltaWebSocket) {

@@ -1,45 +1,35 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
-import TokenStore from '../stores/TokenStore'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
-import Config from '../Config'
 import BootstrapTable from 'react-bootstrap-table-next'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 
+// TODO - set page to 1 when selecting new token
 export default class OrderBook extends React.Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
+
         this.state = {
-            token: Config.getDefaultToken(),
-            pendingToken: null,
             bids: [],
             offers: [],
         }
 
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
-        this.saveToken = this.saveToken.bind(this)
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
-        TokenStore.on("change", this.saveToken)
     }
 
     saveBidsAndOffers() {
-        const state = this.state
-        state.bids = OrderBookStore.getBids()
-        state.offers = OrderBookStore.getOffers()
-        this.setState(state)
-    }
-
-    saveToken() {
-        const state = this.state
-        state.token = TokenStore.getSelectedToken()
-        this.setState(state)
+        this.setState((prevState, props) => ({
+            bids: OrderBookStore.getBids(),
+            offers: OrderBookStore.getOffers()
+        }))
     }
 
     static getColumns(tableType, token) {
-        const bidColumns = [{
+        return [{
             dataField: 'ethAvailableVolumeBase',
             text: `Total (ETH)`
         }, {
@@ -49,15 +39,13 @@ export default class OrderBook extends React.Component {
             dataField: 'price',
             text: `${tableType}`
         }];
-
-        return bidColumns
     }
 
     render() {
-        const {bids, offers, token, pendingToken} = this.state
-        const tkn = token ? token : pendingToken
-        const bidColumns = OrderBook.getColumns("Bids", tkn)
-        const offersColumns = OrderBook.getColumns("Offers", tkn)
+        const {token} = this.props
+        const {bids, offers} = this.state
+        const bidColumns = OrderBook.getColumns("Bids", token)
+        const offersColumns = OrderBook.getColumns("Offers", token)
 
         return (
             <div>
@@ -94,7 +82,6 @@ export default class OrderBook extends React.Component {
                     </div>
                 </div>
             </div>
-
         )
     }
 }

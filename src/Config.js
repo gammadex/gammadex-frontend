@@ -2,8 +2,18 @@ import config from './config/main.json'
 import _ from "lodash"
 
 class Config {
+    constructor() {
+        const tokens = config.tokens.map((tk) => {
+            return {
+                value: tk.address,
+                label: tk.name
+            }
+        })
+        this.tokens = _.sortBy(tokens, (tk) => tk.label)
+    }
+
     getTokens() {
-        return config.tokens
+        return this.tokens
     }
 
     getTokenName(address) {

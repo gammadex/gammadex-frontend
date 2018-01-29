@@ -4,7 +4,6 @@ import ActionNames from "../actions/ActionNames"
 import WebSocketStore from '../stores/WebSocketStore'
 import Config from '../Config'
 
-// TODO add pending token - token for which getMarkets  has been requested
 class TokenStore extends EventEmitter {
     constructor() {
         super()
@@ -21,7 +20,7 @@ class TokenStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
-            case ActionNames.TOKEN_SELECTED: {
+            case ActionNames.SELECT_TOKEN: {
                 this.selectedToken = action.token
                 this.emitChange()
                 break
