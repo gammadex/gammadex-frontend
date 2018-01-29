@@ -1,5 +1,6 @@
 import React from "react"
 import * as TokenActions from "../actions/TokenActions"
+import * as WebSocketActions from "../actions/WebSocketActions"
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 
@@ -11,6 +12,7 @@ export default class TokenChooser extends React.Component {
     handleSelect(select) {
         if (select && select.value) {
             TokenActions.selectToken(select.label, select.value)
+            WebSocketActions.getMarket()
         }
     }
 

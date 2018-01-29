@@ -2,19 +2,12 @@ import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 
-// TODO - etherDeltaWebSocket should move out of here. This should be view fields only
 class WebSocketStore extends EventEmitter {
     constructor() {
         super()
-        this.etherDeltaWebSocket = null
         this.url = null
         this.connecting = false
         this.connected = false
-        this.requestedToken = null
-    }
-
-    getEtherDeltaWebSocket() {
-        return this.etherDeltaWebSocket
     }
 
     getConnectionState() {
@@ -22,7 +15,6 @@ class WebSocketStore extends EventEmitter {
             url: this.url,
             connected: this.connected,
             connecting: this.connecting,
-            requestedToken: this.requestedToken
         }
     }
 
@@ -34,7 +26,6 @@ class WebSocketStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.WEB_SOCKET_CONSTRUCTED: {
                 this.url = action.url
-                this.etherDeltaWebSocket = action.etherDeltaWebSocket
                 this.connected = false
                 this.connecting = true
                 this.emitChange()
@@ -42,8 +33,6 @@ class WebSocketStore extends EventEmitter {
             }
             case ActionNames.WEB_SOCKET_OPENED: {
                 console.log("WebSocket opened")
-                this.url = action.url
-                this.etherDeltaWebSocket = action.etherDeltaWebSocket
                 this.connected = true
                 this.connecting = false
                 this.emitChange()
@@ -52,24 +41,8 @@ class WebSocketStore extends EventEmitter {
             case ActionNames.WEB_SOCKET_CLOSED: {
                 console.log("WebSocket closed")
                 this.url = null
-                this.etherDeltaWebSocket = null
                 this.connected = false
                 this.connecting = false
-                this.requestedToken = null
-                this.emitChange()
-                break
-            }
-            case ActionNames.SELECT_TOKEN: {
-                const {token} = action
-
-                if (this.etherDeltaWebSocket) {
-                    console.log(`Getting market for `, token)
-                    this.etherDeltaWebSocket.getMarket(token.address)
-                } else {
-                    // TODO - reconnect
-                    console.log("No websocket - can't get market")
-                }
-
                 this.emitChange()
                 break
             }

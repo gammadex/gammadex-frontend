@@ -24,7 +24,7 @@ class OrderBookStore extends EventEmitter {
     handleActions(action) {
         switch (action.type) {
             case ActionNames.MESSAGE_RECEIVED_MARKET: {
-                // TODO user destructuring with defaults to clean this up
+                // TODO use destructuring with defaults to clean this up
                 if (action.message && action.message.orders && action.message.orders.buys) {
                     const {message} = action
                     const {orders} = message

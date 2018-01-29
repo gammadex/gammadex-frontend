@@ -1,20 +1,21 @@
 import dispatcher from "../dispatcher"
 import EtherDeltaWebSocket from "../EtherDeltaWebSocket"
+import TokenStore from '../stores/TokenStore'
 import ActionNames from "./ActionNames"
 
 export function connect() {
     const url = 'wss://socket01.etherdelta.com/socket.io/?transport=websocket'
 
-    const etherDeltaWebSocket = new EtherDeltaWebSocket(url)
-
-    etherDeltaWebSocket.init({
+    EtherDeltaWebSocket.init(
+        url,
+        {
             onopen: (event) => {
                 dispatcher.dispatch({
                     type: ActionNames.WEB_SOCKET_OPENED,
                     event,
-                    url,
-                    etherDeltaWebSocket
                 })
+
+                getMarket()
             },
             onclose: (event) => {
                 dispatcher.dispatch({
@@ -46,7 +47,10 @@ export function connect() {
 
     dispatcher.dispatch({
         type: ActionNames.WEB_SOCKET_CONSTRUCTED,
-        etherDeltaWebSocket,
         url
     });
+}
+
+export function getMarket() {
+    EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address)
 }

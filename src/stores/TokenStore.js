@@ -1,7 +1,6 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
-import WebSocketStore from '../stores/WebSocketStore'
 import Config from '../Config'
 
 class TokenStore extends EventEmitter {
@@ -25,13 +24,9 @@ class TokenStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-            case ActionNames.WEB_SOCKET_OPENED: {
-                WebSocketStore.getEtherDeltaWebSocket().getMarket(this.selectedToken.address)
-            }
         }
     }
 }
-
 
 const tokensStore = new TokenStore()
 dispatcher.register(tokensStore.handleActions.bind(tokensStore))

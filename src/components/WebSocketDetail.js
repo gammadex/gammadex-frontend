@@ -3,15 +3,13 @@ import WebSocketStore from '../stores/WebSocketStore'
 import * as WebSocketActions from "../actions/WebSocketActions"
 
 export default class WebSocketDetail extends React.Component {
-    constructor(props) {
-        super(props)
-
+    constructor() {
+        super()
         this.state = {
             url: null,
             connecting: false,
             connected: false
         }
-
         this.saveConnectionState = this.saveConnectionState.bind(this)
     }
 

@@ -1,11 +1,8 @@
 import _ from "lodash"
 
 class EtherDeltaWebSocket {
-    constructor(address) {
+    init(address, webSocketProperties, messageHandlers) {
         this.address = address
-    }
-
-    init(webSocketProperties, messageHandlers) {
         this.messageHandlers = messageHandlers
         this.webSocketProperties = webSocketProperties
 
@@ -51,4 +48,4 @@ class EtherDeltaWebSocket {
     }
 }
 
-export default EtherDeltaWebSocket
+export default new EtherDeltaWebSocket()
