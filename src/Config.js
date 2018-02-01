@@ -33,6 +33,10 @@ class Config {
             address
         }
     }
+
+    getDefaultPageSize() {
+        return 10
+    }
 }
 
 export default new Config()

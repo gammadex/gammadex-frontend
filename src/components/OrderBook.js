@@ -57,7 +57,7 @@ export default class OrderBook extends React.Component {
     }
 
     render() {
-        const {token} = this.props
+        const {token, pageSize} = this.props
         const {bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages} = this.state
 
         return (
@@ -66,7 +66,8 @@ export default class OrderBook extends React.Component {
                 <div className="row">
                     <div className="col-lg-6">
                         <h3>Bids</h3>
-                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}/>
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
+                                     pageSize={pageSize}/>
 
                         <div className="float-right">
                             <Pagination page={bidsPage} numPages={numBidsPages}
@@ -76,7 +77,8 @@ export default class OrderBook extends React.Component {
 
                     <div className="col-lg-6">
                         <h3>Offers</h3>
-                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offers" orders={offers}/>
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offers" orders={offers}
+                                     pageSize={pageSize}/>
 
                         <div className="float-right">
                             <Pagination page={offersPage} numPages={numOffersPages}
@@ -88,7 +90,7 @@ export default class OrderBook extends React.Component {
                 <h2>Trade History</h2>
                 <div className="row">
                     <div className="col-lg-12">
-                        <TradeHistoryTable base="ETH" token={token.name} trades={trades}/>
+                        <TradeHistoryTable base="ETH" token={token.name} trades={trades} pageSize={pageSize}/>
 
                         <div className="float-right">
                             <Pagination page={tradesPage} numPages={numTradesPages}

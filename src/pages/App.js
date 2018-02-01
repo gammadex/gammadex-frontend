@@ -29,12 +29,13 @@ class App extends Component {
     render() {
         const {token} = this.state
         const allTokens = Config.getTokens()
+        const pageSize = Config.getDefaultPageSize()
 
         return (
             <div className="App">
                 <WebSocketDetail token={token}/>
                 <TokenChooser token={token} tokenOptions={allTokens}/>
-                <OrderBook token={token}/>
+                <OrderBook token={token} pageSize={pageSize}/>
             </div>
         )
     }
