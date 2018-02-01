@@ -1,9 +1,11 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import Pagination from '../components/Pagination'
+import OrdersTable from '../components/OrderBook/OrdersTable'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import BootstrapTable from 'react-bootstrap-table-next'
 import * as OrderBookActions from "../actions/OrderBookActions"
+import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -57,9 +59,6 @@ export default class OrderBook extends React.Component {
     render() {
         const {token} = this.props
         const {bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages} = this.state
-        const bidColumns = OrderBook.getOrderTableColumns("Bids", token)
-        const offersColumns = OrderBook.getOrderTableColumns("Offers", token)
-        const tradesColumns = OrderBook.getTradesTableColumns(token)
 
         return (
             <div>
@@ -67,12 +66,8 @@ export default class OrderBook extends React.Component {
                 <div className="row">
                     <div className="col-lg-6">
                         <h3>Bids</h3>
-                        <BootstrapTable
-                            keyField='id'
-                            data={bids}
-                            columns={bidColumns}
-                            striped
-                        />
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}/>
+
                         <div className="float-right">
                             <Pagination page={bidsPage} numPages={numBidsPages}
                                         onPageChange={this.changeBidsPage.bind(this)}/>
@@ -81,12 +76,8 @@ export default class OrderBook extends React.Component {
 
                     <div className="col-lg-6">
                         <h3>Offers</h3>
-                        <BootstrapTable
-                            keyField='id'
-                            data={offers}
-                            columns={offersColumns}
-                            striped
-                        />
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offers" orders={offers}/>
+
                         <div className="float-right">
                             <Pagination page={offersPage} numPages={numOffersPages}
                                         onPageChange={this.changeOffersPage.bind(this)}/>
@@ -97,12 +88,8 @@ export default class OrderBook extends React.Component {
                 <h2>Trade History</h2>
                 <div className="row">
                     <div className="col-lg-12">
-                        <BootstrapTable
-                            keyField='txHash'
-                            data={trades}
-                            columns={tradesColumns}
-                            striped
-                        />
+                        <TradeHistoryTable base="ETH" token={token.name} trades={trades}/>
+
                         <div className="float-right">
                             <Pagination page={tradesPage} numPages={numTradesPages}
                                         onPageChange={this.changeTradesPage.bind(this)}/>
@@ -112,38 +99,5 @@ export default class OrderBook extends React.Component {
             </div>
         )
     }
-
-    static getOrderTableColumns(tableType, token) {
-        return [{
-            dataField: 'ethAvailableVolumeBase',
-            text: `Total (ETH)`
-        }, {
-            dataField: 'ethAvailableVolume',
-            text: `Size (${token && token.name ? token.name : '...'})`
-        }, {
-            dataField: 'price',
-            text: `${tableType}`
-        }];
-    }
-
-    static getTradesTableColumns(token) {
-        return [{
-            dataField: 'price',
-            text: `Price`
-        }, {
-            dataField: 'amountBase',
-            text: `Total (ETH)`
-        }, {
-            dataField: 'amount',
-            text: `Total (${token && token.name ? token.name : '...'})`
-        }, {
-            dataField: 'side',
-            text: `Side`
-        }, {
-            dataField: 'date',
-            text: `Time`
-        }];
-    }
-
 }
 

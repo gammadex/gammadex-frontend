@@ -5,8 +5,9 @@ import _ from "lodash"
  * Note - pages are zero indexed, but are displayed as 1 indexed
  */
 export default class Pagination extends React.Component {
-    onPageChange(page) {
+    onPageChange(page, event) {
         this.props.onPageChange(page)
+        event.preventDefault()
     }
 
     render() {
@@ -34,7 +35,7 @@ export default class Pagination extends React.Component {
         const activeClass = current ? "active" : ""
         const classes = `page-item ${disabledClass} ${activeClass}`
 
-        let link = <a className="page-link" href="#" onClick={() => this.onPageChange(linkToPage)}>{text}</a>
+        let link = <a className="page-link" href="#" onClick={(event) => this.onPageChange(linkToPage, event)}>{text}</a>
         if (current) {
             link = <span className="page-link active">{text}</span>
         }
