@@ -73,7 +73,7 @@ export default class OrderBook extends React.Component {
                             columns={bidColumns}
                             striped
                         />
-                        <div class="float-right">
+                        <div className="float-right">
                             <Pagination page={bidsPage} numPages={numBidsPages}
                                         onPageChange={this.changeBidsPage.bind(this)}/>
                         </div>
@@ -87,7 +87,7 @@ export default class OrderBook extends React.Component {
                             columns={offersColumns}
                             striped
                         />
-                        <div class="float-right">
+                        <div className="float-right">
                             <Pagination page={offersPage} numPages={numOffersPages}
                                         onPageChange={this.changeOffersPage.bind(this)}/>
                         </div>
@@ -103,7 +103,7 @@ export default class OrderBook extends React.Component {
                             columns={tradesColumns}
                             striped
                         />
-                        <div class="float-right">
+                        <div className="float-right">
                             <Pagination page={tradesPage} numPages={numTradesPages}
                                         onPageChange={this.changeTradesPage.bind(this)}/>
                         </div>
