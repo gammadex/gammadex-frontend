@@ -4,7 +4,7 @@ import TokenStore from '../stores/TokenStore'
 import ActionNames from "./ActionNames"
 
 export function connect() {
-    const url = 'wss://socket01.etherdelta.com/socket.io/?transport=websocket'
+    const url = 'wss://socket02.etherdelta.com/socket.io/?transport=websocket'
 
     EtherDeltaWebSocket.init(
         url,

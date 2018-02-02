@@ -1,6 +1,8 @@
 import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
+import TokenStore from '../stores/TokenStore'
+import _ from "lodash"
 
 class OrderBookStore extends EventEmitter {
     constructor() {
@@ -79,39 +81,63 @@ class OrderBookStore extends EventEmitter {
                 break
             }
             case ActionNames.SELECT_TOKEN: {
-                this.bidsPage = 0
-                this.offersPage = 0
-                this.tradesPage = 0
-                this.bids = []
-                this.offers = []
-                this.trades = []
+                this.clearState()
                 this.emitChange()
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_MARKET: {
-                // TODO use destructuring with defaults to clean this up (maybe)
-
-                this.bids = []
-                this.offers = []
-                this.trades = []
-
-                if (action.message
-                    && action.message.orders
-                    && action.message.orders.buys) {
-
-                    this.bids = action.message.orders.buys
-                    this.offers = action.message.orders.sells
-                    this.trades = action.message.trades
-                }
-
+                this.storeBidsOffersAndTrades(action.message)
                 this.emitChange()
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_ORDERS: {
-                //this.emitChange()
+                this.mergeOrders(action.message)
+                this.emitChange()
                 break
             }
         }
+    }
+
+    clearState() {
+        this.bidsPage = 0
+        this.offersPage = 0
+        this.tradesPage = 0
+        this.bids = []
+        this.offers = []
+        this.trades = []
+    }
+
+    storeBidsOffersAndTrades(message) {
+        this.bids = []
+        this.offers = []
+        this.trades = []
+
+        if (message && message.orders && message.orders.buys) {
+            this.bids = message.orders.buys
+            this.offers = message.orders.sells
+            this.trades = message.trades
+        }
+    }
+
+    mergeOrders(message) {
+        /*
+        const token = TokenStore.getSelectedToken() // TODO - is it acceptable that this has to know about TokenStore?
+
+        if (message && message.buys) {
+            const buysForToken = _.filter(message.buys, (buy) => {
+                return token.address === buy.tokenGive || token.address === buy.tokenGet
+            })
+
+            if (buysForToken.length > 0) {
+                const updateBuyIds = new Set(buysForToken.map(b => b.id))
+                const currentBuysWithoutUpdates = _.filter(buysForToken, b => ! updateBuyIds.contains(b.id))
+                const newBuys = _.filter(buysForToken, b => ! b.deleted)
+                const updatedBuys = currentBuysWithoutUpdates.concat(newBuys)
+
+                this.buys = _.sortBy(updatedBuys, (b) => b.) // TODO - working here
+            }
+        }
+        */
     }
 }
 
