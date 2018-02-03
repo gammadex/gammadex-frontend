@@ -7,23 +7,13 @@ npm install
 npm run start
 ```
 
+## Running Tests
 
-## Useful Links
+```
+npm run test
+```
 
-### React
-
-* https://reactjs.org/tutorial/tutorial.html
-* https://reactjs.org/docs/state-and-lifecycle.html
-* https://github.com/react-bootstrap-table/react-bootstrap-table2
-* https://reactstrap.github.io/components
-
-### React Testing
-
-* *Running tests* https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests
-* *Testing React components* https://facebook.github.io/jest/docs/en/tutorial-react.html
-* *Available insertion functions*: https://facebook.github.io/jest/docs/en/expect.html#content
-
-#### Running Test On Linux
+##= Running Tests On Linux
 
 You can get this error if too many files are being watched causing Linux barfs. 
 
@@ -40,9 +30,29 @@ System level workaround:
 * https://github.com/facebook/jest/issues/3254
 * https://github.com/amasad/sane/issues/104
 
+
+## Useful Links
+
+### React
+
+* https://reactjs.org/tutorial/tutorial.html
+* https://reactjs.org/docs/state-and-lifecycle.html
+* https://github.com/react-bootstrap-table/react-bootstrap-table2
+* https://reactstrap.github.io/components
+
+### React Testing
+
+* *Running tests* https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests
+* *Testing React components* https://facebook.github.io/jest/docs/en/tutorial-react.html
+* *Available insertion functions*: https://facebook.github.io/jest/docs/en/expect.html#content
+
 ### BootStrap
 
 * https://bootstrapcreative.com/resources/bootstrap-4-css-classes-index/
+
+### Font Awesome 
+
+* https://fontawesome.com/
 
 ### EtherDelta API
 
@@ -51,3 +61,4 @@ System level workaround:
 ## JS
 
 * http://exploringjs.com/es6/ch_destructuring.html
+

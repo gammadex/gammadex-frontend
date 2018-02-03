@@ -2,8 +2,9 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import Pagination from '../components/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
+import TokenStats from '../components/TokenStats'
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
-import BootstrapTable from 'react-bootstrap-table-next'
+
 import * as OrderBookActions from "../actions/OrderBookActions"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 
@@ -62,6 +63,17 @@ export default class OrderBook extends React.Component {
 
         return (
             <div>
+                <div className="row">
+                    <div className="col-lg-8">
+                        <h3>Chart</h3>
+
+                    </div>
+
+                    <div className="col-lg-4">
+                        <TokenStats token={token.name} bids={bids} offers={offers} trades={trades} />
+                    </div>
+                </div>
+
                 <h2>Order Book</h2>
                 <div className="row">
                     <div className="col-lg-6">

@@ -31,6 +31,10 @@ class OrderBookStore extends EventEmitter {
         return this.bidsPage
     }
 
+    getFirstBidPriceOrNull() {
+        return this.getFirstPriceOrNull(this.bids)
+    }
+
     getOffersOnCurrentPage() {
         return this.sliceForPage(this.offers, this.offersPage, this.pageSize)
     }
@@ -41,6 +45,10 @@ class OrderBookStore extends EventEmitter {
 
     getOffersPage() {
         return this.offersPage
+    }
+
+    getFirstOfferPriceOrNull() {
+        return this.getFirstPriceOrNull(this.offers)
     }
 
     getTradesOnCurrentPage() {
@@ -55,11 +63,23 @@ class OrderBookStore extends EventEmitter {
         return this.tradesPage
     }
 
+    getFirstTradePriceOrNull() {
+        return this.getFirstPriceOrNull(this.trades)
+    }
+
+    getSecondTradePriceOrNull() {
+        return (this.trades.length > 1) ? this.trades[1].price : null
+    }
+
     sliceForPage(list, page, pageSize) {
         const numPagesTotal = Math.floor(1 + list.length / pageSize)
         const actualPage = numPagesTotal < page ? numPagesTotal : page
 
         return list.slice((actualPage) * pageSize, (actualPage + 1) * pageSize)
+    }
+
+    getFirstPriceOrNull(list) {
+        return (list.length > 0) ? list[0].price : null
     }
 
     emitChange() {
