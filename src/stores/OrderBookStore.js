@@ -91,7 +91,7 @@ class OrderBookStore extends EventEmitter {
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_ORDERS: {
-                this.mergeOrders(action.message)
+                this.mergeBuysAndSells(action.message)
                 this.emitChange()
                 break
             }
@@ -119,25 +119,44 @@ class OrderBookStore extends EventEmitter {
         }
     }
 
-    mergeOrders(message) {
-        /*
-        const token = TokenStore.getSelectedToken() // TODO - is it acceptable that this has to know about TokenStore?
+    mergeBuysAndSells(message) {
+        if (message) {
+            const token = TokenStore.getSelectedToken() // TODO - is it acceptable that this has to know about TokenStore?
 
-        if (message && message.buys) {
-            const buysForToken = _.filter(message.buys, (buy) => {
-                return token.address === buy.tokenGive || token.address === buy.tokenGet
-            })
-
-            if (buysForToken.length > 0) {
-                const updateBuyIds = new Set(buysForToken.map(b => b.id))
-                const currentBuysWithoutUpdates = _.filter(buysForToken, b => ! updateBuyIds.contains(b.id))
-                const newBuys = _.filter(buysForToken, b => ! b.deleted)
-                const updatedBuys = currentBuysWithoutUpdates.concat(newBuys)
-
-                this.buys = _.sortBy(updatedBuys, (b) => b.) // TODO - working here
+            if (message.buys) {
+                this.buys = this.mergeOrders(this.buys, message.buys, token.address, false)
+            }
+            if (message.sells) {
+                this.sells = this.mergeOrders(this.sells, message.sells, token.address, true)
             }
         }
-        */
+
+    }
+
+    mergeOrders(currentOrders, messageOrders, tokenAddress, ascendingPriceOrder) {
+        const ordersForCurrentToken = this.filterOrdersByTokenAddress(messageOrders, tokenAddress)
+
+        if (ordersForCurrentToken.length > 0) {
+            const incomingIds = new Set(ordersForCurrentToken.map(b => b.id))
+            const unchangedCurrentOrders = _.filter(currentOrders, b => !incomingIds.contains(b.id)) // removes both deletes and updates
+            const incomingChangedOrders = _.filter(ordersForCurrentToken, b => !b.deleted)
+            const updatedOrdersUnsorted = unchangedCurrentOrders.concat(incomingChangedOrders)
+            const updatedOrders = _.sortBy(updatedOrdersUnsorted, b => b.price)
+
+            if (ascendingPriceOrder) {
+                return updatedOrders
+            } else {
+                return _.reverse(updatedOrders)
+            }
+        } else {
+            return currentOrders
+        }
+    }
+
+    filterOrdersByTokenAddress(message, tokenAddress) {
+        return _.filter(message.buys, (buy) => {
+            return tokenAddress === buy.tokenGive || tokenAddress === buy.tokenGet
+        })
     }
 }
 
