@@ -1,6 +1,6 @@
 import {mergeOrders} from "../OrderMerger"
 
-test("orders with wrong different token address don't get added", () => {
+test("orders with different token address don't get added", () => {
     const existing = [{id: 'sell_0x1', price: '0.1', tokenGive: '0x1', tokenGet: '0x0'}]
     const incoming = [{id: 'sell_0x2', price: '0.1', tokenGive: '0x2', tokenGet: '0x0'}]
 
@@ -23,7 +23,7 @@ test("changed orders with same token address get added", () => {
     expect(merged).toEqual(expected)
 })
 
-test("changed orders with marked for delete get deleted", () => {
+test("changed orders marked for delete get deleted", () => {
     const existing = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1'}]
     const incoming = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1', 'delete': 'true'}]
 
@@ -34,7 +34,7 @@ test("changed orders with marked for delete get deleted", () => {
     expect(merged).toEqual(expected)
 })
 
-test("changed adds are in ascending order when requested", () => {
+test("changed adds in ascending order when ascending specified", () => {
     const existing = [{id: 'buy_0x1', price: '0.2', tokenGive: '0x0', tokenGet: '0x1'}]
     const incoming = [{id: 'buy_0x2', price: '0.1', tokenGive: '0x0', tokenGet: '0x1'}]
 
@@ -48,7 +48,7 @@ test("changed adds are in ascending order when requested", () => {
     expect(merged).toEqual(expected)
 })
 
-test("changed adds are in descending order when requested", () => {
+test("changed adds are in descending order when descending specified", () => {
     const existing = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1'}]
     const incoming = [{id: 'sell_0x2', price: '0.2', tokenGet: '0x0', tokenGive: '0x1'}]
 

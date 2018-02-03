@@ -1,6 +1,7 @@
 import {EventEmitter} from "events"
 import * as OrderMerger from './util/OrderMerger'
-import * as EtherDeltaResponseUtils from './util/EtherDeltaResponseUtils'
+import * as TradesMerger from './util/TradesMerger'
+import * as MessageUtils from './util/MessageUtils'
 
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
@@ -120,20 +121,17 @@ class OrderBookStore extends EventEmitter {
         this.trades = []
 
         if (message.trades) {
-            this.trades = message.trades
+            this.trades = TradesMerger.sortByTimeAndIdRemovingDuplicates(message.trades)
         }
 
         if (message && message.orders) {
             const orders = message.orders
 
             if (orders.buys) {
-                this.bids = OrderMerger.sortByPriceAndId(orders.buys, false)
+                this.bids = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.buys, false)
             }
             if (orders.sells) {
-                this.offers = OrderMerger.sortByPriceAndId(orders.sells, true)
-            }
-            if (orders.trades) {
-                this.trades = EtherDeltaResponseUtils.removeDups(message.trades)
+                this.offers = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.sells, true)
             }
         }
     }
