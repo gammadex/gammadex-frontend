@@ -32,13 +32,13 @@ export default class OrderBook extends React.Component {
 
     saveBidsAndOffers() {
         this.setState((prevState, props) => ({
-            bids: OrderBookStore.getBids(),
+            bids: OrderBookStore.getBidsOnCurrentPage(),
             bidsPage: OrderBookStore.getBidsPage(),
             numBidsPages: OrderBookStore.getNumBidsPages(),
-            offers: OrderBookStore.getOffers(),
+            offers: OrderBookStore.getOffersOnCurrentPage(),
             offersPage: OrderBookStore.getOffersPage(),
             numOffersPages: OrderBookStore.getNumOffersPages(),
-            trades: OrderBookStore.getTrades(),
+            trades: OrderBookStore.getTradesOnCurrentPage(),
             tradesPage: OrderBookStore.getTradesPage(),
             numTradesPages: OrderBookStore.getNumTradesPages(),
         }))

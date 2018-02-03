@@ -16,7 +16,7 @@ class OrderBookStore extends EventEmitter {
         this.tradesPage = 0
     }
 
-    getBids() {
+    getBidsOnCurrentPage() {
         return this.sliceForPage(this.bids, this.bidsPage, this.pageSize)
     }
 
@@ -28,7 +28,7 @@ class OrderBookStore extends EventEmitter {
         return this.bidsPage
     }
 
-    getOffers() {
+    getOffersOnCurrentPage() {
         return this.sliceForPage(this.offers, this.offersPage, this.pageSize)
     }
 
@@ -40,7 +40,7 @@ class OrderBookStore extends EventEmitter {
         return this.offersPage
     }
 
-    getTrades() {
+    getTradesOnCurrentPage() {
         return this.sliceForPage(this.trades, this.tradesPage, this.pageSize)
     }
 
