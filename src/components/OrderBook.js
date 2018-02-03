@@ -77,7 +77,7 @@ export default class OrderBook extends React.Component {
 
                     <div className="col-lg-6">
                         <h3>Offers</h3>
-                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offers" orders={offers}
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
                                      pageSize={pageSize}/>
 
                         <div className="float-right">

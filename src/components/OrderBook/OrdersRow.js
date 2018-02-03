@@ -6,9 +6,9 @@ export default class OrdersTableRow extends React.Component {
 
         return (
             <tr key={order.id}>
-                <td>{order.ethAvailableVolumeBase}</td>
-                <td>{order.ethAvailableVolume}</td>
                 <td>{order.price}</td>
+                <td>{order.ethAvailableVolume}</td>
+                <td>{order.ethAvailableVolumeBase}</td>
             </tr>
         )
     }

@@ -17,9 +17,9 @@ export default class OrdersTable extends React.Component {
             <table className="table table-striped table-bordered">
                 <thead>
                 <tr>
-                    <th>Total ({base})</th>
-                    <th>Size ({token})</th>
                     <th>{orderTypeColName} ({base})</th>
+                    <th>Size ({token})</th>
+                    <th>Total ({base})</th>
                 </tr>
                 </thead>
                 <tbody>
