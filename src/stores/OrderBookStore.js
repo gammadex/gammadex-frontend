@@ -1,7 +1,6 @@
 import {EventEmitter} from "events"
 import * as OrderMerger from './util/OrderMerger'
 import * as TradesMerger from './util/TradesMerger'
-import * as MessageUtils from './util/MessageUtils'
 import _ from "lodash"
 
 import dispatcher from "../dispatcher"
@@ -32,8 +31,8 @@ class OrderBookStore extends EventEmitter {
         return this.bidsPage
     }
 
-    getFirstBidPriceOrNull() {
-        return this.getFirstPriceOrNull(this.bids)
+    getTwoLatestBidPrices() {
+        return this.getTwoLatestPricesOrNull(this.bids, 'updated', 'price')
     }
 
     getOffersOnCurrentPage() {
@@ -48,8 +47,8 @@ class OrderBookStore extends EventEmitter {
         return this.offersPage
     }
 
-    getFirstOfferPriceOrNull() {
-        return this.getFirstPriceOrNull(this.offers)
+    getTwoLatestOfferPrices() {
+        return this.getTwoLatestPricesOrNull(this.offers, 'updated', 'price')
     }
 
     getAllTradesSortedByDateAsc() {
@@ -68,12 +67,8 @@ class OrderBookStore extends EventEmitter {
         return this.tradesPage
     }
 
-    getFirstTradePriceOrNull() {
-        return this.getFirstPriceOrNull(this.trades)
-    }
-
-    getSecondTradePriceOrNull() {
-        return (this.trades.length > 1) ? this.trades[1].price : null
+    getTwoLatestTradePrices() {
+        return this.getTwoLatestPricesOrNull(this.trades, 'date', 'price')
     }
 
     sliceForPage(list, page, pageSize) {
@@ -83,8 +78,18 @@ class OrderBookStore extends EventEmitter {
         return list.slice((actualPage) * pageSize, (actualPage + 1) * pageSize)
     }
 
-    getFirstPriceOrNull(list) {
-        return (list.length > 0) ? list[0].price : null
+    getTwoLatestPricesOrNull(list, sortField, priceField) {
+        if (list.length > 1) {
+            const prices = _.reverse(
+                _.sortBy(list, e => {
+                    return e[sortField]
+                })
+            )
+
+            return [prices[1][priceField], prices[0][priceField]]
+        } else {
+            return null
+        }
     }
 
     emitChange() {

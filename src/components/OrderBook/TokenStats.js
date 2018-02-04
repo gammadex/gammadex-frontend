@@ -5,8 +5,8 @@ export default class TokenStats extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            last: null,
-            lastUp: null,
+            trade: null,
+            tradeUp: null,
             bid: null,
             bidUp: null,
             offer: null,
@@ -23,21 +23,31 @@ export default class TokenStats extends React.Component {
     // TODO - this is buggy as hell - needs a test written
     saveCurrentPrices() {
         this.setState(function (prevState, props) {
-            const last = OrderBookStore.getFirstTradePriceOrNull()
-            const prevLast = prevState.last ? prevState.last : OrderBookStore.getSecondTradePriceOrNull()
-            const lastUp = TokenStats.isUp(prevLast, last)
+            // TODO - maybe this logic should go in Store or a util called by store
+            let trade = null, tradeUp = null
+            const trades = OrderBookStore.getTwoLatestTradePrices()
+            if (trades) {
+                trade = trades[1]
+                tradeUp = TokenStats.isUp(trades[0], trades[1])
+            }
 
-            const bid = OrderBookStore.getFirstBidPriceOrNull()
-            const prevBid = prevState.bid ? prevState.bid : last
-            const bidUp = TokenStats.isUp(prevBid, bid)
+            let bid = null, bidUp = null
+            const bids = OrderBookStore.getTwoLatestBidPrices()
+            if (bids) {
+                bid = bids[1]
+                bidUp = TokenStats.isUp(bids[0], bids[1])
+            }
 
-            const offer = OrderBookStore.getFirstOfferPriceOrNull()
-            const prevOffer = prevState.offer ? prevState.offer : last
-            const offerUp = TokenStats.isUp(prevOffer, offer)
+            let offer = null, offerUp = null
+            const offers = OrderBookStore.getTwoLatestOfferPrices()
+            if (offers) {
+                offer = offers[1]
+                offerUp = TokenStats.isUp(offers[0], offers[1])
+            }
 
             return {
-                last: last,
-                lastUp: lastUp,
+                trade: trade,
+                tradeUp: tradeUp,
                 bid: bid,
                 bidUp: bidUp,
                 offer: offer,
@@ -62,37 +72,38 @@ export default class TokenStats extends React.Component {
 
     render() {
         const {token} = this.props
-        const {last, lastUp, bid, bidUp, offer, offerUp} = this.state
-        const lastTitleClass = this.getTitleClass(last, lastUp)
-        const lastPriceClass = this.getPriceClass(last, lastUp)
+        const {trade, tradeUp, bid, bidUp, offer, offerUp} = this.state
+        const tradeTitleClass = this.getTitleClass(trade, tradeUp)
+        const tradePriceClass = this.getPriceClass(trade, tradeUp)
         const bidTitleClass = this.getTitleClass(bid, bidUp)
         const bidPriceClass = this.getPriceClass(bid, bidUp)
         const offerTitleClass = this.getTitleClass(offer, offerUp)
         const offerPriceClass = this.getPriceClass(offer, offerUp)
 
-        return (
-            <div>
-                <h2>{token} / ETH</h2>
-                <div className="row">
-                    <div className="col-lg-1"><strong className={lastTitleClass}>Last</strong></div>
-                    <div className="col-lg-1">&nbsp;</div>
-                    <div className="col-lg-1"><strong className={lastPriceClass}></strong></div>
-                    <div className="col-lg-9">{last}</div>
+        if (trade && bid && offer) {
+            return (
+                <div>
+                    <h2>{token} / ETH</h2>
+                    <div className="row">
+                        <div className="col-lg-1"><strong className={tradeTitleClass}>Last</strong></div>
+                        <div className="col-lg-1"><strong className={tradePriceClass}></strong></div>
+                        <div className="col-lg-10">{trade}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-1"><strong className={bidTitleClass}>Bid</strong></div>
+                        <div className="col-lg-1"><strong className={bidPriceClass}></strong></div>
+                        <div className="col-lg-10">{bid}</div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-1"><strong className={offerTitleClass}>Offer</strong></div>
+                        <div className="col-lg-1"><strong className={offerPriceClass}></strong></div>
+                        <div className="col-lg-10">{offer}</div>
+                    </div>
                 </div>
-                <div className="row">
-                    <div className="col-lg-1"><strong className={bidTitleClass}>Bid</strong></div>
-                    <div className="col-lg-1">&nbsp;</div>
-                    <div className="col-lg-1"><strong className={bidPriceClass}></strong></div>
-                    <div className="col-lg-9">{bid}</div>
-                </div>
-                <div className="row">
-                    <div className="col-lg-1"><strong className={offerTitleClass}>Offer</strong></div>
-                    <div className="col-lg-1">&nbsp;</div>
-                    <div className="col-lg-1"><strong className={offerPriceClass}></strong></div>
-                    <div className="col-lg-9">{offer}</div>
-                </div>
-            </div>
-        )
+            )
+        } else {
+            return <div></div>
+        }
     }
 
     getTitleClass(val, up) {
@@ -106,10 +117,8 @@ export default class TokenStats extends React.Component {
     }
 
     getPriceClass(val, up) {
-        if (! val) {
-          return "p-l-5 "
-        } else if (up === null) {
-            return "p-l-5 "
+        if (! val || up === null) {
+          return ""
         } else if (up) {
             return "p-l-5 fas fa-arrow-circle-up price-up"
         } else {
