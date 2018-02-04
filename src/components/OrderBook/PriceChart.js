@@ -1,5 +1,5 @@
 import React from "react"
-import LineAndScatterChartGrid from './PriceChart/LineChartGrid'
+import LineChartGrid from './PriceChart/LineChartGrid'
 
 /*
 TODO - this is all pretty awful, really just the bones of an idea
@@ -27,7 +27,7 @@ export default class PriceChart extends React.Component {
         if (data.length > 3) {
             return (
                 <div className="debug">
-                    <LineAndScatterChartGrid data={data} width={300} height={100} type="svg" ratio={1} />
+                    <LineChartGrid data={data} width={300} height={100} type="svg" ratio={1}/>
                 </div>
             )
         } else {

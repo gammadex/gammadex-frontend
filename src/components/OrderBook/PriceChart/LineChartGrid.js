@@ -20,12 +20,18 @@ class LineChartGrid extends React.Component {
         this.state = {
             width: 400
         }
+
+        this.handleWindowResize = this.handleWindowResize.bind(this)
     }
 
     // TODO really nasty having to do this resizing
     componentDidMount() {
-        window.addEventListener("resize", this.handleWindowResize.bind(this))
+        window.addEventListener("resize", this.handleWindowResize)
         this.handleWindowResize()
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.handleWindowResize)
     }
 
     // TODO really nasty having to do this resizing
