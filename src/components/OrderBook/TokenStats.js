@@ -20,7 +20,14 @@ export default class TokenStats extends React.Component {
         OrderBookStore.on("change", this.saveCurrentPrices)
     }
 
-    // TODO - this is buggy as hell - needs a test written
+    /*
+     TODO - this is bollocks really.
+
+     Should really just go with difference to latest trade for bid / offer move direction indicator
+
+     Currently the latest bid or offer is diffed to the next older one and this may not be the same as the one at the
+     top of the order book
+      */
     saveCurrentPrices() {
         this.setState(function (prevState, props) {
             // TODO - maybe this logic should go in Store or a util called by store
