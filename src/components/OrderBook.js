@@ -2,8 +2,8 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import Pagination from '../components/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import TokenStats from '../components/TokenStats'
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
+import TokenStats from './OrderBook/TokenStats'
+import PriceChart from './OrderBook/PriceChart'
 
 import * as OrderBookActions from "../actions/OrderBookActions"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
@@ -22,6 +22,7 @@ export default class OrderBook extends React.Component {
             trades: [],
             tradesPage: 0,
             numTradesPages: 0,
+            allTrades: []
         }
 
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
@@ -42,6 +43,7 @@ export default class OrderBook extends React.Component {
             trades: OrderBookStore.getTradesOnCurrentPage(),
             tradesPage: OrderBookStore.getTradesPage(),
             numTradesPages: OrderBookStore.getNumTradesPages(),
+            allTrades: OrderBookStore.getAllTradesSortedByDateAsc(),
         }))
     }
 
@@ -59,14 +61,13 @@ export default class OrderBook extends React.Component {
 
     render() {
         const {token, pageSize} = this.props
-        const {bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages} = this.state
+        const {bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages, allTrades} = this.state
 
         return (
             <div>
                 <div className="row">
                     <div className="col-lg-8">
-                        <h3>Chart</h3>
-
+                        <PriceChart trades={allTrades} />
                     </div>
 
                     <div className="col-lg-4">

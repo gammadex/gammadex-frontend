@@ -1,5 +1,5 @@
 import React from "react"
-import OrderBookStore from '../stores/OrderBookStore'
+import OrderBookStore from '../../stores/OrderBookStore'
 
 export default class TokenStats extends React.Component {
     constructor(props) {
@@ -20,6 +20,7 @@ export default class TokenStats extends React.Component {
         OrderBookStore.on("change", this.saveCurrentPrices)
     }
 
+    // TODO - this is buggy as hell - needs a test written
     saveCurrentPrices() {
         this.setState(function (prevState, props) {
             const last = OrderBookStore.getFirstTradePriceOrNull()
@@ -74,18 +75,21 @@ export default class TokenStats extends React.Component {
                 <h2>{token} / ETH</h2>
                 <div className="row">
                     <div className="col-lg-1"><strong className={lastTitleClass}>Last</strong></div>
-                    <div className="col-lg-1"><strong className={lastPriceClass}> </strong></div>
-                    <div className="col-lg-10">{last} </div>
+                    <div className="col-lg-1">&nbsp;</div>
+                    <div className="col-lg-1"><strong className={lastPriceClass}></strong></div>
+                    <div className="col-lg-9">{last}</div>
                 </div>
                 <div className="row">
                     <div className="col-lg-1"><strong className={bidTitleClass}>Bid</strong></div>
+                    <div className="col-lg-1">&nbsp;</div>
                     <div className="col-lg-1"><strong className={bidPriceClass}></strong></div>
-                    <div className="col-lg-10">{bid}</div>
+                    <div className="col-lg-9">{bid}</div>
                 </div>
                 <div className="row">
                     <div className="col-lg-1"><strong className={offerTitleClass}>Offer</strong></div>
+                    <div className="col-lg-1">&nbsp;</div>
                     <div className="col-lg-1"><strong className={offerPriceClass}></strong></div>
-                    <div className="col-lg-10">{offer}</div>
+                    <div className="col-lg-9">{offer}</div>
                 </div>
             </div>
         )

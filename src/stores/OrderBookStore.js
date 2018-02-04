@@ -2,6 +2,7 @@ import {EventEmitter} from "events"
 import * as OrderMerger from './util/OrderMerger'
 import * as TradesMerger from './util/TradesMerger'
 import * as MessageUtils from './util/MessageUtils'
+import _ from "lodash"
 
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
@@ -49,6 +50,10 @@ class OrderBookStore extends EventEmitter {
 
     getFirstOfferPriceOrNull() {
         return this.getFirstPriceOrNull(this.offers)
+    }
+
+    getAllTradesSortedByDateAsc() {
+        return _.reverse(this.trades.slice()) // TODO _.reverse seems to sort in place?
     }
 
     getTradesOnCurrentPage() {
