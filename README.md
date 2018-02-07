@@ -58,7 +58,15 @@ System level workaround:
 
 * https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/API.md
 
+### Socket.IO
+
+* https://github.com/socketio/socket.io-client/blob/HEAD/docs/API.md#manager
+
 ## JS
 
 * http://exploringjs.com/es6/ch_destructuring.html
 
+### Potential NPM packages for charting:
+
+* https://www.npmjs.com/package/time-spans
+* https://www.npmjs.com/package/technicalindicators

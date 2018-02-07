@@ -1,32 +1,47 @@
 import dispatcher from "../dispatcher"
-import EtherDeltaWebSocket from "../EtherDeltaWebSocket"
+import EtherDeltaWebSocket from "../EtherDeltaSocket"
 import TokenStore from '../stores/TokenStore'
 import ActionNames from "./ActionNames"
 
 export function connect() {
-    const url = 'wss://socket02.etherdelta.com/socket.io/?transport=websocket'
+    const url = 'https://socket01.etherdelta.com'
 
     EtherDeltaWebSocket.init(
         url,
         {
-            onopen: (event) => {
+            /*
+             Quite a few more events supported:
+
+             https://github.com/socketio/socket.io-client/blob/HEAD/docs/API.md
+
+             'connect_timeout', 'reconnecting' and more... might be good for when showing websocket status
+             */
+
+            connect: (event) => {
                 dispatcher.dispatch({
                     type: ActionNames.WEB_SOCKET_OPENED,
                     event,
                 })
 
-                getMarket()
+                getMarket() // TODO - move me TF out of here
             },
-            onclose: (event) => {
+            disconnect: (reason) => {
                 dispatcher.dispatch({
                     type: ActionNames.WEB_SOCKET_CLOSED,
-                    event,
+                    reason,
                 })
             },
-            onerror: (event) => {
+            error: (event) => {
                 dispatcher.dispatch({
                     type: ActionNames.WEB_SOCKET_ERROR,
                     event,
+                })
+
+            },
+            connect_error: (error) => {
+                dispatcher.dispatch({
+                    type: ActionNames.WEB_SOCKET_CONNECT_ERROR,
+                    error,
                 })
             },
         }, {
