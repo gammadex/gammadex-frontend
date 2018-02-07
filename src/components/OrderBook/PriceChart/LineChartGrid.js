@@ -20,8 +20,6 @@ class LineChartGrid extends React.Component {
         this.state = {
             width: 400
         }
-
-        this.handleWindowResize = this.handleWindowResize.bind(this)
     }
 
     // TODO really nasty having to do this resizing
@@ -35,7 +33,7 @@ class LineChartGrid extends React.Component {
     }
 
     // TODO really nasty having to do this resizing
-    handleWindowResize() {
+    handleWindowResize = () => {
         let minWidth = 100
         const el = ReactDOM.findDOMNode(this)
         const w = el.parentNode.clientWidth

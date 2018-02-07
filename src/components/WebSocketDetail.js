@@ -10,14 +10,13 @@ export default class WebSocketDetail extends React.Component {
             connecting: false,
             connected: false
         }
-        this.saveConnectionState = this.saveConnectionState.bind(this)
     }
 
     componentWillMount() {
         WebSocketStore.on("change", this.saveConnectionState)
     }
 
-    saveConnectionState() {
+    saveConnectionState = () => {
         this.setState(WebSocketStore.getConnectionState())
     }
 

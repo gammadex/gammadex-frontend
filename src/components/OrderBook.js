@@ -24,15 +24,13 @@ export default class OrderBook extends React.Component {
             numTradesPages: 0,
             allTrades: []
         }
-
-        this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
     }
 
-    saveBidsAndOffers() {
+    saveBidsAndOffers = () => {
         this.setState((prevState, props) => ({
             bids: OrderBookStore.getBidsOnCurrentPage(),
             bidsPage: OrderBookStore.getBidsPage(),

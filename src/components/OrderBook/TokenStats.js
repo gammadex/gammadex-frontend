@@ -12,8 +12,6 @@ export default class TokenStats extends React.Component {
             offer: null,
             offerUp: null,
         }
-
-        this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
     }
 
     componentWillMount() {
@@ -28,7 +26,7 @@ export default class TokenStats extends React.Component {
      Currently the latest bid or offer is diffed to the next older one and this may not be the same as the one at the
      top of the order book
       */
-    saveCurrentPrices() {
+    saveCurrentPrices = () => {
         this.setState(function (prevState, props) {
             // TODO - maybe this logic should go in Store or a util called by store
             let trade = null, tradeUp = null
