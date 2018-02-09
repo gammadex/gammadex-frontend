@@ -11,17 +11,6 @@ export function convertDateToTimestamp(data) {
     })
 }
 
-export const TimePeriod = Object.freeze({
-    'mins_5': 5,
-    'mins_15': 15,
-    'mins_30': 30,
-    'hours_1': 60,
-    'hours_2': 120,
-    'hours_8': 480,
-    'days_1': 1440
-})
-
-// TODO - add time to result
 export function convert(data, periodMins) {
     if (data.length === 0) {
         return []
@@ -33,30 +22,24 @@ export function convert(data, periodMins) {
 
     return intervalStartAndEndTimePairs.map(startEndTime => {
         const [startTime, endTime] = startEndTime
-        const entries = _.filter(dataWithTimestamps, entry => {
+
+        const entriesInInterval = _.filter(dataWithTimestamps, entry => {
             return entry.date >= startTime && entry.date < endTime
         })
-        if (entries) {
-            const first = _.first(entries)
-            const last = _.last(entries)
 
-            const open = first.price
-            const close = last.price
-            const high = _.reduce(entries, (acc, e) => {
-                return Math.max(acc, e.price)
-            }, first.price)
-            const low = _.reduce(entries, (acc, e) => {
-                return Math.min(acc, e.price)
-            }, first.price)
-            const volume = _.reduce(entries, (acc, e) => {
-                return acc + e.amount
-            }, 0)
+        if (entriesInInterval) {
+            const prices = entriesInInterval.map(e => e.price)
+            const open = _.first(prices)
+            const close = _.last(prices)
+            const high = Math.max(...prices)
+            const low = Math.min(...prices)
+            const volume = _.sum(entriesInInterval.map(e => e.amount))
 
             return {
-                open, high, low, close, volume
+                open, high, low, close, volume, date: endTime
             }
         } else {
-            return {}
+            return {} // TODO - what is best for an empty interval?
         }
     })
 }
@@ -75,7 +58,7 @@ function getOhlcIntervals(data, periodMins) {
 }
 
 export function getMinAndMaxTimestamp(data, periodMins) {
-    const dates = data.map(d => new Date(d.date).getTime())
+    const dates = data.map(d => d.date)
 
     const min = roundForPeriod(_.first(dates), periodMins, 'down')
     const max = roundForPeriod(_.last(dates), periodMins, 'up')
