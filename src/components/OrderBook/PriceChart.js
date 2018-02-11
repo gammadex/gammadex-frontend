@@ -47,6 +47,7 @@ export default class PriceChart extends React.Component {
         if (width && height && trades && trades.length) {
             return (
                 <div>
+                    <h2>Chart</h2>
                     <OhlcAndVolumeChart trades={trades} size={[width, height]}/>
                 </div>
             )
