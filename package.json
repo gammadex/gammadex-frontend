@@ -10,7 +10,8 @@
     "react-scripts": "1.1.0",
     "react-select": "^1.2.1",
     "react-stockcharts": "^0.7.0-beta.23",
-    "socket.io-client": "^2.0.4"
+    "socket.io-client": "^2.0.4",
+    "web3": "^1.0.0-beta.29"
   },
   "scripts": {
     "start": "react-scripts start",
