@@ -58,6 +58,10 @@ System level workaround:
 
 * https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/API.md
 
+### EtherDelta Smart Contract on Ropsten
+
+* https://ropsten.etherscan.io/address/0x228344536a03c0910fb8be9c2755c1a0ba6f89e1
+
 ### Socket.IO
 
 * https://github.com/socketio/socket.io-client/blob/HEAD/docs/API.md#manager
@@ -75,3 +79,19 @@ System level workaround:
 
 * *Using D3 and React* https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
 * *TechchanJS* http://bl.ocks.org/andredumas/af8674d57980790137a0
+
+### ERC-20 Test Token:
+
+* https://github.com/uzyn/ERC20-TST
+
+#### To request TST tokens:
+
+* go to https://www.myetherwallet.com/#contracts
+* ensure you are connected to ropsten (infura.io works)
+* paste in the address and interface from the github
+* scroll down to read/write contract and select showMeTheMoney
+* set "_to" to your address
+* set "_value" to 10000000000000000000  (this is 10 tokens = 10 * power(10,18))
+* click write
+* go to metamask and export your private key then paste it into myetherwallet to unlock, hit send
+* this should give you 10 tokens

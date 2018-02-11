@@ -24,6 +24,10 @@ class Config {
         return _.filter(config.tokens, (tk) => tk.name === name)[0].address
     }
 
+    getTokenDecimals(name) {
+        return _.filter(config.tokens, (tk) => tk.name === name)[0].decimals
+    }
+
     getDefaultToken() {
         const name = config.defaultPair.token
         const address = this.getTokenAddress(name)
