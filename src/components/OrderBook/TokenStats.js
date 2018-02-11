@@ -91,18 +91,15 @@ export default class TokenStats extends React.Component {
                     <h2>{token} / ETH</h2>
                     <div className="row">
                         <div className="col-lg-1"><strong className={tradeTitleClass}>Last</strong></div>
-                        <div className="col-lg-1"><strong className={tradePriceClass}></strong></div>
-                        <div className="col-lg-10">{trade}</div>
+                        <div className="col-lg-11">{trade}</div>
                     </div>
                     <div className="row">
                         <div className="col-lg-1"><strong className={bidTitleClass}>Bid</strong></div>
-                        <div className="col-lg-1"><strong className={bidPriceClass}></strong></div>
-                        <div className="col-lg-10">{bid}</div>
+                        <div className="col-lg-11">{bid}</div>
                     </div>
                     <div className="row">
                         <div className="col-lg-1"><strong className={offerTitleClass}>Offer</strong></div>
-                        <div className="col-lg-1"><strong className={offerPriceClass}></strong></div>
-                        <div className="col-lg-10">{offer}</div>
+                        <div className="col-lg-11">{offer}</div>
                     </div>
                 </div>
             )

@@ -1,8 +1,8 @@
-import {convert, getMinAndMaxTimestamp, convertDateToTimestamp} from "../OhlcConverter"
+import {convertToOhlc, getMinAndMaxTimestamp, convertDateToTimestamp} from "../OhlcConverter"
 
 test("check empty data returns empty ohlc list", () => {
     const data = []
-    const ohlc = convert(data, 5)
+    const ohlc = convertToOhlc(data, 5)
 
     expect(ohlc).toEqual([])
 })
@@ -38,7 +38,7 @@ test("check two values in same window map to single ohlc with aggregate values s
         {date: "2018-02-08T20:02:09.000Z", price: 0.010, amount: 50},
     ]
 
-    const ohlc = convert(convertDateToTimestamp(data), 15)
+    const ohlc = convertToOhlc(convertDateToTimestamp(data), 15)
 
     expect(ohlc).toEqual([{
         open: 0.005,
@@ -46,6 +46,17 @@ test("check two values in same window map to single ohlc with aggregate values s
         low: 0.005,
         close: 0.010,
         volume: 110,
-        date: 1518120900000,
+        date: new Date(1518120900000),
     }])
+})
+
+test("check volume sums correctly even when amount is a string (bugfix)", () => {
+    const data = [
+        {date: "2018-02-08T20:02:08.000Z", price: 0.005, amount: '60'},
+        {date: "2018-02-08T20:02:09.000Z", price: 0.010, amount: '50'},
+    ]
+
+    const ohlc = convertToOhlc(convertDateToTimestamp(data), 15)
+
+    expect(ohlc[0].volume).toEqual(110)
 })

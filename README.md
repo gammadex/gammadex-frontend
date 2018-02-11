@@ -70,3 +70,8 @@ System level workaround:
 
 * https://www.npmjs.com/package/time-spans
 * https://www.npmjs.com/package/technicalindicators
+
+### D3 / Charting
+
+* *Using D3 and React* https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
+* *TechchanJS* http://bl.ocks.org/andredumas/af8674d57980790137a0

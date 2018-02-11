@@ -11,7 +11,7 @@ export function convertDateToTimestamp(data) {
     })
 }
 
-export function convert(data, periodMins) {
+export function convertToOhlc(data, periodMins) {
     if (data.length === 0) {
         return []
     }
@@ -33,10 +33,10 @@ export function convert(data, periodMins) {
             const close = _.last(prices)
             const high = Math.max(...prices)
             const low = Math.min(...prices)
-            const volume = _.sum(entriesInInterval.map(e => e.amount))
+            const volume = _.sum(entriesInInterval.map(e => parseFloat(e.amount)))
 
             return {
-                open, high, low, close, volume, date: endTime
+                open, high, low, close, volume, date: new Date(endTime)
             }
         } else {
             return {} // TODO - what is best for an empty interval?
