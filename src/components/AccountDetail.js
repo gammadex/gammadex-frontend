@@ -25,8 +25,7 @@ export default class AccountDetail extends React.Component {
             modalIsEth: false,
             modalIsDeposit: false
         }
-        this.toggle = this.toggle.bind(this)
-        this.toggleModal = this.toggleModal.bind(this)
+        this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
     }
 
@@ -36,7 +35,7 @@ export default class AccountDetail extends React.Component {
     }
 
     onInputChange(event) {
-        this.setState({ modalValue: event.target.value })
+        AccountActions.depositWithdrawAmountUpdated(event.target.value)
     }
 
     onTokenChange = () => {
@@ -67,23 +66,13 @@ export default class AccountDetail extends React.Component {
             .catch(error => console.log(`failed to refresh user account: ${error.message}`))
     }
 
-    toggleModal(isEth, isDeposit) {
-        this.setState({
-            modal: true,
-            modalValue: '',
-            modalIsEth: isEth,
-            modalIsDeposit: isDeposit
-        })
-    }
-
-    toggle() {
-        this.setState({
-            modal: !this.state.modal
-        })
+    hideModal() {
+        AccountActions.depositWithdrawCancel()
     }
 
     submit() {
-        this.toggle()
+        this.hideModal()
+
         const { token } = this.props
         const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
@@ -174,12 +163,11 @@ export default class AccountDetail extends React.Component {
                             exchangeBalanceEthWei={exchangeBalanceEthWei}
                             exchangeBalanceTokWei={exchangeBalanceTokWei}
                             ethTransaction={ethTransaction}
-                            tokTransaction={tokTransaction}
-                            toggleModal={this.toggleModal.bind(this)} />
+                            tokTransaction={tokTransaction} />
                     </div>
                 </div>
-                <Modal isOpen={modal} toggle={this.toggle} className={this.props.className}>
-                    <ModalHeader toggle={this.toggle}>{modalTitle}</ModalHeader>
+                <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
+                    <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>
                     <ModalBody>
                         <Input type="number" placeholder={modalToken} min={0} value={modalValue} onChange={this.onInputChange.bind(this)} />
                     </ModalBody>

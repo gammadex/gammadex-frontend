@@ -7,12 +7,16 @@ class AccountStore extends EventEmitter {
         super()
         this.account = null
         this.accountRetrieved = false,
-        this.walletBalanceEthWei = 0,
-        this.walletBalanceTokWei = 0,
-        this.exchangeBalanceEthWei = 0,
-        this.exchangeBalanceTokWei = 0,
-        this.ethTransaction = null,
-        this.tokTransaction = null
+            this.walletBalanceEthWei = 0,
+            this.walletBalanceTokWei = 0,
+            this.exchangeBalanceEthWei = 0,
+            this.exchangeBalanceTokWei = 0,
+            this.ethTransaction = null,
+            this.tokTransaction = null,
+            this.modal = false,
+            this.modalValue = '',
+            this.modalIsEth = false,
+            this.modalIsDeposit = false
     }
 
     getAccountState() {
@@ -24,7 +28,11 @@ class AccountStore extends EventEmitter {
             exchangeBalanceEthWei: this.exchangeBalanceEthWei,
             exchangeBalanceTokWei: this.exchangeBalanceTokWei,
             ethTransaction: this.ethTransaction,
-            tokTransaction: this.tokTransaction
+            tokTransaction: this.tokTransaction,
+            modal: this.modal,
+            modalValue: this.modalValue,
+            modalIsEth: this.modalIsEth,
+            modalIsDeposit: this.modalIsDeposit
         }
     }
 
@@ -48,6 +56,20 @@ class AccountStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.DEPOSIT_WITHDRAW: {
+                const { isEth, isDeposit } = action.depositWithdrawProps
+                this.modal = true
+                this.modalValue = ''
+                this.modalIsEth = isEth
+                this.modalIsDeposit = isDeposit
+                this.emitChange()
+                break
+            }
+            case ActionNames.DEPOSIT_WITHDRAW_CANCEL: {
+                this.modal = false
+                this.emitChange()
+                break
+            }
             case ActionNames.ETH_TRANSACTION: {
                 this.ethTransaction = action.tx
                 this.emitChange()
@@ -55,6 +77,11 @@ class AccountStore extends EventEmitter {
             }
             case ActionNames.TOK_TRANSACTION: {
                 this.tokTransaction = action.tx
+                this.emitChange()
+                break
+            }
+            case ActionNames.DEPOSIT_WITHDRAW_AMOUNT_UPDATED: {
+                this.modalValue = action.amount
                 this.emitChange()
                 break
             }

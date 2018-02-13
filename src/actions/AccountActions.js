@@ -28,3 +28,24 @@ export function tokTransaction(tx) {
         tx
     })
 }
+
+export function depositWithdraw(isEth, isDeposit) {
+    const depositWithdrawProps = {isEth, isDeposit}
+    dispatcher.dispatch({
+        type: ActionNames.DEPOSIT_WITHDRAW,
+        depositWithdrawProps
+    })
+}
+
+export function depositWithdrawCancel() {
+    dispatcher.dispatch({
+        type: ActionNames.DEPOSIT_WITHDRAW_CANCEL
+    })
+}
+
+export function depositWithdrawAmountUpdated(amount) {
+    dispatcher.dispatch({
+        type: ActionNames.DEPOSIT_WITHDRAW_AMOUNT_UPDATED,
+        amount
+    })
+}
