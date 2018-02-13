@@ -4,6 +4,9 @@ import * as Web3 from 'web3'
 let web3 = window.web3
 
 const ethAddress = "0x0000000000000000000000000000000000000000"
+const etherDeltaAddress = "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1"
+const gasLimit = 250000
+const gasPrice = 10 * 1000000000
 
 // https://ethereum.stackexchange.com/questions/11444/web3-js-with-promisified-api/24238#24238
 const promisify = (inner) =>
@@ -12,7 +15,7 @@ const promisify = (inner) =>
             if (err) { reject(err) }
             resolve(res)
         })
-    );
+    )
 
 class EtherDeltaWeb3 {
     constructor() {
@@ -32,7 +35,7 @@ class EtherDeltaWeb3 {
         }
 
         this.contractToken = web3.eth.contract(abiToken)
-        this.contractEtherDelta = web3.eth.contract(abiEtherDelta).at("0x228344536a03c0910fb8be9c2755c1a0ba6f89e1")
+        this.contractEtherDelta = web3.eth.contract(abiEtherDelta).at(etherDeltaAddress)
     }
 
     refreshAccount() {
@@ -53,6 +56,28 @@ class EtherDeltaWeb3 {
             promisify(cb => this.contractEtherDelta.balanceOf(ethAddress, account, cb)),
             promisify(cb => this.contractEtherDelta.balanceOf(tokenAddress, account, cb))
         ])
+    }
+
+    promiseDepositEther(amount) {
+        return promisify(cb => this.contractEtherDelta.deposit({ gas: gasLimit, gasPrice: gasPrice, value: amount }, cb))
+    }
+    
+    promiseWithdrawEther(amount) {
+        return promisify(cb => this.contractEtherDelta.withdraw(amount, { gas: gasLimit, gasPrice: gasPrice }, cb))
+    }
+    
+    promiseDepositToken(tokenAddress, amount) {
+        // deposit an ERC-20 token is two step:
+        // 1) call the token contract to approve the transfer to the destination address = ED
+        // 2) initiate the transfer in the ED smart contract
+        return Promise.all([
+            promisify(cb => this.contractToken.at(tokenAddress).approve(etherDeltaAddress, amount, { gas: gasLimit, gasPrice: gasPrice }, cb)),
+            promisify(cb => this.contractEtherDelta.depositToken(tokenAddress, amount, { gas: gasLimit, gasPrice: gasPrice }, cb))
+        ])
+    }
+    
+    promiseWithdrawToken(tokenAddress, amount) {
+        return promisify(cb => this.contractEtherDelta.withdrawToken(tokenAddress, amount, { gas: gasLimit, gasPrice: gasPrice }, cb))
     }
 }
 

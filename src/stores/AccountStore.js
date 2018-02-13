@@ -10,7 +10,9 @@ class AccountStore extends EventEmitter {
         this.walletBalanceEthWei = 0,
         this.walletBalanceTokWei = 0,
         this.exchangeBalanceEthWei = 0,
-        this.exchangeBalanceTokWei = 0
+        this.exchangeBalanceTokWei = 0,
+        this.ethTransaction = null,
+        this.tokTransaction = null
     }
 
     getAccountState() {
@@ -20,7 +22,9 @@ class AccountStore extends EventEmitter {
             walletBalanceEthWei: this.walletBalanceEthWei,
             walletBalanceTokWei: this.walletBalanceTokWei,
             exchangeBalanceEthWei: this.exchangeBalanceEthWei,
-            exchangeBalanceTokWei: this.exchangeBalanceTokWei
+            exchangeBalanceTokWei: this.exchangeBalanceTokWei,
+            ethTransaction: this.ethTransaction,
+            tokTransaction: this.tokTransaction
         }
     }
 
@@ -43,7 +47,17 @@ class AccountStore extends EventEmitter {
                 this.exchangeBalanceTokWei = action.balance[3]
                 this.emitChange()
                 break
-            }            
+            }
+            case ActionNames.ETH_TRANSACTION: {
+                this.ethTransaction = action.tx
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOK_TRANSACTION: {
+                this.tokTransaction = action.tx
+                this.emitChange()
+                break
+            }
         }
     }
 }

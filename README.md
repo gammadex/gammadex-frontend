@@ -40,6 +40,10 @@ System level workaround:
 * https://reactstrap.github.io/components
 * https://github.com/rrag/react-stockcharts
 
+### Why reactstrap ^5.0.0-beta?
+
+* https://github.com/reactstrap/reactstrap/issues/659
+
 ### React Testing
 
 * *Running tests* https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests

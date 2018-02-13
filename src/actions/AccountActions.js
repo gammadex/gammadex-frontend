@@ -14,3 +14,17 @@ export function balanceRetrieved(balance) {
         balance
     })
 }
+
+export function ethTransaction(tx) {
+    dispatcher.dispatch({
+        type: ActionNames.ETH_TRANSACTION,
+        tx
+    })
+}
+
+export function tokTransaction(tx) {
+    dispatcher.dispatch({
+        type: ActionNames.TOK_TRANSACTION,
+        tx
+    })
+}
