@@ -1,6 +1,13 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
+export function accountTypeResolved(accountType) {
+    dispatcher.dispatch({
+        type: ActionNames.ACCOUNT_TYPE_RESOLVED,
+        accountType
+    })
+}
+
 export function accountRetrieved(account) {
     dispatcher.dispatch({
         type: ActionNames.ACCOUNT_RETRIEVED,
@@ -12,6 +19,12 @@ export function balanceRetrieved(balance) {
     dispatcher.dispatch({
         type: ActionNames.BALANCE_RETRIEVED,
         balance
+    })
+}
+
+export function balanceRetrievalFailed() {
+    dispatcher.dispatch({
+        type: ActionNames.BALANCE_RETRIEVAL_FAILED
     })
 }
 

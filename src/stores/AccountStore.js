@@ -5,22 +5,24 @@ import ActionNames from "../actions/ActionNames"
 class AccountStore extends EventEmitter {
     constructor() {
         super()
+        this.isMetaMask = false
         this.account = null
-        this.accountRetrieved = false,
-            this.walletBalanceEthWei = 0,
-            this.walletBalanceTokWei = 0,
-            this.exchangeBalanceEthWei = 0,
-            this.exchangeBalanceTokWei = 0,
-            this.ethTransaction = null,
-            this.tokTransaction = null,
-            this.modal = false,
-            this.modalValue = '',
-            this.modalIsEth = false,
-            this.modalIsDeposit = false
+        this.accountRetrieved = false
+        this.walletBalanceEthWei = 0
+        this.walletBalanceTokWei = 0
+        this.exchangeBalanceEthWei = 0
+        this.exchangeBalanceTokWei = 0
+        this.ethTransaction = null
+        this.tokTransaction = null
+        this.modal = false
+        this.modalValue = ''
+        this.modalIsEth = false
+        this.modalIsDeposit = false
     }
 
     getAccountState() {
         return {
+            isMetaMask: this.isMetaMask,
             account: this.account,
             accountRetrieved: this.accountRetrieved,
             walletBalanceEthWei: this.walletBalanceEthWei,
@@ -42,6 +44,11 @@ class AccountStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
+            case ActionNames.ACCOUNT_TYPE_RESOLVED: {
+                this.isMetaMask = action.accountType
+                this.emitChange()
+                break
+            }
             case ActionNames.ACCOUNT_RETRIEVED: {
                 this.account = action.account
                 this.accountRetrieved = true
@@ -53,6 +60,14 @@ class AccountStore extends EventEmitter {
                 this.walletBalanceTokWei = action.balance[1]
                 this.exchangeBalanceEthWei = action.balance[2]
                 this.exchangeBalanceTokWei = action.balance[3]
+                this.emitChange()
+                break
+            }
+            case ActionNames.BALANCE_RETRIEVAL_FAILED: {
+                this.walletBalanceEthWei = 0
+                this.walletBalanceTokWei = 0
+                this.exchangeBalanceEthWei = 0
+                this.exchangeBalanceTokWei = 0
                 this.emitChange()
                 break
             }

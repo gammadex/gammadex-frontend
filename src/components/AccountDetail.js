@@ -4,7 +4,7 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
-import { Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
 import * as AccountActions from "../actions/AccountActions"
 
@@ -57,10 +57,14 @@ export default class AccountDetail extends React.Component {
     refreshEthAndTokBalance(account, tokenAddress) {
         EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
             .then(balance => AccountActions.balanceRetrieved(balance))
-            .catch(error => console.log(`failed to refresh balances: ${error.message}`))
+            .catch(error => {
+                console.log(`failed to refresh balances: ${error.message}`)
+                AccountActions.balanceRetrievalFailed()
+            })
     }
 
     componentDidMount() {
+        AccountActions.accountTypeResolved(EtherDeltaWeb3.getIsMetaMask())
         EtherDeltaWeb3.refreshAccount()
             .then(account => AccountActions.accountRetrieved(account))
             .catch(error => console.log(`failed to refresh user account: ${error.message}`))
@@ -82,13 +86,13 @@ export default class AccountDetail extends React.Component {
 
         if (modalIsDeposit) {
             if (modalIsEth) {
-                this.depositEth(Number(modalValue) * Math.pow(10,18))
+                this.depositEth(Number(modalValue) * Math.pow(10, 18))
             } else {
                 this.depositTok(token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
             }
         } else {
             if (modalIsEth) {
-                this.withdrawEth(Number(modalValue) * Math.pow(10,18))
+                this.withdrawEth(Number(modalValue) * Math.pow(10, 18))
             } else {
                 this.withdrawTok(token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
             }
@@ -96,33 +100,62 @@ export default class AccountDetail extends React.Component {
     }
 
     depositEth(amount) {
-        EtherDeltaWeb3.promiseDepositEther(amount)
-            .then(tx => AccountActions.ethTransaction(tx))
-            .catch(error => console.log(`failed to deposit ether: ${error.message}`))
+        const { account, accountRetrieved } = this.state
+        if (accountRetrieved) {
+            EtherDeltaWeb3.promiseDepositEther(account, amount)
+                .once('transactionHash', hash => { AccountActions.ethTransaction(hash) })
+                .on('error', error => { console.log(`failed to deposit ether: ${error.message}`) })
+                .then(receipt => {
+                    // will be fired once the receipt is mined
+                    this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+                })
+        }
     }
 
     withdrawEth(amount) {
-        EtherDeltaWeb3.promiseWithdrawEther(amount)
-            .then(tx => AccountActions.ethTransaction(tx))
-            .catch(error => console.log(`failed to withdraw ether: ${error.message}`))
+        const { account, accountRetrieved } = this.state
+        if (accountRetrieved) {
+            EtherDeltaWeb3.promiseWithdrawEther(account, amount)
+                .once('transactionHash', hash => { AccountActions.ethTransaction(hash) })
+                .on('error', error => { console.log(`failed to withdraw ether: ${error.message}`) })
+                .then(receipt => {
+                    this.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
+                })
+        }
     }
 
     depositTok(tokenAddress, amount) {
-        EtherDeltaWeb3.promiseDepositToken(tokenAddress, amount)
-            .then(tx => AccountActions.tokTransaction(tx[1]))
-            .catch(error => console.log(`failed to deposit token: ${error.message}`))
+        // depositing an ERC-20 token is two-step:
+        // 1) call the token contract to approve the transfer to the destination address = ED
+        // 2) initiate the transfer in the ED smart contract
+        const { account, accountRetrieved } = this.state
+        if (accountRetrieved) {
+            EtherDeltaWeb3.promiseDepositToken(account, tokenAddress, amount)
+                .once('transactionHash', hash => { AccountActions.tokTransaction(hash) })
+                .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
+                .then(receipt => {
+                    this.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
+                })
+        }
     }
 
     withdrawTok(tokenAddress, amount) {
-        EtherDeltaWeb3.promiseWithdrawToken(tokenAddress, amount)
-            .then(tx => AccountActions.tokTransaction(tx))
-            .catch(error => console.log(`failed to deposit token: ${error.message}`))
+        const { account, accountRetrieved } = this.state
+        if (accountRetrieved) {
+            EtherDeltaWeb3.promiseWithdrawToken(account, tokenAddress, amount)
+                .once('transactionHash', hash => { AccountActions.tokTransaction(hash) })
+                .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
+                .then(receipt => {
+                    this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+                })
+        }
     }
 
     render() {
         const { token } = this.props
         const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
+            isMetaMask,
             account,
             accountRetrieved,
             walletBalanceEthWei,
@@ -140,6 +173,7 @@ export default class AccountDetail extends React.Component {
         const modalTitle = (modalIsDeposit ? `Deposit ${modalToken} to Exchange` : `Withdraw ${modalToken} from Exchange`)
         const modalActionLabel = (modalIsDeposit ? "Deposit" : "Withdraw")
 
+        const accountType = (isMetaMask ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
             accountLink = <a href={`https://ropsten.etherscan.io/address/${account}`}>{account}</a>
@@ -150,7 +184,7 @@ export default class AccountDetail extends React.Component {
                 <h2>Balances</h2>
                 <div className="row">
                     <div className="col-lg-12">
-                        Account: {accountLink}
+                        Account: {accountLink} <Badge color="secondary">{accountType}</Badge>
                     </div>
                     <div className="col-lg-12">
                         <AccountTable
