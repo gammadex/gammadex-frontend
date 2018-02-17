@@ -28,8 +28,6 @@ export function convertToOhlc(data, periodMins) {
         })
 
         if (entriesInInterval.length > 0) {
-            console.log("woot", entriesInInterval.length)
-
             const prices = entriesInInterval.map(e => e.price)
             const open = _.first(prices)
             const close = _.last(prices)
@@ -58,7 +56,8 @@ export function convertToOhlc(data, periodMins) {
                 low: prev.close,
                 close: prev.close,
                 volume: 0,
-                date: curr.date
+                date: curr.date,
+                filledForward: true
             })
 
             return acc

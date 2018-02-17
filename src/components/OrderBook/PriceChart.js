@@ -1,6 +1,8 @@
 import React from "react"
 import ReactDOM from 'react-dom'
 import OhlcAndVolumeChart from './PriceChart/OhlcAndVolumeChart'
+//import trades from '../../__test-data__/AmbTrades'
+//import trades from '../../__test-data__/VenTrades'
 
 /**
  * This class handles resizing - TODO maybe rename
@@ -25,7 +27,7 @@ export default class PriceChart extends React.Component {
 
     handleWindowResize = () => {
         let minWidth = 100
-        let heightRatio = 0.5
+        let heightRatio = 0.3
 
         const el = ReactDOM.findDOMNode(this)
         if (el) {
@@ -58,4 +60,3 @@ export default class PriceChart extends React.Component {
         }
     }
 }
-

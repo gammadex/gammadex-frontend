@@ -64,15 +64,8 @@ export default class OrderBook extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-lg-8">
+                    <div className="col-lg-12">
                         <PriceChart trades={allTrades} />
-                    </div>
-
-                    <div className="col-lg-1">&nbsp;
-                    </div>
-
-                    <div className="col-lg-3">
-                        <TokenStats token={token.name} bids={bids} offers={offers} trades={trades} />
                     </div>
                 </div>
 
