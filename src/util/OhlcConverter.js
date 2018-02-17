@@ -20,14 +20,16 @@ export function convertToOhlc(data, periodMins) {
 
     const intervalStartAndEndTimePairs = getOhlcIntervals(dataWithTimestamps, periodMins)
 
-    return intervalStartAndEndTimePairs.map(startEndTime => {
+    const ohlc = intervalStartAndEndTimePairs.map(startEndTime => {
         const [startTime, endTime] = startEndTime
 
         const entriesInInterval = _.filter(dataWithTimestamps, entry => {
             return entry.date >= startTime && entry.date < endTime
         })
 
-        if (entriesInInterval) {
+        if (entriesInInterval.length > 0) {
+            console.log("woot", entriesInInterval.length)
+
             const prices = entriesInInterval.map(e => e.price)
             const open = _.first(prices)
             const close = _.last(prices)
@@ -39,9 +41,35 @@ export function convertToOhlc(data, periodMins) {
                 open, high, low, close, volume, date: new Date(endTime)
             }
         } else {
-            return {} // TODO - what is best for an empty interval?
+            return {
+                volume: 0,
+                date: new Date(endTime)
+            }
         }
     })
+
+    return _.reduce(ohlc, (acc, curr) => {
+        const [forwardFilledOhlcs, prev] = acc
+
+        if (curr.volume === 0) {
+            forwardFilledOhlcs.push({
+                open: prev.close,
+                high: prev.close,
+                low: prev.close,
+                close: prev.close,
+                volume: 0,
+                date: curr.date
+            })
+
+            return acc
+        } else {
+            forwardFilledOhlcs.push(curr)
+            acc[1] = curr
+
+            return acc
+        }
+
+    }, [[], ohlc[0]])[0]
 }
 
 

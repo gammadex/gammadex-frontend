@@ -60,3 +60,35 @@ test("check volume sums correctly even when amount is a string (bugfix)", () => 
 
     expect(ohlc[0].volume).toEqual(110)
 })
+
+test("check fill forward", () => {
+    const data = [
+        {date: "2018-02-08T20:02:08.000Z", price: 0.006, amount: '60'},
+        {date: "2018-02-08T21:02:08.000Z", price: 0.008, amount: '80'},
+    ]
+
+    const ohlc = convertToOhlc(convertDateToTimestamp(data), 30)
+
+    expect(ohlc).toEqual([{
+        open: 0.006,
+        high: 0.006,
+        low: 0.006,
+        close: 0.006,
+        volume: 60,
+        date: new Date('2018-02-08T20:30:00.000Z')
+    }, {
+        open: 0.006,
+        high: 0.006,
+        low: 0.006,
+        close: 0.006,
+        volume: 0,
+        date: new Date('2018-02-08T21:00:00.000Z')
+    }, {
+        open: 0.008,
+        high: 0.008,
+        low: 0.008,
+        close: 0.008,
+        volume: 80,
+        date: new Date('2018-02-08T21:30:00.000Z')
+    }])
+})
