@@ -2,7 +2,7 @@ import React from "react"
 import ReactDOM from 'react-dom'
 import OhlcAndVolumeChart from './PriceChart/OhlcAndVolumeChart'
 //import trades from '../../__test-data__/AmbTrades'
-import trades from '../../__test-data__/VenTrades'
+//import trades from '../../__test-data__/VenTrades'
 
 /**
  * This class handles resizing - TODO maybe rename
@@ -43,7 +43,7 @@ export default class PriceChart extends React.Component {
     }
 
     render() {
-        //const {trades} = this.props
+        const {trades} = this.props
         const {width, height} = this.state
 
         if (width && height && trades && trades.length) {
