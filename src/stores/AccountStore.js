@@ -8,6 +8,7 @@ class AccountStore extends EventEmitter {
         this.isMetaMask = false
         this.account = null
         this.accountRetrieved = false
+        this.nonce = 0
         this.walletBalanceEthWei = 0
         this.walletBalanceTokWei = 0
         this.exchangeBalanceEthWei = 0
@@ -25,6 +26,7 @@ class AccountStore extends EventEmitter {
             isMetaMask: this.isMetaMask,
             account: this.account,
             accountRetrieved: this.accountRetrieved,
+            nonce: this.nonce,
             walletBalanceEthWei: this.walletBalanceEthWei,
             walletBalanceTokWei: this.walletBalanceTokWei,
             exchangeBalanceEthWei: this.exchangeBalanceEthWei,
@@ -50,7 +52,8 @@ class AccountStore extends EventEmitter {
                 break
             }
             case ActionNames.ACCOUNT_RETRIEVED: {
-                this.account = action.account
+                this.account = action.addressNonce.address
+                this.nonce = action.addressNonce.nonce
                 this.accountRetrieved = true
                 this.emitChange()
                 break

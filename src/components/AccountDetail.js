@@ -14,6 +14,7 @@ export default class AccountDetail extends React.Component {
         this.state = {
             account: null,
             accountRetrieved: false,
+            nonce: 0,
             walletBalanceEthWei: 0,
             walletBalanceTokWei: 0,
             exchangeBalanceEthWei: 0,
@@ -57,10 +58,7 @@ export default class AccountDetail extends React.Component {
     refreshEthAndTokBalance(account, tokenAddress) {
         EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
             .then(balance => AccountActions.balanceRetrieved(balance))
-            .catch(error => {
-                console.log(`failed to refresh balances: ${error.message}`)
-                AccountActions.balanceRetrievalFailed()
-            })
+            .catch(error => AccountActions.balanceRetrievalFailed())
     }
 
     componentDidMount() {
@@ -100,9 +98,9 @@ export default class AccountDetail extends React.Component {
     }
 
     depositEth(amount) {
-        const { account, accountRetrieved } = this.state
+        const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
-            EtherDeltaWeb3.promiseDepositEther(account, amount)
+            EtherDeltaWeb3.promiseDepositEther(account, nonce, amount)
                 .once('transactionHash', hash => { AccountActions.ethTransaction(hash) })
                 .on('error', error => { console.log(`failed to deposit ether: ${error.message}`) })
                 .then(receipt => {

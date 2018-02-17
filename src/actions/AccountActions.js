@@ -8,10 +8,10 @@ export function accountTypeResolved(accountType) {
     })
 }
 
-export function accountRetrieved(account) {
+export function accountRetrieved(addressNonce) {
     dispatcher.dispatch({
         type: ActionNames.ACCOUNT_RETRIEVED,
-        account
+        addressNonce
     })
 }
 

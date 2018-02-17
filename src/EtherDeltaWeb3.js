@@ -43,13 +43,17 @@ class EtherDeltaWeb3 {
             return this.web3.eth.getAccounts()
                 .then(accounts => {
                     if (accounts.length > 0) {
-                        return accounts[0]
+                        // MetaMask tracks the nonce itself
+                        return { address: accounts[0], nonce: 0 }
                     } else {
                         throw new Error("no addresses found")
                     }
                 })
         } else {
-            return Promise.resolve(walletAddress)
+            return this.web3.eth.getTransactionCount(walletAddress)
+                .then(nonce => {
+                    return { address: walletAddress, nonce: nonce }
+                })
         }
     }
 
@@ -67,26 +71,23 @@ class EtherDeltaWeb3 {
         return this.contractToken.methods.balanceOf(account).call()
     }
 
-    promiseDepositEther(account, amount) {
+    promiseDepositEther(account, nonce, amount) {
         if (this.isMetaMask) {
             return this.contractEtherDelta.methods.deposit()
                 .send({ from: account, gas: gasLimit, gasPrice: gasPrice, value: amount })
         } else {
-            return this.web3.eth.getTransactionCount(account)
-                .then(nonce => {
-                    const rawTx = {
-                        nonce: this.web3.utils.numberToHex(nonce),
-                        gasPrice: this.web3.utils.numberToHex(gasPrice),
-                        gasLimit: this.web3.utils.numberToHex(gasLimit),
-                        to: etherDeltaAddress,
-                        value: this.web3.utils.numberToHex(amount),
-                        data: this.contractEtherDelta.methods.deposit().encodeABI()
-                    }
-                    let tx = new Tx(rawTx);
-                    const privateKey = new Buffer(walletPrivateKey, 'hex')
-                    tx.sign(privateKey);
-                    return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
-                })
+            const rawTx = {
+                nonce: this.web3.utils.numberToHex(nonce),
+                gasPrice: this.web3.utils.numberToHex(gasPrice),
+                gasLimit: this.web3.utils.numberToHex(gasLimit),
+                to: etherDeltaAddress,
+                value: this.web3.utils.numberToHex(amount),
+                data: this.contractEtherDelta.methods.deposit().encodeABI()
+            }
+            let tx = new Tx(rawTx);
+            const privateKey = new Buffer(walletPrivateKey, 'hex')
+            tx.sign(privateKey);
+            return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
         }
     }
 
