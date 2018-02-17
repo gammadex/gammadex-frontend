@@ -111,9 +111,9 @@ export default class AccountDetail extends React.Component {
     }
 
     withdrawEth(amount) {
-        const { account, accountRetrieved } = this.state
+        const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
-            EtherDeltaWeb3.promiseWithdrawEther(account, amount)
+            EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount)
                 .once('transactionHash', hash => { AccountActions.ethTransaction(hash) })
                 .on('error', error => { console.log(`failed to withdraw ether: ${error.message}`) })
                 .then(receipt => {
@@ -126,9 +126,9 @@ export default class AccountDetail extends React.Component {
         // depositing an ERC-20 token is two-step:
         // 1) call the token contract to approve the transfer to the destination address = ED
         // 2) initiate the transfer in the ED smart contract
-        const { account, accountRetrieved } = this.state
+        const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
-            EtherDeltaWeb3.promiseDepositToken(account, tokenAddress, amount)
+            EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount)
                 .once('transactionHash', hash => { AccountActions.tokTransaction(hash) })
                 .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
                 .then(receipt => {
@@ -138,9 +138,9 @@ export default class AccountDetail extends React.Component {
     }
 
     withdrawTok(tokenAddress, amount) {
-        const { account, accountRetrieved } = this.state
+        const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
-            EtherDeltaWeb3.promiseWithdrawToken(account, tokenAddress, amount)
+            EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount)
                 .once('transactionHash', hash => { AccountActions.tokTransaction(hash) })
                 .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
                 .then(receipt => {

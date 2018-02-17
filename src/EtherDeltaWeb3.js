@@ -71,47 +71,77 @@ class EtherDeltaWeb3 {
         return this.contractToken.methods.balanceOf(account).call()
     }
 
+    promiseSendRawTransaction(nonce, txTo, txValue, txData) {
+        const rawTx = {
+            nonce: this.web3.utils.numberToHex(nonce),
+            gasPrice: this.web3.utils.numberToHex(gasPrice),
+            gasLimit: this.web3.utils.numberToHex(gasLimit),
+            to: txTo,
+            value: txValue,
+            data: txData
+        }
+        let tx = new Tx(rawTx);
+        const privateKey = new Buffer(walletPrivateKey, 'hex')
+        tx.sign(privateKey);
+        return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
+    }
+
     promiseDepositEther(account, nonce, amount) {
         if (this.isMetaMask) {
             return this.contractEtherDelta.methods.deposit()
                 .send({ from: account, gas: gasLimit, gasPrice: gasPrice, value: amount })
         } else {
-            const rawTx = {
-                nonce: this.web3.utils.numberToHex(nonce),
-                gasPrice: this.web3.utils.numberToHex(gasPrice),
-                gasLimit: this.web3.utils.numberToHex(gasLimit),
-                to: etherDeltaAddress,
-                value: this.web3.utils.numberToHex(amount),
-                data: this.contractEtherDelta.methods.deposit().encodeABI()
-            }
-            let tx = new Tx(rawTx);
-            const privateKey = new Buffer(walletPrivateKey, 'hex')
-            tx.sign(privateKey);
-            return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
+            return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+                this.web3.utils.numberToHex(amount),
+                this.contractEtherDelta.methods.deposit().encodeABI())
         }
     }
 
-    promiseWithdrawEther(account, amount) {
-        return this.contractEtherDelta.methods.withdraw(amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+    promiseWithdrawEther(account, nonce, amount) {
+        if (this.isMetaMask) {
+            return this.contractEtherDelta.methods.withdraw(amount)
+                .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+        } else {
+            return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+                this.web3.utils.numberToHex(0),
+                this.contractEtherDelta.methods.withdraw(amount).encodeABI())
+        }
     }
 
-    promiseTokenApprove(account, tokenAddress, amount) {
+    promiseTokenApprove(account, nonce, tokenAddress, amount) {
         this.contractToken.options.address = tokenAddress
-        return this.contractToken.methods.approve(etherDeltaAddress, amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+        if (this.isMetaMask) {
+            return this.contractToken.methods.approve(etherDeltaAddress, amount)
+                .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+        } else {
+            return this.promiseSendRawTransaction(nonce, tokenAddress,
+                this.web3.utils.numberToHex(0),
+                this.contractToken.methods.approve(etherDeltaAddress, amount).encodeABI())
+        }
     }
 
-    promiseDepositToken(account, tokenAddress, amount) {
-        this.promiseTokenApprove(account, tokenAddress, amount)
+    promiseDepositToken(account, nonce, tokenAddress, amount) {
+        this.promiseTokenApprove(account, nonce, tokenAddress, amount)
             .on('error', error => { console.log(`failed to approve token deposit: ${error.message}`) })
-        return this.contractEtherDelta.methods.depositToken(tokenAddress, amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+        if (this.isMetaMask) {
+            return this.contractEtherDelta.methods.depositToken(tokenAddress, amount)
+                .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+        } else {
+            return this.promiseSendRawTransaction(nonce + 1, etherDeltaAddress,
+                this.web3.utils.numberToHex(0),
+                this.contractEtherDelta.methods.depositToken(tokenAddress, amount).encodeABI())
+        }
     }
 
-    promiseWithdrawToken(account, tokenAddress, amount) {
-        return this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+    promiseWithdrawToken(account, nonce, tokenAddress, amount) {
+        if (this.isMetaMask) {
+            return this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount)
+                .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+        } else {
+            return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+                this.web3.utils.numberToHex(0),
+                this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount).encodeABI())
+        }
     }
 }
 
