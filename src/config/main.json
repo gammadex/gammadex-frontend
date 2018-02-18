@@ -686,5 +686,5 @@
     { "address": "0xce53a179047ebed80261689367c093c90a94cc08", "name": "EDT", "decimals": 8 },
     { "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180", "name": "TST", "decimals": 18 }
   ],
-  "defaultPair": { "token": "VEN", "base": "ETH" }
+  "defaultPair": { "token": "TST", "base": "ETH" }
 }

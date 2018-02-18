@@ -99,3 +99,8 @@ System level workaround:
 * click write
 * go to metamask and export your private key then paste it into myetherwallet to unlock, hit send
 * this should give you 10 tokens
+
+### Ledger Nano
+
+* https://github.com/Neufund/ledger-wallet-provider
+* https://github.com/LedgerHQ/ledgerjs/blob/master/docs/ethereum_ledger_integration.md

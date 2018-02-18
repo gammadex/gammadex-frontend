@@ -2,7 +2,15 @@ import abiEtherDelta from './config/etherdelta.json'
 import abiToken from './config/token.json'
 import * as Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
-//const Tx = require('ethereumjs-tx')
+
+import createLedgerSubprovider from "./hacks/LedgerWeb3SubProvider"
+import TransportU2F from "@ledgerhq/hw-transport-u2f";
+import ProviderEngine from "web3-provider-engine";
+import RpcSubprovider from "web3-provider-engine/subproviders/rpc";
+import FetchSubprovider from "web3-provider-engine/subproviders/fetch"
+
+import FilterSubprovider from "web3-provider-engine/subproviders/filters"
+
 let web3 = window.web3
 const ethAddress = "0x0000000000000000000000000000000000000000"
 const etherDeltaAddress = "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1"
@@ -12,11 +20,31 @@ const gasPrice = 10 * 1000000000
 // non-MetaMask
 const walletAddress = "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376"
 const walletPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
+const useLedger = false
 
 class EtherDeltaWeb3 {
     constructor() {
         // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-        if (typeof web3 !== "undefined") {
+
+        if (useLedger) {
+            const engine = new ProviderEngine()
+            const getTransport = () => TransportU2F.create();
+            // We need our own version of createLedgerSubprovider since the Ledger provided one has a bug with
+            // address lookup when using web3 1.0.x - TODO - file a bug report - WR
+            const ledger = createLedgerSubprovider(getTransport, {
+                networkId: 3,
+                accountsLength: 5
+            });
+            engine.addProvider(ledger);
+            engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ropsten.infura.io'}));
+            engine.start();
+
+            // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
+            const engineWithNoEventEmitting = Object.assign(engine, {on: false});
+            this.web3 = new Web3(engineWithNoEventEmitting);
+            this.isMetaMask = true
+            this.accountProvider = new MetaMaskAccountProvider(this.web3)
+        } else if (typeof web3 !== "undefined") {
             // Use Mist/MetaMask's provider
             // TODO check whether current metamask is locked
             console.log("MetaMask enabled")
