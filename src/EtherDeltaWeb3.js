@@ -7,9 +7,6 @@ import createLedgerSubprovider from "./hacks/LedgerWeb3SubProvider"
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import ProviderEngine from "web3-provider-engine";
 import RpcSubprovider from "web3-provider-engine/subproviders/rpc";
-import FetchSubprovider from "web3-provider-engine/subproviders/fetch"
-
-import FilterSubprovider from "web3-provider-engine/subproviders/filters"
 
 let web3 = window.web3
 const ethAddress = "0x0000000000000000000000000000000000000000"
