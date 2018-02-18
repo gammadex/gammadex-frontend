@@ -37,6 +37,7 @@ class EtherDeltaWeb3 {
             engine.start();
 
             // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
+            // https://github.com/ethereum/web3.js/issues/951
             const engineWithNoEventEmitting = Object.assign(engine, {on: false});
             this.web3 = new Web3(engineWithNoEventEmitting);
             this.isMetaMask = true
