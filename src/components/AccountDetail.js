@@ -101,7 +101,10 @@ export default class AccountDetail extends React.Component {
         const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
             EtherDeltaWeb3.promiseDepositEther(account, nonce, amount)
-                .once('transactionHash', hash => { AccountActions.ethTransaction(hash) })
+                .once('transactionHash', hash => {
+                    AccountActions.nonceUpdated(nonce + 1)
+                    AccountActions.ethTransaction(hash)
+                })
                 .on('error', error => { console.log(`failed to deposit ether: ${error.message}`) })
                 .then(receipt => {
                     // will be fired once the receipt is mined
@@ -114,7 +117,10 @@ export default class AccountDetail extends React.Component {
         const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
             EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount)
-                .once('transactionHash', hash => { AccountActions.ethTransaction(hash) })
+                .once('transactionHash', hash => {
+                    AccountActions.nonceUpdated(nonce + 1)
+                    AccountActions.ethTransaction(hash)
+                })
                 .on('error', error => { console.log(`failed to withdraw ether: ${error.message}`) })
                 .then(receipt => {
                     this.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
@@ -129,7 +135,10 @@ export default class AccountDetail extends React.Component {
         const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
             EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount)
-                .once('transactionHash', hash => { AccountActions.tokTransaction(hash) })
+                .once('transactionHash', hash => {
+                    AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
+                    AccountActions.tokTransaction(hash)
+                })
                 .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
                 .then(receipt => {
                     this.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
@@ -141,7 +150,10 @@ export default class AccountDetail extends React.Component {
         const { account, accountRetrieved, nonce } = this.state
         if (accountRetrieved) {
             EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount)
-                .once('transactionHash', hash => { AccountActions.tokTransaction(hash) })
+                .once('transactionHash', hash => {
+                    AccountActions.nonceUpdated(nonce + 1)
+                    AccountActions.tokTransaction(hash)
+                })
                 .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
                 .then(receipt => {
                     this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
@@ -156,6 +168,7 @@ export default class AccountDetail extends React.Component {
             isMetaMask,
             account,
             accountRetrieved,
+            nonce,
             walletBalanceEthWei,
             walletBalanceTokWei,
             exchangeBalanceEthWei,
@@ -177,12 +190,16 @@ export default class AccountDetail extends React.Component {
             accountLink = <a href={`https://ropsten.etherscan.io/address/${account}`}>{account}</a>
         }
 
+        let nonceBadge = ''
+        if (!isMetaMask) {
+            nonceBadge = <Badge color="dark">nonce: {nonce}</Badge>
+        }
         return (
             <div>
                 <h2>Balances</h2>
                 <div className="row">
                     <div className="col-lg-12">
-                        Account: {accountLink} <Badge color="secondary">{accountType}</Badge>
+                        Account: {accountLink} <Badge color="secondary">{accountType}</Badge> {nonceBadge}
                     </div>
                     <div className="col-lg-12">
                         <AccountTable

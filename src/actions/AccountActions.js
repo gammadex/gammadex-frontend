@@ -62,3 +62,10 @@ export function depositWithdrawAmountUpdated(amount) {
         amount
     })
 }
+
+export function nonceUpdated(nonce) {
+    dispatcher.dispatch({
+        type: ActionNames.NONCE_UPDATED,
+        nonce
+    })
+}

@@ -103,6 +103,11 @@ class AccountStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.NONCE_UPDATED: {
+                this.nonce = action.nonce
+                this.emitChange()
+                break
+            }
         }
     }
 }
