@@ -3,6 +3,7 @@ import WebSocketDetail from '../components/WebSocketDetail'
 import TokenChooser from '../components/TokenChooser'
 import AccountDetail from '../components/AccountDetail'
 import OrderBook from '../components/OrderBook'
+import WallletChooser from '../components/WallletChooser'
 import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 
@@ -37,6 +38,7 @@ class App extends Component {
                 <WebSocketDetail token={token}/>
                 <TokenChooser token={token} tokenOptions={allTokens}/>
                 <AccountDetail token={token}/>
+                <WallletChooser/>
                 <OrderBook token={token} pageSize={pageSize}/>
             </div>
         )

@@ -15,48 +15,68 @@ const gasLimit = 250000
 const gasPrice = 10 * 1000000000
 
 // non-MetaMask
-const walletAddress = "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376"
-const walletPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
+const fallbackWalletAddress = "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376"
+const fallbackWalletPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
 const useLedger = false
 
 class EtherDeltaWeb3 {
     constructor() {
-        // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-
         if (useLedger) {
-            const engine = new ProviderEngine()
-            const getTransport = () => TransportU2F.create();
-            // We need our own version of createLedgerSubprovider since the Ledger provided one has a bug with
-            // address lookup when using web3 1.0.x - TODO - file a bug report - WR
-            const ledger = createLedgerSubprovider(getTransport, {
-                networkId: 3,
-                accountsLength: 5
-            });
-            engine.addProvider(ledger);
-            engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ropsten.infura.io'}));
-            engine.start();
-
-            // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
-            // https://github.com/ethereum/web3.js/issues/951
-            const engineWithNoEventEmitting = Object.assign(engine, {on: false});
-            this.web3 = new Web3(engineWithNoEventEmitting);
-            this.isMetaMask = true
-            this.accountProvider = new MetaMaskAccountProvider(this.web3)
-        } else if (typeof web3 !== "undefined") {
-            // Use Mist/MetaMask's provider
-            // TODO check whether current metamask is locked
-            console.log("MetaMask enabled")
-            this.web3 = new Web3(web3.currentProvider)
-            this.isMetaMask = true
-            this.accountProvider = new MetaMaskAccountProvider(this.web3)
+            this.initForLedger()
+        } else if (typeof web3 !== "undefined") { // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+            this.initForMetaMask()
         } else {
-            console.log("No web3? You should consider trying MetaMask!")
-            // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-            // TODO use infura or another public node
-            this.web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io"))
-            this.isMetaMask = false
-            this.accountProvider = new WalletAccountProvider(this.web3)
+            this.initForPrivateKey(fallbackWalletAddress, fallbackWalletPrivateKey)
         }
+    }
+
+    initForMetaMask = () => {
+        // Use Mist/MetaMask's provider
+        // TODO check whether current metamask is locked
+        this.web3 = new Web3(web3.currentProvider)
+        this.isMetaMask = true
+        this.accountProvider = new MetaMaskAccountProvider(this.web3)
+
+        this.initContract()
+    }
+
+    initForPrivateKey = (walletAddress, walletPrivateKey) => {
+        console.log(`using private key ${walletPrivateKey} with address ${walletAddress}`)
+
+        // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+        // TODO use infura or another public node
+
+        this.web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io"))
+        this.isMetaMask = false
+        this.accountProvider = new WalletAccountProvider(this.web3, walletAddress, walletPrivateKey)
+
+        this.initContract()
+    }
+
+    initForLedger = () => {
+        const engine = new ProviderEngine()
+        const getTransport = () => TransportU2F.create();
+        // We need our own version of createLedgerSubprovider since the Ledger provided one has a bug with
+        // address lookup when using web3 1.0.x - TODO - file a bug report - WR
+        const ledger = createLedgerSubprovider(getTransport, {
+            networkId: 3,
+            accountsLength: 5
+        });
+        engine.addProvider(ledger);
+        engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ropsten.infura.io'}));
+        engine.start();
+
+        // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
+        // https://github.com/ethereum/web3.js/issues/951
+        const engineWithNoEventEmitting = Object.assign(engine, {on: false});
+        this.web3 = new Web3(engineWithNoEventEmitting);
+        this.isMetaMask = true // TODO - correct use of this variable
+        this.accountProvider = new MetaMaskAccountProvider(this.web3)
+
+        this.initContract()
+    }
+
+    initContract() {
         this.contractToken = new this.web3.eth.Contract(abiToken)
         this.contractEtherDelta = new this.web3.eth.Contract(abiEtherDelta)
         this.contractEtherDelta.options.address = etherDeltaAddress
@@ -168,14 +188,16 @@ class MetaMaskAccountProvider extends AccountProvider {
 }
 
 class WalletAccountProvider extends AccountProvider {
-    constructor(web3) {
+    constructor(web3, walletAddress, walletPrivateKey) {
         super(web3)
+        this.walletAddress = walletAddress
+        this.walletPrivateKey = walletPrivateKey
     }
 
     refreshAccount() {
-        return this.web3.eth.getTransactionCount(walletAddress)
+        return this.web3.eth.getTransactionCount(this.walletAddress)
             .then(nonce => {
-                return { address: walletAddress, nonce: nonce }
+                return { address: this.walletAddress, nonce: nonce }
             })
     }
 
@@ -189,7 +211,7 @@ class WalletAccountProvider extends AccountProvider {
             data: txData
         }
         let tx = new Tx(rawTx);
-        const privateKey = new Buffer(walletPrivateKey, 'hex')
+        const privateKey = new Buffer(this.walletPrivateKey, 'hex')
         tx.sign(privateKey);
         return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
     }
