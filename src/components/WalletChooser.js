@@ -6,7 +6,7 @@ import * as EthJsUtil from "ethereumjs-util"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
 
-class WallletChooser extends Component {
+class WalletChooser extends Component {
     state = {
         selectedWalletType: null,
         enteredPrivateKey: "",
@@ -201,4 +201,4 @@ class WallletChooser extends Component {
     }
 }
 
-export default WallletChooser
+export default WalletChooser

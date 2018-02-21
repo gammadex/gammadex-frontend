@@ -187,7 +187,7 @@ export default class AccountDetail extends React.Component {
         const accountType = (isMetaMask ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
-            accountLink = <a href={`https://ropsten.etherscan.io/address/${account}`}>{account}</a>
+            accountLink = <a target="_blank" rel="noopener" href={`https://ropsten.etherscan.io/address/${account}`}>{account}</a>
         }
 
         let nonceBadge = ''

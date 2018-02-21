@@ -14,7 +14,7 @@ export default class OrdersTable extends React.Component {
         const emptyRows = JsxUtils.emptyRows(numEmptyRows, 3)
 
         return (
-            <table className="table table-striped table-bordered">
+            <table className="table table-striped table-bordered table-hover">
                 <thead>
                 <tr>
                     <th>{orderTypeColName} ({base})</th>

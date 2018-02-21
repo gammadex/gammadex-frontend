@@ -22,6 +22,7 @@ export function connect() {
     getMockMarket()
 }
 
+// TODO this probably shouldn't live in the action
 export function getMockMarket() {
     const makerAddress = "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376"
     const makerPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
@@ -104,8 +105,7 @@ export function getMockMarket() {
         EtherDeltaWeb3.promiseTestTrade(takerAddress, order, order.amountGet)
             .then(isTradable => {
                 if (isTradable) {
-                    console.log("order is tradable")
-                    EtherDeltaWeb3.promiseTrade(makerAddress, AccountStore.getAccountState().nonce, order, order.amountGet)
+                    EtherDeltaWeb3.promiseTrade(takerAddress, AccountStore.getAccountState().nonce, order, order.amountGet)
                         .once('transactionHash', hash => {
                             console.log(`https://ropsten.etherscan.io/tx/${hash}`)
                         })
