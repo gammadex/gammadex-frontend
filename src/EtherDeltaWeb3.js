@@ -30,6 +30,11 @@ class EtherDeltaWeb3 {
         }
     }
 
+    // eugh, puke
+    getWeb3 = () => {
+        return this.web3
+    }
+
     initForMetaMask = () => {
         // Use Mist/MetaMask's provider
         // TODO check whether current metamask is locked
@@ -63,12 +68,12 @@ class EtherDeltaWeb3 {
             accountsLength: 5
         });
         engine.addProvider(ledger);
-        engine.addProvider(new RpcSubprovider({rpcUrl: 'https://ropsten.infura.io'}));
+        engine.addProvider(new RpcSubprovider({ rpcUrl: 'https://ropsten.infura.io' }));
         engine.start();
 
         // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
         // https://github.com/ethereum/web3.js/issues/951
-        const engineWithNoEventEmitting = Object.assign(engine, {on: false});
+        const engineWithNoEventEmitting = Object.assign(engine, { on: false });
         this.web3 = new Web3(engineWithNoEventEmitting);
         this.isMetaMask = true // TODO - correct use of this variable
         this.accountProvider = new MetaMaskAccountProvider(this.web3)
@@ -125,6 +130,26 @@ class EtherDeltaWeb3 {
     promiseWithdrawToken(account, nonce, tokenAddress, amount) {
         return this.accountProvider.promiseWithdrawToken(account, nonce, tokenAddress, amount)
     }
+
+    promiseTestTrade(account, order, amount) {
+        return this.contractEtherDelta.methods.testTrade(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce,
+            order.user,
+            order.v,
+            order.r,
+            order.s,
+            amount,
+            account).call()
+    }
+
+    promiseTrade(account, nonce, order, amount) {
+        return this.accountProvider.promiseTrade(account, nonce, order, amount)
+    }
 }
 
 class AccountProvider {
@@ -141,6 +166,8 @@ class AccountProvider {
     promiseTokenApprove(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
     promiseDepositToken(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
     promiseWithdrawToken(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
+
+    promiseTrade(account, nonce, order, amount) { throw new Error("method should be implemented") }
 }
 
 class MetaMaskAccountProvider extends AccountProvider {
@@ -246,6 +273,24 @@ class WalletAccountProvider extends AccountProvider {
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount).encodeABI())
     }
+
+    promiseTrade(account, nonce, order, amount) {
+        return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+            this.web3.utils.numberToHex(0),
+            this.contractEtherDelta.methods.trade(
+                order.tokenGet,
+                order.amountGet,
+                order.tokenGive,
+                order.amountGive,
+                order.expires,
+                order.nonce,
+                order.user,
+                order.v,
+                order.r,
+                order.s,
+                amount).encodeABI())
+    }
+
 }
 
 export default new EtherDeltaWeb3()
