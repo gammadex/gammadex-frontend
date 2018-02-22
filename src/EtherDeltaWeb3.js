@@ -212,6 +212,22 @@ class MetaMaskAccountProvider extends AccountProvider {
         return this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount)
             .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
     }
+
+    promiseTrade(account, nonce, order, amount) {
+        return this.contractEtherDelta.methods.trade(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce,
+            order.user,
+            order.v,
+            order.r,
+            order.s,
+            amount)
+            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+    }
 }
 
 class WalletAccountProvider extends AccountProvider {
