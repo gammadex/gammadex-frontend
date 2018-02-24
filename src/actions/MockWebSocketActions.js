@@ -5,9 +5,6 @@ import Config from '../Config'
 import EtherDeltaWeb3 from '../EtherDeltaWeb3'
 import AccountStore from '../stores/AccountStore'
 
-// TODO put this config in a decent place
-const ethAddress = "0x0000000000000000000000000000000000000000"
-
 export function connect() {
     const url = 'mock socket (TST orders)'
 
@@ -28,7 +25,7 @@ export function getMockMarket() {
     const makerPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
     const tstDecimals = Config.getTokenDecimals('TST')
     const tstDivisor = Math.pow(10, tstDecimals)
-    const ethDivisor = Math.pow(10, 18)
+    const ethDivisor = Math.pow(10, Config.getBaseDecimals())
     const buyOrder = OrderFactory.createOrder('buy', 10000000, 0.004, 0.8, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
     const sellOrder = OrderFactory.createOrder('sell', 10000000, 0.0065, 1.1, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
 
@@ -51,7 +48,7 @@ export function getMockMarket() {
         // need to format orderbook (market response) as per ED websocket getMarket api
         // see https://github.com/forkdelta/backend-replacement/blob/4ff7bbc8575c2a38ff5a1bdc4efd4fe7856a00ab/app/services/websocket_server.py#L196
 
-        const side = (order.tokenGive === ethAddress) ? 'buy' : 'sell'
+        const side = (order.tokenGive === Config.getBaseAddress()) ? 'buy' : 'sell'
 
         let price = 0
         let availableVolume = ''

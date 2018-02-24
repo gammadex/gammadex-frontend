@@ -3,6 +3,8 @@
 import sha256 from 'js-sha256'
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from './EtherDeltaWeb3'
+import Config from './Config'
+
 import * as EthJsUtil from "ethereumjs-util"
 
 // TODO move into config file and support mainnet and testnet addresses
@@ -64,14 +66,14 @@ class OrderFactory {
         if (side !== 'buy' && side !== 'sell') throw new Error('Side must be buy or sell')
         const amountBigNum = new BigNumber(String(amount))
         const amountBaseBigNum = new BigNumber(String(amount * price))
-        const tokenGet = side === 'buy' ? tokenAddress : '0x0000000000000000000000000000000000000000'
-        const tokenGive = side === 'sell' ? tokenAddress : '0x0000000000000000000000000000000000000000'
+        const tokenGet = side === 'buy' ? tokenAddress : Config.getBaseAddress()
+        const tokenGive = side === 'sell' ? tokenAddress : Config.getBaseAddress()
         const amountGet = side === 'buy' ?
             this.toWei(amountBigNum, tokenDecimals) :
-            this.toWei(amountBaseBigNum, 18)
+            this.toWei(amountBaseBigNum, Config.getBaseDecimals())
         const amountGive = side === 'sell' ?
             this.toWei(amountBigNum, tokenDecimals) :
-            this.toWei(amountBaseBigNum, 18)
+            this.toWei(amountBaseBigNum, Config.getBaseDecimals())
         const orderNonce = Number(Math.random().toString().slice(2))
 
         const hash = `0x${this.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, orderNonce)}`

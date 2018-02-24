@@ -84,13 +84,13 @@ export default class AccountDetail extends React.Component {
 
         if (modalIsDeposit) {
             if (modalIsEth) {
-                this.depositEth(Number(modalValue) * Math.pow(10, 18))
+                this.depositEth(Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
             } else {
                 this.depositTok(token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
             }
         } else {
             if (modalIsEth) {
-                this.withdrawEth(Number(modalValue) * Math.pow(10, 18))
+                this.withdrawEth(Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
             } else {
                 this.withdrawTok(token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
             }
@@ -205,7 +205,7 @@ export default class AccountDetail extends React.Component {
                         <AccountTable
                             base="ETH"
                             token={token.name}
-                            baseDecimals={18}
+                            baseDecimals={Config.getBaseDecimals()}
                             tokenDecimals={tokenDecimals}
                             walletBalanceEthWei={walletBalanceEthWei}
                             walletBalanceTokWei={walletBalanceTokWei}

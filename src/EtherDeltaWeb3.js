@@ -1,5 +1,6 @@
 import abiEtherDelta from './config/etherdelta.json'
 import abiToken from './config/token.json'
+import Config from './Config'
 import * as Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
 
@@ -9,7 +10,6 @@ import ProviderEngine from "web3-provider-engine";
 import RpcSubprovider from "web3-provider-engine/subproviders/rpc";
 
 let web3 = window.web3
-const ethAddress = "0x0000000000000000000000000000000000000000"
 const etherDeltaAddress = "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1"
 const gasLimit = 250000
 const gasPrice = 10 * 1000000000
@@ -99,7 +99,7 @@ class EtherDeltaWeb3 {
         return Promise.all([
             this.web3.eth.getBalance(account),
             this.promiseTokenBalance(account, tokenAddress),
-            this.contractEtherDelta.methods.balanceOf(ethAddress, account).call(),
+            this.contractEtherDelta.methods.balanceOf(Config.getBaseAddress(), account).call(),
             this.contractEtherDelta.methods.balanceOf(tokenAddress, account).call()
         ])
     }

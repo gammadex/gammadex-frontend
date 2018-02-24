@@ -8,9 +8,6 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import * as TradeActions from "../actions/TradeActions"
 import * as AccountActions from "../actions/AccountActions"
 
-// TODO put this config in a decent place
-const ethAddress = "0x0000000000000000000000000000000000000000"
-
 export default class AccountDetail extends React.Component {
     constructor(props) {
         super(props)
@@ -58,7 +55,7 @@ export default class AccountDetail extends React.Component {
         let modalTitle = ""
         let side = ""
         if (modalOrder) {
-            side = (modalOrder.tokenGive === ethAddress) ? 'Sell' : 'Buy'
+            side = (modalOrder.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
             modalTitle = `${side} ${modalOrder.ethAvailableVolume} TST for ${modalOrder.ethAvailableVolumeBase} ETH?`
         }
 
