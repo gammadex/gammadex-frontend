@@ -36,6 +36,7 @@ class App extends Component {
 
         return (
             <div className="App">
+                <small>You are running this application in <b>{process.env.NODE_ENV}</b> mode.</small>
                 <WebSocketDetail token={token}/>
                 <TokenChooser token={token} tokenOptions={allTokens}/>
                 <AccountDetail token={token}/>

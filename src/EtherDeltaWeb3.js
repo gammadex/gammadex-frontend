@@ -10,7 +10,6 @@ import ProviderEngine from "web3-provider-engine";
 import RpcSubprovider from "web3-provider-engine/subproviders/rpc";
 
 let web3 = window.web3
-const etherDeltaAddress = "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1"
 const gasLimit = 250000
 const gasPrice = 10 * 1000000000
 
@@ -49,9 +48,8 @@ class EtherDeltaWeb3 {
         console.log(`using private key ${walletPrivateKey} with address ${walletAddress}`)
 
         // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-        // TODO use infura or another public node
 
-        this.web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io"))
+        this.web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
         this.isMetaMask = false
         this.accountProvider = new WalletAccountProvider(this.web3, walletAddress, walletPrivateKey)
 
@@ -68,7 +66,7 @@ class EtherDeltaWeb3 {
             accountsLength: 5
         });
         engine.addProvider(ledger);
-        engine.addProvider(new RpcSubprovider({ rpcUrl: 'https://ropsten.infura.io' }));
+        engine.addProvider(new RpcSubprovider({ rpcUrl: Config.getWeb3Url() }));
         engine.start();
 
         // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
@@ -84,7 +82,7 @@ class EtherDeltaWeb3 {
     initContract() {
         this.contractToken = new this.web3.eth.Contract(abiToken)
         this.contractEtherDelta = new this.web3.eth.Contract(abiEtherDelta)
-        this.contractEtherDelta.options.address = etherDeltaAddress
+        this.contractEtherDelta.options.address = Config.getEtherDeltaAddress()
     }
 
     getIsMetaMask() {
@@ -157,7 +155,7 @@ class AccountProvider {
         this.web3 = web3
         this.contractToken = new this.web3.eth.Contract(abiToken)
         this.contractEtherDelta = new this.web3.eth.Contract(abiEtherDelta)
-        this.contractEtherDelta.options.address = etherDeltaAddress
+        this.contractEtherDelta.options.address = Config.getEtherDeltaAddress()
     }
 
     refreshAccount() { throw new Error("method should be implemented") }
@@ -199,7 +197,7 @@ class MetaMaskAccountProvider extends AccountProvider {
 
     promiseTokenApprove(account, nonce, tokenAddress, amount) {
         this.contractToken.options.address = tokenAddress
-        return this.contractToken.methods.approve(etherDeltaAddress, amount)
+        return this.contractToken.methods.approve(Config.getEtherDeltaAddress(), amount)
             .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
     }
 
@@ -260,13 +258,13 @@ class WalletAccountProvider extends AccountProvider {
     }
 
     promiseDepositEther(account, nonce, amount) {
-        return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(amount),
             this.contractEtherDelta.methods.deposit().encodeABI())
     }
 
     promiseWithdrawEther(account, nonce, amount) {
-        return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.withdraw(amount).encodeABI())
     }
@@ -275,23 +273,23 @@ class WalletAccountProvider extends AccountProvider {
         this.contractToken.options.address = tokenAddress
         return this.promiseSendRawTransaction(nonce, tokenAddress,
             this.web3.utils.numberToHex(0),
-            this.contractToken.methods.approve(etherDeltaAddress, amount).encodeABI())
+            this.contractToken.methods.approve(Config.getEtherDeltaAddress(), amount).encodeABI())
     }
 
     promiseDepositToken(account, nonce, tokenAddress, amount) {
-        return this.promiseSendRawTransaction(nonce + 1, etherDeltaAddress,
+        return this.promiseSendRawTransaction(nonce + 1, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.depositToken(tokenAddress, amount).encodeABI())
     }
 
     promiseWithdrawToken(account, nonce, tokenAddress, amount) {
-        return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount).encodeABI())
     }
 
     promiseTrade(account, nonce, order, amount) {
-        return this.promiseSendRawTransaction(nonce, etherDeltaAddress,
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.trade(
                 order.tokenGet,

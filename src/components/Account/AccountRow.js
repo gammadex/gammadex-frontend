@@ -1,6 +1,7 @@
 import React from "react"
 import { Button } from 'reactstrap'
 import * as AccountActions from "../../actions/AccountActions"
+import Config from '../../Config'
 
 export default class AccountTableRow extends React.Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class AccountTableRow extends React.Component {
                 <td>{token}</td>
                 <td>{Number(walletBalanceWei) / Math.pow(10, Number(decimals))}</td>
                 <td>{Number(exchangeBalanceWei) / Math.pow(10, Number(decimals))}</td>
-                <td>{(transaction ? <a target="_blank" rel="noopener" href={`https://ropsten.etherscan.io/tx/${transaction}`}>{transaction}</a> : "")}</td>
+                <td>{(transaction ? <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${transaction}`}>{transaction}</a> : "")}</td>
             </tr>
         )
     }

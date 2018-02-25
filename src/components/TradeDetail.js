@@ -40,7 +40,7 @@ export default class AccountDetail extends React.Component {
                     EtherDeltaWeb3.promiseTrade(account, nonce, modalOrder, modalOrder.amountGet)
                         .once('transactionHash', hash => {
                             AccountActions.nonceUpdated(nonce + 1)
-                            console.log(`https://ropsten.etherscan.io/tx/${hash}`)
+                            console.log(`${Config.getEtherscanUrl()}/tx/${hash}`)
                         })
                         .on('error', error => { console.log(`failed to trade: ${error.message}`) })
                         .then(receipt => {

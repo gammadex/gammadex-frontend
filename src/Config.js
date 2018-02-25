@@ -3,7 +3,7 @@ import _ from "lodash"
 
 class Config {
     constructor() {
-        const tokens = config.tokens.map((tk) => {
+        const tokens = this.getEnvTokens().map((tk) => {
             return {
                 value: tk.address,
                 label: tk.name
@@ -12,28 +12,36 @@ class Config {
         this.tokens = _.sortBy(tokens, (tk) => tk.label)
     }
 
+    getEnv() {
+        return config[`${process.env.NODE_ENV}`]
+    }
+
+    getEnvTokens() {
+        return this.getEnv().tokens
+    }
+
     getTokens() {
         return this.tokens
     }
 
     getTokenName(address) {
-        return _.filter(config.tokens, (tk) => tk.address === address)[0].name
+        return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].name
     }
 
     getTokenAddress(name) {
-        return _.filter(config.tokens, (tk) => tk.name === name)[0].address
+        return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].address
     }
 
     getTokenDecimals(name) {
-        return _.filter(config.tokens, (tk) => tk.name === name)[0].decimals
+        return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].decimals
     }
 
-    getBaseAddress() { return "0x0000000000000000000000000000000000000000" }
-    
-    getBaseDecimals() { return 18 }
+    getBaseAddress() { return config.baseAddress }
+
+    getBaseDecimals() { return config.baseDecimals }
 
     getDefaultToken() {
-        const name = config.defaultPair.token
+        const name = this.getEnv().defaultPair.token
         const address = this.getTokenAddress(name)
 
         return {
@@ -44,6 +52,18 @@ class Config {
 
     getDefaultPageSize() {
         return 10
+    }
+
+    getWeb3Url() {
+        return this.getEnv().web3
+    }
+    
+    getEtherscanUrl() {
+        return this.getEnv().etherscan
+    }
+
+    getEtherDeltaAddress() {
+        return this.getEnv().etherDeltaAddress
     }
 }
 

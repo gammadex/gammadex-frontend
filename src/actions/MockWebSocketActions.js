@@ -104,7 +104,7 @@ export function getMockMarket() {
                 if (isTradable) {
                     EtherDeltaWeb3.promiseTrade(takerAddress, AccountStore.getAccountState().nonce, order, order.amountGet)
                         .once('transactionHash', hash => {
-                            console.log(`https://ropsten.etherscan.io/tx/${hash}`)
+                            console.log(`${Config.getEtherscanUrl()}/tx/${hash}`)
                         })
                         .on('error', error => { console.log(`failed to trade: ${error.message}`) })
                         .then(receipt => {
