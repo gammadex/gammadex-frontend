@@ -47,7 +47,7 @@ export default class Ledger extends React.Component {
     getUnlockedMessage() {
         return <div>
             <div className="alert alert-success">
-                You are now logged in with metamask
+                You are now logged in with a ledger wallet
             </div>
         </div>
     }
