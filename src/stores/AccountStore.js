@@ -5,7 +5,7 @@ import ActionNames from "../actions/ActionNames"
 class AccountStore extends EventEmitter {
     constructor() {
         super()
-        this.isMetaMask = false
+        this.accountType = null
         this.account = null
         this.accountRetrieved = false
         this.nonce = 0
@@ -19,11 +19,12 @@ class AccountStore extends EventEmitter {
         this.modalValue = ''
         this.modalIsEth = false
         this.modalIsDeposit = false
+        this.accountSequenceNum = 0 // number of times an account has been set up
     }
 
     getAccountState() {
         return {
-            isMetaMask: this.isMetaMask,
+            accountType: this.accountType,
             account: this.account,
             accountRetrieved: this.accountRetrieved,
             nonce: this.nonce,
@@ -36,7 +37,8 @@ class AccountStore extends EventEmitter {
             modal: this.modal,
             modalValue: this.modalValue,
             modalIsEth: this.modalIsEth,
-            modalIsDeposit: this.modalIsDeposit
+            modalIsDeposit: this.modalIsDeposit,
+            accountSequenceNum: this.accountSequenceNum
         }
     }
 
@@ -46,15 +48,12 @@ class AccountStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
-            case ActionNames.ACCOUNT_TYPE_RESOLVED: {
-                this.isMetaMask = action.accountType
-                this.emitChange()
-                break
-            }
             case ActionNames.ACCOUNT_RETRIEVED: {
                 this.account = action.addressNonce.address
                 this.nonce = action.addressNonce.nonce
                 this.accountRetrieved = true
+                this.accountType = action.accountType
+                this.accountSequenceNum += 1
                 this.emitChange()
                 break
             }

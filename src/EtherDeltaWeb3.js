@@ -38,7 +38,6 @@ class EtherDeltaWeb3 {
         // Use Mist/MetaMask's provider
         // TODO check whether current metamask is locked
         this.web3 = new Web3(web3.currentProvider)
-        this.isMetaMask = true
         this.accountProvider = new MetaMaskAccountProvider(this.web3)
 
         this.initContract()
@@ -50,7 +49,6 @@ class EtherDeltaWeb3 {
         // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
 
         this.web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
-        this.isMetaMask = false
         this.accountProvider = new WalletAccountProvider(this.web3, walletAddress, walletPrivateKey)
 
         this.initContract()
@@ -73,7 +71,6 @@ class EtherDeltaWeb3 {
         // https://github.com/ethereum/web3.js/issues/951
         const engineWithNoEventEmitting = Object.assign(engine, { on: false });
         this.web3 = new Web3(engineWithNoEventEmitting);
-        this.isMetaMask = true // TODO - correct use of this variable
         this.accountProvider = new MetaMaskAccountProvider(this.web3)
 
         this.initContract()
@@ -83,10 +80,6 @@ class EtherDeltaWeb3 {
         this.contractToken = new this.web3.eth.Contract(abiToken)
         this.contractEtherDelta = new this.web3.eth.Contract(abiEtherDelta)
         this.contractEtherDelta.options.address = Config.getEtherDeltaAddress()
-    }
-
-    getIsMetaMask() {
-        return this.isMetaMask
     }
 
     refreshAccount() {

@@ -1,17 +1,11 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
-export function accountTypeResolved(accountType) {
-    dispatcher.dispatch({
-        type: ActionNames.ACCOUNT_TYPE_RESOLVED,
-        accountType
-    })
-}
-
-export function accountRetrieved(addressNonce) {
+export function accountRetrieved(addressNonce, accountType) {
     dispatcher.dispatch({
         type: ActionNames.ACCOUNT_RETRIEVED,
-        addressNonce
+        addressNonce,
+        accountType
     })
 }
 
@@ -67,5 +61,13 @@ export function nonceUpdated(nonce) {
     dispatcher.dispatch({
         type: ActionNames.NONCE_UPDATED,
         nonce
+    })
+}
+
+export function accountRefreshError(accountType, error) {
+    dispatcher.dispatch({
+        type: ActionNames.ACCOUNT_REFRESH_ERROR,
+        accountType,
+        error
     })
 }

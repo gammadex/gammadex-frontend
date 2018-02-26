@@ -7,6 +7,7 @@ import Config from '../Config'
 import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 
 import * as AccountActions from "../actions/AccountActions"
+import AccountType from "../AccountType"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -49,7 +50,9 @@ export default class AccountDetail extends React.Component {
         const prevRetrieved = this.state.accountRetrieved
         this.setState(AccountStore.getAccountState())
         // TODO this is shit, need to rationalize the dependency between user and balance retrieval
-        if (!prevRetrieved && this.state.accountRetrieved) {
+        // TODO WR - I removed - !prevRetrieved && - so the component updates on account change
+        // Let's clean this all up later
+        if (/*!prevRetrieved &&*/ this.state.accountRetrieved) {
             // i now have a user address so refresh balances
             this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
@@ -62,7 +65,6 @@ export default class AccountDetail extends React.Component {
     }
 
     componentDidMount() {
-        AccountActions.accountTypeResolved(EtherDeltaWeb3.getIsMetaMask())
         EtherDeltaWeb3.refreshAccount()
             .then(account => AccountActions.accountRetrieved(account))
             .catch(error => console.log(`failed to refresh user account: ${error.message}`))
@@ -165,7 +167,7 @@ export default class AccountDetail extends React.Component {
         const { token } = this.props
         const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
-            isMetaMask,
+            accountType,
             account,
             accountRetrieved,
             nonce,
@@ -184,14 +186,14 @@ export default class AccountDetail extends React.Component {
         const modalTitle = (modalIsDeposit ? `Deposit ${modalToken} to Exchange` : `Withdraw ${modalToken} from Exchange`)
         const modalActionLabel = (modalIsDeposit ? "Deposit" : "Withdraw")
 
-        const accountType = (isMetaMask ? "MetaMask" : "Wallet")
+        const accountTypeName = (accountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
             accountLink = <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</a>
         }
 
         let nonceBadge = ''
-        if (!isMetaMask) {
+        if (accountType !== AccountType.METAMASK) {
             nonceBadge = <Badge color="dark">nonce: {nonce}</Badge>
         }
         return (
@@ -199,7 +201,7 @@ export default class AccountDetail extends React.Component {
                 <h2>Balances</h2>
                 <div className="row">
                     <div className="col-lg-12">
-                        Account: {accountLink} <Badge color="secondary">{accountType}</Badge> {nonceBadge}
+                        Account: {accountLink} <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
                     </div>
                     <div className="col-lg-12">
                         <AccountTable
