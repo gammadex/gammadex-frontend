@@ -29,9 +29,7 @@ export default class Ledger extends React.Component {
 
     selectLedger = () => {
         EtherDeltaWeb3.initForLedger()
-        EtherDeltaWeb3.refreshAccount()
-            .then(account => AccountActions.accountRetrieved(account, AccountType.LEDGER))
-            .catch(error => AccountActions.accountRefreshError(AccountType.LEDGER, error))
+        AccountActions.refreshAccount(AccountType.LEDGER)
     }
 
     render() {

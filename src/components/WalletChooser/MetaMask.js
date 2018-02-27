@@ -29,9 +29,7 @@ export default class MetaMask extends React.Component {
 
     selectMetaMask = () => {
         EtherDeltaWeb3.initForMetaMask()
-        EtherDeltaWeb3.refreshAccount()
-            .then(account => AccountActions.accountRetrieved(account, AccountType.METAMASK))
-            .catch(error => AccountActions.accountRefreshError(AccountType.METAMASK, error))
+        AccountActions.refreshAccount(AccountType.METAMASK)
     }
 
     render() {
