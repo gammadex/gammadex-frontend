@@ -68,9 +68,7 @@ export default class KeyStoreFile extends React.Component {
             const privateKey = KeyUtil.removeHexPrefix(EthJsUtil.bufferToHex(privateKeyBuffer))
 
             EtherDeltaWeb3.initForPrivateKey(privateKeyAddress, privateKey)
-            EtherDeltaWeb3.refreshAccount()
-                .then(account => AccountActions.accountRetrieved(account, AccountType.KEY_STORE_FILE))
-                .catch(error => console.log(`failed to refresh user account: ${error.message}`))
+            AccountActions.refreshAccount(AccountType.KEY_STORE_FILE)
         } catch (error) {
             this.setState((prevState, props) => ({
                 passwordError: error

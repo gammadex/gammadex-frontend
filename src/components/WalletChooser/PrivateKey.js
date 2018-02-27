@@ -49,9 +49,7 @@ export default class PrivateKey extends React.Component {
 
         if (isValidPrivateKey) {
             EtherDeltaWeb3.initForPrivateKey(privateKeyAddress, privateKey)
-            EtherDeltaWeb3.refreshAccount()
-                .then(account => AccountActions.accountRetrieved(account, AccountType.PRIVATE_KEY))
-                .catch(error => console.log(`failed to refresh user account: ${error.message}`))
+            AccountActions.refreshAccount(AccountType.PRIVATE_KEY)
         }
     }
 

@@ -42,7 +42,7 @@ export default class AccountDetail extends React.Component {
 
     onTokenChange = () => {
         if (this.state.accountRetrieved) {
-            this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
@@ -54,20 +54,12 @@ export default class AccountDetail extends React.Component {
         // Let's clean this all up later
         if (/*!prevRetrieved &&*/ this.state.accountRetrieved) {
             // i now have a user address so refresh balances
-            this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
-    refreshEthAndTokBalance(account, tokenAddress) {
-        EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
-            .then(balance => AccountActions.balanceRetrieved(balance))
-            .catch(error => AccountActions.balanceRetrievalFailed())
-    }
-
     componentDidMount() {
-        EtherDeltaWeb3.refreshAccount()
-            .then(account => AccountActions.accountRetrieved(account))
-            .catch(error => console.log(`failed to refresh user account: ${error.message}`))
+        AccountActions.refreshAccount()
     }
 
     hideModal() {
@@ -80,86 +72,44 @@ export default class AccountDetail extends React.Component {
         const { token } = this.props
         const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
+            account,
+            accountRetrieved,
+            nonce,
             modalValue,
             modalIsEth,
             modalIsDeposit } = this.state
 
         if (modalIsDeposit) {
             if (modalIsEth) {
-                this.depositEth(Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
+                AccountActions.depositEth(
+                    account,
+                    accountRetrieved,
+                    nonce,
+                    token.address,
+                    Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
             } else {
-                this.depositTok(token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
+                AccountActions.depositTok(
+                    account,
+                    accountRetrieved,
+                    nonce,
+                    token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
             }
         } else {
             if (modalIsEth) {
-                this.withdrawEth(Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
+                AccountActions.withdrawEth(
+                    account,
+                    accountRetrieved,
+                    nonce,
+                    token.address,
+                    Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
             } else {
-                this.withdrawTok(token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
+                AccountActions.withdrawTok(
+                    account,
+                    accountRetrieved,
+                    nonce,
+                    token.address,
+                    Number(modalValue) * Math.pow(10, tokenDecimals))
             }
-        }
-    }
-
-    depositEth(amount) {
-        const { account, accountRetrieved, nonce } = this.state
-        if (accountRetrieved) {
-            EtherDeltaWeb3.promiseDepositEther(account, nonce, amount)
-                .once('transactionHash', hash => {
-                    AccountActions.nonceUpdated(nonce + 1)
-                    AccountActions.ethTransaction(hash)
-                })
-                .on('error', error => { console.log(`failed to deposit ether: ${error.message}`) })
-                .then(receipt => {
-                    // will be fired once the receipt is mined
-                    this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-                })
-        }
-    }
-
-    withdrawEth(amount) {
-        const { account, accountRetrieved, nonce } = this.state
-        if (accountRetrieved) {
-            EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount)
-                .once('transactionHash', hash => {
-                    AccountActions.nonceUpdated(nonce + 1)
-                    AccountActions.ethTransaction(hash)
-                })
-                .on('error', error => { console.log(`failed to withdraw ether: ${error.message}`) })
-                .then(receipt => {
-                    this.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
-                })
-        }
-    }
-
-    depositTok(tokenAddress, amount) {
-        // depositing an ERC-20 token is two-step:
-        // 1) call the token contract to approve the transfer to the destination address = ED
-        // 2) initiate the transfer in the ED smart contract
-        const { account, accountRetrieved, nonce } = this.state
-        if (accountRetrieved) {
-            EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount)
-                .once('transactionHash', hash => {
-                    AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
-                    AccountActions.tokTransaction(hash)
-                })
-                .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
-                .then(receipt => {
-                    this.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
-                })
-        }
-    }
-
-    withdrawTok(tokenAddress, amount) {
-        const { account, accountRetrieved, nonce } = this.state
-        if (accountRetrieved) {
-            EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount)
-                .once('transactionHash', hash => {
-                    AccountActions.nonceUpdated(nonce + 1)
-                    AccountActions.tokTransaction(hash)
-                })
-                .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
-                .then(receipt => {
-                    this.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-                })
         }
     }
 
