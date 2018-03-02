@@ -8,7 +8,7 @@ import AccountType from "../../AccountType"
 import * as WalletDao from "../../util/WalletDao"
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import * as Encryption from "../../util/Encryption"
-import Empty from "../Empty"
+import Conditional from "../Conditional"
 
 export default class StoredPrivateKeyWalletUnlocker extends React.Component {
     state = {
@@ -64,11 +64,6 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         const {showModal, passwordError} = this.state
         const passwordErrorClass = passwordError ? " is-invalid" : ""
 
-        let passwordErrorDisplay = <Empty/>
-        if (passwordError) {
-            passwordErrorDisplay = <Alert color="danger">Sorry, wrong password. Please try again.</Alert>
-        }
-
         return <Modal isOpen={showModal} toggle={this.hideModal}>
             <ModalHeader toggle={this.hideModal}>Unlock saved private key</ModalHeader>
             <ModalBody>
@@ -80,7 +75,11 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
                            onChange={this.handlePasswordChange}/>
                 </div>
 
-                {passwordErrorDisplay}
+                <Conditional displayCondition={passwordError}>
+                    <Alert color="danger">
+                        Sorry, wrong password. Please try again.
+                    </Alert>
+                </Conditional>
 
             </ModalBody>
             <ModalFooter>
