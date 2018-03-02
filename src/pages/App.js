@@ -7,6 +7,7 @@ import WalletChooser from '../components/WalletChooser'
 import TradeDetail from '../components/TradeDetail'
 import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
+import GreetingLoginModals from "../components/GreetingLoginModals"
 
 class App extends Component {
     constructor() {
@@ -43,6 +44,7 @@ class App extends Component {
                 <WalletChooser/>
                 <OrderBook token={token} pageSize={pageSize}/>
                 <TradeDetail/>
+                <GreetingLoginModals/>
             </div>
         )
     }

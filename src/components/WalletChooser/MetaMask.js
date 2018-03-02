@@ -3,6 +3,7 @@ import WalletStore from "../../stores/WalletStore"
 import EtherDeltaWeb3 from "../../EtherDeltaWeb3"
 import * as AccountActions from "../../actions/AccountActions"
 import AccountType from "../../AccountType"
+import * as WalletDao from "../../util/WalletDao"
 
 export default class MetaMask extends React.Component {
     state = {
@@ -30,6 +31,7 @@ export default class MetaMask extends React.Component {
     selectMetaMask = () => {
         EtherDeltaWeb3.initForMetaMask()
         AccountActions.refreshAccount(AccountType.METAMASK)
+        WalletDao.forgetStoredWallet()
     }
 
     render() {

@@ -59,7 +59,8 @@ export default class AccountDetail extends React.Component {
     }
 
     componentDidMount() {
-        AccountActions.refreshAccount()
+        // TODO - remove me
+        //AccountActions.refreshAccount()
     }
 
     hideModal() {

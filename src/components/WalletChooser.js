@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {WalletType} from "../Wallet"
 import * as WalletActions from "../actions/WalletActions"
 import WalletStore from "../stores/WalletStore"
 import * as EthJsUtil from "ethereumjs-util"
@@ -14,7 +13,7 @@ import Ledger from "./WalletChooser/Ledger"
 
 class WalletChooser extends Component {
     state = {
-        selectedWalletType: null,
+        selectedAccountType: null,
         enteredPrivateKey: "",
         privateKey: "",
         isValidPrivateKey: false,
@@ -32,7 +31,7 @@ class WalletChooser extends Component {
 
     onWalletStoreChange = () => {
         this.setState((prevState, props) => ({
-            selectedWalletType: WalletStore.getWalletType(),
+            selectedAccountType: WalletStore.getSelectedAccountType(),
         }))
     }
 
@@ -41,7 +40,7 @@ class WalletChooser extends Component {
     }
 
     render() {
-        const {selectedWalletType} = this.state
+        const {selectedAccountType} = this.state
 
         let panel = this.getPanelContents()
 
@@ -56,8 +55,8 @@ class WalletChooser extends Component {
                         <fieldset>
                             <div className="form-check">
                                 <label>
-                                    <input type="radio" className="form-check-input" name="type" value="KEY_FILE"
-                                           checked={selectedWalletType === WalletType.KEY_FILE}
+                                    <input type="radio" className="form-check-input" name="type" value={AccountType.KEY_STORE_FILE}
+                                           checked={selectedAccountType === AccountType.KEY_STORE_FILE}
                                            onChange={this.walletChanged}/>
 
                                     Key File
@@ -66,8 +65,8 @@ class WalletChooser extends Component {
 
                             <div className="form-check">
                                 <label>
-                                    <input type="radio" className="form-check-input" name="type" value="PRIVATE_KEY"
-                                           checked={selectedWalletType === WalletType.PRIVATE_KEY}
+                                    <input type="radio" className="form-check-input" name="type" value={AccountType.PRIVATE_KEY}
+                                           checked={selectedAccountType === AccountType.PRIVATE_KEY}
                                            onChange={this.walletChanged}/>
 
                                     Private Key
@@ -76,8 +75,8 @@ class WalletChooser extends Component {
 
                             <div className="form-check">
                                 <label>
-                                    <input type="radio" className="form-check-input" name="type" value="METAMASK"
-                                           checked={selectedWalletType === WalletType.METAMASK}
+                                    <input type="radio" className="form-check-input" name="type" value={AccountType.METAMASK}
+                                           checked={selectedAccountType === AccountType.METAMASK}
                                            onChange={this.walletChanged}/>
 
                                     Metamask
@@ -86,8 +85,8 @@ class WalletChooser extends Component {
 
                             <div className="form-check">
                                 <label>
-                                    <input type="radio" className="form-check-input" name="type" value="LEDGER"
-                                           checked={selectedWalletType === WalletType.LEDGER}
+                                    <input type="radio" className="form-check-input" name="type" value={AccountType.LEDGER}
+                                           checked={selectedAccountType === AccountType.LEDGER}
                                            onChange={this.walletChanged}/>
 
                                     Ledger Wallet
@@ -106,18 +105,18 @@ class WalletChooser extends Component {
     }
 
     getPanelContents() {
-        const {selectedWalletType} = this.state
+        const {selectedAccountType} = this.state
 
         let panel
-        if (!selectedWalletType) {
+        if (!selectedAccountType) {
             panel = <div>&nbsp;</div>
-        } else if (selectedWalletType === WalletType.KEY_FILE) {
+        } else if (selectedAccountType === AccountType.KEY_STORE_FILE) {
             panel = <KeyStoreFile/>
-        } else if (selectedWalletType === WalletType.PRIVATE_KEY) {
+        } else if (selectedAccountType === AccountType.PRIVATE_KEY) {
             panel = <PrivateKey/>
-        } else if (selectedWalletType === WalletType.METAMASK) {
+        } else if (selectedAccountType === AccountType.METAMASK) {
             panel = <MetaMask/>
-        } else if (selectedWalletType === WalletType.LEDGER) {
+        } else if (selectedAccountType === AccountType.LEDGER) {
             panel = <Ledger/>
         }
 

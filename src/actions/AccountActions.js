@@ -9,13 +9,13 @@ export function refreshAccount(accountType) {
             dispatcher.dispatch({
                 type: ActionNames.ACCOUNT_RETRIEVED,
                 addressNonce,
-                accountType
+                selectedAccountType: accountType
             })
         })
         .catch(error => {
             dispatcher.dispatch({
                 type: ActionNames.ACCOUNT_REFRESH_ERROR,
-                accountType,
+                selectedAccountType: accountType,
                 error
             })
         })

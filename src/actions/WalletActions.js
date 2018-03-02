@@ -1,10 +1,10 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
-export function selectWallet(walletType) {
+export function selectWallet(accountType) {
     dispatcher.dispatch({
         type: ActionNames.WALLET_TYPE_SELECTED,
-        walletType
+        selectedAccountType: accountType
     })
 }
 
@@ -15,7 +15,6 @@ export function selectedKeyStoreFile(keyStoreFile, keyStoreFileName) {
         keyStoreFileName,
     })
 }
-
 
 export function changeKeyStoreFile() {
     dispatcher.dispatch({
@@ -38,3 +37,66 @@ export function changeKeyStorePassword(password) {
     })
 }
 
+export function passwordError(error) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_PASSWORD_ERROR,
+        error
+    })
+}
+
+export function changedKeyStoreRememberMe(isRememberMe) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_CHANGE_REMEMBER_KEYSTORE,
+        isRememberMe,
+    })
+}
+
+export function hideUnlockKeyStoreModal() {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_HIDE_UNLOCK_KEYSTORE_MODAL,
+    })
+}
+
+export function changedPrivateKeyRememberMe(isRememberMe) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_CHANGE_REMEMBER_PRIVATE_KEY,
+        isRememberMe,
+    })
+}
+
+export function hideUnlockPrivateKeyModal() {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_HIDE_UNLOCK_PRIVATE_KEY_MODAL,
+    })
+}
+
+export function changePrivateKeyUnlockPassword(password) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_CHANGE_PRIVATE_KEY_UNLOCK_PASSWORD,
+        password,
+    })
+}
+
+export function changePrivateKeyPasswords(password, confirmPasssword, passwordError, confirmPasswordError) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_CHANGE_PRIVATE_KEY_PASSWORDS,
+        password,
+        confirmPasssword,
+        passwordError,
+        confirmPasswordError,
+    })
+}
+
+export function changeUsePrivateKeyEncryption(isUseEncryption) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_CHANGE_USE_PRIVATE_KEY_ENCRYPTION,
+        isUseEncryption,
+    })
+}
+
+export function keyStorePasswordError(error) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_KEYSTORE_PASSWORD_ERROR,
+        error
+    })
+}

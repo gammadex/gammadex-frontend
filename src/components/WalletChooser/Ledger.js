@@ -3,6 +3,7 @@ import WalletStore from "../../stores/WalletStore"
 import EtherDeltaWeb3 from "../../EtherDeltaWeb3"
 import * as AccountActions from "../../actions/AccountActions"
 import AccountType from "../../AccountType"
+import * as WalletDao from "../../util/WalletDao"
 
 export default class Ledger extends React.Component {
     state = {
@@ -30,6 +31,7 @@ export default class Ledger extends React.Component {
     selectLedger = () => {
         EtherDeltaWeb3.initForLedger()
         AccountActions.refreshAccount(AccountType.LEDGER)
+        WalletDao.forgetStoredWallet()
     }
 
     render() {

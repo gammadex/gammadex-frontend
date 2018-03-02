@@ -3,7 +3,6 @@ import abiToken from './config/token.json'
 import Config from './Config'
 import * as Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
-
 import createLedgerSubprovider from "./hacks/LedgerWeb3SubProvider"
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import ProviderEngine from "web3-provider-engine";
@@ -13,21 +12,8 @@ let web3 = window.web3
 const gasLimit = 250000
 const gasPrice = 10 * 1000000000
 
-// non-MetaMask
-const fallbackWalletAddress = "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376"
-const fallbackWalletPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
-const useLedger = false
-
 class EtherDeltaWeb3 {
-    constructor() {
-        if (useLedger) {
-            this.initForLedger()
-        } else if (typeof web3 !== "undefined") { // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-            this.initForMetaMask()
-        } else {
-            this.initForPrivateKey(fallbackWalletAddress, fallbackWalletPrivateKey)
-        }
-    }
+    // default accounts are now initialised in BootstrapAccount.initAccounts rather than EtherDeltaWeb3 constructor
 
     // eugh, puke
     getWeb3 = () => {

@@ -5,7 +5,7 @@ import ActionNames from "../actions/ActionNames"
 class AccountStore extends EventEmitter {
     constructor() {
         super()
-        this.accountType = null
+        this.selectedAccountType = null
         this.account = null
         this.accountRetrieved = false
         this.nonce = 0
@@ -24,7 +24,7 @@ class AccountStore extends EventEmitter {
 
     getAccountState() {
         return {
-            accountType: this.accountType,
+            selectedAccountType: this.selectedAccountType,
             account: this.account,
             accountRetrieved: this.accountRetrieved,
             nonce: this.nonce,
@@ -52,7 +52,7 @@ class AccountStore extends EventEmitter {
                 this.account = action.addressNonce.address
                 this.nonce = action.addressNonce.nonce
                 this.accountRetrieved = true
-                this.accountType = action.accountType
+                this.selectedAccountType = action.selectedAccountType
                 this.accountSequenceNum += 1
                 this.emitChange()
                 break
