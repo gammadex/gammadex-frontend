@@ -63,7 +63,9 @@ export default class PrivateKeyForm extends React.Component {
         }
     }
 
-    selectPrivateKey = () => {
+    selectPrivateKey = (event) => {
+        event.preventDefault()
+
         const {isValidKey, privateKey, privateKeyAddress, password} = this.state
 
         if (isValidKey) {
@@ -124,7 +126,7 @@ export default class PrivateKeyForm extends React.Component {
 
         return <div>
             <h4>Use Private Key</h4>
-            <form>
+            <form onSubmit={this.selectPrivateKey}>
                 <div className="form-group">
                         <textarea className={"form-control " + privateKeyClassName}
                                   onChange={this.privateKeyChanged}
@@ -158,8 +160,7 @@ export default class PrivateKeyForm extends React.Component {
                 </Conditional>
 
                 <div className="form-group">
-                    <a href="#" className={"btn btn-primary " + privateKeySubmitDisabledClass}
-                       onClick={this.selectPrivateKey}>Unlock</a>
+                    <input className={"btn btn-primary " + privateKeySubmitDisabledClass} type="submit"  value="Unlock" />
                 </div>
             </form>
         </div>

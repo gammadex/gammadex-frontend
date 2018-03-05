@@ -69,7 +69,9 @@ export default class KeyStoreFile extends React.Component {
         }
     }
 
-    handleKeyStoreUnlock = () => {
+    handleKeyStoreUnlock = (event) => {
+        event.preventDefault()
+
         try {
             const {address, privateKey} = KeyUtil.convertKeyFileToAddressAndKey(this.state.selectedKeyStoreFile, this.state.keyStorePassword)
 
@@ -95,21 +97,24 @@ export default class KeyStoreFile extends React.Component {
             <div>
                 <h4>Use Wallet File</h4>
 
-                <FileChooser
-                    fileName={keyStoreFileName}
-                    fileParseError={fileParseError}
-                    onKeyStoreFileChange={this.selectKeyStoreFile}
-                />
+                <form onSubmit={this.handleKeyStoreUnlock}>
 
-                <Conditional displayCondition={validFile}>
-                    <PasswordSection
-                        passwordError={passwordError}
-                        rememberKeyStoreFile={rememberKeyStoreFile}
-                        onRememberChange={this.handleRemember}
-                        onUnlock={this.handleKeyStoreUnlock}
-                        onPasswordChange={this.handleKeyStoreFilePasswordChange}
+                    <FileChooser
+                        fileName={keyStoreFileName}
+                        fileParseError={fileParseError}
+                        onKeyStoreFileChange={this.selectKeyStoreFile}
                     />
-                </Conditional>
+
+                    <Conditional displayCondition={validFile}>
+                        <PasswordSection
+                            passwordError={passwordError}
+                            rememberKeyStoreFile={rememberKeyStoreFile}
+                            onRememberChange={this.handleRemember}
+                            onPasswordChange={this.handleKeyStoreFilePasswordChange}
+                        />
+                    </Conditional>
+
+                </form>
             </div>
         )
     }

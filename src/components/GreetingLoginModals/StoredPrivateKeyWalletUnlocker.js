@@ -37,7 +37,9 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         })
     }
 
-    handleUnlock = () => {
+    handleUnlock = (event) => {
+        event.preventDefault()
+
         const {key} = WalletDao.readWallet().data // TODO - WR- this could be sourced from WalletStore
         const {password} = this.state
 
@@ -66,6 +68,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
 
         return <Modal isOpen={showModal} toggle={this.hideModal}>
             <ModalHeader toggle={this.hideModal}>Unlock saved private key</ModalHeader>
+            <form onSubmit={this.handleUnlock}>
             <ModalBody>
                 <div className="form-group">
                     <input type="password"
@@ -83,8 +86,9 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
 
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={this.handleUnlock}>Unlock</Button>
+                <input className="btn btn-primary" type="submit"  value="Unlock" />
             </ModalFooter>
+            </form>
         </Modal>
     }
 }

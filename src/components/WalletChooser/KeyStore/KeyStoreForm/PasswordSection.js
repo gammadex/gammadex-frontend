@@ -3,7 +3,7 @@ import Empty from "../../../Empty"
 
 export default class PasswordSection extends React.Component {
     render() {
-        const {passwordError, rememberKeyStoreFile, onRememberChange, onUnlock, onPasswordChange} = this.props
+        const {passwordError, rememberKeyStoreFile, onRememberChange, onPasswordChange} = this.props
         const passwordErrorClass = passwordError ? " is-invalid" : ""
 
         return <div>
@@ -28,8 +28,7 @@ export default class PasswordSection extends React.Component {
             </div>
 
             <div className="form-group">
-                <a href="#" className="btn btn-primary"
-                   onClick={onUnlock}>Unlock</a>
+                <input className="btn btn-primary" type="submit"  value="Unlock" />
             </div>
         </div>
     }
