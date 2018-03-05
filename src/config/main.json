@@ -3,6 +3,7 @@
   "baseAddress": "0x0000000000000000000000000000000000000000",
   "baseDecimals": 18,
   "development": {
+    "ethereumNetworkId": 3,
     "web3": "https://ropsten.infura.io",
     "etherscan": "https://ropsten.etherscan.io",
     "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
@@ -13,6 +14,7 @@
     "defaultPair": { "token": "TST", "base": "ETH" }
   },
   "production": {
+    "ethereumNetworkId": 1,
     "web3": "https://mainnet.infura.io",
     "etherscan": "https://etherscan.io",
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",

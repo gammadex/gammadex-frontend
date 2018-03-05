@@ -1,11 +1,7 @@
 import React, {Component} from 'react'
 import * as WalletActions from "../actions/WalletActions"
 import WalletStore from "../stores/WalletStore"
-import * as EthJsUtil from "ethereumjs-util"
-import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import * as AccountActions from "../actions/AccountActions"
 import KeyStoreFile from "./WalletChooser/KeyStore"
-import * as KeyUtil from "../util/KeyUtil"
 import AccountType from "../AccountType"
 import PrivateKey from "./WalletChooser/PrivateKey"
 import MetaMask from "./WalletChooser/MetaMask"

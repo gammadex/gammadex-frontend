@@ -100,3 +100,31 @@ export function keyStorePasswordError(error) {
         error
     })
 }
+
+export function logout() {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LOGOUT,
+    })
+}
+
+export function updateProvidedWeb3Available(isAvailable) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_UPDATE_PROVIDED_WEB3_AVAILABLE,
+        isAvailable,
+    })
+}
+
+export function updateProvidedWeb3Net(isMainNet, description) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_UPDATE_PROVIDED_WEB3_NET,
+        isMainNet,
+        description,
+    })
+}
+
+export function updateProvidedWeb3AccountAvailable(isAvailable) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_UPDATE_PROVIDED_WEB3_ACCOUNT_AVAILABLE,
+        isAvailable,
+    })
+}
