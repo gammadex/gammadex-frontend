@@ -6,13 +6,27 @@ class TradeStore extends EventEmitter {
     constructor() {
         super()
         this.modal = false
-        this.modalOrder = null
+        this.modalOrder = null,
+        this.fillAmount = 0,
+        this.fillAmountValid = true,
+        this.fillAmountInvalidReason = "",
+        this.showTransactionModal = false,
+        this.transactionHash = "",
+        this.transactionModalIsError = false,
+        this.transactionModalErrorText = ""
     }
 
     getTradeState() {
         return {
             modal: this.modal,
-            modalOrder: this.modalOrder
+            modalOrder: this.modalOrder,
+            fillAmount: this.fillAmount,
+            fillAmountValid: this.fillAmountValid,
+            fillAmountInvalidReason: this.fillAmountInvalidReason,
+            showTransactionModal: this.showTransactionModal,
+            transactionHash: this.transactionHash,
+            transactionModalIsError: this.transactionModalIsError,
+            transactionModalErrorText: this.transactionModalErrorText
         }
     }
 
@@ -25,6 +39,9 @@ class TradeStore extends EventEmitter {
             case ActionNames.EXECUTE_TRADE: {
                 this.modal = true
                 this.modalOrder = action.order
+                this.fillAmount = action.fillAmount
+                this.fillAmountValid = action.fillAmountValid
+                this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()
                 break
             }
@@ -33,6 +50,32 @@ class TradeStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.FILL_AMOUNT_CHANGED: {
+                this.fillAmount = action.fillAmount
+                this.fillAmountValid = action.fillAmountValid
+                this.fillAmountInvalidReason = action.fillAmountInvalidReason
+                this.emitChange()
+                break
+            }
+            case ActionNames.HIDE_TRANSACTION_MODAL: {
+                this.showTransactionModal = false
+                this.emitChange()
+                break
+            }
+            case ActionNames.SENT_TRANSACTION: {
+                this.showTransactionModal = true
+                this.transactionModalIsError = false
+                this.transactionHash = action.txHash
+                this.emitChange()
+                break
+            }
+            case ActionNames.SEND_TRANSACTION_FAILED: {
+                this.showTransactionModal = true
+                this.transactionModalIsError = true
+                this.transactionModalErrorText = action.errorMessage
+                this.emitChange()
+                break
+            }            
         }
     }
 }

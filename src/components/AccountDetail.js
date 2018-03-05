@@ -52,7 +52,7 @@ export default class AccountDetail extends React.Component {
         // TODO this is shit, need to rationalize the dependency between user and balance retrieval
         // TODO WR - I removed - !prevRetrieved && - so the component updates on account change
         // Let's clean this all up later
-        if (/*!prevRetrieved &&*/ this.state.accountRetrieved) {
+        if (!prevRetrieved && this.state.accountRetrieved) {
             // i now have a user address so refresh balances
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }

@@ -7,13 +7,9 @@ import Config from './Config'
 
 import * as EthJsUtil from "ethereumjs-util"
 
-// TODO move into config file and support mainnet and testnet addresses
-const etherDeltaAddress = "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1"
+const etherDeltaAddress = Config.getEtherDeltaAddress()
 
 class OrderFactory {
-    constructor(web3) {
-        this.web3 = web3
-    }
 
     createOrder = (side, expires, price, amount, tokenAddress, tokenDecimals, userAddress, userPrivateKey) => {
         // web3js 1 supports message signing -> http://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#sign
@@ -42,7 +38,7 @@ class OrderFactory {
                 msg = Buffer.concat([
                     new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),
                     msg]);
-                msg = this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
+                msg = EtherDeltaWeb3.sha3(msg)
                 msg = new Buffer(msg.slice(2), 'hex');
                 return `0x${msg.toString('hex')}`;
             };
@@ -227,4 +223,4 @@ class OrderFactory {
         .times(new BigNumber(10 ** decimals)).dp(0, BigNumber.ROUND_FLOOR)
 }
 
-export default new OrderFactory(EtherDeltaWeb3.getWeb3()) // no no no
+export default new OrderFactory()

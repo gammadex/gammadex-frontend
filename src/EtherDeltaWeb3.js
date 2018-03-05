@@ -15,11 +15,6 @@ const gasPrice = 10 * 1000000000
 class EtherDeltaWeb3 {
     // default accounts are now initialised in BootstrapAccount.initAccounts rather than EtherDeltaWeb3 constructor
 
-    // eugh, puke
-    getWeb3 = () => {
-        return this.web3
-    }
-
     initForMetaMask = () => {
         // Use Mist/MetaMask's provider
         // TODO check whether current metamask is locked
@@ -124,8 +119,18 @@ class EtherDeltaWeb3 {
             account).call()
     }
 
+    // amount is in amountGet terms:
+    // - if taker is buying TOK (lifts offer), maker is selling TOK = tokenGive
+    // and therefore maker is buying ETH = tokenGet. AmountGet in units of ETH
+    //
+    // - if taker is selling TOK (hits bid), maker is buying TOK = tokenGet
+    // and therefore maker is selling ETH = tokenGive. AmountGet in units of TOK
     promiseTrade(account, nonce, order, amount) {
         return this.accountProvider.promiseTrade(account, nonce, order, amount)
+    }
+
+    sha3 = (msg) => {
+        return this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
     }
 }
 
@@ -283,7 +288,6 @@ class WalletAccountProvider extends AccountProvider {
                 order.s,
                 amount).encodeABI())
     }
-
 }
 
 export default new EtherDeltaWeb3()

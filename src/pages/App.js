@@ -3,6 +3,7 @@ import WebSocketDetail from '../components/WebSocketDetail'
 import TokenChooser from '../components/TokenChooser'
 import AccountDetail from '../components/AccountDetail'
 import OrderBook from '../components/OrderBook'
+import OrderPlacement from '../components/OrderPlacement'
 import WalletChooser from '../components/WalletChooser'
 import TradeDetail from '../components/TradeDetail'
 import TokenStore from '../stores/TokenStore'
@@ -42,6 +43,7 @@ class App extends Component {
                 <TokenChooser token={token} tokenOptions={allTokens}/>
                 <AccountDetail token={token}/>
                 <WalletChooser/>
+                <OrderPlacement token={token}/>
                 <OrderBook token={token} pageSize={pageSize}/>
                 <TradeDetail/>
                 <GreetingLoginModals/>

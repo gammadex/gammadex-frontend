@@ -26,15 +26,18 @@ export function getMockMarket() {
     const tstDecimals = Config.getTokenDecimals('TST')
     const tstDivisor = Math.pow(10, tstDecimals)
     const ethDivisor = Math.pow(10, Config.getBaseDecimals())
-    const buyOrder = OrderFactory.createOrder('buy', 10000000, 0.004, 0.8, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
-    const sellOrder = OrderFactory.createOrder('sell', 10000000, 0.0065, 1.1, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
+    const buyOrder1 = OrderFactory.createOrder('buy', 10000000, 0.004, 0.08, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
+    const buyOrder2 = OrderFactory.createOrder('buy', 10000000, 0.0041, 0.31, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
+    const buyOrder3 = OrderFactory.createOrder('buy', 10000000, 0.0038, 20, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
+    const sellOrder1 = OrderFactory.createOrder('sell', 10000000, 0.0064, 0.11, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
+    const sellOrder2 = OrderFactory.createOrder('sell', 10000000, 0.0061, 0.75, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
 
     // fillOrder(makerAddress, sellOrder)
 
     const message = {
         orders: {
-            buys: [toBookOrder(buyOrder)],
-            sells: [toBookOrder(sellOrder)]
+            buys: [toBookOrder(buyOrder1), toBookOrder(buyOrder2), toBookOrder(buyOrder3)],
+            sells: [toBookOrder(sellOrder1), toBookOrder(sellOrder2)]
         }
     }
     console.log(message)
