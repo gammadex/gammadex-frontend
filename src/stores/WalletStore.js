@@ -3,6 +3,7 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import * as WalletDao from "../util/WalletDao"
 import AccountType from "../AccountType"
+import * as EtheriumNetworks from "../util/EtheriumNetworks"
 
 class WalletStore extends EventEmitter {
     constructor() {
@@ -15,7 +16,6 @@ class WalletStore extends EventEmitter {
         this.rememberPrivateKey = true
         this.unlocked = false
         this.completedAccount = null
-        this.completedAccountType = null
         this.fileParseError = null
         this.refreshError = null
         this.passwordError = null // TODO: this is used in three places. Separate into individual variables for each use
@@ -35,6 +35,13 @@ class WalletStore extends EventEmitter {
             if (localStoreWallet.type === AccountType.KEY_STORE_FILE) {
                 this.keyStoreFileName = localStoreWallet.data.fileName
             }
+        }
+
+        this.providedWeb3 = {
+            available: null,
+            isMainNet: null,
+            netDescription: null,
+            accountAvailable: null
         }
     }
 
@@ -118,12 +125,23 @@ class WalletStore extends EventEmitter {
         return this.keyStorePasswordError
     }
 
+    getProvidedWeb3Info() {
+        return this.providedWeb3
+    }
+
+    isProvidedWeb3Available() {
+        return this.providedWeb3.available
+    }
+
+    isProvidedWeb3AccountAvailable() {
+        return this.providedWeb3.accountAvailable
+    }
+
     handleActions(action) {
         switch (action.type) {
             case ActionNames.WALLET_TYPE_SELECTED: {
                 this.selectedAccountType = action.selectedAccountType
                 this.completedAccount = null
-                this.completedAccountType = null
                 this.keyStoreFile = null
                 this.keyStoreFileName = null
                 this.fileParseError = null
@@ -148,7 +166,6 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.WALLET_CHANGE_KEYSTORE_FILE: {
                 this.completedAccount = null
-                this.completedAccountType = null
                 this.keyStoreFile = null
                 this.keyStoreFileName = null
                 this.fileParseError = null
@@ -169,7 +186,6 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.ACCOUNT_RETRIEVED: {
                 this.completedAccount = action.addressNonce.address
-                this.completedAccountType = action.selectedAccountType
                 this.displayUnlockKeyStoreModal = false
                 this.displayUnlockPrivateKeyModal = false
                 this.unlocked = true
@@ -240,7 +256,27 @@ class WalletStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-
+            case ActionNames.WALLET_LOGOUT: {
+                this.completedAccount = null
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_UPDATE_PROVIDED_WEB3_AVAILABLE: {
+                this.providedWeb3.available = action.isAvailable
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_UPDATE_PROVIDED_WEB3_NET: {
+                this.providedWeb3.isMainNet = action.isMainNet
+                this.providedWeb3.netDescription = action.description
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_UPDATE_PROVIDED_WEB3_ACCOUNT_AVAILABLE: {
+                this.providedWeb3.accountAvailable = action.isAvailable
+                this.emitChange()
+                break
+            }
         }
     }
 }

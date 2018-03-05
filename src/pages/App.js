@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import WebSocketDetail from '../components/WebSocketDetail'
 import TokenChooser from '../components/TokenChooser'
 import AccountDetail from '../components/AccountDetail'
+import Logout from '../components/Logout'
 import OrderBook from '../components/OrderBook'
 import OrderPlacement from '../components/OrderPlacement'
 import WalletChooser from '../components/WalletChooser'
@@ -42,6 +43,7 @@ class App extends Component {
                 <WebSocketDetail token={token}/>
                 <TokenChooser token={token} tokenOptions={allTokens}/>
                 <AccountDetail token={token}/>
+                <Logout/>
                 <WalletChooser/>
                 <OrderPlacement token={token}/>
                 <OrderBook token={token} pageSize={pageSize}/>

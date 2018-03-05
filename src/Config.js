@@ -36,9 +36,13 @@ class Config {
         return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].decimals
     }
 
-    getBaseAddress() { return config.baseAddress }
+    getBaseAddress() {
+        return config.baseAddress
+    }
 
-    getBaseDecimals() { return config.baseDecimals }
+    getBaseDecimals() {
+        return config.baseDecimals
+    }
 
     getDefaultToken() {
         const name = this.getEnv().defaultPair.token
@@ -57,13 +61,17 @@ class Config {
     getWeb3Url() {
         return this.getEnv().web3
     }
-    
+
     getEtherscanUrl() {
         return this.getEnv().etherscan
     }
 
     getEtherDeltaAddress() {
         return this.getEnv().etherDeltaAddress
+    }
+
+    getEthereumNetworkId() {
+        return this.getEnv().ethereumNetworkId
     }
 }
 

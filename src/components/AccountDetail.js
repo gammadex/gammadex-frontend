@@ -1,5 +1,4 @@
 import React from "react"
-import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import AccountTable from '../components/Account/AccountTable'
@@ -42,25 +41,20 @@ export default class AccountDetail extends React.Component {
 
     onTokenChange = () => {
         if (this.state.accountRetrieved) {
+            console.log("woot")
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
     onAccountChange = () => {
-        const prevRetrieved = this.state.accountRetrieved
-        this.setState(AccountStore.getAccountState())
         // TODO this is shit, need to rationalize the dependency between user and balance retrieval
-        // TODO WR - I removed - !prevRetrieved && - so the component updates on account change
-        // Let's clean this all up later
-        if (!prevRetrieved && this.state.accountRetrieved) {
-            // i now have a user address so refresh balances
-            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
+        const accountState = AccountStore.getAccountState()
 
-    componentDidMount() {
-        // TODO - remove me
-        //AccountActions.refreshAccount()
+        if (accountState.account && this.state.account !== accountState.account) {
+            AccountActions.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
+        }
+
+        this.setState(accountState)
     }
 
     hideModal() {

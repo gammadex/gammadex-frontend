@@ -38,7 +38,9 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
         })
     }
 
-    handleKeyStoreUnlock = () => {
+    handleKeyStoreUnlock = (event) => {
+        event.preventDefault()
+
         const {file, fileName} = WalletDao.readWallet().data // TODO - WR- this could be sourced from WalletStore
         WalletActions.selectedKeyStoreFile(file, fileName)
 
@@ -66,6 +68,7 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
 
         return <Modal isOpen={showModal} toggle={this.hideModal}>
             <ModalHeader toggle={this.hideModal}>Unlock saved keystore file {fileName}</ModalHeader>
+            <form onSubmit={this.handleKeyStoreUnlock}>
             <ModalBody>
                 <div className="form-group">
                     <input type="password"
@@ -83,8 +86,9 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
 
             </ModalBody>
             <ModalFooter>
-                <Button color="primary" onClick={this.handleKeyStoreUnlock}>Unlock</Button>
+                <input className="btn btn-primary" type="submit"  value="Unlock" />
             </ModalFooter>
+            </form>
         </Modal>
     }
 }

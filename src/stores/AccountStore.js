@@ -5,6 +5,10 @@ import ActionNames from "../actions/ActionNames"
 class AccountStore extends EventEmitter {
     constructor() {
         super()
+        this._clearState()
+    }
+
+    _clearState() {
         this.selectedAccountType = null
         this.account = null
         this.accountRetrieved = false
@@ -40,6 +44,10 @@ class AccountStore extends EventEmitter {
             modalIsDeposit: this.modalIsDeposit,
             accountSequenceNum: this.accountSequenceNum
         }
+    }
+
+    getAccount() {
+        return this.account
     }
 
     emitChange() {
@@ -104,6 +112,11 @@ class AccountStore extends EventEmitter {
             }
             case ActionNames.NONCE_UPDATED: {
                 this.nonce = action.nonce
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LOGOUT: {
+                this._clearState()
                 this.emitChange()
                 break
             }
