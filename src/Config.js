@@ -13,7 +13,7 @@ class Config {
     }
 
     getEnv() {
-        return config[`${process.env.NODE_ENV}`]
+        return config[`${process.env.REACT_APP_ENV}`]
     }
 
     getEnvTokens() {
