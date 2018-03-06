@@ -1,6 +1,7 @@
 import React from "react"
 import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
+import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
 import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
@@ -33,6 +34,7 @@ export default class AccountDetail extends React.Component {
     componentWillMount() {
         AccountStore.on("change", this.onAccountChange)
         TokenStore.on("change", this.onTokenChange)
+        TimerRelay.on("change", this.timerFired)
     }
 
     onInputChange(event) {
@@ -42,6 +44,13 @@ export default class AccountDetail extends React.Component {
     onTokenChange = () => {
         if (this.state.accountRetrieved) {
             console.log("woot")
+            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+        }
+    }
+
+    timerFired = () => {
+        if (this.state.accountRetrieved) {
+            AccountActions.refreshNonce()
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }

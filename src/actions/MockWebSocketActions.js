@@ -31,13 +31,14 @@ export function getMockMarket() {
     const buyOrder3 = OrderFactory.createOrder('buy', 10000000, 0.0038, 20, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
     const sellOrder1 = OrderFactory.createOrder('sell', 10000000, 0.0064, 0.11, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
     const sellOrder2 = OrderFactory.createOrder('sell', 10000000, 0.0061, 0.75, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
+    const sellOrder3 = OrderFactory.createOrder('sell', 10000000, 0.71, 100.4, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey)
 
     // fillOrder(makerAddress, sellOrder)
 
     const message = {
         orders: {
             buys: [toBookOrder(buyOrder1), toBookOrder(buyOrder2), toBookOrder(buyOrder3)],
-            sells: [toBookOrder(sellOrder1), toBookOrder(sellOrder2)]
+            sells: [toBookOrder(sellOrder1), toBookOrder(sellOrder2), toBookOrder(sellOrder3)]
         }
     }
     console.log(message)

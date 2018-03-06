@@ -21,6 +21,13 @@ export function refreshAccount(accountType) {
         })
 }
 
+export function refreshNonce() {
+    EtherDeltaWeb3.promiseRefreshNonce()
+        .then(nonce => {
+            nonceUpdated(nonce)
+        })
+}
+
 export function refreshEthAndTokBalance(account, tokenAddress) {
     EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
         .then(balance => {

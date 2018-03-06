@@ -67,6 +67,10 @@ class EtherDeltaWeb3 {
         return this.accountProvider.refreshAccount()
     }
 
+    promiseRefreshNonce() {
+        return this.accountProvider.promiseRefreshNonce()
+    }
+
     refreshEthAndTokBalance(account, tokenAddress) {
         return Promise.all([
             this.web3.eth.getBalance(account),
@@ -151,6 +155,7 @@ class AccountProvider {
     }
 
     refreshAccount() { throw new Error("method should be implemented") }
+    promiseRefreshNonce() { throw new Error("method should be implemented") }
     promiseDepositEther(account, nonce, amount) { throw new Error("method should be implemented") }
     promiseWithdrawEther(account, nonce, amount) { throw new Error("method should be implemented") }
     promiseTokenApprove(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
@@ -175,6 +180,10 @@ class MetaMaskAccountProvider extends AccountProvider {
                     throw new Error("no addresses found")
                 }
             })
+    }
+
+    promiseRefreshNonce() {
+        return Promise.resolve(0)
     }
 
     promiseDepositEther(account, nonce, amount) {
@@ -232,6 +241,10 @@ class WalletAccountProvider extends AccountProvider {
             .then(nonce => {
                 return { address: this.walletAddress, nonce: nonce }
             })
+    }
+
+    promiseRefreshNonce() {
+        return this.web3.eth.getTransactionCount(this.walletAddress)
     }
 
     promiseSendRawTransaction(nonce, txTo, txValue, txData) {

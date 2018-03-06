@@ -6,7 +6,11 @@ import ActionNames from "../actions/ActionNames"
 class MyTradesStore extends EventEmitter {
     constructor() {
         super()
-        this.trades = []
+        if(localStorage.myTrades) {
+            this.trades = JSON.parse(localStorage.myTrades)
+        } else {
+            this.trades = []
+        }
     }
 
     getMyTradesState() {
@@ -34,6 +38,7 @@ class MyTradesStore extends EventEmitter {
                 break
             }
         }
+        localStorage.myTrades = JSON.stringify(this.trades)
     }
 }
 

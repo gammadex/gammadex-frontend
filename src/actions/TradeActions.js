@@ -8,10 +8,14 @@ export function executeTrade(order) {
     // accessing stores from action creator, good practice?
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
     const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
-    const { exchangeBalanceTokWei } = AccountStore.getAccountState()
+    const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
     const exchangeBalanceTok = exchangeBalanceTokWei / Math.pow(10, tokenDecimals)
+    const exchangeBalanceEth = exchangeBalanceEthWei / Math.pow(10, 18)
     const fillAmount = order.ethAvailableVolume
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(fillAmount, fillAmount, exchangeBalanceTok)
+    const side = (order.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
+    const amountEth = fillAmount * order.price
+    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(
+        side, fillAmount, fillAmount, exchangeBalanceTok, amountEth, exchangeBalanceEth)
     dispatcher.dispatch({
         type: ActionNames.EXECUTE_TRADE,
         order,
@@ -21,7 +25,8 @@ export function executeTrade(order) {
     })
 }
 
-export function validateFillAmount(fillAmount, orderAmount, exchangeBalanceTok) {
+// TODO replace side with constant and add helper function for takerSide and makerSide
+export function validateFillAmount(side, fillAmount, orderAmount, exchangeBalanceTok, amountEth, exchangeBalanceEth) {
     let fillAmountValid = true
     let fillAmountInvalidReason = ""
     if (fillAmount === 0) {
@@ -30,9 +35,12 @@ export function validateFillAmount(fillAmount, orderAmount, exchangeBalanceTok) 
     } else if (fillAmount > orderAmount) {
         fillAmountValid = false
         fillAmountInvalidReason = `Amount greater than max order amount (${orderAmount})`
-    } else if (fillAmount > exchangeBalanceTok) {
+    } else if (side === 'Sell' && fillAmount > exchangeBalanceTok) {
         fillAmountValid = false
         fillAmountInvalidReason = `Amount greater than wallet balance (${exchangeBalanceTok})`
+    } else if (side === 'Buy' && amountEth > exchangeBalanceEth) {
+        fillAmountValid = false
+        fillAmountInvalidReason = `Total amount greater than wallet balance (${exchangeBalanceEth} ETH)`
     }
     return { fillAmountValid: fillAmountValid, fillAmountInvalidReason: fillAmountInvalidReason }
 }
@@ -43,8 +51,9 @@ export function executeTradeAborted() {
     })
 }
 
-export function fillAmountChanged(fillAmount, orderAmount, exchangeBalanceTok) {
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(fillAmount, orderAmount, exchangeBalanceTok)
+export function fillAmountChanged(side, fillAmount, orderAmount, exchangeBalanceTok, amountEth, exchangeBalanceEth) {
+    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(
+        side, fillAmount, orderAmount, exchangeBalanceTok, amountEth, exchangeBalanceEth)
     dispatcher.dispatch({
         type: ActionNames.FILL_AMOUNT_CHANGED,
         fillAmount,
