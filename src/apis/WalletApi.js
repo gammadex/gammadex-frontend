@@ -1,5 +1,5 @@
 import * as WalletActions from "../actions/WalletActions"
-import * as EtheriumNetworks from "../util/EtheriumNetworks"
+import * as EthereumNetworks from "../util/EthereumNetworks"
 import WalletStore from "../stores/WalletStore"
 
 let timer = null
@@ -26,8 +26,8 @@ export function updateWalletStoreProvidedWeb3Details() {
         }
     } else {
         window.web3.version.getNetwork((err, netId) => {
-            const isMainNet = EtheriumNetworks.isMainNet(netId)
-            const description = EtheriumNetworks.getNetworkDescription(netId)
+            const isMainNet = EthereumNetworks.isMainNet(netId)
+            const description = EthereumNetworks.getNetworkDescription(netId)
             const {isMainNet: currentIsMainNet, netDescription: currentNetDescription} = WalletStore.getProvidedWeb3Info()
 
             if (isMainNet !== currentIsMainNet || description !== currentNetDescription) {

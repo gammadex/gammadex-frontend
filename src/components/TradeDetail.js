@@ -5,10 +5,13 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import Config from '../Config'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Col, FormFeedback, Alert } from 'reactstrap'
+import TradeStatus from "../TradeStatus"
 
 import * as TradeActions from "../actions/TradeActions"
+import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
 
+// TODO this class knows and is doing too much!!!!
 export default class TradeDetail extends React.Component {
     constructor(props) {
         super(props)
@@ -63,13 +66,13 @@ export default class TradeDetail extends React.Component {
     submit() {
         this.hideModal()
         const { modalOrder, account, nonce, fillAmount, selectedToken } = this.state
-
+        const side = (modalOrder.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
         // amount is in amountGet terms
         // TODO, BigNumber this shit up https://github.com/wjsrobertson/ethergamma/issues/6
         let amountWei = 0
         if (modalOrder.tokenGive === Config.getBaseAddress()) {
             // taker is selling, amount is in units of TOK
-            const tokenDecimals = Config.getTokenDecimals(this.state.selectedToken.name)
+            const tokenDecimals = Config.getTokenDecimals(selectedToken.name)
             amountWei = fillAmount * Math.pow(10, tokenDecimals)
         } else {
             amountWei = (modalOrder.price * fillAmount) * Math.pow(10, 18)
@@ -81,6 +84,17 @@ export default class TradeDetail extends React.Component {
                         .once('transactionHash', hash => {
                             AccountActions.nonceUpdated(nonce + 1)
                             TradeActions.sentTransaction(hash)
+                            MyTradeActions.addMyTrade({
+                                account: account,
+                                txHash: hash,
+                                tokenAddress: selectedToken.address,
+                                side: side,
+                                price: modalOrder.price,
+                                amountTok: fillAmount,
+                                totalEth: modalOrder.price * fillAmount,
+                                timestamp: new Date(),
+                                status: TradeStatus.PENDING
+                            })
                         })
                         .on('error', error => { console.log(`failed to trade: ${error.message}`) })
                         .then(receipt => {
@@ -152,7 +166,7 @@ export default class TradeDetail extends React.Component {
                 transactionAlert = <Alert color="danger">{transactionModalErrorText}</Alert>
             } else {
                 transactionAlert = <Alert color="success">
-                    Transaction sent. Check progress in <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${transactionHash}`}>{"etherscan"}</a> (Opens in new window)
+                    Transaction sent. Check progress in <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${transactionHash}`}>{"etherscan"}</a> (opens in new window)
                 </Alert>
             }
         }

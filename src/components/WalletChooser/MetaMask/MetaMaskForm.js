@@ -5,7 +5,7 @@ import * as AccountActions from "../../../actions/AccountActions"
 import AccountType from "../../../AccountType"
 import * as WalletDao from "../../../util/WalletDao"
 import Conditional from "../../Conditional"
-import * as EtheriumNetworks from "../../../util/EtheriumNetworks"
+import * as EthereumNetworks from "../../../util/EthereumNetworks"
 
 export default class MetaMaskForm extends React.Component {
     state = {
@@ -41,7 +41,7 @@ export default class MetaMaskForm extends React.Component {
     render() {
         const {refreshError, providedWeb3} = this.state
         const {available, isMainNet, netDescription, accountAvailable} = providedWeb3
-        const mainNetDescription = EtheriumNetworks.getMainNetDescription()
+        const mainNetDescription = EthereumNetworks.getMainNetDescription()
 
         const submitDisabledClass = accountAvailable ? "" : "disabled"
 

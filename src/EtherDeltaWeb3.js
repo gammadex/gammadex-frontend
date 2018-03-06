@@ -129,8 +129,16 @@ class EtherDeltaWeb3 {
         return this.accountProvider.promiseTrade(account, nonce, order, amount)
     }
 
+    promiseTransactionReceipt(txHash) {
+        return this.web3.eth.getTransactionReceipt(txHash)
+    }
+
     sha3 = (msg) => {
         return this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
+    }
+
+    hexToNumber = (hex) => {
+        return this.web3.utils.hexToNumber(hex)
     }
 }
 

@@ -7,9 +7,11 @@ import OrderBook from '../components/OrderBook'
 import OrderPlacement from '../components/OrderPlacement'
 import WalletChooser from '../components/WalletChooser'
 import TradeDetail from '../components/TradeDetail'
+import MyTrades from '../components/MyTrades'
 import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 import GreetingLoginModals from "../components/GreetingLoginModals"
+import * as TimerActions from "../actions/TimerActions"
 
 class App extends Component {
     constructor() {
@@ -19,6 +21,11 @@ class App extends Component {
         }
 
         this.saveToken = this.saveToken.bind(this)
+
+        // better place for this?
+        setInterval(() => {
+            TimerActions.timerFired()
+        }, 15000)
     }
 
     componentWillMount() {
@@ -48,6 +55,7 @@ class App extends Component {
                 <OrderPlacement token={token}/>
                 <OrderBook token={token} pageSize={pageSize}/>
                 <TradeDetail/>
+                <MyTrades/>
                 <GreetingLoginModals/>
             </div>
         )

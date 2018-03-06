@@ -3,7 +3,7 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import * as WalletDao from "../util/WalletDao"
 import AccountType from "../AccountType"
-import * as EtheriumNetworks from "../util/EtheriumNetworks"
+import * as EthereumNetworks from "../util/EthereumNetworks"
 
 class WalletStore extends EventEmitter {
     constructor() {

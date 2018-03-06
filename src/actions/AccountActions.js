@@ -2,7 +2,7 @@ import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
-// TODO all these errors should be actions
+// TODO all these .catch(error => )'s should be actions
 export function refreshAccount(accountType) {
     EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
