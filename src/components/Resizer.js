@@ -1,13 +1,10 @@
 import React from "react"
 import ReactDOM from 'react-dom'
-import OhlcAndVolumeChart from './PriceChart/OhlcAndVolumeChart'
-//import trades from '../../__test-data__/AmbTrades'
-//import trades from '../../__test-data__/VenTrades'
 
 /**
- * This class handles resizing - TODO maybe rename
+ * This class handles resizing
  */
-export default class PriceChart extends React.Component {
+export default class Resizer extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -26,8 +23,8 @@ export default class PriceChart extends React.Component {
     }
 
     handleWindowResize = () => {
-        let minWidth = 100
-        let heightRatio = 0.3
+        let minWidth = 200
+        let heightRatio = 0.8
 
         const el = ReactDOM.findDOMNode(this)
         if (el) {
@@ -42,20 +39,27 @@ export default class PriceChart extends React.Component {
         }
     }
 
+    childrenWithSize() {
+        return React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, {
+                width: this.state.width,
+                height: this.state.height,
+            })
+        })
+    }
+
     render() {
-        const {trades} = this.props
         const {width, height} = this.state
 
-        if (width && height && trades && trades.length) {
+        if (width && height) {
             return (
-                <div>
-                    <h2>Chart</h2>
-                    <OhlcAndVolumeChart trades={trades} size={[width, height]}/>
-                </div>
+                <span>
+                    {this.childrenWithSize()}
+                </span>
             )
         } else {
             return (
-                <div/>
+                <span/>
             )
         }
     }

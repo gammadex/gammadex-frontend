@@ -1,17 +1,14 @@
 import _ from "lodash"
-
-/**
- Convert trade history data to OHLC
- */
+import dateformat from 'dateformat'
 
 export function convertDateToTimestamp(data) {
     return data.map(v => {
         const timestamp = new Date(v.date).getTime()
-        return Object.assign(v, {date: timestamp})
+        return Object.assign({}, v, {date: timestamp})
     })
 }
 
-export function convertToOhlc(data, periodMins) {
+export function convertToOhlc(data, periodMins, dateFormat) {
     if (data.length === 0) {
         return []
     }
@@ -20,8 +17,8 @@ export function convertToOhlc(data, periodMins) {
 
     const intervalStartAndEndTimePairs = getOhlcIntervals(dataWithTimestamps, periodMins)
 
-    const ohlc = intervalStartAndEndTimePairs.map(startEndTime => {
-        const [startTime, endTime] = startEndTime
+    return _.reduce(intervalStartAndEndTimePairs, (acc, startAndEndTime) => {
+        const [startTime, endTime] = startAndEndTime
 
         const entriesInInterval = _.filter(dataWithTimestamps, entry => {
             return entry.date >= startTime && entry.date < endTime
@@ -29,46 +26,31 @@ export function convertToOhlc(data, periodMins) {
 
         if (entriesInInterval.length > 0) {
             const prices = entriesInInterval.map(e => e.price)
-            const open = _.first(prices)
-            const close = _.last(prices)
-            const high = Math.max(...prices)
-            const low = Math.min(...prices)
-            const volume = _.sum(entriesInInterval.map(e => parseFloat(e.amount)))
 
-            return {
-                open, high, low, close, volume, date: new Date(endTime)
-            }
-        } else {
-            return {
-                volume: 0,
-                date: new Date(endTime)
+            acc.open.push(_.first(prices))
+            acc.close.push(_.last(prices))
+            acc.high.push(Math.max(...prices))
+            acc.low.push(Math.min(...prices))
+            acc.volume.push(_.sum(entriesInInterval.map(e => parseFloat(e.amount))))
+
+            const date = new Date((startTime + endTime) / 2)
+
+            if (dateFormat) {
+                acc.date.push(dateformat(date, dateFormat))
+            } else {
+                acc.date.push(date)
             }
         }
+
+        return acc
+    }, {
+        open: [],
+        high: [],
+        low: [],
+        close: [],
+        volume: [],
+        date: []
     })
-
-    return _.reduce(ohlc, (acc, curr) => {
-        const [forwardFilledOhlcs, prev] = acc
-
-        if (curr.volume === 0) {
-            forwardFilledOhlcs.push({
-                open: prev.close,
-                high: prev.close,
-                low: prev.close,
-                close: prev.close,
-                volume: 0,
-                date: curr.date,
-                filledForward: true
-            })
-
-            return acc
-        } else {
-            forwardFilledOhlcs.push(curr)
-            acc[1] = curr
-
-            return acc
-        }
-
-    }, [[], ohlc[0]])[0]
 }
 
 
@@ -104,4 +86,18 @@ function roundForPeriod(timestamp, periodMins, direction) {
     } else {
         return flooredTotalMillis + periodMillis
     }
+}
+
+export function getPricesAndDates(trades, dateFormat) {
+    const prices = trades.map(t => ({
+        date: dateformat(new Date(t.date), dateFormat),
+        price: t.price
+    }))
+
+    return _.reduce(prices, (acc, next) => {
+        acc.dates.push(next.date)
+        acc.prices.push(next.price)
+
+        return acc
+    }, {dates: [], prices: []})
 }

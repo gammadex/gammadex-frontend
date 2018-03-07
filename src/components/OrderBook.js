@@ -3,7 +3,8 @@ import OrderBookStore from '../stores/OrderBookStore'
 import Pagination from '../components/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 import TokenStats from './OrderBook/TokenStats'
-import PriceChart from './OrderBook/PriceChart'
+import PlotlyChart from './OrderBook/PlotlyChart'
+import Resizer from './Resizer'
 
 import * as OrderBookActions from "../actions/OrderBookActions"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
@@ -64,8 +65,10 @@ export default class OrderBook extends React.Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-lg-12">
-                        <PriceChart trades={allTrades} />
+                    <div className="col-lg-6">
+                        <Resizer>
+                            <PlotlyChart trades={allTrades}/>
+                        </Resizer>
                     </div>
                 </div>
 

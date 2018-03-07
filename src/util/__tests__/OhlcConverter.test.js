@@ -1,4 +1,4 @@
-import {convertToOhlc, getMinAndMaxTimestamp, convertDateToTimestamp} from "../OhlcConverter"
+import {convertToOhlc, getMinAndMaxTimestamp, convertDateToTimestamp, getPricesAndDates} from "../OhlcConverter"
 
 test("check empty data returns empty ohlc list", () => {
     const data = []
@@ -40,14 +40,14 @@ test("check two values in same window map to single ohlc with aggregate values s
 
     const ohlc = convertToOhlc(convertDateToTimestamp(data), 15)
 
-    expect(ohlc).toEqual([{
-        open: 0.005,
-        high: 0.010,
-        low: 0.005,
-        close: 0.010,
-        volume: 110,
-        date: new Date(1518120900000),
-    }])
+    expect(ohlc).toEqual({
+        open: [0.005],
+        high: [0.010],
+        low: [0.005],
+        close: [0.010],
+        volume: [110],
+        date: [new Date("2018-02-08T20:07:30.000Z")],
+    })
 })
 
 test("check volume sums correctly even when amount is a string (bugfix)", () => {
@@ -58,37 +58,25 @@ test("check volume sums correctly even when amount is a string (bugfix)", () => 
 
     const ohlc = convertToOhlc(convertDateToTimestamp(data), 15)
 
-    expect(ohlc[0].volume).toEqual(110)
+    expect(ohlc.volume).toEqual([110])
 })
 
-test("check fill forward", () => {
+test("check date gets formatted", () => {
     const data = [
-        {date: "2018-02-08T20:02:08.000Z", price: 0.006, amount: '60'},
-        {date: "2018-02-08T21:02:08.000Z", price: 0.008, amount: '80'},
+        {date: "2018-02-08T20:02:08.000Z", price: 0.005, amount: '60'},
     ]
 
-    const ohlc = convertToOhlc(convertDateToTimestamp(data), 30)
+    const ohlc = convertToOhlc(convertDateToTimestamp(data), 15, 'yyyy-mm-dd HH:MM')
 
-    expect(ohlc).toEqual([{
-        open: 0.006,
-        high: 0.006,
-        low: 0.006,
-        close: 0.006,
-        volume: 60,
-        date: new Date('2018-02-08T20:30:00.000Z')
-    }, {
-        open: 0.006,
-        high: 0.006,
-        low: 0.006,
-        close: 0.006,
-        volume: 0,
-        date: new Date('2018-02-08T21:00:00.000Z')
-    }, {
-        open: 0.008,
-        high: 0.008,
-        low: 0.008,
-        close: 0.008,
-        volume: 80,
-        date: new Date('2018-02-08T21:30:00.000Z')
-    }])
+    expect(ohlc.date).toEqual(["2018-02-08 20:07"])
+})
+
+test("check date price with formatted date", () => {
+    const trades = [
+        {date: "2018-02-08T20:02:08.000Z", price: 0.005, amount: '60'},
+    ]
+
+    const foramtted = getPricesAndDates(trades, 'yyyy-mm-dd HH:MM:ss')
+
+    expect(foramtted).toEqual({prices: [0.005], dates: ["2018-02-08 20:02:08"]})
 })

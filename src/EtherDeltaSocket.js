@@ -5,7 +5,7 @@ class EtherDeltaWebSocket {
     init(url, socketEventHandlers, messageHandlers) {
         this.socket = io(url, {transports: ['websocket'], autoConnect: false});
 
-        const handlers = Object.assign(socketEventHandlers, messageHandlers)
+        const handlers = Object.assign({}, socketEventHandlers, messageHandlers)
 
         _.each(handlers, (handler, eventName) => {
             this.socket.on(eventName, (response) => {
