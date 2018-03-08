@@ -5,8 +5,8 @@ import OrdersTable from '../components/OrderBook/OrdersTable'
 import TokenStats from './OrderBook/TokenStats'
 import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
 import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
-import pptBuys from "../__test-data__/PPT_buys2.json"
-import pptSells from "../__test-data__/PPT_sells2.json"
+//import pptBuys from "../__test-data__/PPT_buys2.json"
+//import pptSells from "../__test-data__/PPT_sells2.json"
 //import venTrades from '../__test-data__/VenTrades'
 
 import Resizer from './Resizer'
