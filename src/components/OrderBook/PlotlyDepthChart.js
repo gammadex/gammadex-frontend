@@ -10,7 +10,7 @@ export default class PlotlyPriceChart extends React.Component {
     componentDidMount() {
         const {bids, offers} = this.props
 
-        if (bids && offers) {
+        if (bids && bids.length > 0 && offers && offers.length > 0) {
             const {data, layout} = this.getDataAndLayout(bids, offers)
 
             Plotly.newPlot('depthChart', data, layout, {displayModeBar: false});
@@ -20,7 +20,7 @@ export default class PlotlyPriceChart extends React.Component {
     componentDidUpdate() {
         const {bids, offers, width, height} = this.props
 
-        if (bids && offers) {
+        if (bids && bids.length > 0 && offers && offers.length > 0) {
             const {data, layout} = this.getDataAndLayout(bids, offers)
 
             Plotly.update('depthChart', data, layout)
