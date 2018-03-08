@@ -12,7 +12,7 @@ export default class MyTrades extends React.Component {
         super(props)
         this.state = {
             account: null,
-            trades: []
+            trades: MyTradesStore.getMyTradesState().trades
         }
     }
 
@@ -43,7 +43,7 @@ export default class MyTrades extends React.Component {
         let accountTrades = []
         if (account) {
             accountTrades = trades.filter(trade => {
-                return trade.account === account
+                return trade.account.toLowerCase() === account.toLowerCase()
             })
         }
         return (

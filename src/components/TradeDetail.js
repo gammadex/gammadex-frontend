@@ -15,7 +15,7 @@ import * as AccountActions from "../actions/AccountActions"
 export default class TradeDetail extends React.Component {
     constructor(props) {
         super(props)
-        const { account, nonce, exchangeBalanceTokWei } = AccountStore.getAccountState()
+        const { account, nonce, exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
         this.state = {
             modal: false,
             modalOrder: null,
@@ -26,6 +26,7 @@ export default class TradeDetail extends React.Component {
             account: account,
             nonce: nonce,
             exchangeBalanceTokWei: exchangeBalanceTokWei,
+            exchangeBalanceEthWei: exchangeBalanceEthWei,
             showTransactionModal: false,
             transactionHash: "",
             transactionModalIsError: false,
@@ -42,17 +43,27 @@ export default class TradeDetail extends React.Component {
     }
 
     updateAccountState() {
-        const { account, nonce, exchangeBalanceTokWei } = AccountStore.getAccountState()
-        this.setState({ account: account, nonce: nonce, exchangeBalanceTokWei: exchangeBalanceTokWei })
+        const { account, nonce, exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
+        this.setState({
+            account: account,
+            nonce: nonce,
+            exchangeBalanceTokWei: exchangeBalanceTokWei,
+            exchangeBalanceEthWei: exchangeBalanceEthWei
+        })
     }
 
     fillAmountChanged = (event) => {
         let fillAmount = Number(event.target.value)
         const tokenDecimals = Config.getTokenDecimals(this.state.selectedToken.name)
+        const side = (this.state.modalOrder.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
+        const amountEth = fillAmount * this.state.modalOrder.price
         TradeActions.fillAmountChanged(
+            side,
             fillAmount,
             this.state.modalOrder.ethAvailableVolume,
-            this.state.exchangeBalanceTokWei / Math.pow(10, tokenDecimals))
+            this.state.exchangeBalanceTokWei / Math.pow(10, tokenDecimals),
+            amountEth,
+            this.state.exchangeBalanceEthWei / Math.pow(10, 18))
     }
 
     hideModal() {
@@ -92,7 +103,7 @@ export default class TradeDetail extends React.Component {
                                 price: modalOrder.price,
                                 amountTok: fillAmount,
                                 totalEth: modalOrder.price * fillAmount,
-                                timestamp: new Date(),
+                                timestamp: (new Date()).toJSON(),
                                 status: TradeStatus.PENDING
                             })
                         })

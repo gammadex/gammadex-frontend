@@ -111,8 +111,10 @@ class AccountStore extends EventEmitter {
                 break
             }
             case ActionNames.NONCE_UPDATED: {
-                this.nonce = action.nonce
-                this.emitChange()
+                if (action.nonce > this.nonce) {
+                    this.nonce = action.nonce
+                    this.emitChange()
+                }
                 break
             }
             case ActionNames.WALLET_LOGOUT: {
