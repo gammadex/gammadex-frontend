@@ -2,33 +2,27 @@ import React from "react"
 import Plotly from 'plotly.js/dist/plotly-finance'
 import {cumulativeAdd} from "../../util/CumulativeOrderVolumeAdder"
 
-export default class PlotlyPriceChart extends React.Component {
+export default class PlotlyDepthChart extends React.Component {
     constructor(props) {
         super(props)
     }
 
     componentDidMount() {
+        this.createChart()
+    }
+
+    componentDidUpdate() {
+        this.createChart()
+    }
+
+    createChart() {
         const {bids, offers} = this.props
 
         if (bids && bids.length > 0 && offers && offers.length > 0) {
             const {data, layout} = this.getDataAndLayout(bids, offers)
 
-            Plotly.newPlot('depthChart', data, layout, {displayModeBar: false});
-        }
-    }
-
-    componentDidUpdate() {
-        const {bids, offers, width, height} = this.props
-
-        if (bids && bids.length > 0 && offers && offers.length > 0) {
-            const {data, layout} = this.getDataAndLayout(bids, offers)
-
-            Plotly.update('depthChart', data, layout)
-
-            Plotly.relayout('depthChart', {
-                width: width,
-                height: height,
-            })
+            Plotly.purge('depthChart')
+            Plotly.newPlot('depthChart', data, layout, {displayModeBar: false})
         }
     }
 
@@ -41,7 +35,7 @@ export default class PlotlyPriceChart extends React.Component {
             y: cumulativeBuys.volumes,
             fill: 'tozeroy',
             type: 'scatter',
-            line: {shape: 'vh', color:'green'},
+            line: {shape: 'vh', color: 'green'},
             name: 'bids',
         }
 
@@ -50,7 +44,7 @@ export default class PlotlyPriceChart extends React.Component {
             y: cumulativeSells.volumes,
             fill: 'tozeroy',
             type: 'scatter',
-            line: {shape: 'vh', color:'red'},
+            line: {shape: 'vh', color: 'red'},
             name: 'offers',
         }
 

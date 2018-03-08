@@ -5,9 +5,9 @@ import OrdersTable from '../components/OrderBook/OrdersTable'
 import TokenStats from './OrderBook/TokenStats'
 import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
 import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
-import pptBuys from "../__test-data__/PPT_buys.json"
-import pptSells from "../__test-data__/PPT_sells.json"
-import venTrades from '../__test-data__/VenTrades'
+import pptBuys from "../__test-data__/PPT_buys2.json"
+import pptSells from "../__test-data__/PPT_sells2.json"
+//import venTrades from '../__test-data__/VenTrades'
 
 import Resizer from './Resizer'
 
@@ -28,7 +28,9 @@ export default class OrderBook extends React.Component {
             trades: [],
             tradesPage: 0,
             numTradesPages: 0,
-            allTrades: []
+            allTrades: [],
+            allBids: [],
+            allOffers: [],
         }
     }
 
@@ -48,6 +50,8 @@ export default class OrderBook extends React.Component {
             tradesPage: OrderBookStore.getTradesPage(),
             numTradesPages: OrderBookStore.getNumTradesPages(),
             allTrades: OrderBookStore.getAllTradesSortedByDateAsc(),
+            allBids: OrderBookStore.getBids(),
+            allOffers: OrderBookStore.getOffers(),
         }))
     }
 
@@ -65,22 +69,24 @@ export default class OrderBook extends React.Component {
 
     render() {
         const {token, pageSize} = this.props
-        const {bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages, allTrades} = this.state
+        const {
+            bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages,
+            allTrades, allBids, allOffers
+        } = this.state
 
         return (
             <div>
                 <div className="row">
                     <div className="col-lg-6">
                         <Resizer>
-                            <PlotlyPriceChart trades={venTrades}/>
+                            <PlotlyPriceChart trades={allTrades} token={token.name}/>
                         </Resizer>
                     </div>
                     <div className="col-lg-6">
                         <Resizer>
-                            <PlotlyDepthChart bids={pptBuys} offers={pptSells}/>
+                            <PlotlyDepthChart bids={allBids} offers={allOffers}/>
                         </Resizer>
                     </div>
-
                 </div>
 
                 <h2>Order Book</h2>

@@ -24,7 +24,7 @@ export default class Resizer extends React.Component {
 
     handleWindowResize = () => {
         let minWidth = 200
-        let heightRatio = 0.5
+        let heightRatio = 0.6
 
         const el = ReactDOM.findDOMNode(this)
         if (el) {

@@ -11,7 +11,8 @@ export default class PlotlyPriceChart extends React.Component {
             ohlc: true,
             volume: true,
             price: false
-        }
+        },
+        plotCreatedForToken: null
     }
 
     constructor(props) {
@@ -19,37 +20,51 @@ export default class PlotlyPriceChart extends React.Component {
     }
 
     componentDidMount() {
-        const {trades} = this.props
-
-        if (trades && trades.length > 0) {
-            const {data, layout} = this.getDataAndLayout()
-
-            Plotly.plot('chart', data, layout, {displayModeBar: false})
-        }
+        this.createNewChart()
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const {trades, width, height} = this.props
+        const {trades, token} = this.props
+        const {plotCreatedForToken} = this.state
+        let stateChanged = (! _.isEqual(prevState, this.state) || prevProps.token !== token)
 
         if (trades && trades.length > 0) {
-            const {data, layout} = this.getDataAndLayout()
-
-            if (_.isEqual(prevState, this.state)) {
-                // state is same, so only props have changed -  width, height or trades
-
-                Plotly.update('chart', data, layout)
-
-                Plotly.relayout('chart', {
-                    width: width,
-                    height: height,
-                })
+            if (plotCreatedForToken !== token || stateChanged) {
+                this.createNewChart()
             } else {
-                // user has changed chart parameters (ohlc, volume, interval etc.) so create new plot
-
-                Plotly.newPlot('chart', data, layout, {displayModeBar: false})
+                this.updateChartDimensions(prevProps)
             }
         }
     }
+
+    updateChartDimensions(prevProps) {
+        const {width, height} = this.props
+
+        if (width !== prevProps.width || height !== prevProps.height) {
+            Plotly.relayout('chart', {
+                width: width,
+                height: height,
+            })
+        }
+    }
+
+    createNewChart() {
+        const {trades, token} = this.props
+
+        if (trades && trades.length > 0) {
+            console.log("creating X", this.props)
+
+            const {data, layout} = this.getDataAndLayout()
+
+            Plotly.purge('chart')
+            Plotly.newPlot('chart', data, layout, {displayModeBar: false})
+
+            this.setState({
+                plotCreatedForToken: token
+            })
+        }
+    }
+
 
     getDataAndLayout = () => {
         const {ohlcIntervalMins, chartElements} = this.state
