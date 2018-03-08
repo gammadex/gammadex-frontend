@@ -3,7 +3,12 @@ import OrderBookStore from '../stores/OrderBookStore'
 import Pagination from '../components/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 import TokenStats from './OrderBook/TokenStats'
-import PlotlyChart from './OrderBook/PlotlyChart'
+import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
+import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
+import pptBuys from "../__test-data__/PPT_buys.json"
+import pptSells from "../__test-data__/PPT_sells.json"
+import venTrades from '../__test-data__/VenTrades'
+
 import Resizer from './Resizer'
 
 import * as OrderBookActions from "../actions/OrderBookActions"
@@ -67,9 +72,15 @@ export default class OrderBook extends React.Component {
                 <div className="row">
                     <div className="col-lg-6">
                         <Resizer>
-                            <PlotlyChart trades={allTrades}/>
+                            <PlotlyPriceChart trades={venTrades}/>
                         </Resizer>
                     </div>
+                    <div className="col-lg-6">
+                        <Resizer>
+                            <PlotlyDepthChart bids={pptBuys} offers={pptSells}/>
+                        </Resizer>
+                    </div>
+
                 </div>
 
                 <h2>Order Book</h2>

@@ -166,9 +166,11 @@ class OrderBookStore extends EventEmitter {
             const orders = message.orders
 
             if (orders.buys) {
+                window.buys = orders.buys
                 this.bids = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.buys, false)
             }
             if (orders.sells) {
+                window.sells = orders.sells
                 this.offers = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.sells, true)
             }
         }

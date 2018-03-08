@@ -1,10 +1,10 @@
 import React from "react"
 import Plotly from 'plotly.js/dist/plotly-finance'
-//import trades from '../../__test-data__/VenTrades'
 import {convertToOhlc, getPricesAndDates} from "../../util/OhlcConverter"
 import {getInitialDateRange} from "../../util/ChartUtil"
+import _ from "lodash"
 
-export default class PlotlyChart extends React.Component {
+export default class PlotlyPriceChart extends React.Component {
     state = {
         ohlcIntervalMins: 60,
         chartElements: {
@@ -21,26 +21,39 @@ export default class PlotlyChart extends React.Component {
     componentDidMount() {
         const {trades} = this.props
 
-        if (trades && trades.length) {
+        if (trades) {
             const {data, layout} = this.getDataAndLayout()
 
             Plotly.plot('chart', data, layout, {displayModeBar: false})
         }
     }
 
-    componentDidUpdate() {
-        const {trades} = this.props
+    componentDidUpdate(prevProps, prevState) {
+        const {trades, width, height} = this.props
 
-        if (trades && trades.length) {
+        if (trades) {
             const {data, layout} = this.getDataAndLayout()
 
-            Plotly.newPlot('chart', data, layout, {displayModeBar: false})
+            if (_.isEqual(prevState, this.state)) {
+                // state is same, so only props have changed -  width, height or trades
+
+                Plotly.update('chart', data, layout)
+
+                Plotly.relayout('chart', {
+                    width: width,
+                    height: height,
+                })
+            } else {
+                // user has changed chart parameters (ohlc, volume, interval etc.) so create new plot
+
+                Plotly.newPlot('chart', data, layout, {displayModeBar: false})
+            }
         }
     }
 
     getDataAndLayout = () => {
         const {ohlcIntervalMins, chartElements} = this.state
-        const {trades} = this.props // for testing comment this line out and remove comment from VenTrades import
+        const {trades} = this.props
 
         const ohlc = convertToOhlc(trades, ohlcIntervalMins, 'yyyy-mm-dd HH:MM')
         const prices = getPricesAndDates(trades, 'yyyy-mm-dd HH:MM:ss')
@@ -53,12 +66,13 @@ export default class PlotlyChart extends React.Component {
             low: ohlc.low,
             open: ohlc.open,
 
-            increasing: {line: {color: 'green'}},
-            decreasing: {line: {color: 'red'}},
+            increasing: {line: {color: 'green'}, name: 'ohlc'},
+            decreasing: {line: {color: 'red'}, name: 'ohlc'},
 
             type: 'candlestick',
             xaxis: 'x',
-            yaxis: 'y'
+            yaxis: 'y',
+            name: 'ohlc',
         }
 
         const volumeTrace = {
@@ -74,8 +88,8 @@ export default class PlotlyChart extends React.Component {
                     color: 'white',
                     width: 0.5
                 },
-                opacity: 0.7,
             },
+            name: 'volume',
         }
 
         const pricesTrace = {
@@ -88,6 +102,7 @@ export default class PlotlyChart extends React.Component {
                 width: 2,
                 dash: 'dot',
             },
+            name: 'price',
         }
 
         const data = []
@@ -229,7 +244,7 @@ export default class PlotlyChart extends React.Component {
 
             <div className="row">
                 <div className="col-lg-12">
-                    <div id="chart" ref={node => this.node = node}/>
+                    <div id="chart"/>
                 </div>
             </div>
         </div>
