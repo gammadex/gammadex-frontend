@@ -29,11 +29,11 @@ export function sortByPriceAndIdRemovingDuplicates(orders, ascendingPriceOrder) 
 }
 
 function isDelete(order) {
-    if (typeof order.delete === 'undefined') {
+    if (typeof order.deleted === 'undefined') {
         return false
     }
 
-    return (order.delete === 'true') || (order.delete === true)
+    return (order.deleted === 'true') || (order.deleted === true)
 }
 
 function filterForTokenAddress(orders, tokenAddress) {
