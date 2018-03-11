@@ -46,6 +46,10 @@ export default class OrderPlacement extends React.Component {
         console.log(trades)
     }
 
+    sell() {
+        
+    }
+
     sellOrderTypeChanged = (event) => {
         OrderPlacementActions.sellOrderTypeChanged(
             (event.target.value === "Limit") ? OrderType.LIMIT_ORDER : OrderType.MARKET_ORDER, 0, 0, 0)
@@ -206,7 +210,7 @@ export default class OrderPlacement extends React.Component {
                         <FormGroup row>
                             <Label for="sellButton" sm={2}></Label>
                             <Col sm={8}>
-                                <Button block color="primary" id="sellButton" onClick={this.buy.bind(this)}>{"SELL"}</Button>
+                                <Button block color="primary" id="sellButton" onClick={this.sell.bind(this)}>{"SELL"}</Button>
                             </Col>
                         </FormGroup>
                     </div>

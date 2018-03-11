@@ -37,6 +37,11 @@ class MyTradesStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.MY_TRADES_PURGED: {
+                this.trades = []
+                this.emitChange()
+                break
+            }
         }
         localStorage.myTrades = JSON.stringify(this.trades)
     }

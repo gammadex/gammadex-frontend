@@ -1,8 +1,8 @@
 import React from "react"
 import WebSocketStore from '../stores/WebSocketStore'
-import TokenStore from '../stores/TokenStore' // TODO for mocking only, delete!
 import * as WebSocketActions from "../actions/WebSocketActions"
 import * as MockWebSocketActions from "../actions/MockWebSocketActions"
+import Config from "../Config"
 
 export default class WebSocketDetail extends React.Component {
     constructor() {
@@ -23,8 +23,7 @@ export default class WebSocketDetail extends React.Component {
     }
 
     connectToWebSocket() {
-        // ouch, delete
-        if(TokenStore.getSelectedToken().name==="TST") {
+        if(Config.isDevelopment()) {
             MockWebSocketActions.connect()
         } else {
             WebSocketActions.connect()

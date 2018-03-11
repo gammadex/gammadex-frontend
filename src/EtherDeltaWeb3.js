@@ -123,6 +123,24 @@ class EtherDeltaWeb3 {
             account).call()
     }
 
+    promiseAvailableVolume(order) {
+        return this.contractEtherDelta.methods.availableVolume(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce,
+            order.user,
+            order.v,
+            order.r,
+            order.s).call()
+    }
+
+    promiseCurrentBlockNumber() {
+        return this.web3.eth.getBlockNumber()
+    }
+
     // amount is in amountGet terms:
     // - if taker is buying TOK (lifts offer), maker is selling TOK = tokenGive
     // and therefore maker is buying ETH = tokenGet. AmountGet in units of ETH

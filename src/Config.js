@@ -9,11 +9,21 @@ class Config {
                 label: tk.name
             }
         })
-        this.tokens = _.sortBy(tokens, (tk) => tk.label)
+        this.tokens = _.sortBy(tokens, (tk) => tk.label).filter(tk => { return tk.label != "ETH" })
+    }
+
+    isDevelopment() {
+        return this.getReactEnv() === "development"
+    }
+
+    getReactEnv() {
+        // Why we use a custom env var and not NODE_ENV:
+        // https://github.com/facebook/create-react-app/issues/436
+        return process.env.REACT_APP_ENV
     }
 
     getEnv() {
-        return config[`${process.env.REACT_APP_ENV}`]
+        return config[this.getReactEnv()]
     }
 
     getEnvTokens() {
@@ -36,6 +46,10 @@ class Config {
         return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].decimals
     }
 
+    getTokenDecimalsByAddress(address) {
+        return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].decimals
+    }
+    
     getBaseAddress() {
         return config.baseAddress
     }

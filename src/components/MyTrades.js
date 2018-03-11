@@ -43,6 +43,8 @@ export default class MyTrades extends React.Component {
         let accountTrades = []
         if (account) {
             accountTrades = trades.filter(trade => {
+                // ethereum wallet addresses are in hex, so A = a
+                // https://forum.ethereum.org/discussion/9220/eth-address-upper-and-lower-characters-does-not-matter
                 return trade.account.toLowerCase() === account.toLowerCase()
             })
         }

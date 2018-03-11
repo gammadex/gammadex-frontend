@@ -17,7 +17,7 @@ export function mergeOrders(existing, incoming, tokenAddress, ascendingPriceOrde
 }
 
 export function sortByPriceAndIdRemovingDuplicates(orders, ascendingPriceOrder) {
-    const deDupedOrders = MessageUtils.removeDups(orders, 'id')
+    const deDupedOrders = MessageUtils.removeDups(orders, 'id').filter(o => { return !isDelete(o) })
 
     const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.id), o => o.price)
 

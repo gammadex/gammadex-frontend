@@ -1,6 +1,7 @@
 import React from "react"
 import MyTradesRow from "./MyTradesRow"
 import _ from "lodash"
+import Config from "../../Config"
 
 export default class MyTradesTable extends React.Component {
     constructor(props) {
@@ -8,7 +9,10 @@ export default class MyTradesTable extends React.Component {
     }
     render() {
         const { trades } = this.props
-        const sortedTradesTimeDesc = _.reverse(_.sortBy(trades, t => t.timestamp))
+        const sortedTradesTimeDesc = _.reverse(_.sortBy(trades
+            .filter(trade => {
+                return trade.environment === Config.getReactEnv()
+            }), t => t.timestamp))
         const rows = sortedTradesTimeDesc.map(trade => {
             return <MyTradesRow key={trade.txHash} trade={trade} />
         })

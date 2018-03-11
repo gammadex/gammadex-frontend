@@ -96,6 +96,7 @@ export default class TradeDetail extends React.Component {
                             AccountActions.nonceUpdated(nonce + 1)
                             TradeActions.sentTransaction(hash)
                             MyTradeActions.addMyTrade({
+                                environment: Config.getReactEnv(),
                                 account: account,
                                 txHash: hash,
                                 tokenAddress: selectedToken.address,

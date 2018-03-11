@@ -24,3 +24,10 @@ export function refreshMyTrade(txHash) {
             }
         })
 }
+
+export function purge() {
+    localStorage.removeItem("myTrades")
+    dispatcher.dispatch({
+        type: ActionNames.MY_TRADES_PURGED
+    })
+}

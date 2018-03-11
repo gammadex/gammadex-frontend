@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import WebSocketDetail from '../components/WebSocketDetail'
 import TokenChooser from '../components/TokenChooser'
 import AccountDetail from '../components/AccountDetail'
@@ -12,6 +12,9 @@ import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 import GreetingLoginModals from "../components/GreetingLoginModals"
 import * as TimerActions from "../actions/TimerActions"
+import { Button } from 'reactstrap'
+import * as MyTradeActions from "../actions/MyTradeActions"
+import MockSocket from "../MockSocket"
 
 class App extends Component {
     constructor() {
@@ -39,24 +42,39 @@ class App extends Component {
         }))
     }
 
+    purge() {
+        MyTradeActions.purge()
+        MockSocket.purge()
+    }
+
     render() {
-        const {token} = this.state
+        const { token } = this.state
         const allTokens = Config.getTokens()
         const pageSize = Config.getDefaultPageSize()
 
+        let purge = null
+        if (Config.isDevelopment()) {
+            purge = <div className="row">
+                <div className="col-lg-12">
+                    <Button color="link" size="sm" onClick={() => this.purge()}>Purge</Button><small> local storage</small>
+                </div>
+            </div>
+        }
+
         return (
             <div className="App">
-                <small>You are running this application in <b>{process.env.REACT_APP_ENV}</b> mode.</small>
-                <WebSocketDetail token={token}/>
-                <TokenChooser token={token} tokenOptions={allTokens}/>
-                <AccountDetail token={token}/>
-                <Logout/>
-                <WalletChooser/>
-                <OrderPlacement token={token}/>
-                <OrderBook token={token} pageSize={pageSize}/>
-                <TradeDetail/>
-                <MyTrades/>
-                <GreetingLoginModals/>
+                <small>You are running this application in <b>{Config.getReactEnv()}</b> mode.</small>
+                {purge}
+                <WebSocketDetail token={token} />
+                <TokenChooser token={token} tokenOptions={allTokens} />
+                <AccountDetail token={token} />
+                <Logout />
+                <WalletChooser />
+                <OrderPlacement token={token} />
+                <OrderBook token={token} pageSize={pageSize} />
+                <TradeDetail />
+                <MyTrades />
+                <GreetingLoginModals />
             </div>
         )
     }

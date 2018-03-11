@@ -39,6 +39,7 @@ System level workaround:
 * https://reactjs.org/docs/state-and-lifecycle.html
 * https://reactstrap.github.io/components
 * https://github.com/rrag/react-stockcharts
+* https://github.com/markerikson/react-redux-links/blob/master/react-component-patterns.md
 
 ### Why reactstrap ^5.0.0-beta?
 

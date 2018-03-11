@@ -4,7 +4,8 @@ import TokenStore from '../stores/TokenStore'
 import ActionNames from "./ActionNames"
 
 export function connect() {
-    const url = 'https://api.forkdelta.com'
+    //const url = 'https://api.forkdelta.com'
+    const url = 'https://socket02.etherdelta.com'
 
     EtherDeltaWebSocket.init(
         url,
