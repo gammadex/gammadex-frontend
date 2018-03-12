@@ -68,7 +68,7 @@ export default class TokenChooser extends React.Component {
                 <thead>
                 <tr>
                     <th>Symbol</th>
-                    <th>Volume</th>
+                    <th>Volume (ETH)</th>
                     <th>% Change</th>
                 </tr>
                 </thead>
@@ -92,7 +92,7 @@ export default class TokenChooser extends React.Component {
             if (tokenDetails) {
                 return Object.assign(token, {
                     percentChange: tokenDetails.percentChange,
-                    volume: tokenDetails.quoteVolume,
+                    volume: tokenDetails.baseVolume,
                 })
             } else {
                 return token
