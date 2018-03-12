@@ -10,8 +10,7 @@ import OrderSide from "./OrderSide"
 // - The Socket Order replicates the format sent by the ED web socket, to render the mocked-up order book.
 
 export function orderDetailFromOrder(order) {
-    const orderHash = OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)
-    const makerSide = (order.tokenGive === Config.getBaseAddress()) ? OrderSide.BUY : OrderSide.SELL
+    const orderHash = `0x${OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)}`
 
     const ethDivisor = Math.pow(10, Config.getBaseDecimals())
     const tokenDecimals = (order.tokenGive === Config.getBaseAddress()
@@ -24,7 +23,7 @@ export function orderDetailFromOrder(order) {
     let contractAvailableVolume = order.amountGet  // this is in order.amountGet terms: TOK units for 
     // maker buy and ETH units for maker sell
 
-    if (makerSide === OrderSide.BUY) {
+    if (isMakerBuy(order)) {
         price = (order.amountGive / ethDivisor) / (order.amountGet / tokDivisor)
     } else {
         price = (order.amountGet / ethDivisor) / (order.amountGive / tokDivisor)
@@ -33,7 +32,7 @@ export function orderDetailFromOrder(order) {
     return {
         order: order,
         orderHash: orderHash,
-        makerSide: makerSide,
+        makerSide: makerSide(order),
         price: price,
         tokenDecimals: tokenDecimals,
         contractAvailableVolume: contractAvailableVolume,
@@ -101,4 +100,36 @@ export function orderDetailToSocketOrder(orderDetail) {
         deleted: orderDetail.deleted // this is an ED field
         // state: State.OPEN - this is a ForkDelta-only bit of metadata
     }
+}
+
+export function makerSide(order) {
+    if(order.tokenGive === Config.getBaseAddress()) {
+        return OrderSide.BUY
+    } else {
+        return OrderSide.SELL
+    }
+}
+
+export function takerSide(order) {
+    if(makerSide(order) === OrderSide.BUY) {
+        return OrderSide.SELL
+    } else {
+        return OrderSide.BUY
+    }
+}
+
+export function isMakerBuy(order) {
+    return (makerSide(order) === OrderSide.BUY)
+}
+
+export function isMakerSell(order) {
+    return (makerSide(order) === OrderSide.SELL)
+}
+
+export function isTakerBuy(order) {
+    return (takerSide(order) === OrderSide.BUY)
+}
+
+export function isTakerSell(order) {
+    return (takerSide(order) === OrderSide.SELL)
 }

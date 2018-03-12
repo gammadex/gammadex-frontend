@@ -2,6 +2,7 @@ import React from "react"
 import Config from '../../Config'
 import { Button } from "reactstrap"
 import TradeStatus from "../../TradeStatus"
+import OrderSide from "../../OrderSide"
 
 export default class MyTradesRow extends React.Component {
     constructor(props) {
@@ -21,7 +22,7 @@ export default class MyTradesRow extends React.Component {
             <tr>
                 <td>{`${trade.txHash.substring(0, 20)}...`}</td>
                 <td>{`${tokenName}/ETH`}</td>
-                <td>{trade.side}</td>
+                <td>{(trade.takerSide === OrderSide.SELL) ? "Sell" : "Buy"}</td>
                 <td>{trade.price}</td>
                 <td>{`${trade.amountTok} ${tokenName}`}</td>
                 <td></td>
