@@ -8,3 +8,10 @@ export function selectToken(name, address) {
         token
     })
 }
+
+export function searchToken(search) {
+    dispatcher.dispatch({
+        type: ActionNames.SEARCH_TOKEN,
+        search
+    })
+}

@@ -52,8 +52,6 @@ export default class PlotlyPriceChart extends React.Component {
         const {trades, token} = this.props
 
         if (trades && trades.length > 0) {
-            console.log("creating X", this.props)
-
             const {data, layout} = this.getDataAndLayout()
 
             Plotly.purge('chart')

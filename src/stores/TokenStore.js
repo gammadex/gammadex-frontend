@@ -1,16 +1,27 @@
-import { EventEmitter } from "events"
+import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import Config from '../Config'
+import _ from "lodash"
 
 class TokenStore extends EventEmitter {
     constructor() {
         super()
         this.selectedToken = Config.getDefaultToken()
+        this.searchToken = ""
+        this.serverTickers = {}
     }
 
     getSelectedToken() {
         return this.selectedToken
+    }
+
+    getSearchToken() {
+        return this.searchToken
+    }
+
+    getServerTickers() {
+        return this.serverTickers
     }
 
     emitChange() {
@@ -24,7 +35,26 @@ class TokenStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.SEARCH_TOKEN: {
+                this.searchToken = action.search
+                this.emitChange()
+                break
+            }
+            case ActionNames.MESSAGE_RECEIVED_MARKET: {
+                if (action.message && action.message.returnTicker) {
+                    this.storeServerTickers(action.message.returnTicker)
+                    this.emitChange()
+                }
+                break
+            }
         }
+    }
+
+    storeServerTickers(returnTicker) {
+        this.serverTickers =  _.reduce(Object.values(returnTicker), (acc, curr) => {
+            acc[curr.tokenAddr.toLowerCase()] = curr
+            return acc
+        }, {})
     }
 }
 

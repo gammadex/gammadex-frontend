@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import WebSocketDetail from '../components/WebSocketDetail'
+import DropDownTokenChooser from '../components/DropDownTokenChooser'
 import TokenChooser from '../components/TokenChooser'
 import AccountDetail from '../components/AccountDetail'
 import Logout from '../components/Logout'
@@ -66,7 +67,7 @@ class App extends Component {
                 <small>You are running this application in <b>{Config.getReactEnv()}</b> mode.</small>
                 {purge}
                 <WebSocketDetail token={token} />
-                <TokenChooser token={token} tokenOptions={allTokens} />
+                <DropDownTokenChooser token={token} tokenOptions={allTokens} />
                 <AccountDetail token={token} />
                 <Logout />
                 <WalletChooser />
@@ -74,6 +75,7 @@ class App extends Component {
                 <OrderBook token={token} pageSize={pageSize} />
                 <TradeDetail />
                 <MyTrades />
+                <TokenChooser />
                 <GreetingLoginModals />
             </div>
         )

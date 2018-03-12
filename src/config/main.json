@@ -9,7 +9,8 @@
     "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
     "tokens": [
       { "address": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
-      { "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180", "name": "TST", "decimals": 18 }
+      { "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180", "name": "TST", "decimals": 18 },
+      { "address": "0xf5f62BA849d31CE5852426d5D14f649cddB37025", "name": "TEU", "decimals": 18 }
     ],
     "defaultPair": { "token": "TST", "base": "ETH" }
   },

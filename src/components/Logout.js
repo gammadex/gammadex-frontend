@@ -4,7 +4,7 @@ import * as WalletDao from "../util/WalletDao"
 import AccountStore from "../stores/AccountStore"
 import Conditional from "./Conditional"
 
-export default class TokenChooser extends React.Component {
+export default class Logout extends React.Component {
     state = {
         account: null
     }
