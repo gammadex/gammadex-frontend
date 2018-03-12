@@ -10,7 +10,7 @@ import OrderSide from "./OrderSide"
 // - The Socket Order replicates the format sent by the ED web socket, to render the mocked-up order book.
 
 export function orderDetailFromOrder(order) {
-    const orderHash = OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)
+    const orderHash = `0x${OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)}`
     const makerSide = (order.tokenGive === Config.getBaseAddress()) ? OrderSide.BUY : OrderSide.SELL
 
     const ethDivisor = Math.pow(10, Config.getBaseDecimals())

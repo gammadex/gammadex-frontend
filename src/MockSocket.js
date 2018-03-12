@@ -55,18 +55,18 @@ class MockSocket {
     updateOrder(orderDetail, blockNumber) {
         EtherDeltaWeb3.promiseAvailableVolume(orderDetail.order)
             .then(availableVolume => {
-                const bigAvailableVolume = BigNumber(availableVolume)
+                const bigAvailableVolume = new BigNumber(availableVolume)
                 let orderUpdated = false
                 if(blockNumber >= orderDetail.order.expires) {
                     orderDetail.deleted = true
                     orderUpdated = true
                 }
-                if(bigAvailableVolume != orderDetail.contractAvailableVolume) {
+                if(!(bigAvailableVolume.isEqualTo(new BigNumber(orderDetail.contractAvailableVolume)))) {
                     orderDetail.contractAvailableVolume = bigAvailableVolume
                     orderUpdated = true
                 }
 
-                if(orderDetail.contractAvailableVolume === 0 && !orderDetail.deleted) {
+                if(new BigNumber(orderDetail.contractAvailableVolume).isZero() && !orderDetail.deleted) {
                     orderDetail.deleted = true
                     orderUpdated = true
                 }
