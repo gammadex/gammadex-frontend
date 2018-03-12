@@ -14,18 +14,18 @@ export default class TokenChooser extends React.Component {
     }
 
     componentWillMount() {
-        TokenStore.on("change", this.onAccountStoreChange)
+        TokenStore.on("change", this.onTokenStoreChange)
     }
 
     componentDidMount() {
-        this.onAccountStoreChange()
+        this.onTokenStoreChange()
     }
 
     componentWillUnmount() {
-        TokenStore.removeListener("change", this.onAccountStoreChange)
+        TokenStore.removeListener("change", this.onTokenStoreChange)
     }
 
-    onAccountStoreChange = () => {
+    onTokenStoreChange = () => {
         this.setState({
             selectedToken: TokenStore.getSelectedToken(),
             searchedToken: TokenStore.getSearchToken(),
