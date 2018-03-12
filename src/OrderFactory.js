@@ -4,6 +4,7 @@ import sha256 from 'js-sha256'
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from './EtherDeltaWeb3'
 import Config from './Config'
+import OrderSide from "./OrderSide"
 
 import * as EthJsUtil from "ethereumjs-util"
 
@@ -11,7 +12,7 @@ const etherDeltaAddress = Config.getEtherDeltaAddress()
 
 class OrderFactory {
 
-    createOrder = (side, expires, price, amount, tokenAddress, tokenDecimals, userAddress, userPrivateKey) => {
+    createOrder = (makerSide, expires, price, amount, tokenAddress, tokenDecimals, userAddress, userPrivateKey) => {
         // web3js 1 supports message signing -> http://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#sign
         // FIXMEPLEASE it's a nicer API but hey ho the shit doesn't work
         //
@@ -59,15 +60,15 @@ class OrderFactory {
             }
         };
 
-        if (side !== 'buy' && side !== 'sell') throw new Error('Side must be buy or sell')
+        if (makerSide !== OrderSide.BUY && makerSide !== OrderSide.SELL) throw new Error('Maker side must be BUY or SELL')
         const amountBigNum = new BigNumber(String(amount))
         const amountBaseBigNum = new BigNumber(String(amount * price))
-        const tokenGet = side === 'buy' ? tokenAddress : Config.getBaseAddress()
-        const tokenGive = side === 'sell' ? tokenAddress : Config.getBaseAddress()
-        const amountGet = side === 'buy' ?
+        const tokenGet = makerSide === OrderSide.BUY ? tokenAddress : Config.getBaseAddress()
+        const tokenGive = makerSide === OrderSide.SELL ? tokenAddress : Config.getBaseAddress()
+        const amountGet = makerSide === OrderSide.BUY ?
             this.toWei(amountBigNum, tokenDecimals) :
             this.toWei(amountBaseBigNum, Config.getBaseDecimals())
-        const amountGive = side === 'sell' ?
+        const amountGive = makerSide === OrderSide.SELL ?
             this.toWei(amountBigNum, tokenDecimals) :
             this.toWei(amountBaseBigNum, Config.getBaseDecimals())
         const orderNonce = Number(Math.random().toString().slice(2))

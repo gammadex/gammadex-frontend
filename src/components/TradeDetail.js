@@ -10,6 +10,7 @@ import TradeStatus from "../TradeStatus"
 import * as TradeActions from "../actions/TradeActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
+import * as MockOrderUtil from "../MockOrderUtil"
 
 // TODO this class knows and is doing too much!!!!
 export default class TradeDetail extends React.Component {
@@ -55,10 +56,10 @@ export default class TradeDetail extends React.Component {
     fillAmountChanged = (event) => {
         let fillAmount = Number(event.target.value)
         const tokenDecimals = Config.getTokenDecimals(this.state.selectedToken.name)
-        const side = (this.state.modalOrder.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
+        const takerSide = MockOrderUtil.takerSide(this.state.modalOrder)
         const amountEth = fillAmount * this.state.modalOrder.price
         TradeActions.fillAmountChanged(
-            side,
+            takerSide,
             fillAmount,
             this.state.modalOrder.ethAvailableVolume,
             this.state.exchangeBalanceTokWei / Math.pow(10, tokenDecimals),
@@ -77,7 +78,7 @@ export default class TradeDetail extends React.Component {
     submit() {
         this.hideModal()
         const { modalOrder, account, nonce, fillAmount, selectedToken } = this.state
-        const side = (modalOrder.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
+        const takerSide = MockOrderUtil.takerSide(modalOrder)
         // amount is in amountGet terms
         // TODO, BigNumber this shit up https://github.com/wjsrobertson/ethergamma/issues/6
         let amountWei = 0
@@ -100,7 +101,7 @@ export default class TradeDetail extends React.Component {
                                 account: account,
                                 txHash: hash,
                                 tokenAddress: selectedToken.address,
-                                side: side,
+                                takerSide: takerSide,
                                 price: modalOrder.price,
                                 amountTok: fillAmount,
                                 totalEth: modalOrder.price * fillAmount,
@@ -138,7 +139,7 @@ export default class TradeDetail extends React.Component {
         let totalRow = null
         let transactionAlert = null
         if (modalOrder) {
-            side = (modalOrder.tokenGive === Config.getBaseAddress()) ? 'Sell' : 'Buy'
+            side = (MockOrderUtil.isTakerSell(modalOrder)) ? 'Sell' : 'Buy'
             modalTitle = `${side} ${selectedToken.name}`
             priceRow = <FormGroup row>
                 <Label for="price" sm={2}>Price</Label>
