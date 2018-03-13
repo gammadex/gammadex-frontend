@@ -36,7 +36,7 @@ export default class OrderBook extends React.Component {
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
-        OpenOrderStore.on("change", () => this.setState({ openOrderHashes: OpenOrderStore.getOpenOrderHashes() }))
+        OpenOrderStore.on("change", () => this.setState({openOrderHashes: OpenOrderStore.getOpenOrderHashes()}))
     }
 
     saveBidsAndOffers = () => {
@@ -47,25 +47,20 @@ export default class OrderBook extends React.Component {
             offers: OrderBookStore.getOffersOnCurrentPage(),
             offersPage: OrderBookStore.getOffersPage(),
             numOffersPages: OrderBookStore.getNumOffersPages(),
-            trades: OrderBookStore.getTradesOnCurrentPage(),
-            tradesPage: OrderBookStore.getTradesPage(),
-            numTradesPages: OrderBookStore.getNumTradesPages(),
-            allTrades: OrderBookStore.getAllTradesSortedByDateAsc(),
-            allBids: OrderBookStore.getBids(),
-            allOffers: OrderBookStore.getOffers(),
         }))
     }
 
-    changeBidsPage(page) {
+    changeBidsPage = (page) => {
         OrderBookActions.changeBidsPage(page)
     }
 
-    changeOffersPage(page) {
+    changeOffersPage = (page) => {
         OrderBookActions.changeOffersPage(page)
     }
 
     render() {
         const {token, pageSize} = this.props
+
         const {
             bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages,
             allTrades, allBids, allOffers, openOrderHashes
@@ -75,34 +70,34 @@ export default class OrderBook extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
+                        <div className="card">
+                            <div className="card-header">
+                                <strong className="card-title">Bids</strong>
+                            </div>
 
-                    </div>
-                    <div className="col-lg-6">
+                            <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
+                                         pageSize={pageSize} openOrderHashes={openOrderHashes}/>
 
-                    </div>
-                </div>
-
-                <h2>Order Book</h2>
-                <div className="row">
-                    <div className="col-lg-6">
-                        <h3>Bids</h3>
-                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                                     pageSize={pageSize} openOrderHashes={openOrderHashes}/>
-
-                        <div className="float-right">
-                            <Pagination page={bidsPage} numPages={numBidsPages}
-                                        onPageChange={this.changeBidsPage.bind(this)}/>
+                            <div className="float-right">
+                                <Pagination page={bidsPage} numPages={numBidsPages}
+                                            onPageChange={this.changeBidsPage}/>
+                            </div>
                         </div>
                     </div>
 
                     <div className="col-lg-6">
-                        <h3>Offers</h3>
-                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                                     pageSize={pageSize} openOrderHashes={openOrderHashes}/>
+                        <div className="card">
+                            <div className="card-header">
+                                <strong className="card-title">Offers</strong>
+                            </div>
 
-                        <div className="float-right">
-                            <Pagination page={offersPage} numPages={numOffersPages}
-                                        onPageChange={this.changeOffersPage.bind(this)}/>
+                            <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
+                                         pageSize={pageSize} openOrderHashes={openOrderHashes}/>
+
+                            <div className="float-right">
+                                <Pagination page={offersPage} numPages={numOffersPages}
+                                            onPageChange={this.changeOffersPage}/>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -110,4 +105,3 @@ export default class OrderBook extends React.Component {
         )
     }
 }
-
