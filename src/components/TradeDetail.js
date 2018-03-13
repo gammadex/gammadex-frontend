@@ -82,7 +82,7 @@ export default class TradeDetail extends React.Component {
         // amount is in amountGet terms
         // TODO, BigNumber this shit up https://github.com/wjsrobertson/ethergamma/issues/6
         let amountWei = 0
-        if (modalOrder.tokenGive === Config.getBaseAddress()) {
+        if (MockOrderUtil.isTakerSell(modalOrder)) {
             // taker is selling, amount is in units of TOK
             const tokenDecimals = Config.getTokenDecimals(selectedToken.name)
             amountWei = fillAmount * Math.pow(10, tokenDecimals)
@@ -110,9 +110,7 @@ export default class TradeDetail extends React.Component {
                             })
                         })
                         .on('error', error => { console.log(`failed to trade: ${error.message}`) })
-                        .then(receipt => {
-
-                        })
+                        .then(receipt => {}) // when tx is mined - we regularly poll the blockchain so this can be empty here
                 } else {
                     TradeActions.sendTransactionFailed("Failed to validate trade as of current block.")
                 }
@@ -133,14 +131,14 @@ export default class TradeDetail extends React.Component {
             transactionModalIsError,
             transactionModalErrorText } = this.state
         let modalTitle = ""
-        let side = ""
+        let takerSide = ""
         let priceRow = null
         let amountRow = null
         let totalRow = null
         let transactionAlert = null
         if (modalOrder) {
-            side = (MockOrderUtil.isTakerSell(modalOrder)) ? 'Sell' : 'Buy'
-            modalTitle = `${side} ${selectedToken.name}`
+            takerSide = (MockOrderUtil.isTakerSell(modalOrder)) ? 'Sell' : 'Buy'
+            modalTitle = `${takerSide} ${selectedToken.name}`
             priceRow = <FormGroup row>
                 <Label for="price" sm={2}>Price</Label>
                 <Col sm={8}>
@@ -194,7 +192,7 @@ export default class TradeDetail extends React.Component {
                         {totalRow}
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="primary" disabled={!fillAmountValid} onClick={this.submit.bind(this)}>{side}</Button>
+                        <Button color="primary" disabled={!fillAmountValid} onClick={this.submit.bind(this)}>{takerSide}</Button>
                         <Button outline color="secondary" onClick={this.hideModal.bind(this)}>Cancel</Button>
                     </ModalFooter>
                 </Modal>

@@ -118,6 +118,14 @@ export function takerSide(order) {
     }
 }
 
+export function tokenAddress(order) {
+    if(order.tokenGive === Config.getBaseAddress()) {
+        return order.tokenGet
+    } else {
+        return order.tokenGive
+    }
+}
+
 export function isMakerBuy(order) {
     return (makerSide(order) === OrderSide.BUY)
 }

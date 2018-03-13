@@ -61,8 +61,8 @@ class OrderFactory {
         };
 
         if (makerSide !== OrderSide.BUY && makerSide !== OrderSide.SELL) throw new Error('Maker side must be BUY or SELL')
-        const amountBigNum = new BigNumber(String(amount))
-        const amountBaseBigNum = new BigNumber(String(amount * price))
+        const amountBigNum = BigNumber(String(amount))
+        const amountBaseBigNum = BigNumber(String(amount * price))
         const tokenGet = makerSide === OrderSide.BUY ? tokenAddress : Config.getBaseAddress()
         const tokenGive = makerSide === OrderSide.SELL ? tokenAddress : Config.getBaseAddress()
         const amountGet = makerSide === OrderSide.BUY ?
@@ -170,7 +170,7 @@ class OrderFactory {
             if (!length) length = 32
             if (dec < 0) {
                 // return convertBase((Math.pow(2, length) + decStr).toString(), 10, 16)
-                return (new BigNumber(2)).pow(length).add(new BigNumber(dec)).toString(16)
+                return (BigNumber(2)).pow(length).add(BigNumber(dec)).toString(16)
             }
             let result = null
             try {
@@ -181,7 +181,7 @@ class OrderFactory {
             if (result) {
                 return result
             }
-            return (new BigNumber(dec)).toString(16)
+            return (BigNumber(dec)).toString(16)
         }
 
         const pack = (dataIn, lengths) => {
@@ -195,7 +195,7 @@ class OrderFactory {
                     if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2)
                     packed += zeroPad(data[i], lengths[i] / 4)
                 } else {
-                    // packed += zeroPad(new BigNumber(data[i]).toString(16), lengths[i]/4)
+                    // packed += zeroPad(BigNumber(data[i]).toString(16), lengths[i]/4)
                     packed += zeroPad(decToHex(data[i], lengths[i]), lengths[i] / 4)
                 }
             }
@@ -218,10 +218,10 @@ class OrderFactory {
         return sha256(new Buffer(condensed, 'hex'))
     }
 
-    toEth = (wei, decimals) => new BigNumber(String(wei))
-        .div(new BigNumber(10 ** decimals))
-    toWei = (eth, decimals) => new BigNumber(String(eth))
-        .times(new BigNumber(10 ** decimals)).dp(0, BigNumber.ROUND_FLOOR)
+    toEth = (wei, decimals) => BigNumber(String(wei))
+        .div(BigNumber(10 ** decimals))
+    toWei = (eth, decimals) => BigNumber(String(eth))
+        .times(BigNumber(10 ** decimals)).dp(0, BigNumber.ROUND_FLOOR)
 }
 
 export default new OrderFactory()
