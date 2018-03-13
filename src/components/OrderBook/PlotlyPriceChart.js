@@ -192,7 +192,7 @@ export default class PlotlyPriceChart extends React.Component {
         return <div>
             <div className="row">
                 <div className="col-lg-12">
-                    <div className="float-left">
+                    <div className="float-left m-2">
                         <form className="form-inline">
                             <div className="form-check mb-2 mr-sm-2">
                                 <input className="form-check-input" type="checkbox" id="ohlc" value="ohlc"
@@ -226,7 +226,7 @@ export default class PlotlyPriceChart extends React.Component {
                         </form>
                     </div>
 
-                    <div className="float-right align-middle">
+                    <div className="float-right align-middle m-2">
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan1"
                                    value="60"

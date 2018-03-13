@@ -9,9 +9,7 @@ import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 //import pptBuys from "../__test-data__/PPT_buys2.json"
 //import pptSells from "../__test-data__/PPT_sells2.json"
 //import venTrades from '../__test-data__/VenTrades'
-
 import Resizer from './Resizer'
-
 import * as OrderBookActions from "../actions/OrderBookActions"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 
@@ -77,14 +75,10 @@ export default class OrderBook extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
-                        <Resizer>
-                            <PlotlyPriceChart trades={allTrades} token={token.name}/>
-                        </Resizer>
+
                     </div>
                     <div className="col-lg-6">
-                        <Resizer>
-                            <PlotlyDepthChart bids={allBids} offers={allOffers}/>
-                        </Resizer>
+
                     </div>
                 </div>
 

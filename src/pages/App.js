@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import WebSocketDetail from '../components/WebSocketDetail'
 import DropDownTokenChooser from '../components/DropDownTokenChooser'
 import TokenChooser from '../components/TokenChooser'
-import AccountDetail from '../components/AccountDetail'
 import Logout from '../components/Logout'
 import OrderBook from '../components/OrderBook'
 import OrderPlacement from '../components/OrderPlacement'
@@ -21,6 +20,7 @@ import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
 import MockSocket from "../MockSocket"
 import TradeHistory from '../components/TradeHistory'
+import ChartsAndBalances from '../components/ChartsAndBalances'
 
 class App extends Component {
     constructor() {
@@ -86,7 +86,7 @@ class App extends Component {
                         <TokenChooser/>
                     </div>
                     <div className="pl-0 col-lg-8 ">
-                        <AccountDetail token={token}/>
+                        <ChartsAndBalances token={token}/>
                         <WalletChooser/>
                         <OrderPlacement token={token}/>
                         <OrderBook token={token} pageSize={pageSize}/>

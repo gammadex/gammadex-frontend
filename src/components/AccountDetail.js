@@ -4,7 +4,7 @@ import AccountStore from '../stores/AccountStore'
 import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
-import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
@@ -20,6 +20,8 @@ export default class AccountDetail extends React.Component {
             walletBalanceTokWei: 0,
             exchangeBalanceEthWei: 0,
             exchangeBalanceTokWei: 0,
+            ethTransaction: null,
+            tokTransaction: null,
             modal: false,
             modalValue: '',
             modalIsEth: false,
@@ -71,7 +73,7 @@ export default class AccountDetail extends React.Component {
     submit() {
         this.hideModal()
 
-        const { token } = this.props
+        const {token} = this.props
         const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
             account,
@@ -79,7 +81,8 @@ export default class AccountDetail extends React.Component {
             nonce,
             modalValue,
             modalIsEth,
-            modalIsDeposit } = this.state
+            modalIsDeposit
+        } = this.state
 
         if (modalIsDeposit) {
             if (modalIsEth) {
@@ -116,7 +119,7 @@ export default class AccountDetail extends React.Component {
     }
 
     render() {
-        const { token } = this.props
+        const {token} = this.props
         const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
             accountType,
@@ -127,10 +130,13 @@ export default class AccountDetail extends React.Component {
             walletBalanceTokWei,
             exchangeBalanceEthWei,
             exchangeBalanceTokWei,
+            ethTransaction,
+            tokTransaction,
             modal,
             modalValue,
             modalIsEth,
-            modalIsDeposit } = this.state
+            modalIsDeposit
+        } = this.state
 
         const modalToken = (modalIsEth ? "ETH" : token.name)
         const modalTitle = (modalIsDeposit ? `Deposit ${modalToken} to Exchange` : `Withdraw ${modalToken} from Exchange`)
@@ -139,7 +145,8 @@ export default class AccountDetail extends React.Component {
         const accountTypeName = (accountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
-            accountLink = <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</a>
+            accountLink =
+                <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</a>
         }
 
         let nonceBadge = ''
@@ -147,12 +154,12 @@ export default class AccountDetail extends React.Component {
             nonceBadge = <Badge color="dark">nonce: {nonce}</Badge>
         }
         return (
-            <div>
-                <h2>Balances</h2>
-                <div className="row">
-                    <div className="col-lg-12">
+            <span>
+                <div className="card">
+                    <div className="card-footer">
                         Account: {accountLink} <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
                     </div>
+
                     <div className="col-lg-12">
                         <AccountTable
                             base="ETH"
@@ -162,19 +169,23 @@ export default class AccountDetail extends React.Component {
                             walletBalanceEthWei={walletBalanceEthWei}
                             walletBalanceTokWei={walletBalanceTokWei}
                             exchangeBalanceEthWei={exchangeBalanceEthWei}
-                            exchangeBalanceTokWei={exchangeBalanceTokWei} />
+                            exchangeBalanceTokWei={exchangeBalanceTokWei}
+                            ethTransaction={ethTransaction}
+                            tokTransaction={tokTransaction}/>
                     </div>
                 </div>
+
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
                     <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>
                     <ModalBody>
-                        <Input type="number" placeholder={modalToken} min={0} value={modalValue} onChange={this.onInputChange.bind(this)} />
+                        <Input type="number" placeholder={modalToken} min={0} value={modalValue}
+                               onChange={this.onInputChange.bind(this)}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={this.submit.bind(this)}>{modalActionLabel}</Button>
                     </ModalFooter>
                 </Modal>
-            </div>
+            </span>
         )
     }
 }
