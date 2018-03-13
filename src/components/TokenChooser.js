@@ -59,25 +59,33 @@ export default class TokenChooser extends React.Component {
         })
 
         return (
-            <span>
-                <h1>Token Chooser</h1>
             <div>
-                <input onChange={this.onSearchTokenChange} value={this.state.searchedToken} placeholder="Search"/>
+                <div className="card">
+                    <div className="card-header">
+                        <strong className="card-title">Tokens</strong>
+
+                        <input onChange={this.onSearchTokenChange}
+                               value={this.state.searchedToken}
+                               placeholder="Search"
+                               className="float-right"/>
+                    </div>
+
+                    <div className="table-responsive token-chooser">
+                        <table className="table table-striped table-bordered table-hover card-table">
+                            <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Volume (ETH)</th>
+                                <th>% Change</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {tokenRows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-                <table className="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                    <th>Symbol</th>
-                    <th>Volume (ETH)</th>
-                    <th>% Change</th>
-                </tr>
-                </thead>
-                <tbody>
-                {tokenRows}
-                </tbody>
-            </table>
-                <hr/>
-            </span>
         )
     }
 

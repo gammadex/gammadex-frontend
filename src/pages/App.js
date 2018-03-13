@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import WebSocketDetail from '../components/WebSocketDetail'
 import DropDownTokenChooser from '../components/DropDownTokenChooser'
 import TokenChooser from '../components/TokenChooser'
@@ -20,6 +20,7 @@ import * as OpenOrderActions from "../actions/OpenOrderActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
 import MockSocket from "../MockSocket"
+import TradeHistory from '../components/TradeHistory'
 
 class App extends Component {
     constructor() {
@@ -55,7 +56,7 @@ class App extends Component {
     }
 
     render() {
-        const { token } = this.state
+        const {token} = this.state
         const allTokens = Config.getTokens()
         const pageSize = Config.getDefaultPageSize()
 
@@ -63,28 +64,41 @@ class App extends Component {
         if (Config.isDevelopment()) {
             purge = <div className="row">
                 <div className="col-lg-12">
-                    <Button color="link" size="sm" onClick={() => this.purge()}>Purge</Button><small> local storage</small>
+                    <Button color="link" size="sm" onClick={() => this.purge()}>Purge</Button>
+                    <small> local storage</small>
                 </div>
             </div>
         }
 
         return (
             <div className="App">
-                <small>You are running this application in <b>{Config.getReactEnv()}</b> mode.</small>
-                {purge}
-                <WebSocketDetail token={token} />
-                <DropDownTokenChooser token={token} tokenOptions={allTokens} />
-                <AccountDetail token={token} />
-                <Logout />
-                <WalletChooser />
-                <OrderPlacement token={token} />
-                <OrderBook token={token} pageSize={pageSize} />
-                <TradeDetail />
-                <OpenOrders />
-                <MyTrades />
-                <DepositHistory />
-                <TokenChooser />
-                <GreetingLoginModals />
+                <div className="row">
+                    <div className="col-lg-12">
+                        <small>You are running this application in <b>{Config.getReactEnv()}</b> mode.</small>
+                        {purge}
+                        <WebSocketDetail token={token}/>
+                        <Logout/>
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col-lg-4">
+                        <TokenChooser/>
+                    </div>
+                    <div className="pl-0 col-lg-8 ">
+                        <AccountDetail token={token}/>
+                        <WalletChooser/>
+                        <OrderPlacement token={token}/>
+                        <OrderBook token={token} pageSize={pageSize}/>
+                        <TradeDetail/>
+                        <TradeHistory token={token} pageSize={pageSize}/>
+                        <MyTrades/>
+                        <OpenOrders />
+                        <DepositHistory />
+                    </div>
+                </div>
+
+                <GreetingLoginModals/>
             </div>
         )
     }

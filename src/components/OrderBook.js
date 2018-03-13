@@ -66,10 +66,6 @@ export default class OrderBook extends React.Component {
         OrderBookActions.changeOffersPage(page)
     }
 
-    changeTradesPage(page) {
-        OrderBookActions.changeTradesPage(page)
-    }
-
     render() {
         const {token, pageSize} = this.props
         const {
@@ -113,18 +109,6 @@ export default class OrderBook extends React.Component {
                         <div className="float-right">
                             <Pagination page={offersPage} numPages={numOffersPages}
                                         onPageChange={this.changeOffersPage.bind(this)}/>
-                        </div>
-                    </div>
-                </div>
-
-                <h2>Trade History</h2>
-                <div className="row">
-                    <div className="col-lg-12">
-                        <TradeHistoryTable base="ETH" token={token.name} trades={trades} pageSize={pageSize}/>
-
-                        <div className="float-right">
-                            <Pagination page={tradesPage} numPages={numTradesPages}
-                                        onPageChange={this.changeTradesPage.bind(this)}/>
                         </div>
                     </div>
                 </div>
