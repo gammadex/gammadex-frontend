@@ -7,6 +7,7 @@ import createLedgerSubprovider from "./hacks/LedgerWeb3SubProvider"
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import ProviderEngine from "web3-provider-engine";
 import RpcSubprovider from "web3-provider-engine/subproviders/rpc";
+import OrderFactory from './OrderFactory';
 
 let web3 = window.web3
 const gasLimit = 250000
@@ -155,6 +156,10 @@ class EtherDeltaWeb3 {
         return this.web3.eth.getTransactionReceipt(txHash)
     }
 
+    promiseSignData(data, account) {
+        return this.accountProvider.promiseSignData(data, account)
+    }
+
     sha3 = (msg) => {
         return this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
     }
@@ -181,6 +186,8 @@ class AccountProvider {
     promiseWithdrawToken(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
 
     promiseTrade(account, nonce, order, amount) { throw new Error("method should be implemented") }
+    promiseSignData(data) { throw new Error("method should be implemented") }
+
 }
 
 class MetaMaskAccountProvider extends AccountProvider {
@@ -244,6 +251,23 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.s,
             amount)
             .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+    }
+
+    promiseSignData(data, account) {
+        const prefixedMessage = OrderFactory.prefixMessage(data)
+        return this.web3.eth.sign(prefixedMessage, account)
+            .then(rawSig => {
+                const sig = rawSig.slice(2)
+                const r = `0x${sig.slice(0, 64)}`
+                const s = `0x${sig.slice(64, 128)}`
+                const v = this.web3.utils.hexToNumber(`0x${sig.slice(128, 130)}`)
+                return {
+                    msg: prefixedMessage,
+                    r: r,
+                    s: s,
+                    v: v
+                }
+            })
     }
 }
 
@@ -326,6 +350,10 @@ class WalletAccountProvider extends AccountProvider {
                 order.r,
                 order.s,
                 amount).encodeABI())
+    }
+
+    promiseSignData(data, account) {
+        return Promise.resolve(OrderFactory.sign(data, this.walletPrivateKey))
     }
 }
 

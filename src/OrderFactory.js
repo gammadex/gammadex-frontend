@@ -12,54 +12,7 @@ const etherDeltaAddress = Config.getEtherDeltaAddress()
 
 class OrderFactory {
 
-    createOrder = (makerSide, expires, price, amount, tokenAddress, tokenDecimals, userAddress, userPrivateKey) => {
-        // web3js 1 supports message signing -> http://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#sign
-        // FIXMEPLEASE it's a nicer API but hey ho the shit doesn't work
-        //
-        // const sign = (msgToSignIn, privateKeyIn) => {
-        //     try {
-        //         const sig = this.web3.eth.accounts.sign(msgToSignIn.slice(2), '0x' + privateKeyIn)
-        //         const addr = this.web3.eth.accounts.recover(sig);
-        //         console.log(`address = ${addr}, priv key in = ${privateKeyIn}`)
-        //         console.log(sig)
-        //         const r = `${sig.r.toString('hex')}`
-        //         const s = `${sig.s.toString('hex')}`
-        //         const v = sig.v
-        //         const result = { r, s, v, msg: msgToSignIn }
-        //         return result
-        //     } catch (err) {
-        //         throw new Error(err)
-        //     }
-        // }
-
-        const sign = (msgToSignIn, privateKeyIn) => {
-            const prefixMessage = (msgIn) => {
-                let msg = msgIn;
-                msg = new Buffer(msg.slice(2), 'hex');
-                msg = Buffer.concat([
-                    new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),
-                    msg]);
-                msg = EtherDeltaWeb3.sha3(msg)
-                msg = new Buffer(msg.slice(2), 'hex');
-                return `0x${msg.toString('hex')}`;
-            };
-            const privateKey = privateKeyIn.substring(0, 2) === '0x' ?
-                privateKeyIn.substring(2, privateKeyIn.length) : privateKeyIn;
-            const msgToSign = prefixMessage(msgToSignIn);
-            try {
-                const sig = EthJsUtil.ecsign(
-                    new Buffer(msgToSign.slice(2), 'hex'),
-                    new Buffer(privateKey, 'hex'));
-                const r = `0x${sig.r.toString('hex')}`;
-                const s = `0x${sig.s.toString('hex')}`;
-                const v = sig.v;
-                const result = { r, s, v, msg: msgToSign };
-                return result;
-            } catch (err) {
-                throw new Error(err);
-            }
-        };
-
+    createUnsignedOrder = (makerSide, expires, price, amount, tokenAddress, tokenDecimals) => {
         if (makerSide !== OrderSide.BUY && makerSide !== OrderSide.SELL) throw new Error('Maker side must be BUY or SELL')
         const amountBigNum = BigNumber(String(amount))
         const amountBaseBigNum = BigNumber(String(amount * price))
@@ -71,28 +24,101 @@ class OrderFactory {
         const amountGive = makerSide === OrderSide.SELL ?
             this.toWei(amountBigNum, tokenDecimals) :
             this.toWei(amountBaseBigNum, Config.getBaseDecimals())
-        const orderNonce = Number(Math.random().toString().slice(2))
-
-        const hash = `0x${this.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, orderNonce)}`
-
-        const sig = sign(hash, userPrivateKey)
+        const nonce = Number(Math.random().toString().slice(2))
 
         const contractAddr = etherDeltaAddress
-        const orderObject = {
+        const unsignedOrderObject = {
             amountGet,
             amountGive,
             tokenGet,
             tokenGive,
             contractAddr,
             expires,
-            nonce: orderNonce,
+            nonce
+        }
+
+        return unsignedOrderObject
+    }
+
+    createSignedOrder = (makerSide, expires, price, amount, tokenAddress, tokenDecimals, userAddress, userPrivateKey) => {
+        const { 
+            amountGet,
+            amountGive,
+            tokenGet,
+            tokenGive,
+            contractAddr,
+            nonce
+        } = this.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress, tokenDecimals)
+
+        const hash = this.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce)
+
+        const sig = this.sign(hash, userPrivateKey)
+
+        const signedOrderObject = {
+            amountGet,
+            amountGive,
+            tokenGet,
+            tokenGive,
+            contractAddr,
+            expires,
+            nonce: nonce,
             user: userAddress,
             v: sig.v,
             r: sig.r,
             s: sig.s,
         }
 
-        return orderObject
+        return signedOrderObject
+    }
+
+    // web3js 1 supports message signing -> http://web3js.readthedocs.io/en/1.0/web3-eth-accounts.html#sign
+    // FIXMEPLEASE it's a nicer API but hey ho the shit doesn't work
+    //
+    // const sign = (msgToSignIn, privateKeyIn) => {
+    //     try {
+    //         const sig = this.web3.eth.accounts.sign(msgToSignIn.slice(2), '0x' + privateKeyIn)
+    //         const addr = this.web3.eth.accounts.recover(sig);
+    //         console.log(`address = ${addr}, priv key in = ${privateKeyIn}`)
+    //         console.log(sig)
+    //         const r = `${sig.r.toString('hex')}`
+    //         const s = `${sig.s.toString('hex')}`
+    //         const v = sig.v
+    //         const result = { r, s, v, msg: msgToSignIn }
+    //         return result
+    //     } catch (err) {
+    //         throw new Error(err)
+    //     }
+    // }
+    sign = (msgToSignIn, privateKeyIn) => {
+        const privateKey = privateKeyIn.substring(0, 2) === '0x' ?
+            privateKeyIn.substring(2, privateKeyIn.length) : privateKeyIn;
+        const msgToSign = this.prefixMessage(msgToSignIn);
+        try {
+            const sig = EthJsUtil.ecsign(
+                new Buffer(msgToSign.slice(2), 'hex'),
+                new Buffer(privateKey, 'hex'));
+            const r = `0x${sig.r.toString('hex')}`;
+            const s = `0x${sig.s.toString('hex')}`;
+            const v = sig.v;
+            const result = { r, s, v, msg: msgToSign };
+            return result;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    // Geth prepends the string \x19Ethereum Signed Message:\n<length of message> to all data before signing it 
+    // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
+    // https://github.com/ethereum/go-ethereum/issues/3731
+    prefixMessage = (msgIn) => {
+        let msg = msgIn;
+        msg = new Buffer(msg.slice(2), 'hex');
+        msg = Buffer.concat([
+            new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),
+            msg]);
+        msg = EtherDeltaWeb3.sha3(msg)
+        msg = new Buffer(msg.slice(2), 'hex');
+        return `0x${msg.toString('hex')}`;
     }
 
     orderHash = (tokenGet, amountGet, tokenGive, amountGive, expires, orderNonce) => {
@@ -215,7 +241,7 @@ class OrderFactory {
         const condensed = pack(
             unpacked,
             [160, 160, 256, 160, 256, 256, 256])
-        return sha256(new Buffer(condensed, 'hex'))
+        return `0x${sha256(new Buffer(condensed, 'hex'))}`
     }
 
     toEth = (wei, decimals) => BigNumber(String(wei))

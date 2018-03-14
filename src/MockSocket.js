@@ -53,6 +53,17 @@ class MockSocket {
             })
     }
 
+    submitOrder(order) {
+        const orderDetail = MockOrderUtil.orderDetailFromOrder(order)
+        if(orderDetail.makerSide === OrderSide.BUY) {
+            this.mockMarket.orders.buys.push(orderDetail)
+        } else {
+            this.mockMarket.orders.sells.push(orderDetail)
+        }
+        this.saveMarketToLocalStorage()
+        this.emitMarket()
+    }
+
     updateOrder(orderDetail, blockNumber) {
         EtherDeltaWeb3.promiseAvailableVolume(orderDetail.order)
             .then(availableVolume => {
@@ -96,12 +107,12 @@ class MockSocket {
         const makerPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
         const tstDecimals = Config.getTokenDecimals('TST')
         const tstDivisor = Math.pow(10, tstDecimals)
-        const buyOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createOrder(OrderSide.BUY, 10000000, 0.004, 0.08, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
-        const buyOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createOrder(OrderSide.BUY, 10000000, 0.0041, 0.31, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
-        const buyOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createOrder(OrderSide.BUY, 10000000, 0.0038, 20, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
-        const sellOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createOrder(OrderSide.SELL, 10000000, 0.0064, 0.11, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
-        const sellOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createOrder(OrderSide.SELL, 10000000, 0.0061, 0.75, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
-        const sellOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createOrder(OrderSide.SELL, 10000000, 0.71, 100.4, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
+        const buyOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.004, 0.08, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
+        const buyOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.0041, 0.31, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
+        const buyOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.0038, 20, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
+        const sellOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.0064, 0.11, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
+        const sellOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.0061, 0.75, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
+        const sellOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.71, 100.4, Config.getTokenAddress('TST'), tstDecimals, makerAddress, makerPrivateKey))
 
         return {
             orders: {

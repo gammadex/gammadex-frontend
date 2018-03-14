@@ -36,7 +36,9 @@ export default class OrderPlacement extends React.Component {
             sellOrderValid: true,
             sellOrderInvalidReason: "",
             tradesToExecute: [],
-            tradesModal: false
+            tradesModal: false,
+            orderModal: false,
+            order: null
         }
 
         this.exchangeBalanceTok = this.exchangeBalanceTok.bind(this)
@@ -79,8 +81,16 @@ export default class OrderPlacement extends React.Component {
         OrderPlacementActions.abortTradeExecution()
     }
 
+    abortOrder() {
+        OrderPlacementActions.abortOrder()
+    }
+
     confirmTradeExecution() {
         OrderPlacementActions.confirmTradeExecution()
+    }
+
+    confirmOrder() {
+        OrderPlacementActions.confirmOrder()
     }
 
     sellOrderTypeChanged = (event) => {
@@ -141,6 +151,7 @@ export default class OrderPlacement extends React.Component {
         const { token } = this.props
 
         const {
+            selectedToken,
             buyOrderType,
             buyOrderPrice,
             buyOrderAmount,
@@ -155,6 +166,8 @@ export default class OrderPlacement extends React.Component {
             sellOrderInvalidReason,
             tradesToExecute,
             tradesModal,
+            orderModal,
+            order
         } = this.state
 
         const disableBuyButton = (!buyOrderValid || buyOrderTotal === 0)
@@ -228,19 +241,26 @@ export default class OrderPlacement extends React.Component {
             takerSide = (MockOrderUtil.isTakerBuy(tradesToExecute[0].orderDetail.order)) ? "Buy" : "Sell"
             trades = tradesToExecute.map(trade => {
                 let details = ""
-                if(MockOrderUtil.isTakerBuy(trade.orderDetail.order)) {
+                if (MockOrderUtil.isTakerBuy(trade.orderDetail.order)) {
                     // if taker is buying, maker is selling, amount get and therefore fill amount is in ETH
                     // (in full units of wei)
-                    const ethAmount = trade.fillAmountWei.dividedBy(BigNumber(Math.pow(10,18)))
+                    const ethAmount = trade.fillAmountWei.dividedBy(BigNumber(Math.pow(10, 18)))
                     details = `${takerSide} ${ethAmount / trade.orderDetail.price} ${token.name} for ${ethAmount} ETH`
                 } else {
                     // taker is selling, maker is buying, amount get and therefore fill amount is in TOK
                     // (in full units of wei)
-                    const tokAmount = trade.fillAmountWei.dividedBy(BigNumber(Math.pow(10,trade.orderDetail.tokenDecimals)))
-                    details = `${takerSide} ${tokAmount} ${token.name} for ${tokAmount * trade.orderDetail.price} ETH`                    
+                    const tokAmount = trade.fillAmountWei.dividedBy(BigNumber(Math.pow(10, trade.orderDetail.tokenDecimals)))
+                    details = `${takerSide} ${tokAmount} ${token.name} for ${tokAmount * trade.orderDetail.price} ETH`
                 }
                 return <Row key={trade.orderDetail.order.id}><Col>{details}</Col></Row>
             })
+        }
+
+        let orderDescription = ""
+        let makerSide = ""
+        if(order) {
+            makerSide = (order.makerSide===OrderSide.BUY) ? "Buy" : "Sell"
+            orderDescription = `${makerSide} ${order.amount} ${order.tokenName} with limit price of ${order.price} ETH?`
         }
 
         return (
@@ -317,6 +337,7 @@ export default class OrderPlacement extends React.Component {
                 </div>
                 <div>
                     <Modal isOpen={tradesModal} toggle={this.abortTradeExecution} className={this.props.className}>
+                        <ModalHeader toggle={this.abortTradeExecution}>Take Orders?</ModalHeader>
                         <ModalBody>
                             {trades}
                         </ModalBody>
@@ -325,12 +346,16 @@ export default class OrderPlacement extends React.Component {
                             <Button outline color="secondary" onClick={this.abortTradeExecution.bind(this)}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
-                    {/* <Modal isOpen={showTransactionModal} toggle={this.hideTransactionModal} className={this.props.className}>
-                        <ModalHeader toggle={this.hideTransactionModal}>{modalTitle}</ModalHeader>
+                    <Modal isOpen={orderModal} toggle={this.abortOrder} className={this.props.className}>
+                        <ModalHeader toggle={this.abortOrder}>Make Order</ModalHeader>
                         <ModalBody>
-                            {transactionAlert}
+                            <Row><Col>{orderDescription}</Col></Row>
                         </ModalBody>
-                    </Modal> */}
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.confirmOrder.bind(this)}>{makerSide}</Button>
+                            <Button outline color="secondary" onClick={this.abortOrder.bind(this)}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
                 </div>
             </div>
         )

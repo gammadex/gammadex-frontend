@@ -20,6 +20,8 @@ class OrderPlacementStore extends EventEmitter {
         this.buyOrderInvalidReason = ""
         this.tradesToExecute = []
         this.tradesModal = false
+        this.orderModal = false
+        this.order = null
     }
 
     getOrderPlacementState() {
@@ -37,7 +39,9 @@ class OrderPlacementStore extends EventEmitter {
             buyOrderValid: this.buyOrderValid,
             buyOrderInvalidReason: this.buyOrderInvalidReason,
             tradesToExecute: this.tradesToExecute,
-            tradesModal: this.tradesModal
+            tradesModal: this.tradesModal,
+            orderModal: this.orderModal,
+            order: this.order
         }
     }
 
@@ -63,7 +67,7 @@ class OrderPlacementStore extends EventEmitter {
                 this.buyOrderAmount = 0
                 this.buyOrderTotal = 0
                 this.buyOrderValid = true,
-                this.buyOrderInvalidReason = ""
+                    this.buyOrderInvalidReason = ""
                 this.emitChange()
                 break
             }
@@ -96,7 +100,18 @@ class OrderPlacementStore extends EventEmitter {
                 this.tradesModal = false
                 this.emitChange()
                 break
-            }                 
+            }
+            case ActionNames.CREATE_ORDER: {
+                this.order = action.order
+                this.orderModal = true
+                this.emitChange()
+                break
+            }
+            case ActionNames.HIDE_CREATE_ORDER_MODAL: {
+                this.orderModal = false
+                this.emitChange()
+                break
+            }
         }
     }
 }

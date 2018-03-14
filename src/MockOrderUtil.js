@@ -10,7 +10,7 @@ import OrderSide from "./OrderSide"
 // - The Socket Order replicates the format sent by the ED web socket, to render the mocked-up order book.
 
 export function orderDetailFromOrder(order) {
-    const orderHash = `0x${OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)}`
+    const orderHash = OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)
 
     const ethDivisor = Math.pow(10, Config.getBaseDecimals())
     const tokenDecimals = (order.tokenGive === Config.getBaseAddress()
@@ -74,9 +74,7 @@ export function orderDetailToSocketOrder(orderDetail) {
 
         amount = availableVolume
     }
-
-    // console.log(`user ${orderDetail.order.user} wants to ${orderDetail.makerSide} ${ethAvailableVolume} TST for ${ethAvailableVolumeBase} ETH, price is ${orderDetail.price}. Read as ${orderDetail.price} TOKs per ETH`)
-
+    
     return {
         id: `${orderDetail.orderHash}_${orderDetail.makerSide}`,
         user: orderDetail.order.user,

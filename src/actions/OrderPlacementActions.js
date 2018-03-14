@@ -13,6 +13,9 @@ import * as MyTradeActions from "./MyTradeActions"
 import * as TradeActions from "./TradeActions"
 import Config from "../Config"
 import TradeStatus from "../TradeStatus"
+import OrderSide from "../OrderSide";
+import OrderFactory from "../OrderFactory";
+import MockSocket from "../MockSocket";
 
 export function sellOrderTypeChanged(orderType) {
     dispatcher.dispatch({
@@ -69,7 +72,7 @@ export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
 // and create an order for the rest. This is because the act of taking/trading is async and not guaranteed to succeed,
 // the result of which would drive the order volume.
 export function executeBuy() {
-    const { buyOrderPrice, buyOrderTotal } = OrderPlacementStore.getOrderPlacementState()
+    const { buyOrderPrice, buyOrderAmount, buyOrderTotal } = OrderPlacementStore.getOrderPlacementState()
     const eligibleOffers = _.filter(OrderBookStore.getOffers(),
         (offer) => parseFloat(offer.price) <= buyOrderPrice)
     // TODO this is really bad use of String -> Number -> BigNumber
@@ -94,7 +97,20 @@ export function executeBuy() {
         }
     })
     if (trades.length === 0) {
-        console.log("prompt user to create new order on book")
+        const selectedToken = TokenStore.getSelectedToken()
+        const order = {
+            makerSide: OrderSide.BUY,
+            expires: 10000000,
+            price: buyOrderPrice,
+            amount: buyOrderAmount,
+            tokenAddress: selectedToken.address,
+            tokenName: selectedToken.name,
+            tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+        }
+        dispatcher.dispatch({
+            type: ActionNames.CREATE_ORDER,
+            order
+        })
     } else {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
@@ -115,17 +131,31 @@ export function executeSell() {
             outstandingTokAmountWei = outstandingTokAmountWei.minus(fillAmountWei)
             const fillAmountTok = fillAmountWei / Math.pow(10, tokenDecimals)
             const fillAmountEth = fillAmountTok * bid.price
-            return [{ orderDetail: MockOrderUtil.orderDetailFromOrder(bid), 
+            return [{
+                orderDetail: MockOrderUtil.orderDetailFromOrder(bid),
                 fillAmountWei: fillAmountWei,
                 fillAmountTok: fillAmountTok,
                 fillAmountEth: fillAmountEth
-             }]
+            }]
         } else {
             return []
         }
     })
     if (trades.length === 0) {
-        console.log("prompt user to create new order on book")
+        const selectedToken = TokenStore.getSelectedToken()
+        const order = {
+            makerSide: OrderSide.SELL,
+            expires: 10000000,
+            price: sellOrderPrice,
+            amount: sellOrderAmount,
+            tokenAddress: selectedToken.address,
+            tokenName: selectedToken.name,
+            tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+        }
+        dispatcher.dispatch({
+            type: ActionNames.CREATE_ORDER,
+            order
+        })
     } else {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
@@ -137,6 +167,12 @@ export function executeSell() {
 export function abortTradeExecution() {
     dispatcher.dispatch({
         type: ActionNames.HIDE_EXECUTE_TRADES_MODAL
+    })
+}
+
+export function abortOrder() {
+    dispatcher.dispatch({
+        type: ActionNames.HIDE_CREATE_ORDER_MODAL
     })
 }
 
@@ -177,5 +213,45 @@ export function confirmTradeExecution() {
                 })
                 AccountActions.nonceUpdated(nonce + tradesToExecute.length)
             }
+        })
+}
+
+export function confirmOrder() {
+    dispatcher.dispatch({
+        type: ActionNames.HIDE_CREATE_ORDER_MODAL
+    })
+    const {
+        makerSide,
+        expires,
+        price,
+        amount,
+        tokenAddress,
+        tokenDecimals
+    } = OrderPlacementStore.getOrderPlacementState().order
+    const {
+        tokenGet,
+        amountGet,
+        tokenGive,
+        amountGive,
+        nonce } = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress, tokenDecimals)
+    const hash = OrderFactory.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce) // TODO replace with nonce
+    const { account } = AccountStore.getAccountState()
+    const contractAddr = Config.getEtherDeltaAddress()
+    EtherDeltaWeb3.promiseSignData(hash, account)
+        .then(sig => {
+            const signedOrderObject = {
+                amountGet,
+                amountGive,
+                tokenGet,
+                tokenGive,
+                contractAddr,
+                expires,
+                nonce,
+                user: account,
+                v: sig.v,
+                r: sig.r,
+                s: sig.s,
+            }
+            MockSocket.submitOrder(signedOrderObject)
         })
 }
