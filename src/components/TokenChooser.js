@@ -59,31 +59,34 @@ export default class TokenChooser extends React.Component {
         })
 
         return (
-            <div>
-                <div className="card">
-                    <div className="card-header">
-                        <strong className="card-title">Tokens</strong>
-
-                        <input onChange={this.onSearchTokenChange}
-                               value={this.state.searchedToken}
-                               placeholder="Search"
-                               className="float-right"/>
+            <div className="card">
+                <div className="card-header">
+                    <div className="row">
+                        <div className="col-lg-6">
+                            <strong className="card-title">Tokens</strong>
+                        </div>
+                        <div className="col-lg-6">
+                            <input onChange={this.onSearchTokenChange}
+                                   value={this.state.searchedToken}
+                                   placeholder="Search"
+                                   className="form-control float-right"/>
+                        </div>
                     </div>
+                </div>
 
-                    <div className="table-responsive token-chooser">
-                        <table className="table table-striped table-bordered table-hover card-table">
-                            <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Volume (ETH)</th>
-                                <th>% Change</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {tokenRows}
-                            </tbody>
-                        </table>
-                    </div>
+                <div className="table-responsive token-chooser">
+                    <table className="table table-striped table-bordered table-hover card-table">
+                        <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Volume (ETH)</th>
+                            <th>% Change</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {tokenRows}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         )

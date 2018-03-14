@@ -23,13 +23,13 @@ export default class MyTrades extends React.Component {
     }
 
     updateAccountState() {
-        const { account } = AccountStore.getAccountState()
-        this.setState({ account: account })
+        const {account} = AccountStore.getAccountState()
+        this.setState({account: account})
     }
 
     updateMyTradesState() {
-        const { trades } = MyTradesStore.getMyTradesState()
-        this.setState({ trades: trades })
+        const {trades} = MyTradesStore.getMyTradesState()
+        this.setState({trades: trades})
     }
 
     timerFired() {
@@ -39,7 +39,7 @@ export default class MyTrades extends React.Component {
     }
 
     render() {
-        const { account, trades } = this.state
+        const {account, trades} = this.state
         let accountTrades = []
         if (account) {
             accountTrades = trades.filter(trade => {
@@ -50,11 +50,12 @@ export default class MyTrades extends React.Component {
         }
         return (
             <div>
-                <h2>My Trades</h2>
-                <div className="row">
-                    <div className="col-lg-12">
-                        <MyTradesTable trades={accountTrades} />
+                <div className="card">
+                    <div className="card-header">
+                        <strong className="card-title">My Trades</strong>
                     </div>
+
+                    <MyTradesTable trades={accountTrades}/>
                 </div>
             </div>
         )
