@@ -8,12 +8,14 @@ import OrderBook from '../components/OrderBook'
 import OrderPlacement from '../components/OrderPlacement'
 import WalletChooser from '../components/WalletChooser'
 import TradeDetail from '../components/TradeDetail'
+import OpenOrders from '../components/OpenOrders'
 import MyTrades from '../components/MyTrades'
 import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 import GreetingLoginModals from "../components/GreetingLoginModals"
 import * as TimerActions from "../actions/TimerActions"
 import { Button } from 'reactstrap'
+import * as OpenOrderActions from "../actions/OpenOrderActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import MockSocket from "../MockSocket"
 
@@ -45,6 +47,7 @@ class App extends Component {
 
     purge() {
         MyTradeActions.purge()
+        OpenOrderActions.purge()
         MockSocket.purge()
     }
 
@@ -74,6 +77,7 @@ class App extends Component {
                 <OrderPlacement token={token} />
                 <OrderBook token={token} pageSize={pageSize} />
                 <TradeDetail />
+                <OpenOrders />
                 <MyTrades />
                 <TokenChooser />
                 <GreetingLoginModals />

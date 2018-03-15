@@ -152,6 +152,10 @@ class EtherDeltaWeb3 {
         return this.accountProvider.promiseTrade(account, nonce, order, amount)
     }
 
+    promiseCancelOrder(account, nonce, order) {
+        return this.accountProvider.promiseCancelOrder(account, nonce, order)
+    }
+    
     promiseTransactionReceipt(txHash) {
         return this.web3.eth.getTransactionReceipt(txHash)
     }
@@ -186,6 +190,7 @@ class AccountProvider {
     promiseWithdrawToken(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
 
     promiseTrade(account, nonce, order, amount) { throw new Error("method should be implemented") }
+    promiseCancelOrder(account, nonce, order) { throw new Error("method should be implemented") }
     promiseSignData(data) { throw new Error("method should be implemented") }
 
 }
@@ -250,6 +255,20 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.r,
             order.s,
             amount)
+            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+    }
+
+    promiseCancelOrder(account, nonce, order) {
+        return this.contractEtherDelta.methods.cancelOrder(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce,
+            order.v,
+            order.r,
+            order.s)
             .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
     }
 

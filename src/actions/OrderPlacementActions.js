@@ -11,9 +11,11 @@ import * as MockOrderUtil from "../MockOrderUtil"
 import * as AccountActions from "./AccountActions"
 import * as MyTradeActions from "./MyTradeActions"
 import * as TradeActions from "./TradeActions"
+import * as OpenOrderActions from "./OpenOrderActions"
 import Config from "../Config"
 import TradeStatus from "../TradeStatus"
 import OrderSide from "../OrderSide";
+import OrderState from "../OrderState";
 import OrderFactory from "../OrderFactory";
 import MockSocket from "../MockSocket";
 
@@ -70,7 +72,7 @@ export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
 //
 // initially the concept of doing both in one action is unsupported, e.g. take whatever volume is available
 // and create an order for the rest. This is because the act of taking/trading is async and not guaranteed to succeed,
-// the result of which would drive the order volume.
+// the result of which would drive the subsequent order volume.
 export function executeBuy() {
     const { buyOrderPrice, buyOrderAmount, buyOrderTotal } = OrderPlacementStore.getOrderPlacementState()
     const eligibleOffers = _.filter(OrderBookStore.getOffers(),
@@ -234,7 +236,7 @@ export function confirmOrder() {
         tokenGive,
         amountGive,
         nonce } = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress, tokenDecimals)
-    const hash = OrderFactory.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce) // TODO replace with nonce
+    const hash = OrderFactory.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce)
     const { account } = AccountStore.getAccountState()
     const contractAddr = Config.getEtherDeltaAddress()
     EtherDeltaWeb3.promiseSignData(hash, account)
@@ -253,5 +255,17 @@ export function confirmOrder() {
                 s: sig.s,
             }
             MockSocket.submitOrder(signedOrderObject)
+            OpenOrderActions.addOpenOrder({
+                environment: Config.getReactEnv(),
+                order: signedOrderObject,
+                hash: hash,
+                makerSide: makerSide,
+                tokenAddress: tokenAddress,
+                price: price,
+                amount: amount,
+                state: OrderState.OPEN,
+                pendingCancelTx: null,
+                timestamp: (new Date()).toJSON()
+            })
         })
 }

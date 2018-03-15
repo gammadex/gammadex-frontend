@@ -2,7 +2,7 @@ import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 
-// this should be hydrated from the server side
+// TODO hydrate from gammadex backend
 class MyTradesStore extends EventEmitter {
     constructor() {
         super()
