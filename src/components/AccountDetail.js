@@ -20,8 +20,6 @@ export default class AccountDetail extends React.Component {
             walletBalanceTokWei: 0,
             exchangeBalanceEthWei: 0,
             exchangeBalanceTokWei: 0,
-            ethTransaction: null,
-            tokTransaction: null,
             modal: false,
             modalValue: '',
             modalIsEth: false,
@@ -129,8 +127,6 @@ export default class AccountDetail extends React.Component {
             walletBalanceTokWei,
             exchangeBalanceEthWei,
             exchangeBalanceTokWei,
-            ethTransaction,
-            tokTransaction,
             modal,
             modalValue,
             modalIsEth,
@@ -166,9 +162,7 @@ export default class AccountDetail extends React.Component {
                             walletBalanceEthWei={walletBalanceEthWei}
                             walletBalanceTokWei={walletBalanceTokWei}
                             exchangeBalanceEthWei={exchangeBalanceEthWei}
-                            exchangeBalanceTokWei={exchangeBalanceTokWei}
-                            ethTransaction={ethTransaction}
-                            tokTransaction={tokTransaction} />
+                            exchangeBalanceTokWei={exchangeBalanceTokWei} />
                     </div>
                 </div>
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>

@@ -1,7 +1,6 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import TradeStatus from "../TradeStatus"
 import AccountStore from "../stores/AccountStore"
 import * as AccountActions from "../actions/AccountActions"
 

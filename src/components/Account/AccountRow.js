@@ -13,7 +13,7 @@ export default class AccountTableRow extends React.Component {
     }
 
     render() {
-        const { token, decimals, walletBalanceWei, exchangeBalanceWei, transaction } = this.props
+        const { token, decimals, walletBalanceWei, exchangeBalanceWei } = this.props
 
         return (
             <tr>
@@ -24,7 +24,6 @@ export default class AccountTableRow extends React.Component {
                 <td>{token}</td>
                 <td>{Number(walletBalanceWei) / Math.pow(10, Number(decimals))}</td>
                 <td>{Number(exchangeBalanceWei) / Math.pow(10, Number(decimals))}</td>
-                <td>{(transaction ? <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${transaction}`}>{transaction}</a> : "")}</td>
             </tr>
         )
     }

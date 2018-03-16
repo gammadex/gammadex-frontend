@@ -5,7 +5,7 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import Config from '../Config'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Col, FormFeedback, Alert } from 'reactstrap'
-import TradeStatus from "../TradeStatus"
+import TransactionStatus from "../TransactionStatus"
 
 import * as TradeActions from "../actions/TradeActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
@@ -106,7 +106,7 @@ export default class TradeDetail extends React.Component {
                                 amountTok: fillAmount,
                                 totalEth: modalOrder.price * fillAmount,
                                 timestamp: (new Date()).toJSON(),
-                                status: TradeStatus.PENDING
+                                status: TransactionStatus.PENDING
                             })
                         })
                         .on('error', error => { console.log(`failed to trade: ${error.message}`) })

@@ -1,7 +1,7 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import TradeStatus from "../TradeStatus"
+import TransactionStatus from "../TransactionStatus"
 
 export function addMyTrade(trade) {
     dispatcher.dispatch({
@@ -15,7 +15,7 @@ export function refreshMyTrade(txHash) {
         .then(receipt => {
             if (receipt) {
                 const status = (EtherDeltaWeb3.hexToNumber(receipt.status) === 1) ?
-                    TradeStatus.COMPLETE : TradeStatus.FAILED
+                    TransactionStatus.COMPLETE : TransactionStatus.FAILED
                 dispatcher.dispatch({
                     type: ActionNames.MY_TRADE_STATUS_UPDATE,
                     txHash,

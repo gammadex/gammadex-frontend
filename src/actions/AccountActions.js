@@ -1,6 +1,9 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import Config from "../Config"
+import DepositType from "../DepositType"
+import TransactionStatus from "../TransactionStatus"
 
 // TODO all these .catch(error => )'s should be actions
 export function refreshAccount(accountType) {
@@ -44,12 +47,28 @@ export function refreshEthAndTokBalance(account, tokenAddress) {
         })
 }
 
+export function addDepositOrWithdrawal(depositType, tokenAddress, amountPretty, hash) {
+    const depositOrWithdrawal = {
+        environment: Config.getReactEnv(),
+        timestamp: (new Date()).toISOString(),
+        depositType: depositType,
+        tokenAddress: tokenAddress,
+        amount: amountPretty,
+        txHash: hash,
+        status: TransactionStatus.PENDING
+    }
+    dispatcher.dispatch({
+        type: ActionNames.ADD_DEPOSIT_OR_WITHDRAWAL,
+        depositOrWithdrawal
+    })
+}
+
 export function depositEth(account, accountRetrieved, nonce, tokenAddress, amount) {
     if (accountRetrieved) {
         EtherDeltaWeb3.promiseDepositEther(account, nonce, amount)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
-                ethTransaction(hash)
+                addDepositOrWithdrawal(DepositType.DEPOSIT, Config.getBaseAddress(), amount / Math.pow(10, 18), hash)
             })
             .on('error', error => { console.log(`failed to deposit ether: ${error.message}`) })
             .then(receipt => {
@@ -66,7 +85,7 @@ export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amou
         EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
-                ethTransaction(hash)
+                addDepositOrWithdrawal(DepositType.WITHDRAWAL, Config.getBaseAddress(), amount / Math.pow(10, 18), hash)
             })
             .on('error', error => { console.log(`failed to withdraw ether: ${error.message}`) })
             .then(receipt => {
@@ -83,7 +102,8 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
         EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 2) // as tok deposit is two transactions
-                tokTransaction(hash)
+                addDepositOrWithdrawal(DepositType.DEPOSIT, tokenAddress,
+                    amount / Math.pow(10, Config.getTokenDecimalsByAddress(tokenAddress)), hash)
             })
             .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
             .then(receipt => {
@@ -97,27 +117,14 @@ export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amou
         EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
-                tokTransaction(hash)
+                addDepositOrWithdrawal(DepositType.WITHDRAWAL, tokenAddress,
+                    amount / Math.pow(10, Config.getTokenDecimalsByAddress(tokenAddress)), hash)
             })
             .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
             .then(receipt => {
-                refreshEthAndTokBalance(this.state.account, tokenAddress)
+                refreshEthAndTokBalance(account, tokenAddress)
             })
     }
-}
-
-export function ethTransaction(tx) {
-    dispatcher.dispatch({
-        type: ActionNames.ETH_TRANSACTION,
-        tx
-    })
-}
-
-export function tokTransaction(tx) {
-    dispatcher.dispatch({
-        type: ActionNames.TOK_TRANSACTION,
-        tx
-    })
 }
 
 export function depositWithdraw(isEth, isDeposit) {
@@ -145,5 +152,31 @@ export function nonceUpdated(nonce) {
     dispatcher.dispatch({
         type: ActionNames.NONCE_UPDATED,
         nonce
+    })
+}
+
+export function refreshDeposit(deposit) {
+    EtherDeltaWeb3.promiseTransactionReceipt(deposit.txHash)
+        .then(receipt => {
+            if (receipt) {
+                if (EtherDeltaWeb3.hexToNumber(receipt.status) === 1) {
+                    dispatcher.dispatch({
+                        type: ActionNames.DEPOSIT_OR_WITHDRAWAL_SUCCEEDED,
+                        txHash: deposit.txHash
+                    })
+                } else {
+                    dispatcher.dispatch({
+                        type: ActionNames.DEPOSIT_OR_WITHDRAWAL_FAILED,
+                        txHash: deposit.txHash
+                    })
+                }
+            }
+        })
+}
+
+export function purgeDepositHistory() {
+    localStorage.removeItem("depositHistory")
+    dispatcher.dispatch({
+        type: ActionNames.DEPOSIT_HISTORY_PURGED
     })
 }

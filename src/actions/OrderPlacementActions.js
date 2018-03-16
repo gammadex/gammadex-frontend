@@ -13,7 +13,7 @@ import * as MyTradeActions from "./MyTradeActions"
 import * as TradeActions from "./TradeActions"
 import * as OpenOrderActions from "./OpenOrderActions"
 import Config from "../Config"
-import TradeStatus from "../TradeStatus"
+import TransactionStatus from "../TransactionStatus"
 import OrderSide from "../OrderSide";
 import OrderState from "../OrderState";
 import OrderFactory from "../OrderFactory";
@@ -206,7 +206,7 @@ export function confirmTradeExecution() {
                                 amountTok: trade.fillAmountTok,
                                 totalEth: trade.fillAmountEth,
                                 timestamp: (new Date()).toJSON(),
-                                status: TradeStatus.PENDING
+                                status: TransactionStatus.PENDING
                             })
                         })
                         .on('error', error => { console.log(`failed to trade: ${error.message}`) })

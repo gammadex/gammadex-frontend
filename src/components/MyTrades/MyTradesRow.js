@@ -1,7 +1,7 @@
 import React from "react"
 import Config from '../../Config'
 import { Button } from "reactstrap"
-import TradeStatus from "../../TradeStatus"
+import TransactionStatus from "../../TransactionStatus"
 import OrderSide from "../../OrderSide"
 
 export default class MyTradesRow extends React.Component {
@@ -13,9 +13,9 @@ export default class MyTradesRow extends React.Component {
         const { trade } = this.props
         const tokenName = Config.getTokenName(trade.tokenAddress)
         let statusColor = "warning"
-        if (trade.status === TradeStatus.COMPLETE) {
+        if (trade.status === TransactionStatus.COMPLETE) {
             statusColor = "success"
-        } else if (trade.status === TradeStatus.FAILED) {
+        } else if (trade.status === TransactionStatus.FAILED) {
             statusColor = "danger"
         }
         return (

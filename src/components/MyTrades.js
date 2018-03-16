@@ -3,7 +3,7 @@ import Config from '../Config'
 import AccountStore from "../stores/AccountStore"
 import MyTradesStore from "../stores/MyTradesStore"
 import TimerRelay from "../TimerRelay"
-import TradeStatus from "../TradeStatus"
+import TransactionStatus from "../TransactionStatus"
 import MyTradesTable from "./MyTrades/MyTradesTable"
 import * as MyTradeActions from "../actions/MyTradeActions"
 
@@ -33,7 +33,7 @@ export default class MyTrades extends React.Component {
     }
 
     timerFired() {
-        this.state.trades.filter(trade => trade.status === TradeStatus.PENDING).forEach(trade => {
+        this.state.trades.filter(trade => trade.status === TransactionStatus.PENDING).forEach(trade => {
             MyTradeActions.refreshMyTrade(trade.txHash)
         })
     }

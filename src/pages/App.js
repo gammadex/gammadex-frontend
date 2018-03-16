@@ -10,6 +10,7 @@ import WalletChooser from '../components/WalletChooser'
 import TradeDetail from '../components/TradeDetail'
 import OpenOrders from '../components/OpenOrders'
 import MyTrades from '../components/MyTrades'
+import DepositHistory from '../components/DepositHistory'
 import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 import GreetingLoginModals from "../components/GreetingLoginModals"
@@ -17,6 +18,7 @@ import * as TimerActions from "../actions/TimerActions"
 import { Button } from 'reactstrap'
 import * as OpenOrderActions from "../actions/OpenOrderActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
+import * as AccountActions from "../actions/AccountActions"
 import MockSocket from "../MockSocket"
 
 class App extends Component {
@@ -49,6 +51,7 @@ class App extends Component {
         MyTradeActions.purge()
         OpenOrderActions.purge()
         MockSocket.purge()
+        AccountActions.purgeDepositHistory()
     }
 
     render() {
@@ -79,6 +82,7 @@ class App extends Component {
                 <TradeDetail />
                 <OpenOrders />
                 <MyTrades />
+                <DepositHistory />
                 <TokenChooser />
                 <GreetingLoginModals />
             </div>

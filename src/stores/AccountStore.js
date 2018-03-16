@@ -17,8 +17,6 @@ class AccountStore extends EventEmitter {
         this.walletBalanceTokWei = 0
         this.exchangeBalanceEthWei = 0
         this.exchangeBalanceTokWei = 0
-        this.ethTransaction = null
-        this.tokTransaction = null
         this.modal = false
         this.modalValue = ''
         this.modalIsEth = false
@@ -36,8 +34,6 @@ class AccountStore extends EventEmitter {
             walletBalanceTokWei: this.walletBalanceTokWei,
             exchangeBalanceEthWei: this.exchangeBalanceEthWei,
             exchangeBalanceTokWei: this.exchangeBalanceTokWei,
-            ethTransaction: this.ethTransaction,
-            tokTransaction: this.tokTransaction,
             modal: this.modal,
             modalValue: this.modalValue,
             modalIsEth: this.modalIsEth,
@@ -92,16 +88,6 @@ class AccountStore extends EventEmitter {
             }
             case ActionNames.DEPOSIT_WITHDRAW_CANCEL: {
                 this.modal = false
-                this.emitChange()
-                break
-            }
-            case ActionNames.ETH_TRANSACTION: {
-                this.ethTransaction = action.tx
-                this.emitChange()
-                break
-            }
-            case ActionNames.TOK_TRANSACTION: {
-                this.tokTransaction = action.tx
                 this.emitChange()
                 break
             }
