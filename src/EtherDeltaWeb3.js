@@ -155,7 +155,7 @@ class EtherDeltaWeb3 {
     promiseCancelOrder(account, nonce, order) {
         return this.accountProvider.promiseCancelOrder(account, nonce, order)
     }
-    
+
     promiseTransactionReceipt(txHash) {
         return this.web3.eth.getTransactionReceipt(txHash)
     }
@@ -369,6 +369,21 @@ class WalletAccountProvider extends AccountProvider {
                 order.r,
                 order.s,
                 amount).encodeABI())
+    }
+
+    promiseCancelOrder(account, nonce, order) {
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
+            this.web3.utils.numberToHex(0),
+            this.contractEtherDelta.methods.cancelOrder(
+                order.tokenGet,
+                order.amountGet,
+                order.tokenGive,
+                order.amountGive,
+                order.expires,
+                order.nonce,
+                order.v,
+                order.r,
+                order.s).encodeABI())
     }
 
     promiseSignData(data, account) {
