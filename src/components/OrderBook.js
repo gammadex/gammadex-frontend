@@ -1,5 +1,6 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
+import OpenOrderStore from '../stores/OpenOrdersStore'
 import Pagination from '../components/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 import TokenStats from './OrderBook/TokenStats'
@@ -31,11 +32,13 @@ export default class OrderBook extends React.Component {
             allTrades: [],
             allBids: [],
             allOffers: [],
+            openOrderHashes: OpenOrderStore.getOpenOrderHashes()
         }
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
+        OpenOrderStore.on("change", () => this.setState({ openOrderHashes: OpenOrderStore.getOpenOrderHashes() }))
     }
 
     saveBidsAndOffers = () => {
@@ -71,7 +74,7 @@ export default class OrderBook extends React.Component {
         const {token, pageSize} = this.props
         const {
             bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages,
-            allTrades, allBids, allOffers
+            allTrades, allBids, allOffers, openOrderHashes
         } = this.state
 
         return (
@@ -94,7 +97,7 @@ export default class OrderBook extends React.Component {
                     <div className="col-lg-6">
                         <h3>Bids</h3>
                         <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                                     pageSize={pageSize}/>
+                                     pageSize={pageSize} openOrderHashes={openOrderHashes}/>
 
                         <div className="float-right">
                             <Pagination page={bidsPage} numPages={numBidsPages}
@@ -105,7 +108,7 @@ export default class OrderBook extends React.Component {
                     <div className="col-lg-6">
                         <h3>Offers</h3>
                         <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                                     pageSize={pageSize}/>
+                                     pageSize={pageSize} openOrderHashes={openOrderHashes}/>
 
                         <div className="float-right">
                             <Pagination page={offersPage} numPages={numOffersPages}

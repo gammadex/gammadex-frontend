@@ -8,13 +8,15 @@ export default class OrdersTableRow extends React.Component {
     }
 
     render() {
-        const {order} = this.props
+        const {order, isMine} = this.props
+
+        let mine = (isMine) ? " [mine]" : ""
 
         return (
             <tr key={order.id} onClick={() => this.showTradeModal(order)}>
                 <td>{order.price}</td>
                 <td>{order.ethAvailableVolume}</td>
-                <td>{order.ethAvailableVolumeBase}</td>
+                <td>{order.ethAvailableVolumeBase}{mine}</td>
             </tr>
         )
     }

@@ -33,8 +33,8 @@ class MockSocket {
     emitMarket() {
         const marketMessage = {
             orders: {
-                buys: this.mockMarket.orders.buys.map(o => { return MockOrderUtil.orderDetailToSocketOrder(o) }),
-                sells: this.mockMarket.orders.sells.map(o => { return MockOrderUtil.orderDetailToSocketOrder(o) })
+                buys: this.mockMarket.orders.buys.map(o => MockOrderUtil.orderDetailToSocketOrder(o)),
+                sells: this.mockMarket.orders.sells.map(o => MockOrderUtil.orderDetailToSocketOrder(o))
             },
             trades: this.generateTrades() // TODO add these to local storage
         }

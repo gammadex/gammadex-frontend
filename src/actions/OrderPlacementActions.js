@@ -184,9 +184,8 @@ export function confirmTradeExecution() {
     })
     const { tradesToExecute } = OrderPlacementStore.getOrderPlacementState()
     const { account, nonce } = AccountStore.getAccountState()
-    const tradePromises = tradesToExecute.map(trade => {
-        return EtherDeltaWeb3.promiseTestTrade(account, trade.orderDetail.order, trade.fillAmountWei)
-    })
+    const tradePromises = tradesToExecute.map(trade =>
+        EtherDeltaWeb3.promiseTestTrade(account, trade.orderDetail.order, trade.fillAmountWei))
     Promise.all(tradePromises)
         .then(res => {
             if (res.includes(false)) {

@@ -20,6 +20,10 @@ class OpenOrdersStore extends EventEmitter {
         }
     }
 
+    getOpenOrderHashes() {
+        return this.openOrders.filter(o => o.state != OrderState.CLOSED).map(o => o.hash.toLowerCase())
+    }
+
     emitChange() {
         this.emit("change")
     }

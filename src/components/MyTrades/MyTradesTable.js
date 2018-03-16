@@ -10,12 +10,8 @@ export default class MyTradesTable extends React.Component {
     render() {
         const { trades } = this.props
         const sortedTradesTimeDesc = _.reverse(_.sortBy(trades
-            .filter(trade => {
-                return trade.environment === Config.getReactEnv()
-            }), t => t.timestamp))
-        const rows = sortedTradesTimeDesc.map(trade => {
-            return <MyTradesRow key={trade.txHash} trade={trade} />
-        })
+            .filter(trade => trade.environment === Config.getReactEnv()), t => t.timestamp))
+        const rows = sortedTradesTimeDesc.map(trade => <MyTradesRow key={trade.txHash} trade={trade} />)
         return (
             <table className="table table-striped table-bordered">
                 <thead>

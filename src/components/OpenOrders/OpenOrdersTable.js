@@ -11,12 +11,8 @@ export default class OpenOrdersTable extends React.Component {
     render() {
         const { openOrders } = this.props
         const sortedOrdersTimeDesc = _.reverse(_.sortBy(openOrders
-            .filter(order => {
-                return order.environment === Config.getReactEnv() && order.state != OrderState.CLOSED
-            }), o => o.timestamp))
-        const rows = sortedOrdersTimeDesc.map(openOrder => {
-            return <OpenOrdersRow key={openOrder.hash} openOrder={openOrder} />
-        })
+            .filter(order => order.environment === Config.getReactEnv() && order.state != OrderState.CLOSED), o => o.timestamp))
+        const rows = sortedOrdersTimeDesc.map(openOrder => <OpenOrdersRow key={openOrder.hash} openOrder={openOrder} />)
         return (
             <table className="table table-striped table-bordered">
                 <thead>

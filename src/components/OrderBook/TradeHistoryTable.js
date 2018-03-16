@@ -6,9 +6,7 @@ export default class TradeHistoryTable extends React.Component {
     render() {
         const {base, token, trades, pageSize} = this.props
 
-        const rows = trades.map((trade) => {
-            return <TradeHistoryRow key={trade.txHash} trade={trade}/>
-        })
+        const rows = trades.map(trade => <TradeHistoryRow key={trade.txHash} trade={trade}/>)
 
         const numEmptyRows = pageSize - trades.length
         const emptyRows = JsxUtils.emptyRows(numEmptyRows, 6)

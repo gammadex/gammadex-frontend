@@ -101,9 +101,7 @@ export default class TokenChooser extends React.Component {
 
         // filter by search criteria if present
         if (searchedToken && searchedToken.length > 0) {
-            return allTokens.filter(t => {
-                return t.symbol.toLowerCase().includes(searchedToken.toLowerCase())
-            })
+            return allTokens.filter(t => t.symbol.toLowerCase().includes(searchedToken.toLowerCase()))
         } else {
             return allTokens
         }

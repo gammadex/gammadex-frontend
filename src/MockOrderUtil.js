@@ -76,7 +76,7 @@ export function orderDetailToSocketOrder(orderDetail) {
     }
     
     return {
-        id: `${orderDetail.orderHash}_${orderDetail.makerSide}`,
+        id: `${orderDetail.orderHash}_${orderDetail.makerSide}`, // TODO drop the 0x hex prefix from order ids
         user: orderDetail.order.user,
         tokenGet: orderDetail.order.tokenGet,
         amountGet: orderDetail.order.amountGet.toString(),
