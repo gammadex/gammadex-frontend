@@ -27,7 +27,6 @@ export function executeTrade(order) {
     })
 }
 
-// TODO replace side with constant and add helper function for takerSide and makerSide
 export function validateFillAmount(takerSide, fillAmount, orderAmount, exchangeBalanceTok, amountEth, exchangeBalanceEth) {
     let fillAmountValid = true
     let fillAmountInvalidReason = ""

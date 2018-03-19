@@ -6,6 +6,7 @@ import _ from "lodash"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import TokenStore from '../stores/TokenStore'
+import BigNumber from 'bignumber.js'
 
 class OrderBookStore extends EventEmitter {
     constructor() {
@@ -21,6 +22,10 @@ class OrderBookStore extends EventEmitter {
 
     getBids() {
         return this.bids
+    }
+
+    getBidTotal() {
+        return _.reduce(this.bids.map(b => b.availableVolume), (sum, n) => BigNumber(sum).plus(BigNumber(n)), 0)
     }
 
     getBidsOnCurrentPage() {
@@ -41,6 +46,10 @@ class OrderBookStore extends EventEmitter {
 
     getOffers() {
         return this.offers
+    }
+
+    getOfferTotal() {
+        return _.reduce(this.offers.map(b => b.availableVolume), (sum, n) => BigNumber(sum).plus(BigNumber(n)), 0)
     }
 
     getOffersOnCurrentPage() {

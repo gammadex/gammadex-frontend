@@ -170,8 +170,8 @@ export default class OrderPlacement extends React.Component {
             order
         } = this.state
 
-        const disableBuyButton = (!buyOrderValid || buyOrderTotal === 0)
-        const disableSellButton = (!sellOrderValid || sellOrderTotal === 0)
+        const disableBuyButton = (!buyOrderValid || (buyOrderType === OrderType.LIMIT_ORDER && buyOrderTotal === 0))
+        const disableSellButton = (!sellOrderValid || (sellOrderType === OrderType.LIMIT_ORDER && sellOrderTotal === 0))
 
         let sellOrderPriceField = null
         if (sellOrderType === OrderType.LIMIT_ORDER) {
@@ -219,6 +219,7 @@ export default class OrderPlacement extends React.Component {
         }
 
         let buyOrderTotalField = null
+        let buyOrderAmountField = null
         if (buyOrderType === OrderType.LIMIT_ORDER) {
             buyOrderTotalField = <FormGroup row>
                 <Label for="buyOrderTotal" sm={2}>Total</Label>
@@ -231,6 +232,31 @@ export default class OrderPlacement extends React.Component {
                 </Col>
                 <Col sm={2}>
                     <Label sm={2}>{"ETH"}</Label>
+                </Col>
+            </FormGroup>
+            buyOrderAmountField = <FormGroup row>
+                <Label for="buyOrderAmount" sm={2}>Amount</Label>
+                <Col sm={8}>
+                    <Input type="number" min={0} id="buyOrderAmount"
+                        value={buyOrderAmount}
+                        onChange={this.buyOrderAmountChange.bind(this)} />
+                </Col>
+                <Col sm={2}>
+                    <Label sm={2}>{token.name}</Label>
+                </Col>
+            </FormGroup>
+        } else {
+            buyOrderAmountField = <FormGroup row>
+                <Label for="buyOrderAmount" sm={2}>Amount</Label>
+                <Col sm={8}>
+                    <Input type="number" min={0} id="buyOrderAmount"
+                        value={buyOrderAmount}
+                        onChange={this.buyOrderAmountChange.bind(this)}
+                        valid={buyOrderValid} />
+                    <FormFeedback>{buyOrderInvalidReason}</FormFeedback>
+                </Col>
+                <Col sm={2}>
+                    <Label sm={2}>{token.name}</Label>
                 </Col>
             </FormGroup>
         }
@@ -258,8 +284,8 @@ export default class OrderPlacement extends React.Component {
 
         let orderDescription = ""
         let makerSide = ""
-        if(order) {
-            makerSide = (order.makerSide===OrderSide.BUY) ? "Buy" : "Sell"
+        if (order) {
+            makerSide = (order.makerSide === OrderSide.BUY) ? "Buy" : "Sell"
             orderDescription = `${makerSide} ${order.amount} ${order.tokenName} with limit price of ${order.price} ETH?`
         }
 
@@ -315,17 +341,7 @@ export default class OrderPlacement extends React.Component {
                             </Col>
                         </FormGroup>
                         {buyOrderPriceField}
-                        <FormGroup row>
-                            <Label for="buyOrderAmount" sm={2}>Amount</Label>
-                            <Col sm={8}>
-                                <Input type="number" min={0} id="buyOrderAmount"
-                                    value={buyOrderAmount}
-                                    onChange={this.buyOrderAmountChange.bind(this)} />
-                            </Col>
-                            <Col sm={2}>
-                                <Label sm={2}>{token.name}</Label>
-                            </Col>
-                        </FormGroup>
+                        {buyOrderAmountField}
                         {buyOrderTotalField}
                         <FormGroup row>
                             <Label for="buyButton" sm={2}></Label>

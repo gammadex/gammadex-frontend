@@ -18,6 +18,7 @@ import OrderSide from "../OrderSide";
 import OrderState from "../OrderState";
 import OrderFactory from "../OrderFactory";
 import MockSocket from "../MockSocket";
+import OrderType from "../OrderType";
 
 export function sellOrderTypeChanged(orderType) {
     dispatcher.dispatch({
@@ -29,9 +30,18 @@ export function sellOrderTypeChanged(orderType) {
 export function sellOrderChanged(price, amount, total, exchangeBalanceTok) {
     let orderValid = true
     let orderInvalidReason = ""
+    // TODO this validation needs to be triggered after: 1) here, 2) wallet balance update, 3) order book update
     if (amount > exchangeBalanceTok) {
         orderValid = false
         orderInvalidReason = `Amount greater than wallet balance (${exchangeBalanceTok})`
+    }
+    const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
+    const amountWei = BigNumber(amount).multipliedBy(BigNumber(Math.pow(10, tokenDecimals)))
+    const bidTotalWei = OrderBookStore.getBidTotal()
+    if (amountWei.isGreaterThan(bidTotalWei)) {
+        const bidTotal = bidTotalWei.dividedBy(BigNumber(Math.pow(10, tokenDecimals)))
+        orderValid = false
+        orderInvalidReason = `Amount greater than orderbook total bid size (${bidTotal})`
     }
     dispatcher.dispatch({
         type: ActionNames.SELL_ORDER_CHANGED,
@@ -51,11 +61,22 @@ export function buyOrderTypeChanged(orderType) {
 }
 
 export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
+    const { buyOrderType } = OrderPlacementStore.getOrderPlacementState()
     let orderValid = true
     let orderInvalidReason = ""
-    if (total > exchangeBalanceEth) {
+    if (buyOrderType === OrderType.LIMIT_ORDER && total > exchangeBalanceEth) {
         orderValid = false
         orderInvalidReason = `Total amount greater than wallet balance (${exchangeBalanceEth} ETH)`
+    }
+    if (buyOrderType === OrderType.MARKET_ORDER) {
+        const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
+        const amountWei = BigNumber(amount).multipliedBy(BigNumber(Math.pow(10, tokenDecimals)))
+        const offerTotalWei = OrderBookStore.getOfferTotal()
+        if (amountWei.isGreaterThan(offerTotalWei)) {
+            const offerTotal = offerTotalWei.dividedBy(BigNumber(Math.pow(10, tokenDecimals)))
+            orderValid = false
+            orderInvalidReason = `Amount greater than orderbook total offer size (${offerTotal})`
+        }
     }
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_CHANGED,
@@ -74,13 +95,19 @@ export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
 // and create an order for the rest. This is because the act of taking/trading is async and not guaranteed to succeed,
 // the result of which would drive the subsequent order volume.
 export function executeBuy() {
-    const { buyOrderPrice, buyOrderAmount, buyOrderTotal } = OrderPlacementStore.getOrderPlacementState()
-    const eligibleOffers = _.filter(OrderBookStore.getOffers(),
-        (offer) => parseFloat(offer.price) <= buyOrderPrice)
+    const { buyOrderPrice, buyOrderAmount, buyOrderTotal, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
+    let eligibleOffers = OrderBookStore.getOffers()
+    if (buyOrderType === OrderType.LIMIT_ORDER) {
+        eligibleOffers = _.filter(OrderBookStore.getOffers(),
+            (offer) => parseFloat(offer.price) <= buyOrderPrice)
+    }
     // TODO this is really bad use of String -> Number -> BigNumber
     // which can result in Error: [BigNumber Error] Number primitive has more than 15 significant digits: 0.00005518027643333333
     // https://github.com/wjsrobertson/ethergamma/issues/6
     let outstandingBaseAmountWei = BigNumber(buyOrderTotal).multipliedBy(BigNumber(Math.pow(10, 18)))
+    if(buyOrderType === OrderType.MARKET_ORDER) {
+        outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
+    }
     const trades = _.flatMap(eligibleOffers, offer => {
         const fillAmountWei = BigNumber.minimum(outstandingBaseAmountWei, BigNumber(offer.availableVolumeBase))
         if (!fillAmountWei.isZero()) {
@@ -99,20 +126,22 @@ export function executeBuy() {
         }
     })
     if (trades.length === 0) {
-        const selectedToken = TokenStore.getSelectedToken()
-        const order = {
-            makerSide: OrderSide.BUY,
-            expires: 10000000,
-            price: buyOrderPrice,
-            amount: buyOrderAmount,
-            tokenAddress: selectedToken.address,
-            tokenName: selectedToken.name,
-            tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+        if (buyOrderType === OrderType.LIMIT_ORDER) {
+            const selectedToken = TokenStore.getSelectedToken()
+            const order = {
+                makerSide: OrderSide.BUY,
+                expires: 10000000,
+                price: buyOrderPrice,
+                amount: buyOrderAmount,
+                tokenAddress: selectedToken.address,
+                tokenName: selectedToken.name,
+                tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+            }
+            dispatcher.dispatch({
+                type: ActionNames.CREATE_ORDER,
+                order
+            })
         }
-        dispatcher.dispatch({
-            type: ActionNames.CREATE_ORDER,
-            order
-        })
     } else {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
@@ -122,9 +151,12 @@ export function executeBuy() {
 }
 
 export function executeSell() {
-    const { sellOrderPrice, sellOrderAmount } = OrderPlacementStore.getOrderPlacementState()
-    const eligibleBids = _.filter(OrderBookStore.getBids(),
-        (bid) => parseFloat(bid.price) >= sellOrderPrice)
+    const { sellOrderPrice, sellOrderAmount, sellOrderType } = OrderPlacementStore.getOrderPlacementState()
+    let eligibleBids = OrderBookStore.getBids()
+    if (sellOrderType === OrderType.LIMIT_ORDER) {
+        eligibleBids = _.filter(OrderBookStore.getBids(),
+            (bid) => parseFloat(bid.price) >= sellOrderPrice)
+    }
     const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
     let outstandingTokAmountWei = BigNumber(sellOrderAmount).multipliedBy(BigNumber(Math.pow(10, tokenDecimals)))
     const trades = _.flatMap(eligibleBids, bid => {
@@ -144,20 +176,22 @@ export function executeSell() {
         }
     })
     if (trades.length === 0) {
-        const selectedToken = TokenStore.getSelectedToken()
-        const order = {
-            makerSide: OrderSide.SELL,
-            expires: 10000000,
-            price: sellOrderPrice,
-            amount: sellOrderAmount,
-            tokenAddress: selectedToken.address,
-            tokenName: selectedToken.name,
-            tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+        if (sellOrderType === OrderType.LIMIT_ORDER) {
+            const selectedToken = TokenStore.getSelectedToken()
+            const order = {
+                makerSide: OrderSide.SELL,
+                expires: 10000000,
+                price: sellOrderPrice,
+                amount: sellOrderAmount,
+                tokenAddress: selectedToken.address,
+                tokenName: selectedToken.name,
+                tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+            }
+            dispatcher.dispatch({
+                type: ActionNames.CREATE_ORDER,
+                order
+            })
         }
-        dispatcher.dispatch({
-            type: ActionNames.CREATE_ORDER,
-            order
-        })
     } else {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
