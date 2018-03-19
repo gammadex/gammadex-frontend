@@ -6,6 +6,7 @@ import TimerRelay from "../TimerRelay"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
 import OrderState from "../OrderState"
 import * as OpenOrderActions from "../actions/OpenOrderActions"
+import {Box} from "./CustomComponents/Box"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
@@ -19,10 +20,10 @@ export default class OpenOrders extends React.Component {
         OpenOrdersStore.on("change", () => this.updateOpenOrdersState())
         TimerRelay.on("change", () => this.timerFired())
     }
-    
+
     updateOpenOrdersState() {
-        const { openOrders } = OpenOrdersStore.getOpenOrdersState()
-        this.setState({ openOrders: openOrders })
+        const {openOrders} = OpenOrdersStore.getOpenOrdersState()
+        this.setState({openOrders: openOrders})
     }
 
     timerFired() {
@@ -30,18 +31,13 @@ export default class OpenOrders extends React.Component {
             OpenOrderActions.refreshOpenOrder(openOrder)
         })
     }
-    
+
     render() {
-        const { openOrders } = this.state
+        const {openOrders} = this.state
         return (
-            <div>
-                <h2>Open Orders</h2>
-                <div className="row">
-                    <div className="col-lg-12">
-                        <OpenOrdersTable openOrders={openOrders} />
-                    </div>
-                </div>
-            </div>
+            <Box title="Open Orders">
+                <OpenOrdersTable openOrders={openOrders}/>
+            </Box>
         )
     }
 }

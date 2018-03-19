@@ -3,6 +3,7 @@ import * as OrderBookActions from "../actions/OrderBookActions"
 import OrderBookStore from '../stores/OrderBookStore'
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 import Pagination from '../components/Pagination'
+import {Box, BoxSection} from "./CustomComponents/Box"
 
 // TODO - use a TradeStore, not OrderBookStore
 export default class TradeHistory extends React.Component {
@@ -41,21 +42,16 @@ export default class TradeHistory extends React.Component {
         const {trades, tradesPage, numTradesPages} = this.state
 
         return (
-            <div className="card">
-                <div className="card-header">
-                    <strong className="card-title">Trade History</strong>
-                </div>
-
+            <Box title="Trade History">
                 <TradeHistoryTable base="ETH" token={token.name} trades={trades} pageSize={pageSize}/>
 
-                <div className="card-body">
+                <BoxSection>
                     <div className="float-right">
                         <Pagination page={tradesPage} numPages={numTradesPages}
                                     onPageChange={this.changeTradesPage}/>
                     </div>
-                </div>
-            </div>
-
+                </BoxSection>
+            </Box>
         )
     }
 }

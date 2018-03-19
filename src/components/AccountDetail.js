@@ -5,6 +5,7 @@ import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
 import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import {Box, BoxFooter} from "./CustomComponents/Box"
 
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
@@ -155,11 +156,7 @@ export default class AccountDetail extends React.Component {
         }
         return (
             <span>
-                <div className="card">
-                    <div className="card-header">
-                        <strong className="card-title">Accounts</strong>
-                    </div>
-
+                <Box title="Accounts">
                     <AccountTable
                         base="ETH"
                         token={token.name}
@@ -172,12 +169,12 @@ export default class AccountDetail extends React.Component {
                         ethTransaction={ethTransaction}
                         tokTransaction={tokTransaction}/>
 
-                    <div className="card-footer">
+                    <BoxFooter>
                         Account: {accountLink}
                         <br/>
                         <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
-                    </div>
-                </div>
+                    </BoxFooter>
+                </Box>
 
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
                     <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>

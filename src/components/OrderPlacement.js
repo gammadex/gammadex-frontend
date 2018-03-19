@@ -1,5 +1,17 @@
 import React from "react"
-import { FormGroup, FormFeedback, Label, Row, Col, Input, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import {
+    FormGroup,
+    FormFeedback,
+    Label,
+    Row,
+    Col,
+    Input,
+    Button,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter
+} from 'reactstrap'
 import OrderType from "../OrderType"
 import OrderSide from "../OrderSide"
 import * as OrderPlacementActions from "../actions/OrderPlacementActions"
@@ -11,6 +23,7 @@ import _ from "lodash"
 import Config from "../Config"
 import BigNumber from 'bignumber.js'
 import * as MockOrderUtil from "../MockOrderUtil"
+import {Box, BoxSection} from "./CustomComponents/Box"
 
 // The behaviour around accepting user input from price, amount and total is a bit clunky:
 // leading zeros, decimals, negative numbers
@@ -18,7 +31,7 @@ import * as MockOrderUtil from "../MockOrderUtil"
 export default class OrderPlacement extends React.Component {
     constructor(props) {
         super(props)
-        const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
+        const {exchangeBalanceTokWei, exchangeBalanceEthWei} = AccountStore.getAccountState()
         this.state = {
             selectedToken: TokenStore.getSelectedToken(),
             exchangeBalanceTokWei: exchangeBalanceTokWei,
@@ -48,12 +61,12 @@ export default class OrderPlacement extends React.Component {
 
     componentWillMount() {
         OrderPlacementStore.on("change", () => this.setState(OrderPlacementStore.getOrderPlacementState()))
-        TokenStore.on("change", () => this.setState({ selectedToken: TokenStore.getSelectedToken() }))
+        TokenStore.on("change", () => this.setState({selectedToken: TokenStore.getSelectedToken()}))
         AccountStore.on("change", () => this.updateAccountState())
     }
 
     updateAccountState() {
-        const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
+        const {exchangeBalanceTokWei, exchangeBalanceEthWei} = AccountStore.getAccountState()
         this.setState({
             exchangeBalanceTokWei: exchangeBalanceTokWei,
             exchangeBalanceEthWei: exchangeBalanceEthWei
@@ -99,19 +112,19 @@ export default class OrderPlacement extends React.Component {
     }
 
     sellOrderPriceChange = (event) => {
-        const { sellOrderAmount } = this.state
+        const {sellOrderAmount} = this.state
         let price = Number(event.target.value)
         OrderPlacementActions.sellOrderChanged(price, sellOrderAmount, price * sellOrderAmount, this.exchangeBalanceTok())
     }
 
     sellOrderAmountChange = (event) => {
-        const { sellOrderPrice } = this.state
+        const {sellOrderPrice} = this.state
         let amount = Number(event.target.value)
         OrderPlacementActions.sellOrderChanged(sellOrderPrice, amount, sellOrderPrice * amount, this.exchangeBalanceTok())
     }
 
     sellOrderTotalChange = (event) => {
-        const { sellOrderPrice } = this.state
+        const {sellOrderPrice} = this.state
         if (parseFloat(sellOrderPrice) === 0) {
             OrderPlacementActions.sellOrderChanged(sellOrderPrice, 0, 0, this.exchangeBalanceTok())
         } else {
@@ -126,19 +139,19 @@ export default class OrderPlacement extends React.Component {
     }
 
     buyOrderPriceChange = (event) => {
-        const { buyOrderAmount } = this.state
+        const {buyOrderAmount} = this.state
         let price = Number(event.target.value)
         OrderPlacementActions.buyOrderChanged(price, buyOrderAmount, price * buyOrderAmount, this.exchangeBalanceEth())
     }
 
     buyOrderAmountChange = (event) => {
-        const { buyOrderPrice } = this.state
+        const {buyOrderPrice} = this.state
         let amount = Number(event.target.value)
         OrderPlacementActions.buyOrderChanged(buyOrderPrice, amount, buyOrderPrice * amount, this.exchangeBalanceEth())
     }
 
     buyOrderTotalChange = (event) => {
-        const { buyOrderPrice } = this.state
+        const {buyOrderPrice} = this.state
         if (parseFloat(buyOrderPrice) === 0) {
             OrderPlacementActions.buyOrderChanged(buyOrderPrice, 0, 0, this.exchangeBalanceEth())
         } else {
@@ -148,7 +161,7 @@ export default class OrderPlacement extends React.Component {
     }
 
     render() {
-        const { token } = this.props
+        const {token} = this.props
 
         const {
             selectedToken,
@@ -179,12 +192,10 @@ export default class OrderPlacement extends React.Component {
                 <Label for="sellOrderPrice" sm={2}>Price</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="sellOrderPrice"
-                        value={sellOrderPrice}
-                        onChange={this.sellOrderPriceChange.bind(this)} />
+                           value={sellOrderPrice}
+                           onChange={this.sellOrderPriceChange.bind(this)}/>
                 </Col>
-                <Col sm={2}>
-                    <Label sm={2}>{"ETH"}</Label>
-                </Col>
+                <Label sm={2}>{"ETH"}</Label>
             </FormGroup>
         }
 
@@ -194,12 +205,10 @@ export default class OrderPlacement extends React.Component {
                 <Label for="sellOrderTotal" sm={2}>Total</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="sellOrderTotal"
-                        value={sellOrderTotal}
-                        onChange={this.sellOrderTotalChange.bind(this)} />
+                           value={sellOrderTotal}
+                           onChange={this.sellOrderTotalChange.bind(this)}/>
                 </Col>
-                <Col sm={2}>
-                    <Label sm={2}>{"ETH"}</Label>
-                </Col>
+                <Label sm={2}>{"ETH"}</Label>
             </FormGroup>
         }
 
@@ -209,12 +218,10 @@ export default class OrderPlacement extends React.Component {
                 <Label for="buyOrderPrice" sm={2}>Price</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="buyOrderPrice"
-                        value={buyOrderPrice}
-                        onChange={this.buyOrderPriceChange.bind(this)} />
+                           value={buyOrderPrice}
+                           onChange={this.buyOrderPriceChange.bind(this)}/>
                 </Col>
-                <Col sm={2}>
-                    <Label sm={2}>{"ETH"}</Label>
-                </Col>
+                <Label sm={2}>{"ETH"}</Label>
             </FormGroup>
         }
 
@@ -225,39 +232,33 @@ export default class OrderPlacement extends React.Component {
                 <Label for="buyOrderTotal" sm={2}>Total</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="buyOrderTotal"
-                        value={buyOrderTotal}
-                        onChange={this.buyOrderTotalChange.bind(this)}
-                        valid={buyOrderValid} />
+                           value={buyOrderTotal}
+                           onChange={this.buyOrderTotalChange.bind(this)}
+                           valid={buyOrderValid}/>
                     <FormFeedback>{buyOrderInvalidReason}</FormFeedback>
                 </Col>
-                <Col sm={2}>
-                    <Label sm={2}>{"ETH"}</Label>
-                </Col>
+                <Label sm={2}>{"ETH"}</Label>
             </FormGroup>
             buyOrderAmountField = <FormGroup row>
                 <Label for="buyOrderAmount" sm={2}>Amount</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="buyOrderAmount"
-                        value={buyOrderAmount}
-                        onChange={this.buyOrderAmountChange.bind(this)} />
+                           value={buyOrderAmount}
+                           onChange={this.buyOrderAmountChange.bind(this)}/>
                 </Col>
-                <Col sm={2}>
-                    <Label sm={2}>{token.name}</Label>
-                </Col>
+                <Label sm={2}>{token.name}</Label>
             </FormGroup>
         } else {
             buyOrderAmountField = <FormGroup row>
                 <Label for="buyOrderAmount" sm={2}>Amount</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="buyOrderAmount"
-                        value={buyOrderAmount}
-                        onChange={this.buyOrderAmountChange.bind(this)}
-                        valid={buyOrderValid} />
+                           value={buyOrderAmount}
+                           onChange={this.buyOrderAmountChange.bind(this)}
+                           valid={buyOrderValid}/>
                     <FormFeedback>{buyOrderInvalidReason}</FormFeedback>
                 </Col>
-                <Col sm={2}>
-                    <Label sm={2}>{token.name}</Label>
-                </Col>
+                <Label sm={2}>{token.name}</Label>
             </FormGroup>
         }
 
@@ -293,62 +294,68 @@ export default class OrderPlacement extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
-                        <h3>Sell {token.name}</h3>
-                        <FormGroup row>
-                            <Label for="sellOrderType" sm={2}>Type</Label>
-                            <Col sm={8}>
-                                <Input type="select" id="sellOrderType"
-                                    value={(sellOrderType === OrderType.LIMIT_ORDER) ? "Limit" : "Market"}
-                                    onChange={this.sellOrderTypeChanged.bind(this)}>
-                                    <option>Limit</option>
-                                    <option>Market</option>
-                                </Input>
-                            </Col>
-                        </FormGroup>
-                        {sellOrderPriceField}
-                        <FormGroup row>
-                            <Label for="sellOrderAmount" sm={2}>Amount</Label>
-                            <Col sm={8}>
-                                <Input type="number" min={0} id="sellOrderAmount"
-                                    value={sellOrderAmount}
-                                    onChange={this.sellOrderAmountChange.bind(this)}
-                                    valid={sellOrderValid} />
-                                <FormFeedback>{sellOrderInvalidReason}</FormFeedback>
-                            </Col>
-                            <Col sm={2}>
-                                <Label sm={2}>{token.name}</Label>
-                            </Col>
-                        </FormGroup>
-                        {sellOrderTotalField}
-                        <FormGroup row>
-                            <Label for="sellButton" sm={2}></Label>
-                            <Col sm={8}>
-                                <Button block color="primary" id="sellButton" disabled={disableSellButton} onClick={this.sell.bind(this)}>{"SELL"}</Button>
-                            </Col>
-                        </FormGroup>
+                        <Box title={"Sell " + token.name}>
+                            <BoxSection>
+                                <FormGroup row>
+                                    <Label for="sellOrderType" sm={2}>Type</Label>
+                                    <Col sm={8}>
+                                        <Input type="select" id="sellOrderType"
+                                               value={(sellOrderType === OrderType.LIMIT_ORDER) ? "Limit" : "Market"}
+                                               onChange={this.sellOrderTypeChanged.bind(this)}>
+                                            <option>Limit</option>
+                                            <option>Market</option>
+                                        </Input>
+                                    </Col>
+                                </FormGroup>
+                                {sellOrderPriceField}
+                                <FormGroup row>
+                                    <Label for="sellOrderAmount" sm={2}>Amount</Label>
+                                    <Col sm={8}>
+                                        <Input type="number" min={0} id="sellOrderAmount"
+                                               value={sellOrderAmount}
+                                               onChange={this.sellOrderAmountChange.bind(this)}
+                                               valid={sellOrderValid}/>
+                                        <FormFeedback>{sellOrderInvalidReason}</FormFeedback>
+                                    </Col>
+                                    <Label sm={2}>{token.name}</Label>
+                                </FormGroup>
+                                {sellOrderTotalField}
+                                <FormGroup row>
+                                    <Label for="sellButton" sm={2}></Label>
+                                    <Col sm={8}>
+                                        <Button block color="primary" id="sellButton" disabled={disableSellButton}
+                                                onClick={this.sell.bind(this)}>{"SELL"}</Button>
+                                    </Col>
+                                </FormGroup>
+                            </BoxSection>
+                        </Box>
                     </div>
                     <div className="col-lg-6">
-                        <h3>Buy {token.name}</h3>
-                        <FormGroup row>
-                            <Label for="buyOrderType" sm={2}>Type</Label>
-                            <Col sm={8}>
-                                <Input type="select" id="buyOrderType"
-                                    value={(buyOrderType === OrderType.LIMIT_ORDER) ? "Limit" : "Market"}
-                                    onChange={this.buyOrderTypeChange.bind(this)}>
-                                    <option>Limit</option>
-                                    <option>Market</option>
-                                </Input>
-                            </Col>
-                        </FormGroup>
-                        {buyOrderPriceField}
-                        {buyOrderAmountField}
-                        {buyOrderTotalField}
-                        <FormGroup row>
-                            <Label for="buyButton" sm={2}></Label>
-                            <Col sm={8}>
-                                <Button block color="primary" id="buyButton" disabled={disableBuyButton} onClick={this.buy.bind(this)}>{"BUY"}</Button>
-                            </Col>
-                        </FormGroup>
+                        <Box title={"Buy " + token.name}>
+                            <BoxSection>
+                                <FormGroup row>
+                                    <Label for="buyOrderType" sm={2}>Type</Label>
+                                    <Col sm={8}>
+                                        <Input type="select" id="buyOrderType"
+                                               value={(buyOrderType === OrderType.LIMIT_ORDER) ? "Limit" : "Market"}
+                                               onChange={this.buyOrderTypeChange.bind(this)}>
+                                            <option>Limit</option>
+                                            <option>Market</option>
+                                        </Input>
+                                    </Col>
+                                </FormGroup>
+                                {buyOrderPriceField}
+                                {buyOrderAmountField}
+                                {buyOrderTotalField}
+                                <FormGroup row>
+                                    <Label for="buyButton" sm={2}></Label>
+                                    <Col sm={8}>
+                                        <Button block color="primary" id="buyButton" disabled={disableBuyButton}
+                                                onClick={this.buy.bind(this)}>{"BUY"}</Button>
+                                    </Col>
+                                </FormGroup>
+                            </BoxSection>
+                        </Box>
                     </div>
                 </div>
                 <div>
@@ -359,7 +366,8 @@ export default class OrderPlacement extends React.Component {
                         </ModalBody>
                         <ModalFooter>
                             <Button color="primary" onClick={this.confirmTradeExecution.bind(this)}>{takerSide}</Button>
-                            <Button outline color="secondary" onClick={this.abortTradeExecution.bind(this)}>Cancel</Button>
+                            <Button outline color="secondary"
+                                    onClick={this.abortTradeExecution.bind(this)}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
                     <Modal isOpen={orderModal} toggle={this.abortOrder} className={this.props.className}>

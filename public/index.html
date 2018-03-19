@@ -35,9 +35,25 @@
             margin-bottom: 20px;
         }
 
+        .card table {
+            margin-bottom: 0;
+            border-width: 0;
+            /*background: red;*/
+        }
+
         .card .table tr td:first-child,
         .card .table tr th:first-child {
             border-left: 0;
+        }
+
+        .card .table tr td:last-child,
+        .card .table tr th:last-child {
+            border-right: 0;
+        }
+
+        .card .table-no-bottom-border tr:last-child td,
+        .card .table-no-bottom-border tr:last-child th {
+            border-bottom: 0;
         }
 
         .card .table tr th {
@@ -46,13 +62,23 @@
         }
 
         .card-body {
-            /*padding:0 10px;*/
+            padding: 8px;
+        }
+
+        .card-body .pagination {
+            margin-bottom: 0;
+        }
+
+        .card-header {
+            padding: 8px;
+            vertical-align: middle;
         }
 
         .card-title {
             font-weight: bold;
             text-transform: uppercase;
             float: left;
+            margin-bottom: 0;
         }
 
         .table-bordered {
@@ -72,7 +98,7 @@
         }
 
         .table td, .table th {
-            padding:6px;
+            padding: 6px;
         }
 
     </style>

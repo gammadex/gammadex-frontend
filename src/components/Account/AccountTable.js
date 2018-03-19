@@ -16,7 +16,7 @@ export default class AccountTable extends React.Component {
             exchangeBalanceEthWei,
             exchangeBalanceTokWei } = this.props
         return (
-            <table className="table table-striped table-bordered">
+            <table className="table table-striped table-bordered table-no-bottom-border">
                 <thead>
                     <tr>
                         <th>+ / -</th>
