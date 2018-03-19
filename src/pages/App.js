@@ -62,11 +62,11 @@ class App extends Component {
         let pageBlock = <WalletChooser/>
         if (page === "Exchange") {
             pageBlock = <div className="row">
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                     <TokenChooser/>
                     <AccountDetail token={token}/>
                 </div>
-                <div className="pl-0 col-lg-8 ">
+                <div className="pl-0 col-lg-6 ">
                     <Charts token={token}/>
                     <OrderPlacement token={token}/>
                     <OrderBook token={token} pageSize={pageSize}/>
@@ -75,6 +75,10 @@ class App extends Component {
                     <MyTrades/>
                     <OpenOrders />
                     <DepositHistory />
+                </div>
+                <div className="col-lg-3">
+                    <TokenChooser/>
+                    <AccountDetail token={token}/>
                 </div>
             </div>
         }
