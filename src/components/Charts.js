@@ -48,9 +48,6 @@ export default class ChartsAndBalances extends React.Component {
         } else if (activeTab === "DepthChart") {
             content = <Resizer><PlotlyDepthChart bids={allBids} offers={allOffers}/></Resizer>
             depthChartActiveClass = "active"
-        } else if (activeTab === "Balances") {
-            balancesActiveClass = "active"
-            content = <AccountDetail token={token}/>
         }
 
         return (
@@ -64,9 +61,6 @@ export default class ChartsAndBalances extends React.Component {
                         <li className="nav-item">
                             <a className={"nav-link " + depthChartActiveClass} href="#" onClick={() => this.selectTab("DepthChart")}>Depth
                                 Chart</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className={"nav-link " + balancesActiveClass} href="#" onClick={() => this.selectTab("Balances")}>Balances</a>
                         </li>
                     </ul>
                 </div>
