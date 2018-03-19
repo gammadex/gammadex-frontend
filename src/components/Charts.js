@@ -5,7 +5,7 @@ import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
 import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 import Resizer from './Resizer'
 
-export default class ChartsAndBalances extends React.Component {
+export default class Charts extends React.Component {
     state = {
         activeTab: "PriceChart",
         allTrades: [],

@@ -17,8 +17,9 @@ import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
 import MockSocket from "../MockSocket"
 import TradeHistory from '../components/TradeHistory'
-import ChartsAndBalances from '../components/ChartsAndBalances'
+import Charts from '../components/Charts'
 import TopNavigation from '../components/TopNavigation'
+import AccountDetail from '../components/AccountDetail'
 
 class App extends Component {
     constructor() {
@@ -63,9 +64,10 @@ class App extends Component {
             pageBlock = <div className="row">
                 <div className="col-lg-4">
                     <TokenChooser/>
+                    <AccountDetail token={token}/>
                 </div>
                 <div className="pl-0 col-lg-8 ">
-                    <ChartsAndBalances token={token}/>
+                    <Charts token={token}/>
                     <OrderPlacement token={token}/>
                     <OrderBook token={token} pageSize={pageSize}/>
                     <TradeDetail/>

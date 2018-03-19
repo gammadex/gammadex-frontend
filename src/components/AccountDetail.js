@@ -156,22 +156,24 @@ export default class AccountDetail extends React.Component {
         return (
             <span>
                 <div className="card">
-                    <div className="card-footer">
-                        Account: {accountLink} <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
+                    <div className="card-header">
+                        <strong className="card-title">Accounts</strong>
                     </div>
 
-                    <div className="col-lg-12">
-                        <AccountTable
-                            base="ETH"
-                            token={token.name}
-                            baseDecimals={Config.getBaseDecimals()}
-                            tokenDecimals={tokenDecimals}
-                            walletBalanceEthWei={walletBalanceEthWei}
-                            walletBalanceTokWei={walletBalanceTokWei}
-                            exchangeBalanceEthWei={exchangeBalanceEthWei}
-                            exchangeBalanceTokWei={exchangeBalanceTokWei}
-                            ethTransaction={ethTransaction}
-                            tokTransaction={tokTransaction}/>
+                    <AccountTable
+                        base="ETH"
+                        token={token.name}
+                        baseDecimals={Config.getBaseDecimals()}
+                        tokenDecimals={tokenDecimals}
+                        walletBalanceEthWei={walletBalanceEthWei}
+                        walletBalanceTokWei={walletBalanceTokWei}
+                        exchangeBalanceEthWei={exchangeBalanceEthWei}
+                        exchangeBalanceTokWei={exchangeBalanceTokWei}
+                        ethTransaction={ethTransaction}
+                        tokTransaction={tokTransaction}/>
+
+                    <div className="card-footer">
+                        Account: {accountLink} <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
                     </div>
                 </div>
 
