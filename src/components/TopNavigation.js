@@ -1,14 +1,8 @@
 import React, {Component} from 'react'
-import WebSocketDetail from '../components/WebSocketDetail'
 import DevelopmentToolbar from '../components/TopNavigation/DevelopmentToolbar'
 
 import Logout from '../components/Logout'
 import TokenStore from '../stores/TokenStore'
-import Config from '../Config'
-import * as TimerActions from "../actions/TimerActions"
-import {Button} from 'reactstrap'
-import * as MyTradeActions from "../actions/MyTradeActions"
-import MockSocket from "../MockSocket"
 
 class TopNavigation extends Component {
     constructor() {
@@ -29,24 +23,7 @@ class TopNavigation extends Component {
         }))
     }
 
-    purge() {
-        MyTradeActions.purge()
-        MockSocket.purge()
-    }
-
     render() {
-        const {token} = this.state
-
-        let purge = null
-        if (Config.isDevelopment()) {
-            purge = <div className="row">
-                <div className="col-lg-12">
-                    <Button color="link" size="sm" onClick={() => this.purge()}>Purge</Button>
-                    <small> local storage</small>
-                </div>
-            </div>
-        }
-
         return (
             <header>
                 <nav className="navbar navbar-dark bg-primary  navbar-expand-lg main-nav">
