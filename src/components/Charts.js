@@ -3,7 +3,9 @@ import AccountDetail from '../components/AccountDetail'
 import OrderBookStore from '../stores/OrderBookStore'
 import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
 import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
-import Resizer from './Resizer'
+import Resizer from './CustomComponents/Resizer'
+import Conditional from "./CustomComponents/Conditional"
+import {Box, BoxSection, BoxHeader} from "./CustomComponents/Box"
 
 export default class Charts extends React.Component {
     state = {
@@ -40,7 +42,7 @@ export default class Charts extends React.Component {
         const {token} = this.props
 
         let content = null
-        let priceChartActiveClass = "", depthChartActiveClass = "", balancesActiveClass = ""
+        let priceChartActiveClass = "", depthChartActiveClass = "", noChartActiveClass = ""
 
         if (activeTab === "PriceChart") {
             content = <Resizer><PlotlyPriceChart trades={allTrades} token={token.name}/></Resizer>
@@ -48,11 +50,14 @@ export default class Charts extends React.Component {
         } else if (activeTab === "DepthChart") {
             content = <Resizer><PlotlyDepthChart bids={allBids} offers={allOffers}/></Resizer>
             depthChartActiveClass = "active"
+        } else if (activeTab === "NoChart") {
+            content = ""
+            noChartActiveClass = "active"
         }
 
         return (
-            <div className="card">
-                <div className="card-header">
+            <Box>
+                <BoxHeader>
                     <ul className="nav nav-pills card-header-pills">
                         <li className="nav-item">
                             <a className={"nav-link " + priceChartActiveClass} href="#" onClick={() => this.selectTab("PriceChart")}>Price
@@ -62,12 +67,18 @@ export default class Charts extends React.Component {
                             <a className={"nav-link " + depthChartActiveClass} href="#" onClick={() => this.selectTab("DepthChart")}>Depth
                                 Chart</a>
                         </li>
+                        <li className="nav-item">
+                            <a className={"nav-link " + noChartActiveClass} href="#" onClick={() => this.selectTab("NoChart")}>No
+                                Chart</a>
+                        </li>
                     </ul>
-                </div>
-                <div className="card-block">
-                    {content}
-                </div>
-            </div>
+                </BoxHeader>
+                <Conditional displayCondition={priceChartActiveClass || depthChartActiveClass}>
+                    <BoxSection>
+                        {content}
+                    </BoxSection>
+                </Conditional>
+            </Box>
         )
     }
 }

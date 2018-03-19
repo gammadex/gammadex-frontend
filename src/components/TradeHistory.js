@@ -2,7 +2,7 @@ import React from "react"
 import * as OrderBookActions from "../actions/OrderBookActions"
 import OrderBookStore from '../stores/OrderBookStore'
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
-import Pagination from '../components/Pagination'
+import Pagination from './CustomComponents/Pagination'
 import {Box, BoxSection} from "./CustomComponents/Box"
 
 // TODO - use a TradeStore, not OrderBookStore

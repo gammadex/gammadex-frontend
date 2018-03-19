@@ -8,7 +8,7 @@ import AccountType from "../../../AccountType"
 import * as WalletActions from "../../../actions/WalletActions"
 import * as WalletDao from "../../../util/WalletDao"
 import EncryptionSection from "./PrivateKeyForm/EncryptionSection"
-import Conditional from "../../Conditional"
+import Conditional from "../../CustomComponents/Conditional"
 
 export default class PrivateKeyForm extends React.Component {
     state = {

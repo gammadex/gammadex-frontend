@@ -21,3 +21,10 @@ export class BoxFooter extends React.Component {
         return <div className="card-footer">{this.props.children}</div>
     }
 }
+
+export class BoxHeader extends React.Component {
+    render() {
+        return <div className="card-header">{this.props.children}</div>
+    }
+}
+

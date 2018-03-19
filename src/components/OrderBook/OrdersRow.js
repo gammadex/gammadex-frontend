@@ -1,5 +1,6 @@
 import React from "react"
 import * as TradeActions from "../../actions/TradeActions"
+import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
 
 export default class OrdersTableRow extends React.Component {
 
@@ -14,9 +15,9 @@ export default class OrdersTableRow extends React.Component {
 
         return (
             <tr key={order.id} onClick={() => this.showTradeModal(order)}>
-                <td>{order.price}</td>
-                <td>{order.ethAvailableVolume}</td>
-                <td>{order.ethAvailableVolumeBase}{mine}</td>
+                <td><TruncatedNumber decimals="8">{order.price}</TruncatedNumber></td>
+                <td><TruncatedNumber decimals="8">{order.ethAvailableVolume}</TruncatedNumber></td>
+                <td><TruncatedNumber decimals="8">{order.ethAvailableVolumeBase}{mine}</TruncatedNumber></td>
             </tr>
         )
     }

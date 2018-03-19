@@ -1,7 +1,7 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrderStore from '../stores/OpenOrdersStore'
-import Pagination from '../components/Pagination'
+import Pagination from './CustomComponents/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 import TokenStats from './OrderBook/TokenStats'
 import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
@@ -9,7 +9,7 @@ import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 //import pptBuys from "../__test-data__/PPT_buys2.json"
 //import pptSells from "../__test-data__/PPT_sells2.json"
 //import venTrades from '../__test-data__/VenTrades'
-import Resizer from './Resizer'
+import Resizer from './CustomComponents/Resizer'
 import * as OrderBookActions from "../actions/OrderBookActions"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 import {Box, BoxSection} from "./CustomComponents/Box"
@@ -42,12 +42,8 @@ export default class OrderBook extends React.Component {
 
     saveBidsAndOffers = () => {
         this.setState((prevState, props) => ({
-            bids: OrderBookStore.getBidsOnCurrentPage(),
-            bidsPage: OrderBookStore.getBidsPage(),
-            numBidsPages: OrderBookStore.getNumBidsPages(),
-            offers: OrderBookStore.getOffersOnCurrentPage(),
-            offersPage: OrderBookStore.getOffersPage(),
-            numOffersPages: OrderBookStore.getNumOffersPages(),
+            bids: OrderBookStore.getBids(),
+            offers: OrderBookStore.getOffers(),
         }))
     }
 
@@ -68,37 +64,17 @@ export default class OrderBook extends React.Component {
         } = this.state
 
         return (
-            <div>
-                <div className="row">
-                    <div className="col-lg-6">
-                        <Box title="Bids">
-                            <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                                         pageSize={pageSize} openOrderHashes={openOrderHashes}/>
+            <span>
+                <Box title="Bids">
+                    <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
+                                 pageSize={pageSize} openOrderHashes={openOrderHashes}/>
+                </Box>
 
-                            <BoxSection>
-                                <div className="float-right">
-                                    <Pagination page={bidsPage} numPages={numBidsPages}
-                                                onPageChange={this.changeBidsPage}/>
-                                </div>
-                            </BoxSection>
-                        </Box>
-                    </div>
-
-                    <div className="col-lg-6">
-                        <Box title="Offers">
-                            <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                                         pageSize={pageSize} openOrderHashes={openOrderHashes}/>
-
-                            <BoxSection>
-                                <div className="float-right">
-                                    <Pagination page={offersPage} numPages={numOffersPages}
-                                                onPageChange={this.changeOffersPage}/>
-                                </div>
-                            </BoxSection>
-                        </Box>
-                    </div>
-                </div>
-            </div>
+                <Box title="Offers">
+                    <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
+                                 pageSize={pageSize} openOrderHashes={openOrderHashes}/>
+                </Box>
+            </span>
         )
     }
 }

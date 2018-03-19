@@ -4,7 +4,7 @@ import EtherDeltaWeb3 from "../../../EtherDeltaWeb3"
 import * as AccountActions from "../../../actions/AccountActions"
 import AccountType from "../../../AccountType"
 import * as WalletDao from "../../../util/WalletDao"
-import Conditional from "../../Conditional"
+import Conditional from "../../CustomComponents/Conditional"
 import * as EthereumNetworks from "../../../util/EthereumNetworks"
 
 export default class MetaMaskForm extends React.Component {

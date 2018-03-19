@@ -8,7 +8,7 @@ import AccountType from "../../../AccountType"
 import * as WalletDao from "../../../util/WalletDao"
 import PasswordSection from "./KeyStoreForm/PasswordSection"
 import FileChooser from "./KeyStoreForm/FileChooser"
-import Conditional from "../../Conditional"
+import Conditional from "../../CustomComponents/Conditional"
 
 export default class KeyStoreFile extends React.Component {
     state = {

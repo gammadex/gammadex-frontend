@@ -8,7 +8,7 @@ import AccountType from "../../AccountType"
 import * as WalletDao from "../../util/WalletDao"
 import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import * as Encryption from "../../util/Encryption"
-import Conditional from "../Conditional"
+import Conditional from "../CustomComponents/Conditional"
 
 export default class StoredPrivateKeyWalletUnlocker extends React.Component {
     state = {

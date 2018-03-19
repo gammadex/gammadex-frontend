@@ -2,7 +2,7 @@ import React from "react"
 import * as WalletActions from "../actions/WalletActions"
 import * as WalletDao from "../util/WalletDao"
 import AccountStore from "../stores/AccountStore"
-import Conditional from "./Conditional"
+import Conditional from "./CustomComponents/Conditional"
 
 export default class Logout extends React.Component {
     state = {

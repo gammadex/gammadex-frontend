@@ -1,6 +1,6 @@
 import React from "react"
 import PasswordSection from "./PasswordSection"
-import Conditional from "../../../Conditional"
+import Conditional from "../../../CustomComponents/Conditional"
 
 export default class PrivateKey extends React.Component {
     render() {
