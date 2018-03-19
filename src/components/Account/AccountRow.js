@@ -20,12 +20,12 @@ export default class AccountTableRow extends React.Component {
         return (
             <tr>
                 <td>
-                    <Button color="primary" onClick={() => this.showModal(token === "ETH", true)}>Deposit</Button>{' '}
-                    <Button color="primary" onClick={() => this.showModal(token === "ETH", false)}>Withdraw</Button>{' '}
+                    <Button size="sm" color="primary" onClick={() => this.showModal(token === "ETH", true)}>Deposit</Button>{' '}
+                    <Button size="sm" color="primary" onClick={() => this.showModal(token === "ETH", false)}>Withdraw</Button>{' '}
                 </td>
                 <td>{token}</td>
-                <td><TruncatedNumber>{String(tokWeiToEth(walletBalanceWei, tokenAddress))}</TruncatedNumber></td>
-                <td><TruncatedNumber>{String(tokWeiToEth(exchangeBalanceWei, tokenAddress))}</TruncatedNumber></td>
+                <td><TruncatedNumber length="8">{String(tokWeiToEth(walletBalanceWei, tokenAddress))}</TruncatedNumber></td>
+                <td><TruncatedNumber length="8">{String(tokWeiToEth(exchangeBalanceWei, tokenAddress))}</TruncatedNumber></td>
             </tr>
         )
     }

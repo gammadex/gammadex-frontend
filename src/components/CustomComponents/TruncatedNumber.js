@@ -3,6 +3,8 @@ import Truncated from "./Truncated"
 
 export default class TruncatedNumber extends React.Component {
     render() {
-        return <Truncated left="10" right="0" url={this.props.url}>{this.props.children}</Truncated>
+        const length = this.props.length ? parseInt(this.props.length) : 10
+
+        return <Truncated left={length} right="0" url={this.props.url}>{this.props.children}</Truncated>
     }
 }
