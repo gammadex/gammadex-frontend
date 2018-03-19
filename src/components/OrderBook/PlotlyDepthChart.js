@@ -1,6 +1,7 @@
 import React from "react"
 import Plotly from 'plotly.js/dist/plotly-finance'
 import {cumulativeAdd} from "../../util/CumulativeOrderVolumeAdder"
+import {BoxSection} from "../CustomComponents/Box"
 
 export default class PlotlyDepthChart extends React.Component {
     constructor(props) {
@@ -75,6 +76,8 @@ export default class PlotlyDepthChart extends React.Component {
     }
 
     render() {
-        return <div id="depthChart"/>
+        return <BoxSection>
+            <div id="depthChart"/>
+        </BoxSection>
     }
 }

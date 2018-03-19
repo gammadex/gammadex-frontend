@@ -57,27 +57,30 @@ export default class Charts extends React.Component {
 
         return (
             <Box>
-                <BoxHeader>
+                <BoxHeader noBorder={allTrades.length === 0 || noChartActiveClass === "active"}>
                     <ul className="nav nav-pills card-header-pills">
                         <li className="nav-item">
-                            <a className={"nav-link " + priceChartActiveClass} href="#" onClick={() => this.selectTab("PriceChart")}>Price
+                            <a className={"nav-link " + priceChartActiveClass} href="#"
+                               onClick={() => this.selectTab("PriceChart")}>Price
                                 Chart</a>
                         </li>
                         <li className="nav-item">
-                            <a className={"nav-link " + depthChartActiveClass} href="#" onClick={() => this.selectTab("DepthChart")}>Depth
+                            <a className={"nav-link " + depthChartActiveClass} href="#"
+                               onClick={() => this.selectTab("DepthChart")}>Depth
                                 Chart</a>
                         </li>
                         <li className="nav-item">
-                            <a className={"nav-link " + noChartActiveClass} href="#" onClick={() => this.selectTab("NoChart")}>No
+                            <a className={"nav-link " + noChartActiveClass} href="#"
+                               onClick={() => this.selectTab("NoChart")}>No
                                 Chart</a>
                         </li>
                     </ul>
                 </BoxHeader>
-                <Conditional displayCondition={priceChartActiveClass || depthChartActiveClass}>
-                    <BoxSection>
-                        {content}
-                    </BoxSection>
+
+                <Conditional displayCondition={allTrades.length > 0}>
+                    {content}
                 </Conditional>
+
             </Box>
         )
     }

@@ -24,7 +24,9 @@ export class BoxFooter extends React.Component {
 
 export class BoxHeader extends React.Component {
     render() {
-        return <div className="card-header">{this.props.children}</div>
+        const borderClass = this.props.noBorder ? "border-bottom-0" : ""
+
+        return <div className={"card-header " + borderClass}>{this.props.children}</div>
     }
 }
 

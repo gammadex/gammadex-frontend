@@ -3,6 +3,7 @@ import Plotly from 'plotly.js/dist/plotly-finance'
 import {convertToOhlc, getPricesAndDates} from "../../util/OhlcConverter"
 import {getInitialDateRange} from "../../util/ChartUtil"
 import _ from "lodash"
+import {BoxSection} from "../CustomComponents/Box"
 
 export default class PlotlyPriceChart extends React.Component {
     state = {
@@ -147,9 +148,9 @@ export default class PlotlyPriceChart extends React.Component {
                 side: 'right'
             },
             margin: {
-                l: 80,
-                r: 80,
-                b: 50,
+                l: 70,
+                r: 70,
+                b: 40,
                 t: 20,
                 pad: 4
             },
@@ -188,8 +189,13 @@ export default class PlotlyPriceChart extends React.Component {
 
     render() {
         const {chartElements, ohlcIntervalMins} = this.state
+        const {trades, token} = this.props
 
-        return <div>
+        if (! trades || trades.length == 0) {
+            return <div></div>
+        }
+
+        return <BoxSection>
             <div className="row">
                 <div className="col-lg-12">
                     <div className="float-left m-2">
@@ -260,6 +266,6 @@ export default class PlotlyPriceChart extends React.Component {
                     <div id="chart"/>
                 </div>
             </div>
-        </div>
+        </BoxSection>
     }
 }

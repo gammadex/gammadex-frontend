@@ -1,18 +1,11 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrderStore from '../stores/OpenOrdersStore'
-import Pagination from './CustomComponents/Pagination'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import TokenStats from './OrderBook/TokenStats'
-import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
-import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 //import pptBuys from "../__test-data__/PPT_buys2.json"
 //import pptSells from "../__test-data__/PPT_sells2.json"
 //import venTrades from '../__test-data__/VenTrades'
-import Resizer from './CustomComponents/Resizer'
-import * as OrderBookActions from "../actions/OrderBookActions"
-import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
-import {Box, BoxSection} from "./CustomComponents/Box"
+import {Box} from "./CustomComponents/Box"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -20,17 +13,7 @@ export default class OrderBook extends React.Component {
 
         this.state = {
             bids: [],
-            bidsPage: 0,
-            numBidsPages: 0,
             offers: [],
-            offersPage: 0,
-            numOffersPages: 0,
-            trades: [],
-            tradesPage: 0,
-            numTradesPages: 0,
-            allTrades: [],
-            allBids: [],
-            allOffers: [],
             openOrderHashes: OpenOrderStore.getOpenOrderHashes()
         }
     }
@@ -47,21 +30,9 @@ export default class OrderBook extends React.Component {
         }))
     }
 
-    changeBidsPage = (page) => {
-        OrderBookActions.changeBidsPage(page)
-    }
-
-    changeOffersPage = (page) => {
-        OrderBookActions.changeOffersPage(page)
-    }
-
     render() {
         const {token, pageSize} = this.props
-
-        const {
-            bids, bidsPage, numBidsPages, offers, offersPage, numOffersPages, trades, tradesPage, numTradesPages,
-            allTrades, allBids, allOffers, openOrderHashes
-        } = this.state
+        const {bids, offers, openOrderHashes} = this.state
 
         return (
             <span>

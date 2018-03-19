@@ -63,7 +63,7 @@ class App extends Component {
         if (page === "Exchange") {
             pageBlock = <div className="row">
                 <div className="col-lg-3">
-                    <OrderBook token={token} pageSize={pageSize}/>
+                    <OrderBook token={token}/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
                     <Charts token={token}/>
