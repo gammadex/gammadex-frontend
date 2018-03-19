@@ -11,7 +11,6 @@ export default class DepositHistoryRow extends React.Component {
 
     render() {
         const { tokenAddress, status, timestamp, depositType, amount, txHash } = this.props.depositHistory
-        console.log(`${tokenAddress} ${status} ${timestamp} ${depositType} ${amount} ${txHash}`)
         const tokenName = Config.getTokenName(tokenAddress)
         let statusColor = "warning"
         if (status === TransactionStatus.COMPLETE) {

@@ -23,7 +23,7 @@ export default class MyTradesRow extends React.Component {
                 <td>{`${trade.txHash.substring(0, 20)}...`}</td>
                 <td>{`${tokenName}/ETH`}</td>
                 <td>{(trade.takerSide === OrderSide.SELL) ? "Sell" : "Buy"}</td>
-                <td>{trade.price}</td>
+                <td>{String(trade.price)}</td>
                 <td>{`${trade.amountTok} ${tokenName}`}</td>
                 <td></td>
                 <td></td>

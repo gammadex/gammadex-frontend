@@ -11,7 +11,7 @@ import * as TradeActions from "../actions/TradeActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
 import * as MockOrderUtil from "../MockOrderUtil"
-import { tokWeiToEth, baseWeiToEth } from "../EtherConversion"
+import { tokWeiToEth, baseWeiToEth, tokEthToWei, baseEthToWei } from "../EtherConversion"
 import BigNumber from 'bignumber.js'
 
 // TODO this class knows and is doing too much!!!!
@@ -85,9 +85,9 @@ export default class TradeDetail extends React.Component {
         let amountWei = 0
         if (MockOrderUtil.isTakerSell(modalOrder)) {
             // taker is selling, amount is in units of TOK
-            amountWei = tokWeiToEth(fillAmount, selectedToken.address)
+            amountWei = tokEthToWei(fillAmount, selectedToken.address)
         } else {
-            amountWei = baseWeiToEth(BigNumber(String(modalOrder.price)).multipliedBy(BigNumber(String(fillAmount))))
+            amountWei = baseEthToWei(BigNumber(String(modalOrder.price)).times(BigNumber(String(fillAmount))))
         }
         EtherDeltaWeb3.promiseTestTrade(account, modalOrder, amountWei)
             .then(isTradable => {

@@ -2,6 +2,7 @@ import OrderFactory from "./OrderFactory"
 import Config from "./Config"
 import OrderSide from "./OrderSide"
 import { baseWeiToEth, tokWeiToEth } from "./EtherConversion"
+import BigNumber from 'bignumber.js'
 
 // - The Order (parameter) contains bare essential economics, required to trade using the smart contract.
 
@@ -12,9 +13,6 @@ import { baseWeiToEth, tokWeiToEth } from "./EtherConversion"
 
 export function orderDetailFromOrder(order) {
     const orderHash = OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)
-
-    const tokenDecimals = (order.tokenGive === Config.getBaseAddress()
-        ? Config.getTokenDecimalsByAddress(order.tokenGet) : Config.getTokenDecimalsByAddress(order.tokenGive))
     const tokenAddress = (order.tokenGive === Config.getBaseAddress()) ? order.tokenGet : order.tokenGive
 
     const updated = (new Date()).toISOString()
@@ -24,9 +22,9 @@ export function orderDetailFromOrder(order) {
     // maker buy and ETH units for maker sell
 
     if (isMakerBuy(order)) {
-        price = baseWeiToEth(order.amountGive).dividedBy(tokWeiToEth(order.amountGet, tokenAddress))
+        price = baseWeiToEth(order.amountGive).div(tokWeiToEth(order.amountGet, tokenAddress))
     } else {
-        price = baseWeiToEth(order.amountGet).dividedBy(tokWeiToEth(order.amountGive, tokenAddress))
+        price = baseWeiToEth(order.amountGet).div(tokWeiToEth(order.amountGive, tokenAddress))
     }
 
     return {
@@ -34,7 +32,6 @@ export function orderDetailFromOrder(order) {
         orderHash: orderHash,
         makerSide: makerSide(order),
         price: price,
-        tokenDecimals: tokenDecimals,
         tokenAddress: tokenAddress,
         contractAvailableVolume: contractAvailableVolume,
         contractFilledVolume: 0, // this is another on-chain bit of data, though not sure if we need it.
@@ -49,25 +46,25 @@ export function orderDetailToSocketOrder(orderDetail) {
     // need to format orderbook (market response) as per ED websocket getMarket api
     // see https://github.com/forkdelta/backend-replacement/blob/4ff7bbc8575c2a38ff5a1bdc4efd4fe7856a00ab/app/services/websocket_server.py#L196
 
-    let availableVolume = 0 // TOK amount in full decimals = wei
-    let ethAvailableVolume = 0 // TOK amount normalized to TOK decimals
+    let availableVolume = 0 // TOK amount in full wei
+    let ethAvailableVolume = 0 // TOK amount normalized to TOK
 
-    let availableVolumeBase = 0 // ETH amount in full decimals = wei
-    let ethAvailableVolumeBase = 0 // ETH amount normalized to ETH decimals (18) = eth
+    let availableVolumeBase = 0 // ETH amount in full wei
+    let ethAvailableVolumeBase = 0 // ETH amount normalized to ETH
     let amount = 0
     if (orderDetail.makerSide === OrderSide.BUY) {
-        availableVolume = orderDetail.contractAvailableVolume
+        availableVolume = BigNumber(orderDetail.contractAvailableVolume)
         ethAvailableVolume = tokWeiToEth(availableVolume, orderDetail.tokenAddress)
 
-        availableVolumeBase = availableVolume * orderDetail.price
+        availableVolumeBase = availableVolume.times(orderDetail.price).dp(0, BigNumber.ROUND_FLOOR)
         ethAvailableVolumeBase = baseWeiToEth(availableVolumeBase)
 
         amount = -availableVolume
     } else {
-        availableVolumeBase = orderDetail.contractAvailableVolume
+        availableVolumeBase = BigNumber(orderDetail.contractAvailableVolume)
         ethAvailableVolumeBase = baseWeiToEth(availableVolumeBase)
 
-        availableVolume = availableVolumeBase / orderDetail.price
+        availableVolume = availableVolumeBase.div(orderDetail.price).dp(0, BigNumber.ROUND_FLOOR)
         ethAvailableVolume = tokWeiToEth(availableVolume, orderDetail.tokenAddress)
 
         amount = availableVolume
