@@ -76,7 +76,7 @@ class App extends Component {
                     <OpenOrders />
                     <DepositHistory />
                 </div>
-                <div className="col-lg-3">
+                <div className="pl-0 col-lg-3">
                     <TokenChooser/>
                     <AccountDetail token={token}/>
                 </div>
