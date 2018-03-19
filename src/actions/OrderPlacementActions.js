@@ -106,7 +106,7 @@ export function executeBuy() {
     // which can result in Error: [BigNumber Error] Number primitive has more than 15 significant digits: 0.00005518027643333333
     // https://github.com/wjsrobertson/ethergamma/issues/6
     let outstandingBaseAmountWei = baseEthToWei(buyOrderTotal)
-    if(buyOrderType === OrderType.MARKET_ORDER) {
+    if (buyOrderType === OrderType.MARKET_ORDER) {
         outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
     }
     const trades = _.flatMap(eligibleOffers, offer => {
@@ -135,8 +135,7 @@ export function executeBuy() {
                 price: buyOrderPrice,
                 amount: buyOrderAmount,
                 tokenAddress: selectedToken.address,
-                tokenName: selectedToken.name,
-                tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+                tokenName: selectedToken.name
             }
             dispatcher.dispatch({
                 type: ActionNames.CREATE_ORDER,
@@ -185,8 +184,7 @@ export function executeSell() {
                 price: sellOrderPrice,
                 amount: sellOrderAmount,
                 tokenAddress: selectedToken.address,
-                tokenName: selectedToken.name,
-                tokenDecimals: Config.getTokenDecimals(selectedToken.name)
+                tokenName: selectedToken.name
             }
             dispatcher.dispatch({
                 type: ActionNames.CREATE_ORDER,
@@ -230,7 +228,6 @@ export function confirmTradeExecution() {
                     EtherDeltaWeb3.promiseTrade(account, nonce + i, trade.orderDetail.order, trade.fillAmountWei)
                         .once('transactionHash', hash => {
                             AccountActions.nonceUpdated(nonce + 1)
-                            //TradeActions.sentTransaction(hash)
                             MyTradeActions.addMyTrade({
                                 environment: Config.getReactEnv(),
                                 account: account,
@@ -261,8 +258,7 @@ export function confirmOrder() {
         expires,
         price,
         amount,
-        tokenAddress,
-        tokenDecimals
+        tokenAddress
     } = OrderPlacementStore.getOrderPlacementState().order
     const {
         tokenGet,

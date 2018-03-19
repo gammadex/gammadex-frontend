@@ -77,7 +77,6 @@ export default class AccountDetail extends React.Component {
         this.hideModal()
 
         const {token} = this.props
-        const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
             account,
             accountRetrieved,
@@ -124,7 +123,6 @@ export default class AccountDetail extends React.Component {
 
     render() {
         const {token} = this.props
-        const tokenDecimals = Config.getTokenDecimals(token.name)
         const {
             accountType,
             account,
