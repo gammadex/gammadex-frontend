@@ -4,6 +4,7 @@ import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import Config from '../Config'
 import * as TokenActions from "../actions/TokenActions"
 import * as WebSocketActions from "../actions/WebSocketActions"
+import {Box} from "./CustomComponents/Box"
 
 export default class TokenChooser extends React.Component {
     state = {
@@ -73,9 +74,8 @@ export default class TokenChooser extends React.Component {
                         </div>
                     </div>
                 </div>
-
                 <div className="table-responsive token-chooser">
-                    <table className="table table-striped table-bordered table-hover card-table">
+                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
                         <thead>
                         <tr>
                             <th>Symbol</th>
@@ -83,9 +83,7 @@ export default class TokenChooser extends React.Component {
                             <th>% Change</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {tokenRows}
-                        </tbody>
+                        <tbody>{tokenRows}</tbody>
                     </table>
                 </div>
             </div>

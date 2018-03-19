@@ -6,6 +6,7 @@ import AccountType from "../AccountType"
 import PrivateKey from "./WalletChooser/PrivateKey"
 import MetaMask from "./WalletChooser/MetaMask"
 import Ledger from "./WalletChooser/Ledger"
+import {Box, BoxSection} from "./CustomComponents/Box"
 
 class WalletChooser extends Component {
     state = {
@@ -41,12 +42,8 @@ class WalletChooser extends Component {
         let panel = this.getPanelContents()
 
         return (
-            <div className="card">
-                <div className="card-header">
-                    <strong className="card-title">Wallets</strong>
-                </div>
-
-                <div className="card-body">
+            <Box title="Wallets">
+                <BoxSection>
                     <h3>Choose wallet type</h3>
 
                     <div className="row">
@@ -102,8 +99,8 @@ class WalletChooser extends Component {
                             {panel}
                         </div>
                     </div>
-                </div>
-            </div>
+                </BoxSection>
+            </Box>
         )
     }
 

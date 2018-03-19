@@ -12,6 +12,7 @@ import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 import Resizer from './Resizer'
 import * as OrderBookActions from "../actions/OrderBookActions"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
+import {Box, BoxSection} from "./CustomComponents/Box"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -70,35 +71,31 @@ export default class OrderBook extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
-                        <div className="card">
-                            <div className="card-header">
-                                <strong className="card-title">Bids</strong>
-                            </div>
-
+                        <Box title="Bids">
                             <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
                                          pageSize={pageSize} openOrderHashes={openOrderHashes}/>
 
-                            <div className="float-right">
-                                <Pagination page={bidsPage} numPages={numBidsPages}
-                                            onPageChange={this.changeBidsPage}/>
-                            </div>
-                        </div>
+                            <BoxSection>
+                                <div className="float-right">
+                                    <Pagination page={bidsPage} numPages={numBidsPages}
+                                                onPageChange={this.changeBidsPage}/>
+                                </div>
+                            </BoxSection>
+                        </Box>
                     </div>
 
                     <div className="col-lg-6">
-                        <div className="card">
-                            <div className="card-header">
-                                <strong className="card-title">Offers</strong>
-                            </div>
-
+                        <Box title="Offers">
                             <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
                                          pageSize={pageSize} openOrderHashes={openOrderHashes}/>
 
-                            <div className="float-right">
-                                <Pagination page={offersPage} numPages={numOffersPages}
-                                            onPageChange={this.changeOffersPage}/>
-                            </div>
-                        </div>
+                            <BoxSection>
+                                <div className="float-right">
+                                    <Pagination page={offersPage} numPages={numOffersPages}
+                                                onPageChange={this.changeOffersPage}/>
+                                </div>
+                            </BoxSection>
+                        </Box>
                     </div>
                 </div>
             </div>

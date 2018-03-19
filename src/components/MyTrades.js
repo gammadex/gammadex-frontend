@@ -6,6 +6,7 @@ import TimerRelay from "../TimerRelay"
 import TransactionStatus from "../TransactionStatus"
 import MyTradesTable from "./MyTrades/MyTradesTable"
 import * as MyTradeActions from "../actions/MyTradeActions"
+import {Box} from "./CustomComponents/Box"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -49,15 +50,9 @@ export default class MyTrades extends React.Component {
             })
         }
         return (
-            <div>
-                <div className="card">
-                    <div className="card-header">
-                        <strong className="card-title">My Trades</strong>
-                    </div>
-
-                    <MyTradesTable trades={accountTrades}/>
-                </div>
-            </div>
+            <Box title="My Trades">
+                <MyTradesTable trades={accountTrades}/>
+            </Box>
         )
     }
 }
