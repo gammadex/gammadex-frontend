@@ -11,6 +11,8 @@ import * as TradeActions from "../actions/TradeActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
 import * as MockOrderUtil from "../MockOrderUtil"
+import { tokWeiToEth, baseWeiToEth } from "../EtherConversion"
+import BigNumber from 'bignumber.js'
 
 // TODO this class knows and is doing too much!!!!
 export default class TradeDetail extends React.Component {
@@ -55,16 +57,15 @@ export default class TradeDetail extends React.Component {
 
     fillAmountChanged = (event) => {
         let fillAmount = Number(event.target.value)
-        const tokenDecimals = Config.getTokenDecimals(this.state.selectedToken.name)
         const takerSide = MockOrderUtil.takerSide(this.state.modalOrder)
         const amountEth = fillAmount * this.state.modalOrder.price
         TradeActions.fillAmountChanged(
             takerSide,
             fillAmount,
             this.state.modalOrder.ethAvailableVolume,
-            this.state.exchangeBalanceTokWei / Math.pow(10, tokenDecimals),
+            tokWeiToEth(this.state.exchangeBalanceTokWei, this.state.selectedToken.address),
             amountEth,
-            this.state.exchangeBalanceEthWei / Math.pow(10, 18))
+            baseWeiToEth(this.state.exchangeBalanceEthWei))
     }
 
     hideModal() {
@@ -84,10 +85,9 @@ export default class TradeDetail extends React.Component {
         let amountWei = 0
         if (MockOrderUtil.isTakerSell(modalOrder)) {
             // taker is selling, amount is in units of TOK
-            const tokenDecimals = Config.getTokenDecimals(selectedToken.name)
-            amountWei = fillAmount * Math.pow(10, tokenDecimals)
+            amountWei = tokWeiToEth(fillAmount, selectedToken.address)
         } else {
-            amountWei = (modalOrder.price * fillAmount) * Math.pow(10, 18)
+            amountWei = baseWeiToEth(BigNumber(String(modalOrder.price)).multipliedBy(BigNumber(String(fillAmount))))
         }
         EtherDeltaWeb3.promiseTestTrade(account, modalOrder, amountWei)
             .then(isTradable => {

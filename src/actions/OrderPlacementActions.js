@@ -19,6 +19,7 @@ import OrderState from "../OrderState";
 import OrderFactory from "../OrderFactory";
 import MockSocket from "../MockSocket";
 import OrderType from "../OrderType";
+import { tokEthToWei, tokWeiToEth, baseEthToWei, baseWeiToEth } from "../EtherConversion"
 
 export function sellOrderTypeChanged(orderType) {
     dispatcher.dispatch({
@@ -35,11 +36,11 @@ export function sellOrderChanged(price, amount, total, exchangeBalanceTok) {
         orderValid = false
         orderInvalidReason = `Amount greater than wallet balance (${exchangeBalanceTok})`
     }
-    const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
-    const amountWei = BigNumber(amount).multipliedBy(BigNumber(Math.pow(10, tokenDecimals)))
+    const tokenAddress = TokenStore.getSelectedToken().address
+    const amountWei = tokEthToWei(amount, tokenAddress)
     const bidTotalWei = OrderBookStore.getBidTotal()
     if (amountWei.isGreaterThan(bidTotalWei)) {
-        const bidTotal = bidTotalWei.dividedBy(BigNumber(Math.pow(10, tokenDecimals)))
+        const bidTotal = tokWeiToEth(bidTotalWei, tokenAddress)
         orderValid = false
         orderInvalidReason = `Amount greater than orderbook total bid size (${bidTotal})`
     }
@@ -69,11 +70,11 @@ export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
         orderInvalidReason = `Total amount greater than wallet balance (${exchangeBalanceEth} ETH)`
     }
     if (buyOrderType === OrderType.MARKET_ORDER) {
-        const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
-        const amountWei = BigNumber(amount).multipliedBy(BigNumber(Math.pow(10, tokenDecimals)))
+        const tokenAddress = TokenStore.getSelectedToken().address
+        const amountWei = tokEthToWei(amount, tokenAddress)
         const offerTotalWei = OrderBookStore.getOfferTotal()
         if (amountWei.isGreaterThan(offerTotalWei)) {
-            const offerTotal = offerTotalWei.dividedBy(BigNumber(Math.pow(10, tokenDecimals)))
+            const offerTotal = tokWeiToEth(offerTotalWei, tokenAddress)
             orderValid = false
             orderInvalidReason = `Amount greater than orderbook total offer size (${offerTotal})`
         }
@@ -104,7 +105,7 @@ export function executeBuy() {
     // TODO this is really bad use of String -> Number -> BigNumber
     // which can result in Error: [BigNumber Error] Number primitive has more than 15 significant digits: 0.00005518027643333333
     // https://github.com/wjsrobertson/ethergamma/issues/6
-    let outstandingBaseAmountWei = BigNumber(buyOrderTotal).multipliedBy(BigNumber(Math.pow(10, 18)))
+    let outstandingBaseAmountWei = baseEthToWei(buyOrderTotal)
     if(buyOrderType === OrderType.MARKET_ORDER) {
         outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
     }
@@ -112,7 +113,7 @@ export function executeBuy() {
         const fillAmountWei = BigNumber.minimum(outstandingBaseAmountWei, BigNumber(offer.availableVolumeBase))
         if (!fillAmountWei.isZero()) {
             outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
-            const fillAmountEth = fillAmountWei / Math.pow(10, 18)
+            const fillAmountEth = baseWeiToEth(fillAmountWei)
             const fillAmountTok = fillAmountEth / offer.price
             // TODO, do we need orderDetail here or can we just use the socket order
             return [{
@@ -157,13 +158,13 @@ export function executeSell() {
         eligibleBids = _.filter(OrderBookStore.getBids(),
             (bid) => parseFloat(bid.price) >= sellOrderPrice)
     }
-    const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
-    let outstandingTokAmountWei = BigNumber(sellOrderAmount).multipliedBy(BigNumber(Math.pow(10, tokenDecimals)))
+    const tokenAddress = TokenStore.getSelectedToken().address
+    let outstandingTokAmountWei = tokEthToWei(sellOrderAmount, tokenAddress)
     const trades = _.flatMap(eligibleBids, bid => {
         const fillAmountWei = BigNumber.minimum(outstandingTokAmountWei, BigNumber(bid.availableVolume))
         if (!fillAmountWei.isZero()) {
             outstandingTokAmountWei = outstandingTokAmountWei.minus(fillAmountWei)
-            const fillAmountTok = fillAmountWei / Math.pow(10, tokenDecimals)
+            const fillAmountTok = tokWeiToEth(fillAmountWei, tokenAddress)
             const fillAmountEth = fillAmountTok * bid.price
             return [{
                 orderDetail: MockOrderUtil.orderDetailFromOrder(bid),
@@ -268,7 +269,7 @@ export function confirmOrder() {
         amountGet,
         tokenGive,
         amountGive,
-        nonce } = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress, tokenDecimals)
+        nonce } = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
     const hash = OrderFactory.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce)
     const { account } = AccountStore.getAccountState()
     const contractAddr = Config.getEtherDeltaAddress()

@@ -7,23 +7,24 @@ import Config from './Config'
 import OrderSide from "./OrderSide"
 
 import * as EthJsUtil from "ethereumjs-util"
+import { tokEthToWei, baseEthToWei } from './EtherConversion';
 
 const etherDeltaAddress = Config.getEtherDeltaAddress()
 
 class OrderFactory {
 
-    createUnsignedOrder = (makerSide, expires, price, amount, tokenAddress, tokenDecimals) => {
+    createUnsignedOrder = (makerSide, expires, price, amount, tokenAddress) => {
         if (makerSide !== OrderSide.BUY && makerSide !== OrderSide.SELL) throw new Error('Maker side must be BUY or SELL')
         const amountBigNum = BigNumber(String(amount))
         const amountBaseBigNum = BigNumber(String(amount * price))
         const tokenGet = makerSide === OrderSide.BUY ? tokenAddress : Config.getBaseAddress()
         const tokenGive = makerSide === OrderSide.SELL ? tokenAddress : Config.getBaseAddress()
         const amountGet = makerSide === OrderSide.BUY ?
-            this.toWei(amountBigNum, tokenDecimals) :
-            this.toWei(amountBaseBigNum, Config.getBaseDecimals())
+            tokEthToWei(amountBigNum, tokenAddress) :
+            baseEthToWei(amountBaseBigNum)
         const amountGive = makerSide === OrderSide.SELL ?
-            this.toWei(amountBigNum, tokenDecimals) :
-            this.toWei(amountBaseBigNum, Config.getBaseDecimals())
+            tokEthToWei(amountBigNum, tokenAddress) :
+            baseEthToWei(amountBaseBigNum)
         const nonce = Number(Math.random().toString().slice(2))
 
         const contractAddr = etherDeltaAddress
@@ -40,15 +41,15 @@ class OrderFactory {
         return unsignedOrderObject
     }
 
-    createSignedOrder = (makerSide, expires, price, amount, tokenAddress, tokenDecimals, userAddress, userPrivateKey) => {
-        const { 
+    createSignedOrder = (makerSide, expires, price, amount, tokenAddress, userAddress, userPrivateKey) => {
+        const {
             amountGet,
             amountGive,
             tokenGet,
             tokenGive,
             contractAddr,
             nonce
-        } = this.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress, tokenDecimals)
+        } = this.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
 
         const hash = this.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce)
 
@@ -195,7 +196,6 @@ class OrderFactory {
             let length = lengthIn
             if (!length) length = 32
             if (dec < 0) {
-                // return convertBase((Math.pow(2, length) + decStr).toString(), 10, 16)
                 return (BigNumber(2)).pow(length).add(BigNumber(dec)).toString(16)
             }
             let result = null
@@ -243,11 +243,6 @@ class OrderFactory {
             [160, 160, 256, 160, 256, 256, 256])
         return `0x${sha256(new Buffer(condensed, 'hex'))}`
     }
-
-    toEth = (wei, decimals) => BigNumber(String(wei))
-        .div(BigNumber(10 ** decimals))
-    toWei = (eth, decimals) => BigNumber(String(eth))
-        .times(BigNumber(10 ** decimals)).dp(0, BigNumber.ROUND_FLOOR)
 }
 
 export default new OrderFactory()

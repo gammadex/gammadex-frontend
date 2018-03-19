@@ -27,7 +27,7 @@ export default class MyTradesRow extends React.Component {
                 <td>{`${trade.amountTok} ${tokenName}`}</td>
                 <td></td>
                 <td></td>
-                <td>{trade.totalEth}</td>
+                <td>{String(trade.totalEth)}</td>
                 <td>{trade.timestamp}</td>
                 <td><Button outline color={statusColor} onClick={()=> window.open(`${Config.getEtherscanUrl()}/tx/${trade.txHash}`, "_blank")}>{trade.status}</Button>{' '}</td>
             </tr>

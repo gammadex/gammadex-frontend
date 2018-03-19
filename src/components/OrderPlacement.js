@@ -11,6 +11,7 @@ import _ from "lodash"
 import Config from "../Config"
 import BigNumber from 'bignumber.js'
 import * as MockOrderUtil from "../MockOrderUtil"
+import { tokWeiToEth, baseWeiToEth } from "../EtherConversion";
 
 // The behaviour around accepting user input from price, amount and total is a bit clunky:
 // leading zeros, decimals, negative numbers
@@ -61,12 +62,11 @@ export default class OrderPlacement extends React.Component {
     }
 
     exchangeBalanceTok() {
-        const tokenDecimals = Config.getTokenDecimals(this.state.selectedToken.name)
-        return this.state.exchangeBalanceTokWei / Math.pow(10, tokenDecimals)
+        return tokWeiToEth(this.state.exchangeBalanceTokWei, this.state.selectedToken.address)
     }
 
     exchangeBalanceEth() {
-        return this.state.exchangeBalanceEthWei / Math.pow(10, 18)
+        return baseWeiToEth(this.state.exchangeBalanceEthWei)
     }
 
     buy() {
@@ -270,12 +270,12 @@ export default class OrderPlacement extends React.Component {
                 if (MockOrderUtil.isTakerBuy(trade.orderDetail.order)) {
                     // if taker is buying, maker is selling, amount get and therefore fill amount is in ETH
                     // (in full units of wei)
-                    const ethAmount = trade.fillAmountWei.dividedBy(BigNumber(Math.pow(10, 18)))
+                    const ethAmount = baseWeiToEth(trade.fillAmountWei)
                     details = `${takerSide} ${ethAmount / trade.orderDetail.price} ${token.name} for ${ethAmount} ETH`
                 } else {
                     // taker is selling, maker is buying, amount get and therefore fill amount is in TOK
                     // (in full units of wei)
-                    const tokAmount = trade.fillAmountWei.dividedBy(BigNumber(Math.pow(10, trade.orderDetail.tokenDecimals)))
+                    const tokAmount = tokWeiToEth(trade.fillAmountWei, trade.orderDetail.tokenAddress)
                     details = `${takerSide} ${tokAmount} ${token.name} for ${tokAmount * trade.orderDetail.price} ETH`
                 }
                 return <Row key={trade.orderDetail.order.id}><Col>{details}</Col></Row>

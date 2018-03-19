@@ -9,6 +9,7 @@ import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter} from '
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
+import { baseEthToWei, tokEthToWei } from "../EtherConversion";
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -92,13 +93,14 @@ export default class AccountDetail extends React.Component {
                     accountRetrieved,
                     nonce,
                     token.address,
-                    Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
+                    baseEthToWei(modalValue))
             } else {
                 AccountActions.depositTok(
                     account,
                     accountRetrieved,
                     nonce,
-                    token.address, Number(modalValue) * Math.pow(10, tokenDecimals))
+                    token.address,
+                    tokEthToWei(modalValue))
             }
         } else {
             if (modalIsEth) {
@@ -107,14 +109,14 @@ export default class AccountDetail extends React.Component {
                     accountRetrieved,
                     nonce,
                     token.address,
-                    Number(modalValue) * Math.pow(10, Config.getBaseDecimals()))
+                    baseEthToWei(modalValue))
             } else {
                 AccountActions.withdrawTok(
                     account,
                     accountRetrieved,
                     nonce,
                     token.address,
-                    Number(modalValue) * Math.pow(10, tokenDecimals))
+                    tokEthToWei(modalValue))
             }
         }
     }
@@ -161,10 +163,7 @@ export default class AccountDetail extends React.Component {
                     </div>
 
                     <AccountTable
-                        base="ETH"
-                        token={token.name}
-                        baseDecimals={Config.getBaseDecimals()}
-                        tokenDecimals={tokenDecimals}
+                        token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
                         walletBalanceTokWei={walletBalanceTokWei}
                         exchangeBalanceEthWei={exchangeBalanceEthWei}

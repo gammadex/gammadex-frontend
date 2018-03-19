@@ -1,5 +1,6 @@
 import React from "react"
 import AccountRow from "../Account/AccountRow"
+import Config from "../../Config"
 
 export default class AccountTable extends React.Component {
     constructor(props) {
@@ -7,10 +8,7 @@ export default class AccountTable extends React.Component {
     }
     render() {
         const {
-            base,
             token,
-            baseDecimals,
-            tokenDecimals,
             walletBalanceEthWei,
             walletBalanceTokWei,
             exchangeBalanceEthWei,
@@ -26,13 +24,13 @@ export default class AccountTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    <AccountRow token={base}
-                        decimals={baseDecimals}
+                    <AccountRow token={"ETH"}
+                        tokenAddress={Config.getBaseAddress()}
                         walletBalanceWei={walletBalanceEthWei}
                         exchangeBalanceWei={exchangeBalanceEthWei}
                     />
-                    <AccountRow token={token}
-                        decimals={tokenDecimals}
+                    <AccountRow token={token.name}
+                        tokenAddress={token.address}
                         walletBalanceWei={walletBalanceTokWei}
                         exchangeBalanceWei={exchangeBalanceTokWei}
                     />

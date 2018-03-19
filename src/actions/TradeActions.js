@@ -5,14 +5,15 @@ import TokenStore from "../stores/TokenStore"
 import Config from "../Config";
 import * as MockOrderUtil from "../MockOrderUtil"
 import OrderSide from "../OrderSide";
+import { tokWeiToEth, baseWeiToEth } from "../EtherConversion";
 
 export function executeTrade(order) {
     // accessing stores from action creator, good practice?
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
-    const tokenDecimals = Config.getTokenDecimals(TokenStore.getSelectedToken().name)
+    const tokenAddress = TokenStore.getSelectedToken().address
     const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
-    const exchangeBalanceTok = exchangeBalanceTokWei / Math.pow(10, tokenDecimals)
-    const exchangeBalanceEth = exchangeBalanceEthWei / Math.pow(10, 18)
+    const exchangeBalanceTok = tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
+    const exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei)
     const fillAmount = order.ethAvailableVolume
     const takerSide = MockOrderUtil.takerSide(order)
     const amountEth = fillAmount * order.price

@@ -1,6 +1,7 @@
 import OrderFactory from "./OrderFactory"
 import Config from "./Config"
 import OrderSide from "./OrderSide"
+import { baseWeiToEth, tokWeiToEth } from "./EtherConversion"
 
 // - The Order (parameter) contains bare essential economics, required to trade using the smart contract.
 
@@ -12,10 +13,9 @@ import OrderSide from "./OrderSide"
 export function orderDetailFromOrder(order) {
     const orderHash = OrderFactory.orderHash(order.tokenGet, order.amountGet, order.tokenGive, order.amountGive, order.expires, order.nonce)
 
-    const ethDivisor = Math.pow(10, Config.getBaseDecimals())
     const tokenDecimals = (order.tokenGive === Config.getBaseAddress()
         ? Config.getTokenDecimalsByAddress(order.tokenGet) : Config.getTokenDecimalsByAddress(order.tokenGive))
-    const tokDivisor = Math.pow(10, tokenDecimals)
+    const tokenAddress = (order.tokenGive === Config.getBaseAddress()) ? order.tokenGet : order.tokenGive
 
     const updated = (new Date()).toISOString()
 
@@ -24,9 +24,9 @@ export function orderDetailFromOrder(order) {
     // maker buy and ETH units for maker sell
 
     if (isMakerBuy(order)) {
-        price = (order.amountGive / ethDivisor) / (order.amountGet / tokDivisor)
+        price = baseWeiToEth(order.amountGive).dividedBy(tokWeiToEth(order.amountGet, tokenAddress))
     } else {
-        price = (order.amountGet / ethDivisor) / (order.amountGive / tokDivisor)
+        price = baseWeiToEth(order.amountGet).dividedBy(tokWeiToEth(order.amountGive, tokenAddress))
     }
 
     return {
@@ -35,6 +35,7 @@ export function orderDetailFromOrder(order) {
         makerSide: makerSide(order),
         price: price,
         tokenDecimals: tokenDecimals,
+        tokenAddress: tokenAddress,
         contractAvailableVolume: contractAvailableVolume,
         contractFilledVolume: 0, // this is another on-chain bit of data, though not sure if we need it.
         updated: updated,
@@ -45,9 +46,6 @@ export function orderDetailFromOrder(order) {
 }
 
 export function orderDetailToSocketOrder(orderDetail) {
-    const ethDivisor = Math.pow(10, Config.getBaseDecimals())
-    const tokDivisor = Math.pow(10, orderDetail.tokenDecimals)
-
     // need to format orderbook (market response) as per ED websocket getMarket api
     // see https://github.com/forkdelta/backend-replacement/blob/4ff7bbc8575c2a38ff5a1bdc4efd4fe7856a00ab/app/services/websocket_server.py#L196
 
@@ -59,18 +57,18 @@ export function orderDetailToSocketOrder(orderDetail) {
     let amount = 0
     if (orderDetail.makerSide === OrderSide.BUY) {
         availableVolume = orderDetail.contractAvailableVolume
-        ethAvailableVolume = (availableVolume / tokDivisor)
+        ethAvailableVolume = tokWeiToEth(availableVolume, orderDetail.tokenAddress)
 
         availableVolumeBase = availableVolume * orderDetail.price
-        ethAvailableVolumeBase = (availableVolumeBase / ethDivisor)
+        ethAvailableVolumeBase = baseWeiToEth(availableVolumeBase)
 
         amount = -availableVolume
     } else {
         availableVolumeBase = orderDetail.contractAvailableVolume
-        ethAvailableVolumeBase = (availableVolumeBase / ethDivisor)
+        ethAvailableVolumeBase = baseWeiToEth(availableVolumeBase)
 
         availableVolume = availableVolumeBase / orderDetail.price
-        ethAvailableVolume = (availableVolume / tokDivisor)
+        ethAvailableVolume = tokWeiToEth(availableVolume, orderDetail.tokenAddress)
 
         amount = availableVolume
     }

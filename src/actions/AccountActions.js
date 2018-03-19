@@ -47,13 +47,13 @@ export function refreshEthAndTokBalance(account, tokenAddress) {
         })
 }
 
-export function addDepositOrWithdrawal(depositType, tokenAddress, amountPretty, hash) {
+export function addDepositOrWithdrawal(depositType, tokenAddress, amount, hash) {
     const depositOrWithdrawal = {
         environment: Config.getReactEnv(),
         timestamp: (new Date()).toISOString(),
         depositType: depositType,
         tokenAddress: tokenAddress,
-        amount: amountPretty,
+        amount: amount,
         txHash: hash,
         status: TransactionStatus.PENDING
     }
@@ -68,7 +68,7 @@ export function depositEth(account, accountRetrieved, nonce, tokenAddress, amoun
         EtherDeltaWeb3.promiseDepositEther(account, nonce, amount)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
-                addDepositOrWithdrawal(DepositType.DEPOSIT, Config.getBaseAddress(), amount / Math.pow(10, 18), hash)
+                addDepositOrWithdrawal(DepositType.DEPOSIT, Config.getBaseAddress(), amount, hash)
             })
             .on('error', error => { console.log(`failed to deposit ether: ${error.message}`) })
             .then(receipt => {
@@ -85,7 +85,7 @@ export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amou
         EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
-                addDepositOrWithdrawal(DepositType.WITHDRAWAL, Config.getBaseAddress(), amount / Math.pow(10, 18), hash)
+                addDepositOrWithdrawal(DepositType.WITHDRAWAL, Config.getBaseAddress(), amount, hash)
             })
             .on('error', error => { console.log(`failed to withdraw ether: ${error.message}`) })
             .then(receipt => {
@@ -103,7 +103,7 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 2) // as tok deposit is two transactions
                 addDepositOrWithdrawal(DepositType.DEPOSIT, tokenAddress,
-                    amount / Math.pow(10, Config.getTokenDecimalsByAddress(tokenAddress)), hash)
+                    amount, hash)
             })
             .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
             .then(receipt => {
@@ -118,7 +118,7 @@ export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amou
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
                 addDepositOrWithdrawal(DepositType.WITHDRAWAL, tokenAddress,
-                    amount / Math.pow(10, Config.getTokenDecimalsByAddress(tokenAddress)), hash)
+                    amount, hash)
             })
             .on('error', error => { console.log(`failed to deposit token: ${error.message}`) })
             .then(receipt => {

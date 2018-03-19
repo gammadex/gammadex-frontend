@@ -3,6 +3,9 @@ import WebSocketDetail from '../../components/WebSocketDetail'
 import Config from '../../Config'
 import {Button} from 'reactstrap'
 import * as MyTradeActions from "../../actions/MyTradeActions"
+import * as OpenOrderActions from "../../actions/OpenOrderActions"
+import * as AccountActions from "../../actions/AccountActions"
+
 import MockSocket from "../../MockSocket"
 
 class DevelopmentToolbar extends Component {
@@ -10,6 +13,8 @@ class DevelopmentToolbar extends Component {
     purge() {
         MyTradeActions.purge()
         MockSocket.purge()
+        OpenOrderActions.purge()
+        AccountActions.purgeDepositHistory()
     }
 
     render() {
