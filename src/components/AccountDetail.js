@@ -8,6 +8,7 @@ import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter} from '
 
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
+import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -145,8 +146,7 @@ export default class AccountDetail extends React.Component {
         const accountTypeName = (accountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
-            accountLink =
-                <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</a>
+            accountLink = <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
         }
 
         let nonceBadge = ''
@@ -173,7 +173,9 @@ export default class AccountDetail extends React.Component {
                         tokTransaction={tokTransaction}/>
 
                     <div className="card-footer">
-                        Account: {accountLink} <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
+                        Account: {accountLink}
+                        <br/>
+                        <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
                     </div>
                 </div>
 

@@ -2,6 +2,7 @@ import React from "react"
 import { Button } from 'reactstrap'
 import * as AccountActions from "../../actions/AccountActions"
 import Config from '../../Config'
+import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
 
 export default class AccountTableRow extends React.Component {
     constructor(props) {
@@ -22,8 +23,8 @@ export default class AccountTableRow extends React.Component {
                     <Button color="primary" onClick={() => this.showModal(token === "ETH", false)}>Withdraw</Button>{' '}
                 </td>
                 <td>{token}</td>
-                <td>{Number(walletBalanceWei) / Math.pow(10, Number(decimals))}</td>
-                <td>{Number(exchangeBalanceWei) / Math.pow(10, Number(decimals))}</td>
+                <td><TruncatedNumber>{Number(walletBalanceWei) / Math.pow(10, Number(decimals))}</TruncatedNumber></td>
+                <td><TruncatedNumber>{Number(exchangeBalanceWei) / Math.pow(10, Number(decimals))}</TruncatedNumber></td>
             </tr>
         )
     }
