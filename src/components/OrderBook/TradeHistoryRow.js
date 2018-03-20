@@ -1,5 +1,6 @@
 import React from "react"
 import Config from "../../Config"
+import TruncatedNumber from "../CustomComponents/TruncatedNumber"
 
 export default class OrdersTableRow extends React.Component {
     render() {
@@ -7,9 +8,9 @@ export default class OrdersTableRow extends React.Component {
 
         return (
             <tr>
-                <td>{trade.price}</td>
-                <td>{trade.amount}</td>
-                <td>{trade.amountBase}</td>
+                <td><TruncatedNumber>{trade.price}</TruncatedNumber></td>
+                <td><TruncatedNumber>{trade.amount}</TruncatedNumber></td>
+                <td><TruncatedNumber>{trade.amountBase}</TruncatedNumber></td>
                 <td>{trade.side}</td>
                 <td>{trade.date}</td>
                 <td>
