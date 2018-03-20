@@ -8,6 +8,9 @@ class TradeStore extends EventEmitter {
         this.modal = false
         this.modalOrder = null,
         this.fillAmount = 0,
+        this.fillAmountModal = 0,
+        this.baseAmount = 0,
+        this.baseAmountModal = 0,
         this.fillAmountValid = true,
         this.fillAmountInvalidReason = "",
         this.showTransactionModal = false,
@@ -21,6 +24,9 @@ class TradeStore extends EventEmitter {
             modal: this.modal,
             modalOrder: this.modalOrder,
             fillAmount: this.fillAmount,
+            fillAmountModal: this.fillAmountModal,
+            baseAmount: this.baseAmount,
+            baseAmountModal: this.baseAmountModal,
             fillAmountValid: this.fillAmountValid,
             fillAmountInvalidReason: this.fillAmountInvalidReason,
             showTransactionModal: this.showTransactionModal,
@@ -40,6 +46,9 @@ class TradeStore extends EventEmitter {
                 this.modal = true
                 this.modalOrder = action.order
                 this.fillAmount = action.fillAmount
+                this.fillAmountModal = action.fillAmountModal
+                this.baseAmount = action.baseAmount,
+                this.baseAmountModal = action.baseAmountModal,
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()
@@ -52,6 +61,9 @@ class TradeStore extends EventEmitter {
             }
             case ActionNames.FILL_AMOUNT_CHANGED: {
                 this.fillAmount = action.fillAmount
+                this.fillAmountModal = action.fillAmountModal
+                this.baseAmount = action.baseAmount,
+                this.baseAmountModal = action.baseAmountModal,
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()
