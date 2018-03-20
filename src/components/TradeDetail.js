@@ -27,16 +27,26 @@ export default class TradeDetail extends React.Component {
         }
         this.hideModal = this.hideModal.bind(this)
         this.hideTransactionModal = this.hideTransactionModal.bind(this)
+        this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
+        this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
     }
 
     componentWillMount() {
-        TradeStore.on("change", () => this.setState(TradeStore.getTradeState()))
-        TokenStore.on("change", () => this.setState({ selectedToken: TokenStore.getSelectedToken() }))
+        TradeStore.on("change", this.tradeStoreUpdated)
+        TokenStore.on("change", this.tokenStoreUpdated)
     }
 
     componentWillUnmount() {
-        TradeStore.removeListener("change", () => this.setState(TradeStore.getTradeState()))
-        TokenStore.removeListener("change", () => this.setState({ selectedToken: TokenStore.getSelectedToken() }))
+        TradeStore.removeListener("change", this.tradeStoreUpdated)
+        TokenStore.removeListener("change", this.tokenStoreUpdated)
+    }
+
+    tradeStoreUpdated() {
+        this.setState(TradeStore.getTradeState())
+    }
+
+    tokenStoreUpdated() {
+        this.setState({ selectedToken: TokenStore.getSelectedToken() })
     }
 
     fillAmountChanged = (event) => {

@@ -5,6 +5,10 @@ import AccountStore from "../stores/AccountStore"
 import Conditional from "./CustomComponents/Conditional"
 
 export default class Logout extends React.Component {
+    constructor(props) {
+        super(props)
+        this.onAccountStoreChange = this.onAccountStoreChange.bind(this)
+    }
     state = {
         account: null
     }
@@ -17,7 +21,7 @@ export default class Logout extends React.Component {
         AccountStore.removeListener("change", this.onAccountStoreChange)
     }
 
-    onAccountStoreChange = () => {
+    onAccountStoreChange() {
         this.setState({
             account: AccountStore.getAccount(),
         })

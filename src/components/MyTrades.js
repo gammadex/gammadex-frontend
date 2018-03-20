@@ -15,18 +15,21 @@ export default class MyTrades extends React.Component {
             account: null,
             trades: MyTradesStore.getMyTradesState().trades
         }
+        this.updateAccountState = this.updateAccountState.bind(this)
+        this.updateMyTradesState = this.updateMyTradesState.bind(this)
+        this.timerFired = this.timerFired.bind(this)
     }
 
     componentWillMount() {
-        AccountStore.on("change", () => this.updateAccountState())
-        MyTradesStore.on("change", () => this.updateMyTradesState())
-        TimerRelay.on("change", () => this.timerFired())
+        AccountStore.on("change", this.updateAccountState)
+        MyTradesStore.on("change", this.updateMyTradesState)
+        TimerRelay.on("change", this.timerFired)
     }
 
     componentWillUnmount() {
-        AccountStore.removeListener("change", () => this.updateAccountState())
-        MyTradesStore.removeListener("change", () => this.updateMyTradesState())
-        TimerRelay.removeListener("change", () => this.timerFired())
+        AccountStore.removeListener("change", this.updateAccountState)
+        MyTradesStore.removeListener("change", this.updateMyTradesState)
+        TimerRelay.removeListener("change", this.timerFired)
     }
 
     updateAccountState() {

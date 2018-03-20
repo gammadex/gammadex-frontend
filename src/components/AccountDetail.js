@@ -32,6 +32,9 @@ export default class AccountDetail extends React.Component {
         }
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
+        this.onAccountChange = this.onAccountChange.bind(this)
+        this.onTokenChange = this.onTokenChange.bind(this)
+        this.timerFired = this.timerFired.bind(this)
     }
 
     componentWillMount() {
@@ -50,21 +53,21 @@ export default class AccountDetail extends React.Component {
         AccountActions.depositWithdrawAmountUpdated(event.target.value)
     }
 
-    onTokenChange = () => {
+    onTokenChange() {
         if (this.state.accountRetrieved) {
             console.log("woot")
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
-    timerFired = () => {
+    timerFired() {
         if (this.state.accountRetrieved) {
             AccountActions.refreshNonce()
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
-    onAccountChange = () => {
+    onAccountChange() {
         // TODO this is shit, need to rationalize the dependency between user and balance retrieval
         const accountState = AccountStore.getAccountState()
 

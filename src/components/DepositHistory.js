@@ -15,18 +15,22 @@ export default class DepositHistory extends React.Component {
         this.state = {
             depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory
         }
+        this.timerFired = this.timerFired.bind(this)
+        this.depositHistoryChanged = this.depositHistoryChanged.bind(this)
     }
 
     componentWillMount() {
-        DepositHistoryStore.on("change", () =>
-            this.setState({ depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory }))
-        TimerRelay.on("change", () => this.timerFired())
+        DepositHistoryStore.on("change", this.depositHistoryChanged)
+        TimerRelay.on("change", this.timerFired)
     }
 
     componentWillUnmount() {
-        DepositHistoryStore.removeListener("change", () =>
-            this.setState({ depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory }))
-        TimerRelay.removeListener("change", () => this.timerFired())
+        DepositHistoryStore.removeListener("change", this.depositHistoryChanged)
+        TimerRelay.removeListener("change", this.timerFired)
+    }
+
+    depositHistoryChanged() {
+        this.setState({ depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory })
     }
 
     timerFired() {
