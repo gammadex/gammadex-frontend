@@ -28,7 +28,7 @@ export default class TradeDetail extends React.Component {
         this.hideModal = this.hideModal.bind(this)
         this.hideTransactionModal = this.hideTransactionModal.bind(this)
         this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
-        this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
+        this.tokenStoreUpdated = this.tokenStoreUpdated.bind(this)
     }
 
     componentWillMount() {
