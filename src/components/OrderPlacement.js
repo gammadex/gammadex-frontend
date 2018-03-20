@@ -59,13 +59,21 @@ export default class OrderPlacement extends React.Component {
 
         this.exchangeBalanceTok = this.exchangeBalanceTok.bind(this)
         this.exchangeBalanceEth = this.exchangeBalanceEth.bind(this)
-
+        this.updateOrderPlacementState = this.updateOrderPlacementState(this)
+        this.updateTokenState = this.updateTokenState(this)
+        this.updateAccountState = this.updateAccountState(this)
     }
 
     componentWillMount() {
-        OrderPlacementStore.on("change", () => this.setState(OrderPlacementStore.getOrderPlacementState()))
-        TokenStore.on("change", () => this.setState({selectedToken: TokenStore.getSelectedToken()}))
-        AccountStore.on("change", () => this.updateAccountState())
+        OrderPlacementStore.on("change", this.updateOrderPlacementState)
+        TokenStore.on("change", this.updateTokenState)
+        AccountStore.on("change", this.updateAccountState)
+    }
+
+    componentWillUnmount() {
+        OrderPlacementStore.removeListener("change", this.updateOrderPlacementState)
+        TokenStore.removeListener("change", this.updateTokenState)
+        AccountStore.removeListener("change", this.updateAccountState)
     }
 
     updateAccountState() {
@@ -74,6 +82,14 @@ export default class OrderPlacement extends React.Component {
             exchangeBalanceTokWei: exchangeBalanceTokWei,
             exchangeBalanceEthWei: exchangeBalanceEthWei
         })
+    }
+
+    updateTokenState() {
+        this.setState({selectedToken: TokenStore.getSelectedToken()})
+    }
+
+    updateOrderPlacementState() {
+        this.setState(OrderPlacementStore.getOrderPlacementState())
     }
 
     exchangeBalanceTok() {
