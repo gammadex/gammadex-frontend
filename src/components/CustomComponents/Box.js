@@ -12,7 +12,9 @@ export class Box extends React.Component {
 
 export class BoxSection extends React.Component {
     render() {
-        return <div className="card-body">{this.props.children}</div>
+        const extraClasses = this.props.className ? this.props.className : ""
+
+        return <div className={"card-body " + extraClasses}>{this.props.children}</div>
     }
 }
 

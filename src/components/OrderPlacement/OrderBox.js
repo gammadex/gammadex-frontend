@@ -20,10 +20,10 @@ export default class OrderBox extends React.Component {
 
         return (
             <Box title={title + " " + tokenName}>
-                <BoxSection>
+                <BoxSection className="order-box">
                     <FormGroup row>
                         <Label for={type + "OrderType"} sm={3}>Type</Label>
-                        <Col sm={6}>
+                        <Col sm={9}>
                             <Input type="select" id="sellOrderType"
                                    value={isLimitOrder ? "Limit" : "Market"}
                                    onChange={onOrderTypeChange}>

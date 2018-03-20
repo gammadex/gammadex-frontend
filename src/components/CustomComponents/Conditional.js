@@ -6,7 +6,7 @@ export default class Conditional extends React.Component {
         const {displayCondition} = this.props
 
         if (displayCondition) {
-            return <span>{this.props.children}</span>
+            return this.props.children
         } else {
             return <Empty/>
         }
