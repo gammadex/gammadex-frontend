@@ -23,8 +23,10 @@ import _ from "lodash"
 import Config from "../Config"
 import BigNumber from 'bignumber.js'
 import * as MockOrderUtil from "../MockOrderUtil"
-import { tokWeiToEth, baseWeiToEth } from "../EtherConversion";
+import {tokWeiToEth, baseWeiToEth} from "../EtherConversion";
 import {Box, BoxSection} from "./CustomComponents/Box"
+import NumericInput from "./OrderPlacement/NumericInput.js"
+import OrderBox from "./OrderPlacement/OrderBox.js"
 
 // The behaviour around accepting user input from price, amount and total is a bit clunky:
 // leading zeros, decimals, negative numbers
@@ -186,81 +188,16 @@ export default class OrderPlacement extends React.Component {
         const disableBuyButton = (!buyOrderValid || (buyOrderType === OrderType.LIMIT_ORDER && buyOrderTotal === 0))
         const disableSellButton = (!sellOrderValid || (sellOrderType === OrderType.LIMIT_ORDER && sellOrderTotal === 0))
 
-        let sellOrderPriceField = null
-        if (sellOrderType === OrderType.LIMIT_ORDER) {
-            sellOrderPriceField = <FormGroup row>
-                <Label for="sellOrderPrice" sm={3}>Price</Label>
-                <Col sm={6}>
-                    <Input type="number" min={0} id="sellOrderPrice"
-                           value={sellOrderPrice}
-                           onChange={this.sellOrderPriceChange.bind(this)}/>
-                </Col>
-                <Label sm={3}>{"ETH"}</Label>
-            </FormGroup>
-        }
-
-        let sellOrderTotalField = null
-        if (sellOrderType === OrderType.LIMIT_ORDER) {
-            sellOrderTotalField = <FormGroup row>
-                <Label for="sellOrderTotal" sm={3}>Total</Label>
-                <Col sm={6}>
-                    <Input type="number" min={0} id="sellOrderTotal"
-                           value={sellOrderTotal}
-                           onChange={this.sellOrderTotalChange.bind(this)}/>
-                </Col>
-                <Label sm={3}>{"ETH"}</Label>
-            </FormGroup>
-        }
-
-        let buyOrderPriceField = null
+        let buyAmountValid = null
+        let buyAmountErrorMessage = null
+        let buyTotalValid = null
+        let buyTotalErrorMessage = null
         if (buyOrderType === OrderType.LIMIT_ORDER) {
-            buyOrderPriceField = <FormGroup row>
-                <Label for="buyOrderPrice" sm={3}>Price</Label>
-                <Col sm={6}>
-                    <Input type="number" min={0} id="buyOrderPrice"
-                           value={buyOrderPrice}
-                           onChange={this.buyOrderPriceChange.bind(this)}/>
-                </Col>
-                <Label sm={3}>{"ETH"}</Label>
-            </FormGroup>
-        }
-
-        let buyOrderTotalField = null
-        let buyOrderAmountField = null
-        if (buyOrderType === OrderType.LIMIT_ORDER) {
-            buyOrderTotalField = <FormGroup row>
-                <Label for="buyOrderTotal" sm={3}>Total</Label>
-                <Col sm={6}>
-                    <Input type="number" min={0} id="buyOrderTotal"
-                           value={buyOrderTotal}
-                           onChange={this.buyOrderTotalChange.bind(this)}
-                           valid={buyOrderValid}/>
-                    <FormFeedback>{buyOrderInvalidReason}</FormFeedback>
-                </Col>
-                <Label sm={3}>{"ETH"}</Label>
-            </FormGroup>
-            buyOrderAmountField = <FormGroup row>
-                <Label for="buyOrderAmount" sm={3}>Amount</Label>
-                <Col sm={6}>
-                    <Input type="number" min={0} id="buyOrderAmount"
-                           value={buyOrderAmount}
-                           onChange={this.buyOrderAmountChange.bind(this)}/>
-                </Col>
-                <Label sm={3}>{token.name}</Label>
-            </FormGroup>
+            buyTotalValid = buyOrderValid
+            buyTotalErrorMessage = buyOrderInvalidReason
         } else {
-            buyOrderAmountField = <FormGroup row>
-                <Label for="buyOrderAmount" sm={3}>Amount</Label>
-                <Col sm={6}>
-                    <Input type="number" min={0} id="buyOrderAmount"
-                           value={buyOrderAmount}
-                           placeholder="assda"
-                           onChange={this.buyOrderAmountChange.bind(this)}
-                           valid={buyOrderValid}/>
-                    <FormFeedback>{buyOrderInvalidReason}</FormFeedback>
-                </Col>
-                <Label sm={3}>{token.name}</Label>
-            </FormGroup>
+            buyAmountValid = buyOrderValid
+            buyAmountErrorMessage = buyOrderInvalidReason
         }
 
         let takerSide = ""
@@ -295,70 +232,50 @@ export default class OrderPlacement extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
-                        <Box title={"Sell " + token.name}>
-                            <BoxSection>
-                                <FormGroup row>
-                                    <Label for="sellOrderType" sm={3}>Type</Label>
-                                    <Col sm={6}>
-                                        <Input type="select" id="sellOrderType"
-                                               value={(sellOrderType === OrderType.LIMIT_ORDER) ? "Limit" : "Market"}
-                                               onChange={this.sellOrderTypeChanged.bind(this)}>
-                                            <option>Limit</option>
-                                            <option>Market</option>
-                                        </Input>
-                                    </Col>
-                                </FormGroup>
-                                {sellOrderPriceField}
-                                <FormGroup row>
-                                    <Label for="sellOrderAmount" sm={3}>Amount</Label>
-                                    <Col sm={6}>
-                                        <Input type="number" min={0} id="sellOrderAmount"
-                                               value={sellOrderAmount}
-                                               onChange={this.sellOrderAmountChange.bind(this)}
-                                               valid={sellOrderValid}/>
-                                        <FormFeedback>{sellOrderInvalidReason}</FormFeedback>
-                                    </Col>
-                                    <Label sm={3}>{token.name}</Label>
-                                </FormGroup>
-                                {sellOrderTotalField}
-                                <FormGroup row>
-                                    <Label for="sellButton" sm={3}></Label>
-                                    <Col sm={6}>
-                                        <Button block color="primary" id="sellButton" disabled={disableSellButton}
-                                                onClick={this.sell.bind(this)}>{"SELL"}</Button>
-                                    </Col>
-                                </FormGroup>
-                            </BoxSection>
-                        </Box>
+                        <OrderBox
+                            type="sell"
+                            title="Sell"
+                            tokenName={token.name}
+                            orderType={sellOrderType}
+                            onOrderTypeChange={this.sellOrderTypeChanged}
+                            price={sellOrderPrice}
+                            onPriceChange={this.sellOrderPriceChange}
+                            amount={sellOrderAmount}
+                            onAmountChange={this.sellOrderAmountChange}
+                            amountValid={sellOrderValid}
+                            amountErrorMessage={sellOrderInvalidReason}
+                            total={sellOrderTotal}
+                            onTotalChange={this.sellOrderTotalChange}
+                            submitButtonName="SELL"
+                            onSubmit={this.sell}
+                            submitDisabled={disableSellButton}
+                        />
                     </div>
+
                     <div className="col-lg-6">
-                        <Box title={"Buy " + token.name}>
-                            <BoxSection>
-                                <FormGroup row>
-                                    <Label for="buyOrderType" sm={3}>Type</Label>
-                                    <Col sm={6}>
-                                        <Input type="select" id="buyOrderType"
-                                               value={(buyOrderType === OrderType.LIMIT_ORDER) ? "Limit" : "Market"}
-                                               onChange={this.buyOrderTypeChange.bind(this)}>
-                                            <option>Limit</option>
-                                            <option>Market</option>
-                                        </Input>
-                                    </Col>
-                                </FormGroup>
-                                {buyOrderPriceField}
-                                {buyOrderAmountField}
-                                {buyOrderTotalField}
-                                <FormGroup row>
-                                    <Label for="buyButton" sm={3}></Label>
-                                    <Col sm={6}>
-                                        <Button block color="primary" id="buyButton" disabled={disableBuyButton}
-                                                onClick={this.buy.bind(this)}>{"BUY"}</Button>
-                                    </Col>
-                                </FormGroup>
-                            </BoxSection>
-                        </Box>
+                        <OrderBox
+                            type="buy"
+                            title="Buy"
+                            tokenName={token.name}
+                            orderType={buyOrderType}
+                            onOrderTypeChange={this.buyOrderTypeChange}
+                            price={buyOrderPrice}
+                            onPriceChange={this.buyOrderPriceChange}
+                            amount={buyOrderAmount}
+                            onAmountChange={this.buyOrderAmountChange}
+                            amountValid={buyAmountValid}
+                            amountErrorMessage={buyAmountErrorMessage}
+                            total={buyOrderTotal}
+                            onTotalChange={this.buyOrderTotalChange}
+                            totalValid = {buyTotalValid}
+                            totalErrorMessage = {buyTotalErrorMessage}
+                            submitButtonName="BUY"
+                            onSubmit={this.buy}
+                            submitDisabled={disableBuyButton}
+                        />
                     </div>
                 </div>
+
                 <div>
                     <Modal isOpen={tradesModal} toggle={this.abortTradeExecution} className={this.props.className}>
                         <ModalHeader toggle={this.abortTradeExecution}>Take Orders?</ModalHeader>
@@ -371,6 +288,7 @@ export default class OrderPlacement extends React.Component {
                                     onClick={this.abortTradeExecution.bind(this)}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
+
                     <Modal isOpen={orderModal} toggle={this.abortOrder} className={this.props.className}>
                         <ModalHeader toggle={this.abortOrder}>Make Order</ModalHeader>
                         <ModalBody>
