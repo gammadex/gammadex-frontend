@@ -18,6 +18,10 @@ export default class TokenStats extends React.Component {
         OrderBookStore.on("change", this.saveCurrentPrices)
     }
 
+    componentWillUnmount() {
+        OrderBookStore.removeListener("change", this.saveCurrentPrices)
+    }
+
     /*
      TODO - this is bollocks really.
 

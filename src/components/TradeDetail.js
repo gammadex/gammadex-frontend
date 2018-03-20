@@ -34,6 +34,11 @@ export default class TradeDetail extends React.Component {
         TokenStore.on("change", () => this.setState({ selectedToken: TokenStore.getSelectedToken() }))
     }
 
+    componentWillUnmount() {
+        TradeStore.removeListener("change", () => this.setState(TradeStore.getTradeState()))
+        TokenStore.removeListener("change", () => this.setState({ selectedToken: TokenStore.getSelectedToken() }))
+    }
+
     fillAmountChanged = (event) => {
         TradeActions.fillAmountModalChanged(Number(event.target.value))
     }

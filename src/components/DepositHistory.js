@@ -7,7 +7,7 @@ import * as AccountActions from "../actions/AccountActions"
 import DepositType from "../DepositType"
 import TransactionStatus from "../TransactionStatus"
 import DepositHistoryStore from "../stores/DepositHistoryStore"
-import {Box} from "./CustomComponents/Box"
+import { Box } from "./CustomComponents/Box"
 
 export default class DepositHistory extends React.Component {
     constructor(props) {
@@ -19,8 +19,14 @@ export default class DepositHistory extends React.Component {
 
     componentWillMount() {
         DepositHistoryStore.on("change", () =>
-            this.setState({depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory}))
+            this.setState({ depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory }))
         TimerRelay.on("change", () => this.timerFired())
+    }
+
+    componentWillUnmount() {
+        DepositHistoryStore.removeListener("change", () =>
+            this.setState({ depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory }))
+        TimerRelay.removeListener("change", () => this.timerFired())
     }
 
     timerFired() {
@@ -30,10 +36,10 @@ export default class DepositHistory extends React.Component {
     }
 
     render() {
-        const {depositHistory} = this.state
+        const { depositHistory } = this.state
         return (
             <Box title="Deposit / Withdrawal History">
-                <DepositHistoryTable depositHistory={depositHistory}/>
+                <DepositHistoryTable depositHistory={depositHistory} />
             </Box>
         )
     }

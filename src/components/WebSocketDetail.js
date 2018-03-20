@@ -18,6 +18,10 @@ export default class WebSocketDetail extends React.Component {
         WebSocketStore.on("change", this.saveConnectionState)
     }
 
+    componentWillUnmount() {
+        WebSocketStore.removeListener("change", this.saveConnectionState)
+    }
+
     saveConnectionState = () => {
         this.setState(WebSocketStore.getConnectionState())
     }

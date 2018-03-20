@@ -23,6 +23,12 @@ export default class MyTrades extends React.Component {
         TimerRelay.on("change", () => this.timerFired())
     }
 
+    componentWillUnmount() {
+        AccountStore.removeListener("change", () => this.updateAccountState())
+        MyTradesStore.removeListener("change", () => this.updateMyTradesState())
+        TimerRelay.removeListener("change", () => this.timerFired())
+    }
+
     updateAccountState() {
         const {account} = AccountStore.getAccountState()
         this.setState({account: account})

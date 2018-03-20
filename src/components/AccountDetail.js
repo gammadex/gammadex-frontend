@@ -40,6 +40,12 @@ export default class AccountDetail extends React.Component {
         TimerRelay.on("change", this.timerFired)
     }
 
+    componentWillUnmount() {
+        AccountStore.removeListener("change", this.onAccountChange)
+        TokenStore.removeListener("change", this.onTokenChange)
+        TimerRelay.removeListener("change", this.timerFired)
+    }
+
     onInputChange(event) {
         AccountActions.depositWithdrawAmountUpdated(event.target.value)
     }

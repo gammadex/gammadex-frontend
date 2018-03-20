@@ -23,6 +23,11 @@ export default class OrderBook extends React.Component {
         OpenOrderStore.on("change", () => this.setState({openOrderHashes: OpenOrderStore.getOpenOrderHashes()}))
     }
 
+    componentWillUnmount() {
+        OrderBookStore.removeListener("change", this.saveBidsAndOffers)
+        OpenOrderStore.removeListener("change", () => this.setState({openOrderHashes: OpenOrderStore.getOpenOrderHashes()}))
+    }
+
     saveBidsAndOffers = () => {
         this.setState((prevState, props) => ({
             bids: OrderBookStore.getBids(),

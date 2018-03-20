@@ -21,6 +21,11 @@ export default class OpenOrders extends React.Component {
         TimerRelay.on("change", () => this.timerFired())
     }
 
+    componentWillUnmount() {
+        OpenOrdersStore.removeListener("change", () => this.updateOpenOrdersState())
+        TimerRelay.removeListener("change", () => this.timerFired())
+    }
+
     updateOpenOrdersState() {
         const {openOrders} = OpenOrdersStore.getOpenOrdersState()
         this.setState({openOrders: openOrders})
