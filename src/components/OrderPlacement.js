@@ -59,9 +59,9 @@ export default class OrderPlacement extends React.Component {
 
         this.exchangeBalanceTok = this.exchangeBalanceTok.bind(this)
         this.exchangeBalanceEth = this.exchangeBalanceEth.bind(this)
-        this.updateOrderPlacementState = this.updateOrderPlacementState(this)
-        this.updateTokenState = this.updateTokenState(this)
-        this.updateAccountState = this.updateAccountState(this)
+        this.updateOrderPlacementState = this.updateOrderPlacementState.bind(this)
+        this.updateTokenState = this.updateTokenState.bind(this)
+        this.updateAccountState = this.updateAccountState.bind(this)
     }
 
     componentWillMount() {
