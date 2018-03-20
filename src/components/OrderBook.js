@@ -1,6 +1,6 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
-import OpenOrderStore from '../stores/OpenOrdersStore'
+import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 //import pptBuys from "../__test-data__/PPT_buys2.json"
 //import pptSells from "../__test-data__/PPT_sells2.json"
@@ -14,25 +14,31 @@ export default class OrderBook extends React.Component {
         this.state = {
             bids: [],
             offers: [],
-            openOrderHashes: OpenOrderStore.getOpenOrderHashes()
+            openOrderHashes: OpenOrdersStore.getOpenOrderHashes()
         }
+        this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
+        this.saveOpenOrderHashes = this.saveOpenOrderHashes.bind(this)
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
-        OpenOrderStore.on("change", () => this.setState({openOrderHashes: OpenOrderStore.getOpenOrderHashes()}))
+        OpenOrdersStore.on("change", this.saveOpenOrderHashes)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
-        OpenOrderStore.removeListener("change", () => this.setState({openOrderHashes: OpenOrderStore.getOpenOrderHashes()}))
+        OpenOrdersStore.removeListener("change", this.saveOpenOrderHashes)
     }
 
-    saveBidsAndOffers = () => {
+    saveBidsAndOffers() {
         this.setState((prevState, props) => ({
             bids: OrderBookStore.getBids(),
             offers: OrderBookStore.getOffers(),
         }))
+    }
+
+    saveOpenOrderHashes() {
+        this.setState({openOrderHashes: OpenOrdersStore.getOpenOrderHashes()})
     }
 
     render() {

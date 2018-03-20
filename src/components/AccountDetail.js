@@ -15,26 +15,21 @@ import { baseEthToWei, tokEthToWei } from "../EtherConversion";
 export default class AccountDetail extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            account: null,
-            accountRetrieved: false,
-            nonce: 0,
-            walletBalanceEthWei: 0,
-            walletBalanceTokWei: 0,
-            exchangeBalanceEthWei: 0,
-            exchangeBalanceTokWei: 0,
-            ethTransaction: null,
-            tokTransaction: null,
-            modal: false,
-            modalValue: '',
-            modalIsEth: false,
-            modalIsDeposit: false
-        }
+        this.state = AccountStore.getAccountState()
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
+        this.onAccountChange = this.onAccountChange.bind(this)
+        this.onTokenChange = this.onTokenChange.bind(this)
+        this.timerFired = this.timerFired.bind(this)
     }
 
     componentWillMount() {
+        if (this.state.accountRetrieved) {
+            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+        }
+    }
+
+    componentDidMount() {
         AccountStore.on("change", this.onAccountChange)
         TokenStore.on("change", this.onTokenChange)
         TimerRelay.on("change", this.timerFired)
@@ -50,22 +45,21 @@ export default class AccountDetail extends React.Component {
         AccountActions.depositWithdrawAmountUpdated(event.target.value)
     }
 
-    onTokenChange = () => {
+    onTokenChange() {
         if (this.state.accountRetrieved) {
             console.log("woot")
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
-    timerFired = () => {
+    timerFired() {
         if (this.state.accountRetrieved) {
             AccountActions.refreshNonce()
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
-    onAccountChange = () => {
-        // TODO this is shit, need to rationalize the dependency between user and balance retrieval
+    onAccountChange() {
         const accountState = AccountStore.getAccountState()
 
         if (accountState.account && this.state.account !== accountState.account) {

@@ -10,6 +10,7 @@ class TopNavigation extends Component {
         this.state = {
             token: null,
         }
+        this.saveToken = this.saveToken.bind(this)
     }
 
     componentWillMount() {
@@ -17,7 +18,11 @@ class TopNavigation extends Component {
         this.saveToken()
     }
 
-    saveToken = () => {
+    componentWillUnmount() {
+        TokenStore.removeListener("change", this.saveToken)
+    }
+
+    saveToken() {
         this.setState((prevState, props) => ({
             token: TokenStore.getSelectedToken()
         }))

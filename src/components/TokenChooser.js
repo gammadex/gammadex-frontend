@@ -7,6 +7,10 @@ import * as WebSocketActions from "../actions/WebSocketActions"
 import {Box} from "./CustomComponents/Box"
 
 export default class TokenChooser extends React.Component {
+    constructor(props) {
+        super(props)
+        this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
+    }
     state = {
         searchedToken: "",
         selectedToken: null,
@@ -26,7 +30,7 @@ export default class TokenChooser extends React.Component {
         TokenStore.removeListener("change", this.onTokenStoreChange)
     }
 
-    onTokenStoreChange = () => {
+    onTokenStoreChange() {
         this.setState({
             selectedToken: TokenStore.getSelectedToken(),
             searchedToken: TokenStore.getSearchToken(),

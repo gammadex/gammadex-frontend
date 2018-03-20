@@ -42,6 +42,10 @@ class App extends Component {
         this.saveToken()
     }
 
+    componentWillUnmount() {
+        TokenStore.removeListener("change", this.saveToken)
+    }
+
     saveToken() {
         this.setState((prevState, props) => ({
             token: TokenStore.getSelectedToken()

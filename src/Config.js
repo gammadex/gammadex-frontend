@@ -58,6 +58,10 @@ class Config {
         return config.baseDecimals
     }
 
+    getSmallOrderThreshold() {
+        return config.smallOrderThreshold
+    }
+
     getDefaultToken() {
         const name = this.getEnv().defaultPair.token
         const address = this.getTokenAddress(name)

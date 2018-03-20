@@ -2,6 +2,7 @@
   "socketServer": ["https://socket01.etherdelta.com","https://socket02.etherdelta.com","https://socket03.etherdelta.com","https://socket04.etherdelta.com","https://socket05.etherdelta.com","https://socket06.etherdelta.com"],
   "baseAddress": "0x0000000000000000000000000000000000000000",
   "baseDecimals": 18,
+  "smallOrderThreshold": 0.001,
   "development": {
     "ethereumNetworkId": 3,
     "web3": "https://ropsten.infura.io",

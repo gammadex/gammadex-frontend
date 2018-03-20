@@ -1,5 +1,6 @@
 import _ from "lodash"
 import * as MessageUtils from "./MessageUtils"
+import Config from "../../Config"
 
 export function mergeOrders(existing, incoming, tokenAddress, ascendingPriceOrder = true) {
     const ordersForCurrentToken = filterForTokenAddress(incoming, tokenAddress)
@@ -17,7 +18,8 @@ export function mergeOrders(existing, incoming, tokenAddress, ascendingPriceOrde
 }
 
 export function sortByPriceAndIdRemovingDuplicates(orders, ascendingPriceOrder) {
-    const deDupedOrders = MessageUtils.removeDups(orders, 'id').filter(o => !isDelete(o))
+    const deDupedOrders = MessageUtils.removeDups(orders, 'id')
+        .filter(o => !isDelete(o) && Number(o.ethAvailableVolumeBase)>= Config.getSmallOrderThreshold())
 
     const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.id), o => o.price)
 
