@@ -1,7 +1,7 @@
 const Routes = {
-    Exchange: "/",
-    Wallets: "/wallets",
-    History: "/history",
+    Exchange: "/exchange/",
+    Wallets: "/wallets/",
+    History: "/history/",
 }
 
 export default Routes

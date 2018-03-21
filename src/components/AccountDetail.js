@@ -47,7 +47,6 @@ export default class AccountDetail extends React.Component {
 
     onTokenChange() {
         if (this.state.accountRetrieved) {
-            console.log("woot")
             AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }

@@ -34,6 +34,16 @@ class Config {
         return this.tokens
     }
 
+    // TODO - all these token functions should be somewhere else. Maybe cleanup when we start supporting custom tokens
+
+    getTokenBySymbolOrAddress(symbolOrAddress) {
+        const matchingTokens = _.filter(this.getEnvTokens(),
+            (tk) => tk.address === symbolOrAddress || tk.name === symbolOrAddress
+        )
+
+        return (matchingTokens.length > 0) ? matchingTokens[0] : null
+    }
+
     getTokenName(address) {
         return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].name
     }

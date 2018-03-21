@@ -4,9 +4,9 @@ import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import Config from '../Config'
 import * as TokenActions from "../actions/TokenActions"
 import * as WebSocketActions from "../actions/WebSocketActions"
-import {Box} from "./CustomComponents/Box"
+import {withRouter} from "react-router-dom"
 
-export default class TokenChooser extends React.Component {
+class TokenChooser extends React.Component {
     constructor(props) {
         super(props)
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -43,8 +43,7 @@ export default class TokenChooser extends React.Component {
     }
 
     onTokenSelect = (tokenSymbol, tokenAddress) => {
-        TokenActions.selectToken(tokenSymbol, tokenAddress)
-        WebSocketActions.getMarket()
+        this.props.history.push(`/exchange/${tokenSymbol}`)
     }
 
     render() {
@@ -120,3 +119,5 @@ export default class TokenChooser extends React.Component {
         }
     }
 }
+
+export default withRouter(TokenChooser)

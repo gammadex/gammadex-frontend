@@ -11,12 +11,13 @@ import Routes from '../Routes'
 class App extends Component {
     render() {
         return (
-            <HashRouter>
+            <HashRouter hashType="hashbang">
                 <div>
                     <TopNavigation/>
 
                     <div className="container-fluid">
-                        <Route path={Routes.Exchange} exact component={Exchange}/>
+                        <Route path="/" exact component={Exchange}/>
+                        <Route path={Routes.Exchange + "*"} exact component={Exchange}/>
                         <Route path={Routes.Wallets} exact component={Wallets}/>
                         <Route path={Routes.History} exact component={History}/>
                     </div>
