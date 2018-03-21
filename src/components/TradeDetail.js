@@ -50,7 +50,7 @@ export default class TradeDetail extends React.Component {
     }
 
     fillAmountChanged = (event) => {
-        TradeActions.fillAmountModalChanged(Number(event.target.value))
+        TradeActions.changedFillAmountControlled(Number(event.target.value))
     }
 
     hideModal() {

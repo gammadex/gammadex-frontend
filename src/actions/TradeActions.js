@@ -39,7 +39,7 @@ export function executeTradeAborted() {
     })
 }
 
-export function fillAmountModalChanged(fillAmountControlled) {
+export function changedFillAmountControlled(fillAmountControlled) {
     const order = TradeStore.getTradeState().modalOrder
     const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
     const totalEthControlled = BigNumber(String(fillAmountControlled)).times(BigNumber(String(order.price)))
