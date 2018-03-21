@@ -38,7 +38,7 @@ export default class TradeHistory extends React.Component {
     }
 
     render() {
-        const {token, pageSize} = this.props
+        const {token, pageSize = 10} = this.props
         const {trades, tradesPage, numTradesPages} = this.state
 
         return (
