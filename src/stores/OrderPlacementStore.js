@@ -2,20 +2,25 @@ import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import OrderType from "../OrderType";
+import BigNumber from 'bignumber.js'
 
 class OrderPlacementStore extends EventEmitter {
     constructor() {
         super()
         this.sellOrderType = OrderType.LIMIT_ORDER
-        this.sellOrderPrice = 0
-        this.sellOrderAmount = 0
-        this.sellOrderTotal = 0
+        this.sellOrderPriceControlled = 0
+        this.sellOrderAmountControlled = 0
+        this.sellOrderAmountWei = BigNumber(0)
+        this.sellOrderTotalEthControlled = 0
+        this.sellOrderTotalEthWei = BigNumber(0)
         this.sellOrderValid = true
         this.sellOrderInvalidReason = ""
         this.buyOrderType = OrderType.LIMIT_ORDER
-        this.buyOrderPrice = 0
-        this.buyOrderAmount = 0
-        this.buyOrderTotal = 0
+        this.buyOrderPriceControlled = 0
+        this.buyOrderAmountControlled = 0
+        this.buyOrderAmountWei = BigNumber(0)
+        this.buyOrderTotalEthControlled = 0
+        this.buyOrderTotalEthWei = BigNumber(0)
         this.buyOrderValid = true
         this.buyOrderInvalidReason = ""
         this.tradesToExecute = []
@@ -27,15 +32,19 @@ class OrderPlacementStore extends EventEmitter {
     getOrderPlacementState() {
         return {
             sellOrderType: this.sellOrderType,
-            sellOrderPrice: this.sellOrderPrice,
-            sellOrderAmount: this.sellOrderAmount,
-            sellOrderTotal: this.sellOrderTotal,
+            sellOrderPriceControlled: this.sellOrderPriceControlled,
+            sellOrderAmountControlled: this.sellOrderAmountControlled,
+            sellOrderAmountWei: this.sellOrderAmountWei,
+            sellOrderTotalEthControlled: this.sellOrderTotalEthControlled,
+            sellOrderTotalEthWei: this.sellOrderTotalEthWei,
             sellOrderValid: this.sellOrderValid,
             sellOrderInvalidReason: this.sellOrderInvalidReason,
             buyOrderType: this.buyOrderType,
-            buyOrderPrice: this.buyOrderPrice,
-            buyOrderAmount: this.buyOrderAmount,
-            buyOrderTotal: this.buyOrderTotal,
+            buyOrderPriceControlled: this.buyOrderPriceControlled,
+            buyOrderAmountControlled: this.buyOrderAmountControlled,
+            buyOrderAmountWei: this.buyOrderAmountWei,
+            buyOrderTotalEthControlled: this.buyOrderTotalEthControlled,
+            buyOrderTotalEthWei: this.buyOrderTotalEthWei,
             buyOrderValid: this.buyOrderValid,
             buyOrderInvalidReason: this.buyOrderInvalidReason,
             tradesToExecute: this.tradesToExecute,
@@ -53,9 +62,11 @@ class OrderPlacementStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.SELL_ORDER_TYPE_CHANGED: {
                 this.sellOrderType = action.orderType
-                this.sellOrderPrice = 0
-                this.sellOrderAmount = 0
-                this.sellOrderTotal = 0
+                this.sellOrderPriceControlled = 0
+                this.sellOrderAmountControlled = 0
+                this.sellOrderAmountWei = BigNumber(0)
+                this.sellOrderTotalEthControlled = 0
+                this.sellOrderTotalEthWei = BigNumber(0)
                 this.sellOrderValid = true
                 this.sellOrderInvalidReason = ""
                 this.emitChange()
@@ -63,32 +74,74 @@ class OrderPlacementStore extends EventEmitter {
             }
             case ActionNames.BUY_ORDER_TYPE_CHANGED: {
                 this.buyOrderType = action.orderType
-                this.buyOrderPrice = 0
-                this.buyOrderAmount = 0
-                this.buyOrderTotal = 0
-                this.buyOrderValid = true,
-                    this.buyOrderInvalidReason = ""
+                this.buyOrderPriceControlled = 0
+                this.buyOrderAmountControlled = 0
+                this.buyOrderAmountWei = BigNumber(0)
+                this.buyOrderTotalEthControlled = 0
+                this.buyOrderTotalEthWei = BigNumber(0)
+                this.buyOrderValid = true
+                this.buyOrderInvalidReason = ""
                 this.emitChange()
                 break
             }
-            case ActionNames.SELL_ORDER_CHANGED: {
-                this.sellOrderPrice = action.price
-                this.sellOrderAmount = action.amount
-                this.sellOrderTotal = action.total
+            case ActionNames.SELL_ORDER_PRICE_CHANGED: {
+                this.sellOrderPriceControlled = action.priceControlled
+                this.sellOrderTotalEthWei = action.totalEthWei
+                this.sellOrderTotalEthControlled = action.totalEthControlled
                 this.sellOrderValid = action.orderValid
                 this.sellOrderInvalidReason = action.orderInvalidReason
                 this.emitChange()
                 break
             }
-            case ActionNames.BUY_ORDER_CHANGED: {
-                this.buyOrderPrice = action.price
-                this.buyOrderAmount = action.amount
-                this.buyOrderTotal = action.total
+            case ActionNames.SELL_ORDER_AMOUNT_CHANGED: {
+                this.sellOrderAmountControlled = action.amountControlled
+                this.sellOrderAmountWei = action.amountWei
+                this.sellOrderTotalEthWei = action.totalEthWei
+                this.sellOrderTotalEthControlled = action.totalEthControlled
+                this.sellOrderValid = action.orderValid
+                this.sellOrderInvalidReason = action.orderInvalidReason
+                this.emitChange()
+                break
+            }
+            case ActionNames.SELL_ORDER_TOTAL_CHANGED: {
+                this.sellOrderAmountControlled = action.amountControlled
+                this.sellOrderAmountWei = action.amountWei
+                this.sellOrderTotalEthWei = action.totalEthWei
+                this.sellOrderTotalEthControlled = action.totalEthControlled
+                this.sellOrderValid = action.orderValid
+                this.sellOrderInvalidReason = action.orderInvalidReason
+                this.emitChange()
+                break
+            }
+            case ActionNames.BUY_ORDER_PRICE_CHANGED: {
+                this.buyOrderPriceControlled = action.priceControlled
+                this.buyOrderTotalEthWei = action.totalEthWei
+                this.buyOrderTotalEthControlled = action.totalEthControlled
                 this.buyOrderValid = action.orderValid
                 this.buyOrderInvalidReason = action.orderInvalidReason
                 this.emitChange()
                 break
             }
+            case ActionNames.BUY_ORDER_AMOUNT_CHANGED: {
+                this.buyOrderAmountControlled = action.amountControlled
+                this.buyOrderAmountWei = action.amountWei
+                this.buyOrderTotalEthWei = action.totalEthWei
+                this.buyOrderTotalEthControlled = action.totalEthControlled
+                this.buyOrderValid = action.orderValid
+                this.buyOrderInvalidReason = action.orderInvalidReason
+                this.emitChange()
+                break
+            }
+            case ActionNames.BUY_ORDER_TOTAL_CHANGED: {
+                this.buyOrderAmountControlled = action.amountControlled
+                this.buyOrderAmountWei = action.amountWei
+                this.buyOrderTotalEthWei = action.totalEthWei
+                this.buyOrderTotalEthControlled = action.totalEthControlled
+                this.buyOrderValid = action.orderValid
+                this.buyOrderInvalidReason = action.orderInvalidReason
+                this.emitChange()
+                break
+            }            
             case ActionNames.EXECUTE_TRADES: {
                 this.tradesToExecute = action.trades
                 this.tradesModal = true

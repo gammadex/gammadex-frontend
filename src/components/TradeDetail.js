@@ -15,8 +15,8 @@ export default class TradeDetail extends React.Component {
         this.state = {
             modal: false,
             modalOrder: null,
-            fillAmountModal: 0,
-            baseAmountModal: 0,
+            fillAmountControlled: 0,
+            totalEthControlled: 0,
             fillAmountValid: true,
             fillAmountInvalidReason: "",
             selectedToken: TokenStore.getSelectedToken(),
@@ -50,7 +50,7 @@ export default class TradeDetail extends React.Component {
     }
 
     fillAmountChanged = (event) => {
-        TradeActions.fillAmountModalChanged(Number(event.target.value))
+        TradeActions.changedFillAmountControlled(Number(event.target.value))
     }
 
     hideModal() {
@@ -70,8 +70,8 @@ export default class TradeDetail extends React.Component {
         const {
             modal,
             modalOrder,
-            fillAmountModal,
-            baseAmountModal,
+            fillAmountControlled,
+            totalEthControlled,
             fillAmountValid,
             fillAmountInvalidReason,
             selectedToken,
@@ -102,7 +102,7 @@ export default class TradeDetail extends React.Component {
                 <Label for="amount" sm={2}>Amount</Label>
                 <Col sm={8}>
                     <Input type="number" min={0} id="amount"
-                        value={fillAmountModal}
+                        value={fillAmountControlled}
                         onChange={this.fillAmountChanged.bind(this)}
                         valid={fillAmountValid} />
                     <FormFeedback>{fillAmountInvalidReason}</FormFeedback>
@@ -115,7 +115,7 @@ export default class TradeDetail extends React.Component {
                 <Label for="total" sm={2}>Total</Label>
                 <Col sm={8}>
                     <Input disabled type="number" min={0} id="total"
-                        value={baseAmountModal} />
+                        value={totalEthControlled} />
                 </Col>
                 <Col sm={2}>
                     <Label sm={2}>{"ETH"}</Label>
