@@ -17,7 +17,6 @@ export default class AccountTable extends React.Component {
             <table className="table table-striped table-bordered table-no-bottom-border">
                 <thead>
                     <tr>
-                        <th>+ / -</th>
                         <th>Token</th>
                         <th>Wallet</th>
                         <th>Exchange</th>

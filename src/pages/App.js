@@ -11,7 +11,7 @@ import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 import GreetingLoginModals from "../components/GreetingLoginModals"
 import * as TimerActions from "../actions/TimerActions"
-import { Button } from 'reactstrap'
+import {Button} from 'reactstrap'
 import * as OpenOrderActions from "../actions/OpenOrderActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import * as AccountActions from "../actions/AccountActions"
@@ -52,7 +52,6 @@ class App extends Component {
         }))
     }
 
-
     selectPage = (page) => {
         this.setState({
             page: page
@@ -73,16 +72,17 @@ class App extends Component {
                     <Charts token={token}/>
                     <OrderPlacement token={token}/>
                     <TradeDetail/>
+                    <OpenOrders/>
                     <TradeHistory token={token} pageSize={pageSize}/>
                     <MyTrades/>
-                    <OpenOrders />
-                    <DepositHistory />
                 </div>
                 <div className="pl-0 col-lg-3">
                     <TokenChooser/>
                     <AccountDetail token={token}/>
                 </div>
             </div>
+        } else if (page === "History") {
+            pageBlock = <DepositHistory/>
         }
 
         return (

@@ -16,7 +16,6 @@ export default class MyTradesTable extends React.Component {
             <table className="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>Transaction Hash</th>
                         <th>Market</th>
                         <th>Type</th>
                         <th>Price</th>

@@ -39,6 +39,9 @@ class TopNavigation extends Component {
                         <li className="nav-item">
                             <a className="nav-link" href="#" onClick={() => this.props.selectPage("Wallets")}>Wallets</a>
                         </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="#" onClick={() => this.props.selectPage("History")}>History</a>
+                        </li>
                     </ul>
                     <form className="form-inline">
                         <DevelopmentToolbar/>
