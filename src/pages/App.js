@@ -6,6 +6,7 @@ import TopNavigation from '../components/TopNavigation'
 import Exchange from './Exchange'
 import Wallets from './Wallets'
 import History from './History'
+import Routes from '../Routes'
 
 class App extends Component {
     render() {
@@ -15,13 +16,10 @@ class App extends Component {
                     <TopNavigation/>
 
                     <div className="container-fluid">
-                        <Route path="/" exact component={Exchange}/>
-                        <Route path="/wallets" exact component={Wallets}/>
-                        <Route path="/history" exact component={History}/>
+                        <Route path={Routes.Exchange} exact component={Exchange}/>
+                        <Route path={Routes.Wallets} exact component={Wallets}/>
+                        <Route path={Routes.History} exact component={History}/>
                     </div>
-
-                    <footer>
-                    </footer>
 
                     <GreetingLoginModals/>
                 </div>

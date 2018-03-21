@@ -3,7 +3,7 @@ import DevelopmentToolbar from '../components/TopNavigation/DevelopmentToolbar'
 import { Link } from 'react-router-dom'
 
 import Logout from '../components/Logout'
-import TokenStore from '../stores/TokenStore'
+import Routes from '../Routes'
 
 class TopNavigation extends Component {
 
@@ -13,13 +13,13 @@ class TopNavigation extends Component {
                 <nav className="navbar navbar-dark bg-primary  navbar-expand-lg main-nav">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <Link to='/'><a className="nav-link" href="#">Exchange</a></Link>
+                            <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
                         </li>
                         <li className="nav-item">
-                            <Link to='/wallets'><a className="nav-link" href="#">Wallets</a></Link>
+                            <Link to={Routes.Wallets} className="nav-link">Wallets</Link>
                         </li>
                         <li className="nav-item">
-                            <Link to='/history'><a className="nav-link" href="#">History</a></Link>
+                            <Link to={Routes.History} className="nav-link">History</Link>
                         </li>
                     </ul>
                     <form className="form-inline">

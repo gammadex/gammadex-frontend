@@ -9,8 +9,9 @@ import * as WalletActions from "../../../actions/WalletActions"
 import * as WalletDao from "../../../util/WalletDao"
 import EncryptionSection from "./PrivateKeyForm/EncryptionSection"
 import Conditional from "../../CustomComponents/Conditional"
+import {withRouter} from "react-router-dom"
 
-export default class PrivateKeyForm extends React.Component {
+class PrivateKeyForm extends React.Component {
     state = {
         isValidKey: false,
         rememberKey: true,
@@ -70,7 +71,7 @@ export default class PrivateKeyForm extends React.Component {
 
         if (isValidKey) {
             EtherDeltaWeb3.initForPrivateKey(privateKeyAddress, privateKey)
-            AccountActions.refreshAccount(AccountType.PRIVATE_KEY)
+            AccountActions.refreshAccount(AccountType.PRIVATE_KEY, this.props.history)
 
             if (this.state.rememberKey) {
                 if (this.state.useEncryption) {
@@ -82,6 +83,8 @@ export default class PrivateKeyForm extends React.Component {
             } else {
                 WalletDao.forgetStoredWallet()
             }
+
+            this.props.history.push("/")
         }
     }
 
@@ -195,3 +198,5 @@ export default class PrivateKeyForm extends React.Component {
         }
     }
 }
+
+export default withRouter(PrivateKeyForm)

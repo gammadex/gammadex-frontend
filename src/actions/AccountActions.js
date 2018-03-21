@@ -4,9 +4,10 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import Config from "../Config"
 import DepositType from "../DepositType"
 import TransactionStatus from "../TransactionStatus"
+import Routes from '../Routes'
 
 // TODO all these .catch(error => )'s should be actions
-export function refreshAccount(accountType) {
+export function refreshAccount(accountType, history) {
     EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
             dispatcher.dispatch({
@@ -14,6 +15,11 @@ export function refreshAccount(accountType) {
                 addressNonce,
                 selectedAccountType: accountType
             })
+
+            // TODO - can you think of a better place or this? In here for now
+            if (history) {
+                history.push(Routes.Exchange)
+            }
         })
         .catch(error => {
             dispatcher.dispatch({
