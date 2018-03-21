@@ -7,10 +7,10 @@ class TradeStore extends EventEmitter {
         super()
         this.modal = false
         this.modalOrder = null,
-        this.fillAmount = 0,
-        this.fillAmountModal = 0,
-        this.baseAmount = 0,
-        this.baseAmountModal = 0,
+        this.weiFillAmount = 0,
+        this.fillAmountControlled = 0,
+        this.weiTotalEth = 0,
+        this.totalEthControlled = 0,
         this.fillAmountValid = true,
         this.fillAmountInvalidReason = "",
         this.showTransactionModal = false,
@@ -23,10 +23,10 @@ class TradeStore extends EventEmitter {
         return {
             modal: this.modal,
             modalOrder: this.modalOrder,
-            fillAmount: this.fillAmount,
-            fillAmountModal: this.fillAmountModal,
-            baseAmount: this.baseAmount,
-            baseAmountModal: this.baseAmountModal,
+            weiFillAmount: this.weiFillAmount,
+            fillAmountControlled: this.fillAmountControlled,
+            weiTotalEth: this.weiTotalEth,
+            totalEthControlled: this.totalEthControlled,
             fillAmountValid: this.fillAmountValid,
             fillAmountInvalidReason: this.fillAmountInvalidReason,
             showTransactionModal: this.showTransactionModal,
@@ -45,10 +45,10 @@ class TradeStore extends EventEmitter {
             case ActionNames.EXECUTE_TRADE: {
                 this.modal = true
                 this.modalOrder = action.order
-                this.fillAmount = action.fillAmount
-                this.fillAmountModal = action.fillAmountModal
-                this.baseAmount = action.baseAmount,
-                this.baseAmountModal = action.baseAmountModal,
+                this.weiFillAmount = action.weiFillAmount
+                this.fillAmountControlled = action.fillAmountControlled
+                this.weiTotalEth = action.weiTotalEth,
+                this.totalEthControlled = action.totalEthControlled,
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()
@@ -60,10 +60,10 @@ class TradeStore extends EventEmitter {
                 break
             }
             case ActionNames.FILL_AMOUNT_CHANGED: {
-                this.fillAmount = action.fillAmount
-                this.fillAmountModal = action.fillAmountModal
-                this.baseAmount = action.baseAmount,
-                this.baseAmountModal = action.baseAmountModal,
+                this.weiFillAmount = action.weiFillAmount
+                this.fillAmountControlled = action.fillAmountControlled
+                this.weiTotalEth = action.weiTotalEth,
+                this.totalEthControlled = action.totalEthControlled,
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()

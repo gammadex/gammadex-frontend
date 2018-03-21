@@ -16,18 +16,18 @@ import TransactionStatus from "../TransactionStatus"
 export function executeTrade(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
-    const fillAmount = BigNumber(order.availableVolume)
-    const fillAmountModal = tokWeiToEth(fillAmount, TokenStore.getSelectedToken().address)
-    const baseAmount = BigNumber(order.availableVolumeBase)
-    const baseAmountModal = BigNumber(order.ethAvailableVolumeBase)
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(fillAmount, baseAmount, order)
+    const weiFillAmount = BigNumber(order.availableVolume)
+    const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
+    const weiTotalEth = BigNumber(order.availableVolumeBase)
+    const totalEthControlled = BigNumber(order.ethAvailableVolumeBase)
+    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     dispatcher.dispatch({
         type: ActionNames.EXECUTE_TRADE,
         order,
-        fillAmount,
-        fillAmountModal,
-        baseAmount,
-        baseAmountModal,
+        weiFillAmount,
+        fillAmountControlled,
+        weiTotalEth,
+        totalEthControlled,
         fillAmountValid,
         fillAmountInvalidReason
     })
@@ -39,38 +39,38 @@ export function executeTradeAborted() {
     })
 }
 
-export function fillAmountModalChanged(fillAmountModal) {
+export function fillAmountModalChanged(fillAmountControlled) {
     const order = TradeStore.getTradeState().modalOrder
-    const fillAmount = tokEthToWei(fillAmountModal, TokenStore.getSelectedToken().address)
-    const baseAmountModal = BigNumber(String(fillAmountModal)).times(BigNumber(String(order.price)))
-    const baseAmount = baseEthToWei(baseAmountModal)
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(fillAmount, baseAmount, order)
+    const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
+    const totalEthControlled = BigNumber(String(fillAmountControlled)).times(BigNumber(String(order.price)))
+    const weiTotalEth = baseEthToWei(totalEthControlled)
+    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     dispatcher.dispatch({
         type: ActionNames.FILL_AMOUNT_CHANGED,
-        fillAmount,
-        fillAmountModal,
-        baseAmount,
-        baseAmountModal,
+        weiFillAmount,
+        fillAmountControlled,
+        weiTotalEth,
+        totalEthControlled,
         fillAmountValid,
         fillAmountInvalidReason
     })
 }
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
-export function validateFillAmount(fillAmount, baseAmount, order) {
+export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
     let fillAmountValid = true
     let fillAmountInvalidReason = ""
-    if (fillAmount.isZero()) {
+    if (weiFillAmount.isZero()) {
         fillAmountValid = false
         fillAmountInvalidReason = "Amount must be greater than zero"
-    } else if (fillAmount.isGreaterThan(BigNumber(order.availableVolume))) {
+    } else if (weiFillAmount.isGreaterThan(BigNumber(order.availableVolume))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Amount greater than max order amount (${order.ethAvailableVolume})`
-    } else if (MockOrderUtil.isTakerSell(order) && fillAmount.isGreaterThan(BigNumber(exchangeBalanceTokWei))) {
+    } else if (MockOrderUtil.isTakerSell(order) && weiFillAmount.isGreaterThan(BigNumber(exchangeBalanceTokWei))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedToken().address)})`
-    } else if (MockOrderUtil.isTakerBuy(order) && baseAmount.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
+    } else if (MockOrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Total amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
     }
@@ -79,16 +79,16 @@ export function validateFillAmount(fillAmount, baseAmount, order) {
 
 export function tradeExecutionConfirmed() {
     const tokenAddress = TokenStore.getSelectedToken().address
-    const { modalOrder, fillAmount, fillAmountModal, baseAmount, baseAmountModal } = TradeStore.getTradeState()
+    const { modalOrder, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = TradeStore.getTradeState()
     const { account, nonce } = AccountStore.getAccountState()
     // amount is in amountGet terms
     let amountWei = 0
     if (MockOrderUtil.isTakerSell(modalOrder)) {
         // taker is selling, amountWei is in wei units of TOK
-        amountWei = fillAmount
+        amountWei = weiFillAmount
     } else {
         // taker is buying, amountWei in is wei units of ETH
-        amountWei = baseAmount
+        amountWei = weiTotalEth
     }
     EtherDeltaWeb3.promiseTestTrade(account, modalOrder, amountWei)
         .then(isTradable => {
@@ -104,8 +104,8 @@ export function tradeExecutionConfirmed() {
                             tokenAddress: tokenAddress,
                             takerSide: MockOrderUtil.takerSide(modalOrder),
                             price: modalOrder.price,
-                            amountTok: fillAmountModal,
-                            totalEth: baseAmountModal,
+                            amountTok: fillAmountControlled,
+                            totalEth: totalEthControlled,
                             timestamp: (new Date()).toJSON(),
                             status: TransactionStatus.PENDING
                         })
