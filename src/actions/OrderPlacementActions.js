@@ -28,30 +28,87 @@ export function sellOrderTypeChanged(orderType) {
     })
 }
 
-export function sellOrderChanged(price, amount, total, exchangeBalanceTok) {
-    let orderValid = true
-    let orderInvalidReason = ""
-    // TODO this validation needs to be triggered after: 1) here, 2) wallet balance update, 3) order book update
-    if (amount > exchangeBalanceTok) {
-        orderValid = false
-        orderInvalidReason = `Amount greater than wallet balance (${exchangeBalanceTok})`
-    }
-    const tokenAddress = TokenStore.getSelectedToken().address
-    const amountWei = tokEthToWei(amount, tokenAddress)
-    const bidTotalWei = OrderBookStore.getBidTotal()
-    if (amountWei.isGreaterThan(bidTotalWei)) {
-        const bidTotal = tokWeiToEth(bidTotalWei, tokenAddress)
-        orderValid = false
-        orderInvalidReason = `Amount greater than orderbook total bid size (${bidTotal})`
-    }
+// update total when price changed
+export function sellOrderPriceChanged(priceControlled) {
+    const amountWei = OrderPlacementStore.getOrderPlacementState().sellOrderAmountWei
+    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei)
+    const totalEthControlled = baseWeiToEth(totalEthWei)
+    const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
     dispatcher.dispatch({
-        type: ActionNames.SELL_ORDER_CHANGED,
-        price,
-        amount,
-        total,
+        type: ActionNames.SELL_ORDER_PRICE_CHANGED,
+        priceControlled,
+        totalEthWei,
+        totalEthControlled,
         orderValid,
         orderInvalidReason
     })
+}
+
+// update total when token amount is changed
+export function sellOrderAmountChanged(amountControlled) {
+    const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
+    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled)).times(amountWei)
+    const totalEthControlled = baseWeiToEth(totalEthWei)
+    const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
+    dispatcher.dispatch({
+        type: ActionNames.SELL_ORDER_AMOUNT_CHANGED,
+        amountWei,
+        amountControlled,
+        totalEthWei,
+        totalEthControlled,
+        orderValid,
+        orderInvalidReason
+    })
+}
+
+// update amount when total is changed, or zero out if total = 0
+export function sellOrderTotalEthChanged(totalEthControlled) {
+    const priceControlled = BigNumber(String(OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled))
+    if(priceControlled.isZero()) {
+        const zero = BigNumber(0)
+        const { orderValid, orderInvalidReason } = validateSellOrder(zero)
+        dispatcher.dispatch({
+            type: ActionNames.SELL_ORDER_TOTAL_CHANGED,
+            amountWei: zero,
+            amountControlled: zero,
+            totalEthWei: zero,
+            totalEthControlled: zero,
+            orderValid,
+            orderInvalidReason
+        })
+    } else {
+        const amountControlled = BigNumber(String(totalEthControlled)).div(priceControlled)
+        const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
+        const totalEthWei = baseEthToWei(totalEthControlled)
+        const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
+        dispatcher.dispatch({
+            type: ActionNames.SELL_ORDER_TOTAL_CHANGED,
+            amountWei,
+            amountControlled,
+            totalEthWei,
+            totalEthControlled,
+            orderValid,
+            orderInvalidReason
+        })
+    }
+}
+
+// TODO this validation needs to be triggered after: 1) here, 2) wallet balance update, 3) order book update
+export function validateSellOrder(amountWei) {
+    const tokenAddress = TokenStore.getSelectedToken().address
+    const exchangeBalanceTokWei = BigNumber(String(AccountStore.getAccountState().exchangeBalanceTokWei))
+    let orderValid = true
+    let orderInvalidReason = ""
+    if (amountWei.isGreaterThan(exchangeBalanceTokWei)) {
+        orderValid = false
+        orderInvalidReason = `Amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, tokenAddress)})`
+    }
+    const bidTotalWei = OrderBookStore.getBidTotal()
+    if (amountWei.isGreaterThan(bidTotalWei)) {
+        orderValid = false
+        orderInvalidReason = `Amount greater than orderbook total bid size (${tokWeiToEth(bidTotalWei, tokenAddress)})`
+    }
+    return { orderValid: orderValid, orderInvalidReason: orderInvalidReason }
 }
 
 export function buyOrderTypeChanged(orderType) {
@@ -61,32 +118,85 @@ export function buyOrderTypeChanged(orderType) {
     })
 }
 
-export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
-    const { buyOrderType } = OrderPlacementStore.getOrderPlacementState()
-    let orderValid = true
-    let orderInvalidReason = ""
-    if (buyOrderType === OrderType.LIMIT_ORDER && total > exchangeBalanceEth) {
-        orderValid = false
-        orderInvalidReason = `Total amount greater than wallet balance (${exchangeBalanceEth} ETH)`
-    }
-    if (buyOrderType === OrderType.MARKET_ORDER) {
-        const tokenAddress = TokenStore.getSelectedToken().address
-        const amountWei = tokEthToWei(amount, tokenAddress)
-        const offerTotalWei = OrderBookStore.getOfferTotal()
-        if (amountWei.isGreaterThan(offerTotalWei)) {
-            const offerTotal = tokWeiToEth(offerTotalWei, tokenAddress)
-            orderValid = false
-            orderInvalidReason = `Amount greater than orderbook total offer size (${offerTotal})`
-        }
-    }
+export function buyOrderPriceChanged(priceControlled) {
+    const amountWei = OrderPlacementStore.getOrderPlacementState().buyOrderAmountWei
+    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei)
+    const totalEthControlled = baseWeiToEth(totalEthWei)
+    const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
     dispatcher.dispatch({
-        type: ActionNames.BUY_ORDER_CHANGED,
-        price,
-        amount,
-        total,
+        type: ActionNames.BUY_ORDER_PRICE_CHANGED,
+        priceControlled,
+        totalEthWei,
+        totalEthControlled,
         orderValid,
         orderInvalidReason
     })
+}
+
+export function buyOrderAmountChanged(amountControlled) {
+    const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
+    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled)).times(amountWei)
+    const totalEthControlled = baseWeiToEth(totalEthWei)
+    const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
+    dispatcher.dispatch({
+        type: ActionNames.BUY_ORDER_AMOUNT_CHANGED,
+        amountWei,
+        amountControlled,
+        totalEthWei,
+        totalEthControlled,
+        orderValid,
+        orderInvalidReason
+    })
+}
+
+export function buyOrderTotalEthChanged(totalEthControlled) {
+    const priceControlled = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled))
+    if(priceControlled.isZero()) {
+        const zero = BigNumber(0)
+        const { orderValid, orderInvalidReason } = validateBuyOrder(zero, zero)
+        dispatcher.dispatch({
+            type: ActionNames.BUY_ORDER_TOTAL_CHANGED,
+            amountWei: zero,
+            amountControlled: zero,
+            totalEthWei: zero,
+            totalEthControlled: zero,
+            orderValid,
+            orderInvalidReason
+        })
+    } else {
+        const amountControlled = BigNumber(String(totalEthControlled)).div(priceControlled)
+        const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
+        const totalEthWei = baseEthToWei(totalEthControlled)
+        const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
+        dispatcher.dispatch({
+            type: ActionNames.BUY_ORDER_TOTAL_CHANGED,
+            amountWei,
+            amountControlled,
+            totalEthWei,
+            totalEthControlled,
+            orderValid,
+            orderInvalidReason
+        })
+    }
+}
+
+export function validateBuyOrder(amountWei, totalEthWei) {
+    const { buyOrderType } = OrderPlacementStore.getOrderPlacementState()
+    const exchangeBalanceEthWei = BigNumber(String(AccountStore.getAccountState().exchangeBalanceEthWei))
+    let orderValid = true
+    let orderInvalidReason = ""
+    if (buyOrderType === OrderType.LIMIT_ORDER && totalEthWei.isGreaterThan(exchangeBalanceEthWei)) {
+        orderValid = false
+        orderInvalidReason = `Total amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
+    }
+    if (buyOrderType === OrderType.MARKET_ORDER) {
+        const offerTotalWei = OrderBookStore.getOfferTotal()
+        if (amountWei.isGreaterThan(offerTotalWei)) {
+            orderValid = false
+            orderInvalidReason = `Amount greater than orderbook total offer size (${tokWeiToEth(offerTotalWei, TokenStore.getSelectedToken().address)})`
+        }
+    }
+    return { orderValid: orderValid, orderInvalidReason: orderInvalidReason }
 }
 
 // if volume is available on the offer, take (aka trade) it (i.e. I am a taker)
@@ -96,16 +206,16 @@ export function buyOrderChanged(price, amount, total, exchangeBalanceEth) {
 // and create an order for the rest. This is because the act of taking/trading is async and not guaranteed to succeed,
 // the result of which would drive the subsequent order volume.
 export function executeBuy() {
-    const { buyOrderPrice, buyOrderAmount, buyOrderTotal, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
+    const { buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
     let eligibleOffers = OrderBookStore.getOffers()
     if (buyOrderType === OrderType.LIMIT_ORDER) {
         eligibleOffers = _.filter(OrderBookStore.getOffers(),
-            (offer) => parseFloat(offer.price) <= buyOrderPrice)
+            (offer) => parseFloat(offer.price) <= buyOrderPriceControlled)
     }
     // TODO this is really bad use of String -> Number -> BigNumber
     // which can result in Error: [BigNumber Error] Number primitive has more than 15 significant digits: 0.00005518027643333333
     // https://github.com/wjsrobertson/ethergamma/issues/6
-    let outstandingBaseAmountWei = baseEthToWei(buyOrderTotal)
+    let outstandingBaseAmountWei = baseEthToWei(buyOrderTotalEthControlled)
     if (buyOrderType === OrderType.MARKET_ORDER) {
         outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
     }
@@ -132,8 +242,8 @@ export function executeBuy() {
             const order = {
                 makerSide: OrderSide.BUY,
                 expires: 10000000,
-                price: buyOrderPrice,
-                amount: buyOrderAmount,
+                price: buyOrderPriceControlled,
+                amount: buyOrderAmountControlled,
                 tokenAddress: selectedToken.address,
                 tokenName: selectedToken.name
             }
@@ -151,14 +261,14 @@ export function executeBuy() {
 }
 
 export function executeSell() {
-    const { sellOrderPrice, sellOrderAmount, sellOrderType } = OrderPlacementStore.getOrderPlacementState()
+    const { sellOrderPriceControlled, sellOrderAmountControlled, sellOrderType } = OrderPlacementStore.getOrderPlacementState()
     let eligibleBids = OrderBookStore.getBids()
     if (sellOrderType === OrderType.LIMIT_ORDER) {
         eligibleBids = _.filter(OrderBookStore.getBids(),
-            (bid) => parseFloat(bid.price) >= sellOrderPrice)
+            (bid) => parseFloat(bid.price) >= sellOrderPriceControlled)
     }
     const tokenAddress = TokenStore.getSelectedToken().address
-    let outstandingTokAmountWei = tokEthToWei(sellOrderAmount, tokenAddress)
+    let outstandingTokAmountWei = tokEthToWei(sellOrderAmountControlled, tokenAddress)
     const trades = _.flatMap(eligibleBids, bid => {
         const fillAmountWei = BigNumber.minimum(outstandingTokAmountWei, BigNumber(bid.availableVolume))
         if (!fillAmountWei.isZero()) {
@@ -181,8 +291,8 @@ export function executeSell() {
             const order = {
                 makerSide: OrderSide.SELL,
                 expires: 10000000,
-                price: sellOrderPrice,
-                amount: sellOrderAmount,
+                price: sellOrderPriceControlled,
+                amount: sellOrderAmountControlled,
                 tokenAddress: selectedToken.address,
                 tokenName: selectedToken.name
             }
