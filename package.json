@@ -33,7 +33,7 @@
     "dev": "REACT_APP_ENV=development HTTPS=true react-scripts start",
     "prod": "REACT_APP_ENV=production HTTPS=true react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "REACT_APP_ENV=development react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
 }

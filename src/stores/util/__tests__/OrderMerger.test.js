@@ -25,7 +25,7 @@ test("changed orders with same token address get added", () => {
 
 test("changed orders marked for delete get deleted", () => {
     const existing = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1'}]
-    const incoming = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1', 'delete': 'true'}]
+    const incoming = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1', 'deleted': 'true'}]
 
     const merged = mergeOrders(existing, incoming, '0x1')
 

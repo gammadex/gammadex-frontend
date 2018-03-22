@@ -19,7 +19,7 @@ export function mergeOrders(existing, incoming, tokenAddress, ascendingPriceOrde
 
 export function sortByPriceAndIdRemovingDuplicates(orders, ascendingPriceOrder) {
     const deDupedOrders = MessageUtils.removeDups(orders, 'id')
-        .filter(o => !isDelete(o) && Number(o.ethAvailableVolumeBase)>= Config.getSmallOrderThreshold())
+        .filter(o => !isDelete(o) && withinSmallOrderThreshold(o))
 
     const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.id), o => o.price)
 
@@ -28,6 +28,14 @@ export function sortByPriceAndIdRemovingDuplicates(orders, ascendingPriceOrder) 
     } else {
         return _.reverse(sorted)
     }
+}
+
+function withinSmallOrderThreshold(order) {
+    if (typeof order.ethAvailableVolumeBase === 'undefined') {
+        return true
+    }
+
+    return Number(order.ethAvailableVolumeBase) >= Config.getSmallOrderThreshold()
 }
 
 function isDelete(order) {
