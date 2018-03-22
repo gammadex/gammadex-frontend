@@ -13,7 +13,7 @@ npm run start
 npm run test
 ```
 
-##= Running Tests On Linux
+### Running Tests On Linux
 
 You can get this error if too many files are being watched causing Linux barfs. 
 
@@ -30,6 +30,17 @@ System level workaround:
 * https://github.com/facebook/jest/issues/3254
 * https://github.com/amasad/sane/issues/104
 
+### Running Tests on MacOS
+
+When running the tests you may encounter:
+
+```
+Error: Error watching file for changes: EMFILE
+```
+
+Workaround:
+
+* https://github.com/facebook/create-react-app/issues/871
 
 ## Useful Links
 
