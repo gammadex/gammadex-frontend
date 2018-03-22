@@ -15,3 +15,10 @@ export function searchToken(search) {
         search
     })
 }
+
+export function invalidToken(tokenIdentifier) {
+    dispatcher.dispatch({
+        type: ActionNames.INVALID_TOKEN,
+        tokenIdentifier
+    })
+}

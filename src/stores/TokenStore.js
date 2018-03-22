@@ -10,6 +10,7 @@ class TokenStore extends EventEmitter {
         this.selectedToken = Config.getDefaultToken()
         this.searchToken = ""
         this.serverTickers = {}
+        this.invalidTokenIdentifier = null
     }
 
     getSelectedToken() {
@@ -24,6 +25,10 @@ class TokenStore extends EventEmitter {
         return this.serverTickers
     }
 
+    getInvalidTokenIdentifier() {
+        return this.invalidTokenIdentifier
+    }
+
     emitChange() {
         this.emit("change")
     }
@@ -32,6 +37,7 @@ class TokenStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.SELECT_TOKEN: {
                 this.selectedToken = action.token
+                this.invalidTokenIdentifier = null
                 this.emitChange()
                 break
             }
@@ -45,6 +51,11 @@ class TokenStore extends EventEmitter {
                     this.storeServerTickers(action.message.returnTicker)
                     this.emitChange()
                 }
+                break
+            }
+            case ActionNames.INVALID_TOKEN: {
+                this.invalidTokenIdentifier = action.tokenIdentifier
+                this.emitChange()
                 break
             }
         }
