@@ -25,7 +25,7 @@ export default class MyTradesRow extends React.Component {
                 <td>{`${tokenName}/ETH`}</td>
                 <td>{(trade.takerSide === OrderSide.SELL) ? "Sell" : "Buy"}</td>
                 <td><TruncatedNumber>{String(trade.price)}</TruncatedNumber></td>
-                <td><TruncatedNumber>{trade.amountTok}</TruncatedNumber> {tokenName}</td>
+                <td><TruncatedNumber>{String(trade.amountTok)}</TruncatedNumber> {tokenName}</td>
                 <td></td>
                 <td></td>
                 <td>{String(trade.totalEth)}</td>

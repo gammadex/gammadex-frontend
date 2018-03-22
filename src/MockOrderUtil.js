@@ -21,17 +21,11 @@ export function orderDetailFromOrder(order) {
     let contractAvailableVolume = order.amountGet  // this is in order.amountGet terms: TOK units for 
     // maker buy and ETH units for maker sell
 
-    if (isMakerBuy(order)) {
-        price = baseWeiToEth(order.amountGive).div(tokWeiToEth(order.amountGet, tokenAddress))
-    } else {
-        price = baseWeiToEth(order.amountGet).div(tokWeiToEth(order.amountGive, tokenAddress))
-    }
-
     return {
         order: order,
         orderHash: orderHash,
         makerSide: makerSide(order),
-        price: price,
+        price: priceOf(order),
         tokenAddress: tokenAddress,
         contractAvailableVolume: contractAvailableVolume,
         contractFilledVolume: 0, // this is another on-chain bit of data, though not sure if we need it.
@@ -39,6 +33,14 @@ export function orderDetailFromOrder(order) {
         // true, if: 1) fully filled, 2) cancelled = Cancel event on smart contract and force fully filled 3) expired
         // else false
         deleted: false
+    }
+}
+
+export function priceOf(order) {
+    if (isMakerBuy(order)) {
+        return baseWeiToEth(order.amountGive).div(tokWeiToEth(order.amountGet, order.tokenGet))
+    } else {
+        return baseWeiToEth(order.amountGet).div(tokWeiToEth(order.amountGive, order.tokenGive))
     }
 }
 

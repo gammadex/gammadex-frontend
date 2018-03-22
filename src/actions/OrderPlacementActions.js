@@ -64,7 +64,7 @@ export function sellOrderAmountChanged(amountControlled) {
 // update amount when total is changed, or zero out if total = 0
 export function sellOrderTotalEthChanged(totalEthControlled) {
     const priceControlled = BigNumber(String(OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled))
-    if(priceControlled.isZero()) {
+    if (priceControlled.isZero()) {
         const zero = BigNumber(0)
         const { orderValid, orderInvalidReason } = validateSellOrder(zero)
         dispatcher.dispatch({
@@ -151,7 +151,7 @@ export function buyOrderAmountChanged(amountControlled) {
 
 export function buyOrderTotalEthChanged(totalEthControlled) {
     const priceControlled = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled))
-    if(priceControlled.isZero()) {
+    if (priceControlled.isZero()) {
         const zero = BigNumber(0)
         const { orderValid, orderInvalidReason } = validateBuyOrder(zero, zero)
         dispatcher.dispatch({
@@ -206,16 +206,13 @@ export function validateBuyOrder(amountWei, totalEthWei) {
 // and create an order for the rest. This is because the act of taking/trading is async and not guaranteed to succeed,
 // the result of which would drive the subsequent order volume.
 export function executeBuy() {
-    const { buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
+    const { buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthWei, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
     let eligibleOffers = OrderBookStore.getOffers()
     if (buyOrderType === OrderType.LIMIT_ORDER) {
         eligibleOffers = _.filter(OrderBookStore.getOffers(),
-            (offer) => parseFloat(offer.price) <= buyOrderPriceControlled)
+            (offer) => BigNumber(String(offer.price)).isLessThanOrEqualTo(BigNumber(String(buyOrderPriceControlled))))
     }
-    // TODO this is really bad use of String -> Number -> BigNumber
-    // which can result in Error: [BigNumber Error] Number primitive has more than 15 significant digits: 0.00005518027643333333
-    // https://github.com/wjsrobertson/ethergamma/issues/6
-    let outstandingBaseAmountWei = baseEthToWei(buyOrderTotalEthControlled)
+    let outstandingBaseAmountWei = buyOrderTotalEthWei
     if (buyOrderType === OrderType.MARKET_ORDER) {
         outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
     }
@@ -224,10 +221,9 @@ export function executeBuy() {
         if (!fillAmountWei.isZero()) {
             outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
             const fillAmountEth = baseWeiToEth(fillAmountWei)
-            const fillAmountTok = fillAmountEth / offer.price
-            // TODO, do we need orderDetail here or can we just use the socket order
+            const fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
             return [{
-                orderDetail: MockOrderUtil.orderDetailFromOrder(offer),
+                order: offer,
                 fillAmountWei: fillAmountWei,
                 fillAmountEth: fillAmountEth,
                 fillAmountTok: fillAmountTok
@@ -236,47 +232,44 @@ export function executeBuy() {
             return []
         }
     })
-    if (trades.length === 0) {
-        if (buyOrderType === OrderType.LIMIT_ORDER) {
-            const selectedToken = TokenStore.getSelectedToken()
-            const order = {
-                makerSide: OrderSide.BUY,
-                expires: 10000000,
-                price: buyOrderPriceControlled,
-                amount: buyOrderAmountControlled,
-                tokenAddress: selectedToken.address,
-                tokenName: selectedToken.name
-            }
-            dispatcher.dispatch({
-                type: ActionNames.CREATE_ORDER,
-                order
-            })
-        }
-    } else {
+    if (trades.length > 0) {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
             trades
+        })
+    } else if (buyOrderType === OrderType.LIMIT_ORDER) {
+        const selectedToken = TokenStore.getSelectedToken()
+        const order = {
+            makerSide: OrderSide.BUY,
+            expires: 10000000,
+            price: buyOrderPriceControlled,
+            amount: buyOrderAmountControlled,
+            tokenAddress: selectedToken.address,
+            tokenName: selectedToken.name
+        }
+        dispatcher.dispatch({
+            type: ActionNames.CREATE_ORDER,
+            order
         })
     }
 }
 
 export function executeSell() {
-    const { sellOrderPriceControlled, sellOrderAmountControlled, sellOrderType } = OrderPlacementStore.getOrderPlacementState()
+    const { sellOrderPriceControlled, sellOrderAmountControlled, sellOrderAmountWei, sellOrderType } = OrderPlacementStore.getOrderPlacementState()
     let eligibleBids = OrderBookStore.getBids()
     if (sellOrderType === OrderType.LIMIT_ORDER) {
         eligibleBids = _.filter(OrderBookStore.getBids(),
-            (bid) => parseFloat(bid.price) >= sellOrderPriceControlled)
+            (bid) => BigNumber(String(bid.price)).isGreaterThanOrEqualTo(BigNumber(String(sellOrderPriceControlled))))
     }
-    const tokenAddress = TokenStore.getSelectedToken().address
-    let outstandingTokAmountWei = tokEthToWei(sellOrderAmountControlled, tokenAddress)
+    let outstandingTokAmountWei = sellOrderAmountWei
     const trades = _.flatMap(eligibleBids, bid => {
         const fillAmountWei = BigNumber.minimum(outstandingTokAmountWei, BigNumber(bid.availableVolume))
         if (!fillAmountWei.isZero()) {
             outstandingTokAmountWei = outstandingTokAmountWei.minus(fillAmountWei)
-            const fillAmountTok = tokWeiToEth(fillAmountWei, tokenAddress)
-            const fillAmountEth = fillAmountTok * bid.price
+            const fillAmountTok = tokWeiToEth(fillAmountWei, TokenStore.getSelectedToken().address)
+            const fillAmountEth = fillAmountTok.times(BigNumber(String(bid.price)))
             return [{
-                orderDetail: MockOrderUtil.orderDetailFromOrder(bid),
+                order: bid,
                 fillAmountWei: fillAmountWei,
                 fillAmountTok: fillAmountTok,
                 fillAmountEth: fillAmountEth
@@ -285,26 +278,24 @@ export function executeSell() {
             return []
         }
     })
-    if (trades.length === 0) {
-        if (sellOrderType === OrderType.LIMIT_ORDER) {
-            const selectedToken = TokenStore.getSelectedToken()
-            const order = {
-                makerSide: OrderSide.SELL,
-                expires: 10000000,
-                price: sellOrderPriceControlled,
-                amount: sellOrderAmountControlled,
-                tokenAddress: selectedToken.address,
-                tokenName: selectedToken.name
-            }
-            dispatcher.dispatch({
-                type: ActionNames.CREATE_ORDER,
-                order
-            })
-        }
-    } else {
+    if (trades.length > 0) {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
             trades
+        })
+    } else if (sellOrderType === OrderType.LIMIT_ORDER) {
+        const selectedToken = TokenStore.getSelectedToken()
+        const order = {
+            makerSide: OrderSide.SELL,
+            expires: 10000000,
+            price: sellOrderPriceControlled,
+            amount: sellOrderAmountControlled,
+            tokenAddress: selectedToken.address,
+            tokenName: selectedToken.name
+        }
+        dispatcher.dispatch({
+            type: ActionNames.CREATE_ORDER,
+            order
         })
     }
 }
@@ -328,23 +319,23 @@ export function confirmTradeExecution() {
     const { tradesToExecute } = OrderPlacementStore.getOrderPlacementState()
     const { account, nonce } = AccountStore.getAccountState()
     const tradePromises = tradesToExecute.map(trade =>
-        EtherDeltaWeb3.promiseTestTrade(account, trade.orderDetail.order, trade.fillAmountWei))
+        EtherDeltaWeb3.promiseTestTrade(account, trade.order, trade.fillAmountWei))
     Promise.all(tradePromises)
         .then(res => {
             if (res.includes(false)) {
                 TradeActions.sendTransactionFailed("One or more trades failed to validate as of current block, suggesting the order book might have changed. Please review the order book and re-submit the trade if necessary")
             } else {
                 tradesToExecute.forEach((trade, i) => {
-                    EtherDeltaWeb3.promiseTrade(account, nonce + i, trade.orderDetail.order, trade.fillAmountWei)
+                    EtherDeltaWeb3.promiseTrade(account, nonce + i, trade.order, trade.fillAmountWei)
                         .once('transactionHash', hash => {
                             AccountActions.nonceUpdated(nonce + 1)
                             MyTradeActions.addMyTrade({
                                 environment: Config.getReactEnv(),
                                 account: account,
                                 txHash: hash,
-                                tokenAddress: MockOrderUtil.tokenAddress(trade.orderDetail.order),
-                                takerSide: MockOrderUtil.takerSide(trade.orderDetail.order),
-                                price: trade.orderDetail.price,
+                                tokenAddress: MockOrderUtil.tokenAddress(trade.order),
+                                takerSide: MockOrderUtil.takerSide(trade.order),
+                                price: MockOrderUtil.priceOf(trade.order),
                                 amountTok: trade.fillAmountTok,
                                 totalEth: trade.fillAmountEth,
                                 timestamp: (new Date()).toJSON(),

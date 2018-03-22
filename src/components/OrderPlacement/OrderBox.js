@@ -4,16 +4,59 @@ import Conditional from "../CustomComponents/Conditional"
 import OrderType from "../../OrderType"
 import NumericInput from "./NumericInput.js"
 import {Box, BoxSection} from "../CustomComponents/Box"
+import OrderSide from "../../OrderSide"
+import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 
 export default class OrderBox extends React.Component {
+    onOrderTypeChange = (event) => {
+        const orderType = (event.target.value === "Limit") ? OrderType.LIMIT_ORDER : OrderType.MARKET_ORDER
+        if(this.props.side === OrderSide.BUY) {
+            OrderPlacementActions.buyOrderTypeChanged(orderType)
+        } else {
+            OrderPlacementActions.sellOrderTypeChanged(orderType)
+        }
+    }
+
+    onOrderPriceChange = (event) => {
+        if(this.props.side === OrderSide.BUY) {
+            OrderPlacementActions.buyOrderPriceChanged(Number(event.target.value))
+        } else {
+            OrderPlacementActions.sellOrderPriceChanged(Number(event.target.value))
+        }
+    }
+
+    onOrderAmountChange = (event) => {
+        if(this.props.side === OrderSide.BUY) {
+            OrderPlacementActions.buyOrderAmountChanged(Number(event.target.value))
+        } else {
+            OrderPlacementActions.sellOrderAmountChanged(Number(event.target.value))
+        }
+    }
+
+    onOrderTotalChange = (event) => {
+        if(this.props.side === OrderSide.BUY) {
+            OrderPlacementActions.buyOrderTotalEthChanged(Number(event.target.value))
+        } else {
+            OrderPlacementActions.sellOrderTotalEthChanged(Number(event.target.value))
+        }
+    }
+
+    onSubmit = () => {
+        if(this.props.side === OrderSide.BUY) {
+            OrderPlacementActions.executeBuy()
+        } else {
+            OrderPlacementActions.executeSell()
+        }
+    }
+    
     render() {
         const {
             type, title, tokenName,
-            orderType, onOrderTypeChange,
-            price, onPriceChange,
-            amount, onAmountChange, amountValid = null, amountErrorMessage = null,
-            total, onTotalChange, totalValid = null, totalErrorMessage = null,
-            submitButtonName, onSubmit, submitDisabled
+            orderType,
+            price,
+            amount, amountValid = null, amountErrorMessage = null,
+            total, totalValid = null, totalErrorMessage = null,
+            submitButtonName, submitDisabled
         } = this.props
 
         const isLimitOrder = orderType === OrderType.LIMIT_ORDER
@@ -26,7 +69,7 @@ export default class OrderBox extends React.Component {
                         <Col sm={9}>
                             <Input type="select" id="sellOrderType"
                                    value={isLimitOrder ? "Limit" : "Market"}
-                                   onChange={onOrderTypeChange}>
+                                   onChange={this.onOrderTypeChange}>
                                 <option>Limit</option>
                                 <option>Market</option>
                             </Input>
@@ -35,16 +78,16 @@ export default class OrderBox extends React.Component {
 
                     <Conditional displayCondition={isLimitOrder}>
                         <NumericInput name="Price" value={price} unitName="ETH"
-                                      onChange={onPriceChange} fieldName={type + "OrderPrice"}/>
+                                      onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"}/>
                     </Conditional>
 
                     <NumericInput name="Amount" value={amount} unitName={tokenName}
-                                  onChange={onAmountChange} fieldName={type + "OrderAmount"}
+                                  onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
                                   valid={amountValid} errorMessage={amountErrorMessage}/>
 
                     <Conditional displayCondition={isLimitOrder}>
                         <NumericInput name="Total" value={total} unitName="ETH"
-                                      onChange={onTotalChange} fieldName={type + "OrderTotal"}
+                                      onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
                                       valid={totalValid} errorMessage={totalErrorMessage}/>
                     </Conditional>
 
@@ -52,7 +95,7 @@ export default class OrderBox extends React.Component {
                         <Label for="sellButton" sm={3}></Label>
                         <Col sm={6}>
                             <Button block color="primary" id="sellButton" disabled={submitDisabled}
-                                    onClick={onSubmit}>{submitButtonName}</Button>
+                                    onClick={this.onSubmit}>{submitButtonName}</Button>
                         </Col>
                     </FormGroup>
                 </BoxSection>

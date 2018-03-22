@@ -16,15 +16,9 @@ import OrderType from "../OrderType"
 import OrderSide from "../OrderSide"
 import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 import OrderPlacementStore from "../stores/OrderPlacementStore";
-import OrderBookStore from "../stores/OrderBookStore";
-import TokenStore from '../stores/TokenStore'
-import _ from "lodash"
-import Config from "../Config"
 import BigNumber from 'bignumber.js'
 import * as MockOrderUtil from "../MockOrderUtil"
-import { tokWeiToEth, baseWeiToEth } from "../EtherConversion";
 import { Box, BoxSection } from "./CustomComponents/Box"
-import NumericInput from "./OrderPlacement/NumericInput.js"
 import OrderBox from "./OrderPlacement/OrderBox.js"
 
 export default class OrderPlacement extends React.Component {
@@ -64,14 +58,6 @@ export default class OrderPlacement extends React.Component {
         this.setState(OrderPlacementStore.getOrderPlacementState())
     }
 
-    buy() {
-        OrderPlacementActions.executeBuy()
-    }
-
-    sell() {
-        OrderPlacementActions.executeSell()
-    }
-
     abortTradeExecution() {
         OrderPlacementActions.abortTradeExecution()
     }
@@ -86,40 +72,6 @@ export default class OrderPlacement extends React.Component {
 
     confirmOrder() {
         OrderPlacementActions.confirmOrder()
-    }
-
-    sellOrderTypeChanged = (event) => {
-        OrderPlacementActions.sellOrderTypeChanged(
-            (event.target.value === "Limit") ? OrderType.LIMIT_ORDER : OrderType.MARKET_ORDER)
-    }
-
-    sellOrderPriceChange = (event) => {
-        OrderPlacementActions.sellOrderPriceChanged(Number(event.target.value))
-    }
-
-    sellOrderAmountChange = (event) => {
-        OrderPlacementActions.sellOrderAmountChanged(Number(event.target.value))
-    }
-
-    sellOrderTotalChange = (event) => {
-        OrderPlacementActions.sellOrderTotalEthChanged(Number(event.target.value))
-    }
-
-    buyOrderTypeChange = (event) => {
-        OrderPlacementActions.buyOrderTypeChanged(
-            (event.target.value === "Limit") ? OrderType.LIMIT_ORDER : OrderType.MARKET_ORDER)
-    }
-
-    buyOrderPriceChange = (event) => {
-        OrderPlacementActions.buyOrderPriceChanged(Number(event.target.value))
-    }
-
-    buyOrderAmountChange = (event) => {
-        OrderPlacementActions.buyOrderAmountChanged(Number(event.target.value))
-    }
-
-    buyOrderTotalChange = (event) => {
-        OrderPlacementActions.buyOrderTotalEthChanged(Number(event.target.value))
     }
 
     render() {
@@ -146,7 +98,7 @@ export default class OrderPlacement extends React.Component {
 
         const disableBuyButton = (!buyOrderValid ||
             (buyOrderType === OrderType.LIMIT_ORDER && BigNumber(String(buyOrderTotalEthControlled)).isZero()))
-        const disableSellButton = (!sellOrderValid || 
+        const disableSellButton = (!sellOrderValid ||
             (sellOrderType === OrderType.LIMIT_ORDER && BigNumber(String(sellOrderTotalEthControlled)).isZero()))
 
         let buyAmountValid = null
@@ -161,27 +113,17 @@ export default class OrderPlacement extends React.Component {
             buyAmountErrorMessage = buyOrderInvalidReason
         }
 
+        // Taker modal
         let takerSide = ""
         let trades = null
         if (tradesToExecute.length > 0) {
-            takerSide = (MockOrderUtil.isTakerBuy(tradesToExecute[0].orderDetail.order)) ? "Buy" : "Sell"
+            takerSide = (MockOrderUtil.isTakerBuy(tradesToExecute[0].order)) ? "Buy" : "Sell"
             trades = tradesToExecute.map(trade => {
-                let details = ""
-                if (MockOrderUtil.isTakerBuy(trade.orderDetail.order)) {
-                    // if taker is buying, maker is selling, amount get and therefore fill amount is in ETH
-                    // (in full units of wei)
-                    const ethAmount = baseWeiToEth(trade.fillAmountWei)
-                    details = `${takerSide} ${ethAmount / trade.orderDetail.price} ${token.name} for ${ethAmount} ETH`
-                } else {
-                    // taker is selling, maker is buying, amount get and therefore fill amount is in TOK
-                    // (in full units of wei)
-                    const tokAmount = tokWeiToEth(trade.fillAmountWei, trade.orderDetail.tokenAddress)
-                    details = `${takerSide} ${tokAmount} ${token.name} for ${tokAmount * trade.orderDetail.price} ETH`
-                }
-                return <Row key={trade.orderDetail.order.id}><Col>{details}</Col></Row>
+                return <Row key={trade.order.id}><Col>{`${takerSide} ${trade.fillAmountTok} ${token.name} for ${trade.fillAmountEth} ETH`}</Col></Row>
             })
         }
 
+        // Maker modal
         let orderDescription = ""
         let makerSide = ""
         if (order) {
@@ -194,44 +136,36 @@ export default class OrderPlacement extends React.Component {
                 <div className="row">
                     <div className="col-lg-6">
                         <OrderBox
+                            side={OrderSide.SELL}
                             type="sell"
                             title="Sell"
                             tokenName={token.name}
                             orderType={sellOrderType}
-                            onOrderTypeChange={this.sellOrderTypeChanged}
                             price={sellOrderPriceControlled}
-                            onPriceChange={this.sellOrderPriceChange}
                             amount={sellOrderAmountControlled}
-                            onAmountChange={this.sellOrderAmountChange}
                             amountValid={sellOrderValid}
                             amountErrorMessage={sellOrderInvalidReason}
                             total={sellOrderTotalEthControlled}
-                            onTotalChange={this.sellOrderTotalChange}
                             submitButtonName="SELL"
-                            onSubmit={this.sell}
                             submitDisabled={disableSellButton}
                         />
                     </div>
 
                     <div className="col-lg-6">
                         <OrderBox
+                            side={OrderSide.BUY}
                             type="buy"
                             title="Buy"
                             tokenName={token.name}
                             orderType={buyOrderType}
-                            onOrderTypeChange={this.buyOrderTypeChange}
                             price={buyOrderPriceControlled}
-                            onPriceChange={this.buyOrderPriceChange}
                             amount={buyOrderAmountControlled}
-                            onAmountChange={this.buyOrderAmountChange}
                             amountValid={buyAmountValid}
                             amountErrorMessage={buyAmountErrorMessage}
                             total={buyOrderTotalEthControlled}
-                            onTotalChange={this.buyOrderTotalChange}
                             totalValid={buyTotalValid}
                             totalErrorMessage={buyTotalErrorMessage}
                             submitButtonName="BUY"
-                            onSubmit={this.buy}
                             submitDisabled={disableBuyButton}
                         />
                     </div>
