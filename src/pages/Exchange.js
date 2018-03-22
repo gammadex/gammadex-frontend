@@ -9,6 +9,7 @@ import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
 import Charts from '../components/Charts'
 import AccountDetail from '../components/AccountDetail'
+import TokenErrorMessage from '../components/TokenErrorMessage'
 import * as TokenApi from "../apis/TokenApi"
 
 class Exchange extends Component {
@@ -16,53 +17,43 @@ class Exchange extends Component {
         super()
         this.state = {
             token: null,
+            invalidTokenIdentifier: null,
         }
 
-        this.saveToken = this.saveToken.bind(this)
-    }
-
-    getUrlTokenFromProps(props) {
-        return (props && props.match && props.match.params && props.match.params[0]) ? props.match.params[0] : null
-    }
-
-    ensureCorrectToken(prevProps) {
-        const prevUrlToken = this.getUrlTokenFromProps(prevProps)
-        const currUrlToken = this.getUrlTokenFromProps(this.props)
-
-        if (prevUrlToken && prevUrlToken !== currUrlToken) {
-            TokenApi.selectTokenInUrlIfNotCurrentToken(currUrlToken, this.state.token)
-        }
+        this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
     }
 
     componentDidUpdate(prevProps) {
-        this.ensureCorrectToken(prevProps)
+        TokenApi.ensureCorrectToken(prevProps, this.props, this.state.token, this.state.invalidTokenIdentifier)
     }
 
     componentWillMount() {
-        this.ensureCorrectToken()
+        TokenApi.ensureCorrectToken(null, this.props, this.state.token, this.state.invalidTokenIdentifier)
 
-        TokenStore.on("change", this.saveToken)
-        this.saveToken()
+        TokenStore.on("change", this.onTokenStoreChange)
+        this.onTokenStoreChange()
     }
 
     componentWillUnmount() {
-        TokenStore.removeListener("change", this.saveToken)
+        TokenStore.removeListener("change", this.onTokenStoreChange)
     }
 
-    saveToken() {
+    onTokenStoreChange() {
         this.setState((prevState, props) => ({
-            token: TokenStore.getSelectedToken()
+            token: TokenStore.getSelectedToken(),
+            invalidTokenIdentifier: TokenStore.getInvalidTokenIdentifier(),
         }))
     }
 
     render() {
-        const {token} = this.state
+        const {token, invalidTokenIdentifier} = this.state
 
         return <div className="row">
             <div className="col-lg-3">
                 <OrderBook token={token}/>
             </div>
             <div className="pl-0 col-lg-6 ">
+                <TokenErrorMessage invalidToken={invalidTokenIdentifier}/>
                 <Charts token={token}/>
                 <OrderPlacement token={token}/>
                 <TradeDetail/>

@@ -8,7 +8,7 @@ export default class Conditional extends React.Component {
         if (displayCondition) {
             return this.props.children
         } else {
-            return <Empty/>
+            return null
         }
     }
 }
