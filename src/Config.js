@@ -1,5 +1,6 @@
 import config from './config/main.json'
 import _ from "lodash"
+import {addressesLooselyMatch, symbolsLooselyMatch} from './util/KeyUtil'
 
 class Config {
     constructor() {
@@ -38,7 +39,10 @@ class Config {
 
     getTokenBySymbolOrAddress(symbolOrAddress) {
         const matchingTokens = _.filter(this.getEnvTokens(),
-            (tk) => tk.address === symbolOrAddress || tk.name === symbolOrAddress
+            (tk) => {
+                return addressesLooselyMatch(tk.address.toLowerCase(), symbolOrAddress.toLowerCase()) ||
+                    symbolsLooselyMatch(tk.name.toLowerCase(), symbolOrAddress.toLowerCase())
+            }
         )
 
         return (matchingTokens.length > 0) ? matchingTokens[0] : null
@@ -59,7 +63,7 @@ class Config {
     getTokenDecimalsByAddress(address) {
         return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].decimals
     }
-    
+
     getBaseAddress() {
         return config.baseAddress
     }

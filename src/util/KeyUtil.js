@@ -5,6 +5,14 @@ export function removeHexPrefix(str) {
     return (str || "").replace(/^0x/, "")
 }
 
+export function addressesLooselyMatch(address1, address2) {
+    return removeHexPrefix(String(address1)).toLowerCase() === removeHexPrefix(String(address2)).toLowerCase()
+}
+
+export function symbolsLooselyMatch(symbol1, symbol2) {
+    return String(symbol1).toLowerCase() === String(symbol2).toLowerCase()
+}
+
 export function convertPrivateKeyToAddress(privateKey) {
     const keyBuffer = EthJsUtil.toBuffer(EthJsUtil.addHexPrefix(privateKey))
     const noHexPrefixKey = removeHexPrefix(privateKey)
