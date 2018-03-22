@@ -97,9 +97,13 @@ export default class OrderPlacement extends React.Component {
         } = this.state
 
         const disableBuyButton = (!buyOrderValid ||
-            (buyOrderType === OrderType.LIMIT_ORDER && BigNumber(String(buyOrderTotalEthControlled)).isZero()))
+            (buyOrderType === OrderType.LIMIT_ORDER && BigNumber(String(buyOrderTotalEthControlled)).isZero()) ||
+            (buyOrderType === OrderType.MARKET_ORDER && BigNumber(String(buyOrderAmountControlled)).isZero())
+        )
         const disableSellButton = (!sellOrderValid ||
-            (sellOrderType === OrderType.LIMIT_ORDER && BigNumber(String(sellOrderTotalEthControlled)).isZero()))
+            (sellOrderType === OrderType.LIMIT_ORDER && BigNumber(String(sellOrderTotalEthControlled)).isZero()) ||
+            (sellOrderType === OrderType.MARKET_ORDER && BigNumber(String(sellOrderAmountControlled)).isZero())
+        )
 
         let buyAmountValid = null
         let buyAmountErrorMessage = null

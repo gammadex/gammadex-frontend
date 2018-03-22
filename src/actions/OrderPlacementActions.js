@@ -31,7 +31,7 @@ export function sellOrderTypeChanged(orderType) {
 // update total when price changed
 export function sellOrderPriceChanged(priceControlled) {
     const amountWei = OrderPlacementStore.getOrderPlacementState().sellOrderAmountWei
-    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei)
+    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
     dispatcher.dispatch({
@@ -47,7 +47,8 @@ export function sellOrderPriceChanged(priceControlled) {
 // update total when token amount is changed
 export function sellOrderAmountChanged(amountControlled) {
     const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
-    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled)).times(amountWei)
+    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState()
+        .sellOrderPriceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
     dispatcher.dispatch({
@@ -120,7 +121,7 @@ export function buyOrderTypeChanged(orderType) {
 
 export function buyOrderPriceChanged(priceControlled) {
     const amountWei = OrderPlacementStore.getOrderPlacementState().buyOrderAmountWei
-    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei)
+    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
     dispatcher.dispatch({
@@ -135,7 +136,8 @@ export function buyOrderPriceChanged(priceControlled) {
 
 export function buyOrderAmountChanged(amountControlled) {
     const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
-    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled)).times(amountWei)
+    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled))
+        .times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
     dispatcher.dispatch({
@@ -206,28 +208,54 @@ export function validateBuyOrder(amountWei, totalEthWei) {
 // and create an order for the rest. This is because the act of taking/trading is async and not guaranteed to succeed,
 // the result of which would drive the subsequent order volume.
 export function executeBuy() {
-    const { buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthWei, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
+    const tokenAddress = TokenStore.getSelectedToken().address
+    const { buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthWei, buyOrderAmountWei, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
     let eligibleOffers = OrderBookStore.getOffers()
     if (buyOrderType === OrderType.LIMIT_ORDER) {
         eligibleOffers = _.filter(OrderBookStore.getOffers(),
             (offer) => BigNumber(String(offer.price)).isLessThanOrEqualTo(BigNumber(String(buyOrderPriceControlled))))
     }
     let outstandingBaseAmountWei = buyOrderTotalEthWei
+    let outstandingTokAmountWei = buyOrderAmountWei
     if (buyOrderType === OrderType.MARKET_ORDER) {
         outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
     }
     const trades = _.flatMap(eligibleOffers, offer => {
-        const fillAmountWei = BigNumber.minimum(outstandingBaseAmountWei, BigNumber(offer.availableVolumeBase))
+        let fillAmountWei = BigNumber.minimum(outstandingBaseAmountWei, BigNumber(offer.availableVolumeBase))
         if (!fillAmountWei.isZero()) {
-            outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
-            const fillAmountEth = baseWeiToEth(fillAmountWei)
-            const fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
-            return [{
-                order: offer,
-                fillAmountWei: fillAmountWei,
-                fillAmountEth: fillAmountEth,
-                fillAmountTok: fillAmountTok
-            }]
+            if (buyOrderType === OrderType.MARKET_ORDER) {
+                let fillAmountEth = baseWeiToEth(fillAmountWei)
+                let fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
+                const fillAmountTokWei = BigNumber.minimum(outstandingTokAmountWei,
+                    tokEthToWei(fillAmountTok, tokenAddress))
+                if (!fillAmountTokWei.isZero()) {
+                    outstandingTokAmountWei = outstandingTokAmountWei.minus(fillAmountTokWei)
+
+                    fillAmountTok = tokWeiToEth(fillAmountTokWei, tokenAddress)
+                    fillAmountEth = fillAmountTok.times(BigNumber(String(offer.price)))
+                    fillAmountWei = baseEthToWei(fillAmountEth)
+
+                    outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
+                    return [{
+                        order: offer,
+                        fillAmountWei: fillAmountWei,
+                        fillAmountEth: fillAmountEth,
+                        fillAmountTok: fillAmountTok
+                    }]
+                } else {
+                    return []
+                }
+            } else {
+                outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
+                const fillAmountEth = baseWeiToEth(fillAmountWei)
+                const fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
+                return [{
+                    order: offer,
+                    fillAmountWei: fillAmountWei,
+                    fillAmountEth: fillAmountEth,
+                    fillAmountTok: fillAmountTok
+                }]
+            }
         } else {
             return []
         }
