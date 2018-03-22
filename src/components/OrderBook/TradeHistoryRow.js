@@ -15,9 +15,7 @@ export default class OrdersTableRow extends React.Component {
                 <td>{trade.side}</td>
                 <td><Date>{trade.date}</Date></td>
                 <td>
-                    <a className="btn btn-sm btn-primary table-button" target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/address/${trade.buyer}`}>Buyer</a>
-                    <a className="btn btn-sm btn-primary table-button" target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/address/${trade.seller}`}>Seller</a>
-                    <a className="btn btn-sm btn-primary table-button" target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${trade.txHash}`}>Transaction</a>
+                    <button className="btn btn-sm btn-secondary table-button" target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${trade.txHash}`}>View Transaction</button>
                 </td>
             </tr>
         )

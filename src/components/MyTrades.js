@@ -1,5 +1,4 @@
 import React from "react"
-import Config from '../Config'
 import AccountStore from "../stores/AccountStore"
 import MyTradesStore from "../stores/MyTradesStore"
 import TimerRelay from "../TimerRelay"

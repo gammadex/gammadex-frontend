@@ -19,8 +19,8 @@ export default class TradeHistoryTable extends React.Component {
                     <th>Size ({token})</th>
                     <th>Total ({base})</th>
                     <th>Side</th>
-                    <th>Time</th>
-                    <th>View on Etherscan.io</th>
+                    <th>Date</th>
+                    <th>View on etherscan.io</th>
                 </tr>
                 </thead>
                 <tbody>

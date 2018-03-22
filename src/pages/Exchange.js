@@ -4,7 +4,6 @@ import OrderBook from '../components/OrderBook'
 import OrderPlacement from '../components/OrderPlacement'
 import TradeDetail from '../components/TradeDetail'
 import OpenOrders from '../components/OpenOrders'
-import MyTrades from '../components/MyTrades'
 import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
 import Charts from '../components/Charts'
@@ -59,7 +58,6 @@ class Exchange extends Component {
                 <TradeDetail/>
                 <OpenOrders/>
                 <TradeHistory token={token}/>
-                <MyTrades/>
             </div>
             <div className="pl-0 col-lg-3">
                 <TokenChooser/>
