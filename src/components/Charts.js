@@ -60,19 +60,16 @@ export default class Charts extends React.Component {
                 <BoxHeader noBorder={allTrades.length === 0 || noChartActiveClass === "active"}>
                     <ul className="nav nav-pills card-header-pills">
                         <li className="nav-item">
-                            <a className={"nav-link " + priceChartActiveClass} href="#"
-                               onClick={() => this.selectTab("PriceChart")}>Price
-                                Chart</a>
+                            <button className={"nav-link btn " + priceChartActiveClass}
+                               onClick={() => this.selectTab("PriceChart")}>Price Chart</button>
                         </li>
                         <li className="nav-item">
-                            <a className={"nav-link " + depthChartActiveClass} href="#"
-                               onClick={() => this.selectTab("DepthChart")}>Depth
-                                Chart</a>
+                            <button className={"nav-link  btn " + depthChartActiveClass}
+                               onClick={() => this.selectTab("DepthChart")}>Depth Chart</button>
                         </li>
                         <li className="nav-item">
-                            <a className={"nav-link " + noChartActiveClass} href="#"
-                               onClick={() => this.selectTab("NoChart")}>No
-                                Chart</a>
+                            <button className={"nav-link  btn " + noChartActiveClass}
+                               onClick={() => this.selectTab("NoChart")}>No Chart</button>
                         </li>
                     </ul>
                 </BoxHeader>
