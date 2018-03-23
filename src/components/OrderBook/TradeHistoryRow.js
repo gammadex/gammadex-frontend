@@ -11,7 +11,6 @@ export default class OrdersTableRow extends React.Component {
 
         return (
             <tr className={cssClass}>
-                <td>{side}</td>
                 <td><TruncatedNumber>{trade.price}</TruncatedNumber></td>
                 <td><TruncatedNumber>{trade.amount}</TruncatedNumber></td>
                 <td><TruncatedNumber>{trade.amountBase}</TruncatedNumber></td>
