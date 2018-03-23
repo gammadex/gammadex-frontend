@@ -8,9 +8,9 @@ export function mergeOrders(existing, incoming, tokenAddress, ascendingPriceOrde
     if (ordersForCurrentToken.length > 0) {
         const incomingIds = new Set(incoming.map(o => o.id))
         const unchangedCurrentOrders = _.filter(existing, o => !incomingIds.has(o.id)) // removes both deletes and updates
-        const incomingChangedOrders = _.filter(incoming, o => !isDelete(o))
+        const incomingChangedOrders = _.filter(incoming, o => !isDelete(o) && withinSmallOrderThreshold(o))
         const updatedOrdersUnsorted = unchangedCurrentOrders.concat(incomingChangedOrders)
-
+        
         return sortByPriceAndIdRemovingDuplicates(updatedOrdersUnsorted, ascendingPriceOrder) // sort by id then price so always deterministic order
     } else {
         return existing

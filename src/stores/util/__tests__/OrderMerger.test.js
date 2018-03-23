@@ -9,6 +9,14 @@ test("orders with different token address don't get added", () => {
     expect(merged).toEqual(existing)
 })
 
+test("orders less than small order threshold don't get added", () => {
+    const existing = [{id: 'sell_0x1', price: '0.1', tokenGive: '0x0', tokenGet: '0x1', ethAvailableVolumeBase: "0.1"}]
+    const incoming = [{id: 'sell_0x2', price: '0.1', tokenGive: '0x0', tokenGet: '0x1', ethAvailableVolumeBase: "0.0001"}]
+
+    const merged = mergeOrders(existing, incoming, '0x1')
+    expect(merged).toEqual(existing)
+})
+
 test("changed orders with same token address get added", () => {
     const existing = [{id: 'sell_0x1', price: '0.1', tokenGet: '0x0', tokenGive: '0x1'}]
     const incoming = [{id: 'sell_0x2', price: '0.1', tokenGet: '0x0', tokenGive: '0x1'}]
