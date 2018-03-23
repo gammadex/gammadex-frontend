@@ -14,8 +14,8 @@ export default class OrderBook extends React.Component {
         super(props)
 
         this.state = {
-            bids: [],
-            offers: [],
+            bids: OrderBookStore.getBids(),
+            offers: OrderBookStore.getOffers(),
             openOrderHashes: OpenOrdersStore.getOpenOrderHashes()
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)

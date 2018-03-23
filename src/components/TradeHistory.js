@@ -12,8 +12,10 @@ export default class TradeHistory extends React.Component {
         super(props)
 
         this.state = {
-            trades: [],
+            trades: OrderBookStore.getTrades(),
         }
+
+        this.saveTrades = this.saveTrades.bind(this)
     }
 
     componentWillMount() {
@@ -24,7 +26,7 @@ export default class TradeHistory extends React.Component {
         OrderBookStore.removeListener("change", this.saveTrades)
     }
 
-    saveTrades = () => {
+    saveTrades() {
         this.setState((prevState, props) => ({
             trades: OrderBookStore.getTrades(),
         }))
