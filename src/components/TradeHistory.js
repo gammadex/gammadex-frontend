@@ -44,13 +44,6 @@ export default class TradeHistory extends React.Component {
         return (
             <Box title="Trade History">
                 <TradeHistoryTable base="ETH" token={token.name} trades={trades} pageSize={pageSize}/>
-
-                <BoxSection>
-                    <div className="float-right">
-                        <Pagination page={tradesPage} numPages={numTradesPages}
-                                    onPageChange={this.changeTradesPage}/>
-                    </div>
-                </BoxSection>
             </Box>
         )
     }

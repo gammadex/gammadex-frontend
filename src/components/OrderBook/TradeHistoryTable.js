@@ -9,25 +9,26 @@ export default class TradeHistoryTable extends React.Component {
         const rows = trades.map(trade => <TradeHistoryRow key={trade.txHash} trade={trade}/>)
 
         const numEmptyRows = pageSize - trades.length
-        const emptyRows = JsxUtils.emptyRows(numEmptyRows, 6)
+        const emptyRows = JsxUtils.emptyRows(numEmptyRows, 5)
 
         return (
-            <table className="table table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th>Price</th>
-                    <th>Size ({token})</th>
-                    <th>Total ({base})</th>
-                    <th>Side</th>
-                    <th>Date</th>
-                    <th>View on etherscan.io</th>
-                </tr>
-                </thead>
-                <tbody>
-                {rows}
-                {emptyRows}
-                </tbody>
-            </table>
+            <div className="table-responsive token-chooser">
+                <table className="table table-striped table-bordered table-no-bottom-border">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Price</th>
+                        <th>Size ({token})</th>
+                        <th>Total ({base})</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    {emptyRows}
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }

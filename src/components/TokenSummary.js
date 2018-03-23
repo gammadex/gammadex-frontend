@@ -51,9 +51,9 @@ export default class TokenSummary extends React.Component {
                                 <td>{trade}</td>
                             </tr>
                             <tr>
-                                <td>24h Vol (ETH)</td>
+                                <td>24h Vol ETH</td>
                                 <td>{trade}</td>
-                                <td>24h Vol ({token.name})</td>
+                                <td>24h Vol {token.name}</td>
                                 <td>{trade}</td>
                             </tr>
                         </table>

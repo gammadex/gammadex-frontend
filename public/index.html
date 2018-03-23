@@ -4,7 +4,10 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js" integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/regular.js" integrity="sha384-t7yHmUlwFrLxHXNLstawVRBMeSLcXTbQ5hsd0ifzwGtN7ZF7RZ8ppM7Ldinuoiif" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>
+
     <style>
         .clickable {
             cursor: pointer
@@ -14,16 +17,12 @@
             font-weight: bold;
         }
 
-        .red {
-            background: red;
+        .sell-red {
+            color: #DD5555;
         }
 
-        .green {
-            background: green;
-        }
-
-        .blue {
-            background: blue;
+        .buy-green {
+            color: #22AA22;
         }
 
         .card {
@@ -80,8 +79,12 @@
             border: 0;
         }
 
-        .token-chooser {
-            max-height: 300px;
+        .token-chooser.card {
+            min-height: 400px;
+        }
+
+        .token-chooser .table-responsive {
+            max-height: 400px;
         }
 
         .main-nav {
@@ -144,15 +147,23 @@
 
         .token-stats-table tr td:nth-child(odd) {
             font-weight:bold;
-            padding-right:0px;
+            padding-right:0;
         }
 
         .token-stats-table tr td:first-child {
-            padding-left:0px;
+            padding-left:0;
         }
 
         .token-stats-table tr td:last-child {
-            padding-right:0px;
+            padding-right:0;
+        }
+
+        .row .col-lg-6:first-child {
+            padding-right:7px;
+        }
+
+        .row .col-lg-6:last-child {
+            padding-left:8px;
         }
 
 

@@ -46,17 +46,21 @@ export default class OrderBook extends React.Component {
         const {bids, offers, openOrderHashes} = this.state
 
         return (
-            <span>
-                <Box title="Bids">
-                    <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                                 pageSize={pageSize} openOrderHashes={openOrderHashes}/>
-                </Box>
+            <div className="row">
+                <div className="col-lg-6">
+                    <Box title="Bids">
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
+                                     pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="buy-green"/>
+                    </Box>
+                </div>
 
-                <Box title="Offers">
-                    <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                                 pageSize={pageSize} openOrderHashes={openOrderHashes}/>
-                </Box>
-            </span>
+                <div className="col-lg-6">
+                    <Box title="Offers">
+                        <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
+                                     pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="sell-red"/>
+                    </Box>
+                </div>
+            </div>
         )
     }
 }

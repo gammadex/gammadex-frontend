@@ -4,9 +4,9 @@ import * as JsxUtils from "../../JsxUtils"
 
 export default class OrdersTable extends React.Component {
     render() {
-        const {base, token, orders, orderTypeColName, pageSize, openOrderHashes} = this.props
+        const {base, token, orders, orderTypeColName, pageSize, openOrderHashes, rowClass} = this.props
 
-        const rows = orders.map((order) => <OrdersRow key={order.id} order={order}
+        const rows = orders.map((order) => <OrdersRow key={order.id} order={order} rowClass={rowClass}
                                                       isMine={openOrderHashes.includes(order.id.split("_")[0].toLowerCase())}/>)
 
         const numEmptyRows = pageSize - orders.length

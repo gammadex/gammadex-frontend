@@ -63,7 +63,7 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <div className="card">
+            <div className="card token-chooser">
                 <div className="card-header">
                     <div className="row">
                         <div className="col-lg-6">
@@ -77,7 +77,7 @@ class TokenChooser extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="table-responsive token-chooser">
+                <div className="table-responsive">
                     <table className="table table-striped table-bordered table-hover table-no-bottom-border">
                         <thead>
                         <tr>

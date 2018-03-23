@@ -1,21 +1,22 @@
 import React from "react"
-import Config from "../../Config"
 import TruncatedNumber from "../CustomComponents/TruncatedNumber"
-import Date from "../CustomComponents/Date"
+import Etherscan from "../CustomComponents/Etherscan"
 
 export default class OrdersTableRow extends React.Component {
     render() {
         const {trade} = this.props
 
+        const side = (trade.side === 'buy') ? 'B' : 'S'
+        const cssClass = (trade.side === 'buy') ? 'buy-green' : 'sell-red'
+
         return (
-            <tr>
+            <tr className={cssClass}>
+                <td>{side}</td>
                 <td><TruncatedNumber>{trade.price}</TruncatedNumber></td>
                 <td><TruncatedNumber>{trade.amount}</TruncatedNumber></td>
                 <td><TruncatedNumber>{trade.amountBase}</TruncatedNumber></td>
-                <td>{trade.side}</td>
-                <td><Date>{trade.date}</Date></td>
                 <td>
-                    <button className="btn btn-sm btn-secondary table-button" target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${trade.txHash}`}>View Transaction</button>
+                    <Etherscan type="tx" address={trade.txHash} display="icon"/>
                 </td>
             </tr>
         )

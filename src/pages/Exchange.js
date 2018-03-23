@@ -52,19 +52,19 @@ class Exchange extends Component {
             <div className="row">
                 <div className="col-lg-3">
                     <TokenSummary token={token}/>
-                    <OrderBook token={token}/>
+                    <TokenChooser/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
                     <TokenErrorMessage invalidToken={invalidTokenIdentifier}/>
                     <Charts token={token}/>
                     <OrderPlacement token={token}/>
+                    <OrderBook token={token}/>
                     <TradeDetail/>
                     <OpenOrders/>
-                    <TradeHistory token={token}/>
                 </div>
                 <div className="pl-0 col-lg-3">
-                    <TokenChooser/>
                     <AccountDetail token={token}/>
+                    <TradeHistory token={token}/>
                 </div>
             </div>
         </div>

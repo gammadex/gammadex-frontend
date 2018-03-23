@@ -9,12 +9,12 @@ export default class OrdersTableRow extends React.Component {
     }
 
     render() {
-        const {order, isMine} = this.props
+        const {order, isMine, rowClass} = this.props
 
         let mine = (isMine) ? " [mine]" : ""
 
         return (
-            <tr key={order.id} onClick={() => this.showTradeModal(order)} className="clickable">
+            <tr key={order.id} onClick={() => this.showTradeModal(order)} className={"clickable " + rowClass}>
                 <td><TruncatedNumber decimals="8">{order.price}</TruncatedNumber></td>
                 <td><TruncatedNumber decimals="8">{order.ethAvailableVolume}</TruncatedNumber></td>
                 <td><TruncatedNumber decimals="8">{order.ethAvailableVolumeBase}{mine}</TruncatedNumber></td>
