@@ -82,7 +82,7 @@ class TokenChooser extends React.Component {
                         <thead>
                         <tr>
                             <th>Symbol</th>
-                            <th>Volume (ETH)</th>
+                            <th>Volume ETH</th>
                             <th>% Change</th>
                         </tr>
                         </thead>
