@@ -27,7 +27,7 @@ export default class PlotlyPriceChart extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const {trades, token} = this.props
         const {plotCreatedForToken} = this.state
-        let stateChanged = (! _.isEqual(prevState, this.state) || prevProps.token !== token)
+        let stateChanged = (!_.isEqual(prevState, this.state) || prevProps.token !== token)
 
         if (trades && trades.length > 0) {
             if (plotCreatedForToken !== token || stateChanged) {
@@ -134,7 +134,7 @@ export default class PlotlyPriceChart extends React.Component {
             dragmode: 'zoom',
             showlegend: false,
             xaxis: {
-                title: 'Time',
+                //title: 'Time',
                 //autorange: true,
                 range: dateRange
             },
@@ -150,10 +150,12 @@ export default class PlotlyPriceChart extends React.Component {
             margin: {
                 l: 70,
                 r: 70,
-                b: 40,
-                t: 20,
+                b: 10,
+                t: 10,
                 pad: 4
-            },
+            }, font: {
+                size: 12.5,
+            }, height: this.props.height
         }
 
         return {
@@ -191,7 +193,7 @@ export default class PlotlyPriceChart extends React.Component {
         const {chartElements, ohlcIntervalMins} = this.state
         const {trades, token} = this.props
 
-        if (! trades || trades.length == 0) {
+        if (!trades || trades.length == 0) {
             return <div></div>
         }
 
@@ -232,7 +234,9 @@ export default class PlotlyPriceChart extends React.Component {
                         </form>
                     </div>
 
-                    <div className="float-right align-middle m-2">
+                    <div className="float-right align-middle m-2 ohlc-interval">
+                        <span className="ohlc-interval-description">OHLC interval</span>
+
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan1"
                                    value="60"
