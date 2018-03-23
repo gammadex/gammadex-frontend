@@ -84,6 +84,10 @@ class OrderBookStore extends EventEmitter {
         return this.tradesPage
     }
 
+    getTrades() {
+        return this.trades
+    }
+
     getTwoLatestTradePrices() {
         return this.getTwoLatestPricesOrNull(this.trades, 'date', 'price')
     }

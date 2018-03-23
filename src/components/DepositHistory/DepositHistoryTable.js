@@ -7,14 +7,16 @@ export default class DepositHistoryTable extends React.Component {
     constructor(props) {
         super(props)
     }
+
     render() {
-        const { depositHistory } = this.props
+        const {depositHistory} = this.props
         const sortedDepositsTimeDesc = _.reverse(_.sortBy(depositHistory
             .filter(d => d.environment === Config.getReactEnv()), d => d.timestamp))
-        const rows = sortedDepositsTimeDesc.map(d => <DepositHistoryRow key={d.txHash} depositHistory={d} />)
+        const rows = sortedDepositsTimeDesc.map(d => <DepositHistoryRow key={d.txHash} depositHistory={d}/>)
         return (
-            <table className="table table-striped table-bordered">
-                <thead>
+            <div className="table-responsive deposit-history">
+                <table className="table table-striped table-bordered">
+                    <thead>
                     <tr>
                         <th>Date</th>
                         <th>Type</th>
@@ -22,11 +24,12 @@ export default class DepositHistoryTable extends React.Component {
                         <th>Amount</th>
                         <th>Status</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {rows}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }

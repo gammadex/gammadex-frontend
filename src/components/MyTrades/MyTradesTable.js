@@ -7,14 +7,16 @@ export default class MyTradesTable extends React.Component {
     constructor(props) {
         super(props)
     }
+
     render() {
-        const { trades } = this.props
+        const {trades} = this.props
         const sortedTradesTimeDesc = _.reverse(_.sortBy(trades
             .filter(trade => trade.environment === Config.getReactEnv()), t => t.timestamp))
-        const rows = sortedTradesTimeDesc.map(trade => <MyTradesRow key={trade.txHash} trade={trade} />)
+        const rows = sortedTradesTimeDesc.map(trade => <MyTradesRow key={trade.txHash} trade={trade}/>)
         return (
-            <table className="table table-striped table-bordered">
-                <thead>
+            <div className="table-responsive my-trades-history">
+                <table className="table table-striped table-bordered">
+                    <thead>
                     <tr>
                         <th>Market</th>
                         <th>Type</th>
@@ -26,11 +28,12 @@ export default class MyTradesTable extends React.Component {
                         <th>Date</th>
                         <th>Status</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {rows}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }
