@@ -6,6 +6,7 @@ import TransactionStatus from "../TransactionStatus"
 import MyTradesTable from "./MyTrades/MyTradesTable"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import {Box} from "./CustomComponents/Box"
+import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -57,9 +58,15 @@ export default class MyTrades extends React.Component {
                 return trade.account.toLowerCase() === account.toLowerCase()
             })
         }
+
+        let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
+        if (accountTrades && accountTrades.length > 0) {
+            content = <MyTradesTable trades={accountTrades}/>
+        }
+
         return (
             <Box title="My Trades">
-                <MyTradesTable trades={accountTrades}/>
+                {content}
             </Box>
         )
     }

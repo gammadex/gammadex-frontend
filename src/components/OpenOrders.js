@@ -6,7 +6,8 @@ import TimerRelay from "../TimerRelay"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
 import OrderState from "../OrderState"
 import * as OpenOrderActions from "../actions/OpenOrderActions"
-import {Box} from "./CustomComponents/Box"
+import {Box, BoxSection} from "./CustomComponents/Box"
+import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
@@ -41,9 +42,15 @@ export default class OpenOrders extends React.Component {
 
     render() {
         const {openOrders} = this.state
+
+        let content = <EmptyTableMessage>You have no open orders</EmptyTableMessage>
+        if (openOrders && openOrders.length > 0) {
+            content = <OpenOrdersTable openOrders={openOrders}/>
+        }
+
         return (
             <Box title="Open Orders">
-                <OpenOrdersTable openOrders={openOrders}/>
+                {content}
             </Box>
         )
     }

@@ -4,6 +4,7 @@ import OrderBookStore from '../stores/OrderBookStore'
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 import Pagination from './CustomComponents/Pagination'
 import {Box, BoxSection} from "./CustomComponents/Box"
+import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 // TODO - use a TradeStore, not OrderBookStore
 export default class TradeHistory extends React.Component {
@@ -41,9 +42,14 @@ export default class TradeHistory extends React.Component {
         const {token, pageSize = 10} = this.props
         const {trades, tradesPage, numTradesPages} = this.state
 
+        let content = <EmptyTableMessage>There is no trade history for {token.name}</EmptyTableMessage>
+        if (trades && trades.length > 0) {
+            content = <TradeHistoryTable base="ETH" token={token.name} trades={trades} pageSize={pageSize}/>
+        }
+
         return (
             <Box title="Trade History">
-                <TradeHistoryTable base="ETH" token={token.name} trades={trades} pageSize={pageSize}/>
+                {content}
             </Box>
         )
     }

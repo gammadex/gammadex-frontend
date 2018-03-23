@@ -38,6 +38,7 @@ export default class TokenSummary extends React.Component {
 
                     <div className="card-body">
                         <table className="table table-sm token-stats-table">
+                            <tbody>
                             <tr>
                                 <td>Last Price</td>
                                 <td>{trade}</td>
@@ -56,6 +57,7 @@ export default class TokenSummary extends React.Component {
                                 <td>24h Vol {token.name}</td>
                                 <td>{trade}</td>
                             </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>

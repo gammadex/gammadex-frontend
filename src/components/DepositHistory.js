@@ -8,6 +8,7 @@ import DepositType from "../DepositType"
 import TransactionStatus from "../TransactionStatus"
 import DepositHistoryStore from "../stores/DepositHistoryStore"
 import { Box } from "./CustomComponents/Box"
+import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 export default class DepositHistory extends React.Component {
     constructor(props) {
@@ -41,9 +42,15 @@ export default class DepositHistory extends React.Component {
 
     render() {
         const { depositHistory } = this.state
+
+        let content = <EmptyTableMessage>You have no open deposits or withdrawls</EmptyTableMessage>
+        if (depositHistory && depositHistory.length > 0) {
+            content = <DepositHistoryTable depositHistory={depositHistory} />
+        }
+
         return (
             <Box title="Deposit / Withdrawal History">
-                <DepositHistoryTable depositHistory={depositHistory} />
+                {content}
             </Box>
         )
     }
