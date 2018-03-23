@@ -1,7 +1,6 @@
 import React from "react"
 import {Button} from 'reactstrap'
 import * as AccountActions from "../../actions/AccountActions"
-import Config from '../../Config'
 import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
 import {tokWeiToEth} from "../../EtherConversion";
 
