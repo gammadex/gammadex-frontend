@@ -1,4 +1,5 @@
 import React from "react"
+import Truncated from "../CustomComponents/Truncated"
 
 export default class TokenChooserRow extends React.Component {
 
@@ -14,7 +15,7 @@ export default class TokenChooserRow extends React.Component {
             <tr onClick={() => this.onTokenSelect(token.symbol, token.address)}
                 className={"clickable " + selectedClass}>
 
-                <td>{token.symbol}</td>
+                <td><Truncated left="7" right="0">{token.symbol}</Truncated></td>
                 <td>{token.volume}</td>
                 <td>{token.percentChange}</td>
             </tr>

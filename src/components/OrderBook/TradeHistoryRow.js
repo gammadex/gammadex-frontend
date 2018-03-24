@@ -26,8 +26,8 @@ export default class OrdersTableRow extends React.Component {
         const cssClass = (trade.side === 'buy') ? 'buy-green' : 'sell-red'
 
         return (
-            <tr className={cssClass}>
-                <td onClick={this.toggle} className="clickable">
+            <tr>
+                <td onClick={this.toggle} className={"clickable " + cssClass}>
                     <span id={"Popover" + trade.txHash}></span>
 
                     <Popover placement="top" isOpen={this.state.popoverOpen} target={"Popover" + trade.txHash} toggle={this.toggle}>
