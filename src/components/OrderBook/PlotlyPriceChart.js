@@ -154,7 +154,8 @@ export default class PlotlyPriceChart extends React.Component {
                 t: 10,
                 pad: 4
             }, font: {
-                size: 12.5,
+                size: 12,
+                family: 'Lato, sans-serif',
             }, height: this.props.height
         }
 
