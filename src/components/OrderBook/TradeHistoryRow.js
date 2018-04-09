@@ -33,7 +33,6 @@ export default class OrdersTableRow extends React.Component {
                     <Popover placement="top" isOpen={this.state.popoverOpen} target={"Popover" + trade.txHash} toggle={this.toggle}>
                         <PopoverHeader>{trade.side} of <Round>{trade.amount}</Round> {token}</PopoverHeader>
                         <PopoverBody>
-                            <div><strong>Date:</strong> <Date withYear>{trade.date}</Date></div>
                             <div><strong>Transaction: </strong> <Etherscan type="tx" address={trade.txHash} display="truncate"/></div>
                         </PopoverBody>
                     </Popover>
