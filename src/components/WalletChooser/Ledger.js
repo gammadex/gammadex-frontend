@@ -7,9 +7,15 @@ import * as WalletDao from "../../util/WalletDao"
 import {withRouter} from "react-router-dom"
 
 class Ledger extends React.Component {
-    state = {
-        completedAccount: null,
-        refreshError: null
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            completedAccount: null,
+            refreshError: null
+        }
+
+        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentDidMount() {
@@ -20,7 +26,7 @@ class Ledger extends React.Component {
         WalletStore.removeListener("change", this.onWalletStoreChange)
     }
 
-    onWalletStoreChange = () => {
+    onWalletStoreChange() {
         this.setState((prevState, props) => {
             return {
                 completedAccount: WalletStore.getCompletedAccount(),

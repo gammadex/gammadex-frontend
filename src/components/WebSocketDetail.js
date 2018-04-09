@@ -7,11 +7,14 @@ import Config from "../Config"
 export default class WebSocketDetail extends React.Component {
     constructor() {
         super()
+
         this.state = {
             url: null,
             connecting: false,
             connected: false
         }
+
+        this.saveConnectionState = this.saveConnectionState.bind(this)
     }
 
     componentWillMount() {
@@ -22,7 +25,7 @@ export default class WebSocketDetail extends React.Component {
         WebSocketStore.removeListener("change", this.saveConnectionState)
     }
 
-    saveConnectionState = () => {
+    saveConnectionState() {
         this.setState(WebSocketStore.getConnectionState())
     }
 

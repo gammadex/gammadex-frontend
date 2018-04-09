@@ -8,11 +8,17 @@ import Conditional from "./CustomComponents/Conditional"
 import {Box, BoxSection, BoxHeader} from "./CustomComponents/Box"
 
 export default class Charts extends React.Component {
-    state = {
-        activeTab: "PriceChart",
-        allTrades: [],
-        allBids: [],
-        allOffers: [],
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            activeTab: "PriceChart",
+            allTrades: [],
+            allBids: [],
+            allOffers: [],
+        }
+
+        this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
     }
 
     componentWillMount() {
@@ -23,7 +29,7 @@ export default class Charts extends React.Component {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
     }
 
-    saveBidsAndOffers = () => {
+    saveBidsAndOffers() {
         this.setState((prevState, props) => ({
             allTrades: OrderBookStore.getAllTradesSortedByDateAsc(),
             allBids: OrderBookStore.getBids(),

@@ -9,13 +9,19 @@ import Ledger from "./WalletChooser/Ledger"
 import {Box, BoxSection} from "./CustomComponents/Box"
 
 class WalletChooser extends Component {
-    state = {
-        selectedAccountType: null,
-        enteredPrivateKey: "",
-        privateKey: "",
-        isValidPrivateKey: false,
-        privateKeyAddress: "",
-        enteredKeyStorePassword: ""
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            selectedAccountType: null,
+            enteredPrivateKey: "",
+            privateKey: "",
+            isValidPrivateKey: false,
+            privateKeyAddress: "",
+            enteredKeyStorePassword: ""
+        }
+
+        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentWillMount() {
@@ -26,7 +32,7 @@ class WalletChooser extends Component {
         WalletStore.removeListener("change", this.onWalletStoreChange)
     }
 
-    onWalletStoreChange = () => {
+    onWalletStoreChange() {
         this.setState((prevState, props) => ({
             selectedAccountType: WalletStore.getSelectedAccountType(),
         }))

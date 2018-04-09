@@ -12,33 +12,36 @@ import Conditional from "../../CustomComponents/Conditional"
 import {withRouter} from "react-router-dom"
 
 class PrivateKeyForm extends React.Component {
-    state = {
-        isValidKey: false,
-        rememberKey: true,
-        enteredPrivateKey: "",
-        privateKey: "",
-        privateKeyAddress: null,
-        password: "",
-        confirmPassword: "",
-        passwordError: null,
-        confirmPasswordError: null,
-        useEncryption: true,
-        minPasswordLength: 8,
-    }
+    constructor(props) {
+        super(props)
 
-    componentWillMount() {
-        this.onWalletStoreChange()
+        this.state = {
+            isValidKey: false,
+            rememberKey: true,
+            enteredPrivateKey: "",
+            privateKey: "",
+            privateKeyAddress: null,
+            password: "",
+            confirmPassword: "",
+            passwordError: null,
+            confirmPasswordError: null,
+            useEncryption: true,
+            minPasswordLength: 8,
+        }
+
+        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentDidMount() {
         WalletStore.on("change", this.onWalletStoreChange)
+        this.onWalletStoreChange()
     }
 
     componentWillUnmount() {
         WalletStore.removeListener("change", this.onWalletStoreChange)
     }
 
-    onWalletStoreChange = () => {
+    onWalletStoreChange() {
         this.setState({
             rememberKey: WalletStore.isRememberPrivateKey(),
             password: WalletStore.getPrivateKeyPassword(),

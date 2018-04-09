@@ -4,8 +4,14 @@ import UnlockedSuccessAlert from "./UnlockedSuccessAlert"
 import KeyStoreForm from "./KeyStore/KeyStoreForm"
 
 export default class KeyStoreFile extends React.Component {
-    state = {
-        completedAccount: null,
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            completedAccount: null,
+        }
+
+        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentWillMount() {
@@ -20,7 +26,7 @@ export default class KeyStoreFile extends React.Component {
         WalletStore.removeListener("change", this.onWalletStoreChange)
     }
 
-    onWalletStoreChange = () => {
+    onWalletStoreChange() {
         this.setState({
             completedAccount: WalletStore.getCompletedAccount(),
         })

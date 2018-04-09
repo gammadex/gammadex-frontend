@@ -11,10 +11,16 @@ import * as Encryption from "../../util/Encryption"
 import Conditional from "../CustomComponents/Conditional"
 
 export default class StoredPrivateKeyWalletUnlocker extends React.Component {
-    state = {
-        showModal: WalletStore.isDisplayUnlockPrivateKeyModal(),
-        password: null,
-        passwordError: null,
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            showModal: WalletStore.isDisplayUnlockPrivateKeyModal(),
+            password: null,
+            passwordError: null,
+        }
+
+        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentWillMount() {
@@ -29,7 +35,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         WalletStore.removeListener("change", this.onWalletStoreChange)
     }
 
-    onWalletStoreChange = () => {
+    onWalletStoreChange() {
         this.setState({
             showModal: WalletStore.isDisplayUnlockPrivateKeyModal(),
             password: WalletStore.getPrivateKeyUnlockPassword(),

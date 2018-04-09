@@ -10,11 +10,17 @@ import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactst
 import Conditional from "../CustomComponents/Conditional"
 
 export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
-    state = {
-        showModal: WalletStore.isDisplayUnlockKeyStoreModal(),
-        keyStorePassword: null,
-        fileName: "",
-        passwordError: null,
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            showModal: WalletStore.isDisplayUnlockKeyStoreModal(),
+            keyStorePassword: null,
+            fileName: "",
+            passwordError: null,
+        }
+
+        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentWillMount() {
@@ -29,7 +35,7 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
         WalletStore.removeListener("change", this.onWalletStoreChange)
     }
 
-    onWalletStoreChange = () => {
+    onWalletStoreChange() {
         this.setState({
             showModal: WalletStore.isDisplayUnlockKeyStoreModal(),
             keyStorePassword: WalletStore.getKeyStorePassword(),
@@ -69,25 +75,25 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
         return <Modal isOpen={showModal} toggle={this.hideModal}>
             <ModalHeader toggle={this.hideModal}>Unlock saved keystore file {fileName}</ModalHeader>
             <form onSubmit={this.handleKeyStoreUnlock}>
-            <ModalBody>
-                <div className="form-group">
-                    <input type="password"
-                           name="password"
-                           placeholder="Keystore password"
-                           className={"form-control " + passwordErrorClass}
-                           onChange={this.handleKeyStoreFilePasswordChange}/>
-                </div>
+                <ModalBody>
+                    <div className="form-group">
+                        <input type="password"
+                               name="password"
+                               placeholder="Keystore password"
+                               className={"form-control " + passwordErrorClass}
+                               onChange={this.handleKeyStoreFilePasswordChange}/>
+                    </div>
 
-                <Conditional displayCondition={passwordError}>
-                    <Alert color="danger">
-                        Sorry, wrong password. Please try again.
-                    </Alert>
-                </Conditional>
+                    <Conditional displayCondition={passwordError}>
+                        <Alert color="danger">
+                            Sorry, wrong password. Please try again.
+                        </Alert>
+                    </Conditional>
 
-            </ModalBody>
-            <ModalFooter>
-                <input className="btn btn-primary" type="submit"  value="Unlock" />
-            </ModalFooter>
+                </ModalBody>
+                <ModalFooter>
+                    <input className="btn btn-primary" type="submit" value="Unlock"/>
+                </ModalFooter>
             </form>
         </Modal>
     }

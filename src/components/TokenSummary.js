@@ -5,11 +5,14 @@ import Round from "./CustomComponents/Round"
 export default class TokenSummary extends React.Component {
     constructor(props) {
         super(props)
+
         this.state = {
             trade: 0.011234,
             bid: 0.011234,
             offer: 0.011234,
         }
+
+        this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
     }
 
     componentWillMount() {
@@ -20,7 +23,7 @@ export default class TokenSummary extends React.Component {
         OrderBookStore.removeListener("change", this.saveCurrentPrices)
     }
 
-    saveCurrentPrices = () => {
+    saveCurrentPrices() {
         this.setState(function (prevState, props) {
         })
     }

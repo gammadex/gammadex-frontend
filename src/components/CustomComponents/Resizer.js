@@ -7,10 +7,13 @@ import ReactDOM from 'react-dom'
 export default class Resizer extends React.Component {
     constructor(props) {
         super(props)
+
         this.state = {
             width: 0,
             height: 0
         }
+
+        this.handleWindowResize = this.handleWindowResize.bind(this)
     }
 
     componentDidMount() {
@@ -22,7 +25,7 @@ export default class Resizer extends React.Component {
         window.removeEventListener("resize", this.handleWindowResize)
     }
 
-    handleWindowResize = () => {
+    handleWindowResize() {
         let minWidth = 200
         let heightRatio = 0.45
 
