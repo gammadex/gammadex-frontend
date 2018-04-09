@@ -19,7 +19,7 @@ export default class Etherscan extends React.Component {
         if (this.props.display === 'icon') {
             return <span className="fas fa-external-link-square-alt"></span>
         } else {
-            const text = this.props.text || childContent
+            const text = this.props.text || childContent || this.props.address
 
             if (this.props.display === 'truncate') {
                 return <TruncatedAddress>{text}</TruncatedAddress>
@@ -36,9 +36,9 @@ export default class Etherscan extends React.Component {
     }
 
     getTypeDescription(type) {
-        if (type == 'address') {
+        if (type === 'address') {
             return 'address'
-        } else if (type == 'tx') {
+        } else if (type === 'tx') {
             return 'transaction'
         }
     }

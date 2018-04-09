@@ -10,7 +10,8 @@ export default class Date extends React.Component {
 
         const date = children[0].toString()
         const withYear = !!this.props.year
+        const noSeconds = !!this.props.noSeconds
 
-        return formatDateForDisplay(date, withYear)
+        return formatDateForDisplay(date, withYear, noSeconds)
     }
 }

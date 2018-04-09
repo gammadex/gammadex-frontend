@@ -1,13 +1,14 @@
 import dateformat from 'dateformat'
 
-export function formatDateForDisplay(date, withYear = false) {
+export function formatDateForDisplay(date, withYear = false, noSeconds = false) {
     const parsed = Date.parse(date)
 
     if (isNaN(parsed)) {
         return date
     }
 
-    const format = withYear ? 'yyyy-mm-dd HH:MM:ss' : 'mm-dd HH:MM:ss'
+    const seconds = noSeconds ? '' : ':ss'
+    const format = withYear ? 'yyyy-mm-dd HH:MM' : 'mm-dd HH:MM'
 
-    return dateformat(parsed, format)
+    return dateformat(parsed, format + seconds)
 }

@@ -22,3 +22,11 @@ test("Invalid date is passed through", () => {
 
     expect(formatted).toEqual("some string, not a date")
 })
+
+test("Seconds can be stripped", () => {
+    const date = "2018-03-20T16:47:12.779Z"
+
+    const formatted = formatDateForDisplay(date, false, true)
+
+    expect(formatted).toEqual("03-20 16:47")
+})
