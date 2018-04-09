@@ -140,23 +140,6 @@ export default class OrderPlacement extends React.Component {
                 <div className="row">
                     <div className="col-lg-6">
                         <OrderBox
-                            side={OrderSide.SELL}
-                            type="sell"
-                            title="Sell"
-                            tokenName={token.name}
-                            orderType={sellOrderType}
-                            price={sellOrderPriceControlled}
-                            amount={sellOrderAmountControlled}
-                            amountValid={sellOrderValid}
-                            amountErrorMessage={sellOrderInvalidReason}
-                            total={sellOrderTotalEthControlled}
-                            submitButtonName="SELL"
-                            submitDisabled={disableSellButton}
-                        />
-                    </div>
-
-                    <div className="col-lg-6">
-                        <OrderBox
                             side={OrderSide.BUY}
                             type="buy"
                             title="Buy"
@@ -171,6 +154,23 @@ export default class OrderPlacement extends React.Component {
                             totalErrorMessage={buyTotalErrorMessage}
                             submitButtonName="BUY"
                             submitDisabled={disableBuyButton}
+                        />
+                    </div>
+
+                    <div className="col-lg-6">
+                        <OrderBox
+                            side={OrderSide.SELL}
+                            type="sell"
+                            title="Sell"
+                            tokenName={token.name}
+                            orderType={sellOrderType}
+                            price={sellOrderPriceControlled}
+                            amount={sellOrderAmountControlled}
+                            amountValid={sellOrderValid}
+                            amountErrorMessage={sellOrderInvalidReason}
+                            total={sellOrderTotalEthControlled}
+                            submitButtonName="SELL"
+                            submitDisabled={disableSellButton}
                         />
                     </div>
                 </div>

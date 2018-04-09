@@ -63,14 +63,14 @@ export default class OrderBook extends React.Component {
 
             <div className="row">
                 <div className="col-lg-6">
-                    <Box title="Bids">
-                        {bidsContent}
+                    <Box title="Offers">
+                        {offersContent}
                     </Box>
                 </div>
 
                 <div className="col-lg-6">
-                    <Box title="Offers">
-                        {offersContent}
+                    <Box title="Bids">
+                        {bidsContent}
                     </Box>
                 </div>
             </div>
