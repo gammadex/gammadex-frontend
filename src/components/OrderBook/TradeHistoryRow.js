@@ -41,7 +41,7 @@ export default class OrdersTableRow extends React.Component {
                 </td>
                 <td onClick={this.toggle} className="clickable"><Round>{trade.amount}</Round></td>
                 <td onClick={this.toggle} className="clickable"><Round>{trade.amountBase}</Round></td>
-                <td onClick={this.toggle}>
+                <td onClick={this.toggle} className="clickable">
                     <small><Date noSeconds>{trade.date}</Date><br/></small>
                 </td>
             </tr>
