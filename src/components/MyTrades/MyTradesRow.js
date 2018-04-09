@@ -4,7 +4,7 @@ import { Button } from "reactstrap"
 import TransactionStatus from "../../TransactionStatus"
 import OrderSide from "../../OrderSide"
 import Date from "../CustomComponents/Date"
-import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
+import Round from "../../components/CustomComponents/Round"
 
 export default class MyTradesRow extends React.Component {
     constructor(props) {
@@ -24,8 +24,8 @@ export default class MyTradesRow extends React.Component {
             <tr>
                 <td>{`${tokenName}/ETH`}</td>
                 <td>{(trade.takerSide === OrderSide.SELL) ? "Sell" : "Buy"}</td>
-                <td><TruncatedNumber>{String(trade.price)}</TruncatedNumber></td>
-                <td><TruncatedNumber>{String(trade.amountTok)}</TruncatedNumber> {tokenName}</td>
+                <td><Round price>{String(trade.price)}</Round></td>
+                <td><Round>{String(trade.amountTok)}</Round> {tokenName}</td>
                 <td></td>
                 <td></td>
                 <td>{String(trade.totalEth)}</td>

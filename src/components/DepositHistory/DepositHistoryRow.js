@@ -5,7 +5,7 @@ import TransactionStatus from "../../TransactionStatus"
 import DepositType from "../../DepositType"
 import { tokWeiToEth } from "../../EtherConversion"
 import Date from "../CustomComponents/Date"
-import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
+import Round from "../../components/CustomComponents/Round"
 
 export default class DepositHistoryRow extends React.Component {
     constructor(props) {
@@ -26,7 +26,7 @@ export default class DepositHistoryRow extends React.Component {
                 <td><Date year="true">{timestamp}</Date></td>
                 <td>{(depositType === DepositType.DEPOSIT) ? "Deposit" : "Withdrawal"}</td>
                 <td>{tokenName}</td>
-                <td><TruncatedNumber>{String(tokWeiToEth(amount, tokenAddress))}</TruncatedNumber></td>
+                <td><Round price>{String(tokWeiToEth(amount, tokenAddress))}</Round></td>
                 <td><Button outline color={statusColor}
                     onClick={() => window.open(`${Config.getEtherscanUrl()}/tx/${txHash}`, "_blank")}>{status}</Button>{' '}</td>
             </tr>

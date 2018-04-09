@@ -1,6 +1,6 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
-import Etherscan from "./CustomComponents/Etherscan"
+import Round from "./CustomComponents/Round"
 
 export default class TokenSummary extends React.Component {
     constructor(props) {
@@ -41,21 +41,21 @@ export default class TokenSummary extends React.Component {
                             <tbody>
                             <tr>
                                 <td>Last Price</td>
-                                <td>{trade}</td>
+                                <td><Round price>{trade}</Round></td>
                                 <td>24h Change</td>
-                                <td>{trade}</td>
+                                <td><Round price>{trade}</Round></td>
                             </tr>
                             <tr>
                                 <td>24h High</td>
-                                <td>{trade}</td>
+                                <td><Round price>{trade}</Round></td>
                                 <td>24h Low</td>
-                                <td>{trade}</td>
+                                <td><Round price>{trade}</Round></td>
                             </tr>
                             <tr>
                                 <td>24h Vol ETH</td>
-                                <td>{trade}</td>
+                                <td><Round>{trade}</Round></td>
                                 <td>24h Vol {token.name}</td>
-                                <td>{trade}</td>
+                                <td><Round>{trade}</Round></td>
                             </tr>
                             </tbody>
                         </table>

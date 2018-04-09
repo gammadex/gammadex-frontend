@@ -5,7 +5,7 @@ import OrderState from "../../OrderState"
 import OrderSide from "../../OrderSide"
 import * as OpenOrderActions from "../../actions/OpenOrderActions"
 import Date from "../CustomComponents/Date"
-import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
+import Round from "../CustomComponents/Round"
 
 export default class OpenOrdersRow extends React.Component {
     constructor(props) {
@@ -32,9 +32,9 @@ export default class OpenOrdersRow extends React.Component {
             <tr>
                 <td>{`${tokenName}/ETH`}</td>
                 <td>{(openOrder.makerSide === OrderSide.SELL) ? "Sell" : "Buy"}</td>
-                <td><TruncatedNumber>{openOrder.price}</TruncatedNumber></td>
-                <td><TruncatedNumber>{openOrder.amount}</TruncatedNumber> {tokenName}</td>
-                <td><TruncatedNumber>{openOrder.price * openOrder.amount}</TruncatedNumber></td>
+                <td><Round price>{openOrder.price}</Round></td>
+                <td><Round>{openOrder.amount}</Round> {tokenName}</td>
+                <td><Round>{openOrder.price * openOrder.amount}</Round></td>
                 <td><Date>{openOrder.timestamp}</Date></td>
                 <td><Button outline color={buttonColor} disabled={buttonDisabled} onClick={onClick}>{buttonLabel}</Button>{' '}</td>
             </tr>

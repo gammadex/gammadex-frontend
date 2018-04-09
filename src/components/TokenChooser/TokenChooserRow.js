@@ -1,5 +1,6 @@
 import React from "react"
 import Truncated from "../CustomComponents/Truncated"
+import Round from "../CustomComponents/Round"
 
 export default class TokenChooserRow extends React.Component {
 
@@ -16,8 +17,8 @@ export default class TokenChooserRow extends React.Component {
                 className={"clickable " + selectedClass}>
 
                 <td><Truncated left="7" right="0">{token.symbol}</Truncated></td>
-                <td>{token.volume}</td>
-                <td>{token.percentChange}</td>
+                <td><Round>{token.volume}</Round></td>
+                <td><Round>{token.percentChange}</Round></td>
             </tr>
         )
     }

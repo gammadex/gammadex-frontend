@@ -1,5 +1,5 @@
 import React from "react"
-import TruncatedNumber from "../CustomComponents/TruncatedNumber"
+import Round from "../CustomComponents/Round"
 import Etherscan from "../CustomComponents/Etherscan"
 import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Date from "../CustomComponents/Date"
@@ -31,16 +31,16 @@ export default class OrdersTableRow extends React.Component {
                     <span id={"Popover" + trade.txHash}></span>
 
                     <Popover placement="top" isOpen={this.state.popoverOpen} target={"Popover" + trade.txHash} toggle={this.toggle}>
-                        <PopoverHeader>{trade.side} of <TruncatedNumber>{trade.amount}</TruncatedNumber> {token}</PopoverHeader>
+                        <PopoverHeader>{trade.side} of <Round>{trade.amount}</Round> {token}</PopoverHeader>
                         <PopoverBody>
                             <div><strong>Date:</strong> <Date>{trade.date}</Date></div>
                         </PopoverBody>
                     </Popover>
 
-                    <TruncatedNumber>{trade.price}</TruncatedNumber>
+                    <Round price>{trade.price}</Round>
                 </td>
-                <td onClick={this.toggle} className="clickable"><TruncatedNumber>{trade.amount}</TruncatedNumber></td>
-                <td onClick={this.toggle} className="clickable"><TruncatedNumber>{trade.amountBase}</TruncatedNumber></td>
+                <td onClick={this.toggle} className="clickable"><Round>{trade.amount}</Round></td>
+                <td onClick={this.toggle} className="clickable"><Round>{trade.amountBase}</Round></td>
                 <td>
                     <Etherscan type="tx" address={trade.txHash} display="icon"/>
                 </td>
