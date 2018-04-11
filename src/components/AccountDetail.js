@@ -4,7 +4,7 @@ import AccountStore from '../stores/AccountStore'
 import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
-import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
+import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
 import {Box, BoxFooter} from "./CustomComponents/Box"
 
 import * as AccountActions from "../actions/AccountActions"
@@ -16,11 +16,13 @@ export default class AccountDetail extends React.Component {
     constructor(props) {
         super(props)
         this.state = AccountStore.getAccountState()
+        this.state.tooltipOpen = false;
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
         this.onAccountChange = this.onAccountChange.bind(this)
         this.onTokenChange = this.onTokenChange.bind(this)
         this.timerFired = this.timerFired.bind(this)
+        this.toggle = this.toggle.bind(this);
     }
 
     componentWillMount() {
@@ -67,6 +69,12 @@ export default class AccountDetail extends React.Component {
 
         this.setState(accountState)
     }
+
+    toggle() {
+        this.setState({
+          tooltipOpen: !this.state.tooltipOpen
+        });
+      }
 
     hideModal() {
         AccountActions.depositWithdrawCancel()
@@ -123,7 +131,7 @@ export default class AccountDetail extends React.Component {
     render() {
         const {token} = this.props
         const {
-            accountType,
+            selectedAccountType,
             account,
             accountRetrieved,
             nonce,
@@ -143,16 +151,18 @@ export default class AccountDetail extends React.Component {
         const modalTitle = (modalIsDeposit ? `Deposit ${modalToken} to Exchange` : `Withdraw ${modalToken} from Exchange`)
         const modalActionLabel = (modalIsDeposit ? "Deposit" : "Withdraw")
 
-        const accountTypeName = (accountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
+        const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
             accountLink = <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
         }
 
-        let nonceBadge = ''
-        if (accountType !== AccountType.METAMASK) {
-            nonceBadge = <Badge color="dark">nonce: {nonce}</Badge>
+        let nonceTip = ''
+        if (selectedAccountType !== AccountType.METAMASK) {
+            let ntext = `Nonce: ${nonce}`
+            nonceTip = <Tooltip placement="right" isOpen={this.state.tooltipOpen} target="atName" toggle={this.toggle}>{ntext}</Tooltip>
         }
+
         return (
             <span>
                 <Box title="Accounts">
@@ -168,7 +178,7 @@ export default class AccountDetail extends React.Component {
                     <BoxFooter>
                         Account: {accountLink}
                         <br/>
-                        <Badge color="secondary">{accountTypeName}</Badge> {nonceBadge}
+                        <Badge id="atName" color="secondary">{accountTypeName}</Badge> {nonceTip}
                     </BoxFooter>
                 </Box>
 
