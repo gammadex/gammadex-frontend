@@ -36,24 +36,9 @@ class EtherDeltaWeb3 {
         this.initContract()
     }
 
-    initForLedger = () => {
-        const engine = new ProviderEngine()
-        const getTransport = () => TransportU2F.create();
-        // We need our own version of createLedgerSubprovider since the Ledger provided one has a bug with
-        // address lookup when using web3 1.0.x - TODO - file a bug report - WR
-        const ledger = createLedgerSubprovider(getTransport, {
-            networkId: 3,
-            accountsLength: 5
-        });
-        engine.addProvider(ledger);
-        engine.addProvider(new RpcSubprovider({ rpcUrl: Config.getWeb3Url() }));
-        engine.start();
-
-        // engineWithNoEventEmitting is needed because infura doesn't support newBlockHeaders event :( - WR
-        // https://github.com/ethereum/web3.js/issues/951
-        const engineWithNoEventEmitting = Object.assign(engine, { on: false });
-        this.web3 = new Web3(engineWithNoEventEmitting);
-        this.accountProvider = new MetaMaskAccountProvider(this.web3)
+    initForLedger = (ledgerWeb3, accountIndex) => {
+        this.web3 = ledgerWeb3
+        this.accountProvider = new MetaMaskAccountProvider(this.web3, accountIndex)
 
         this.initContract()
     }
@@ -196,8 +181,9 @@ class AccountProvider {
 }
 
 class MetaMaskAccountProvider extends AccountProvider {
-    constructor(web3) {
+    constructor(web3, accountIndex = 0) {
         super(web3)
+        this.accountIndex = accountIndex
     }
 
     refreshAccount() {
@@ -205,7 +191,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             .then(accounts => {
                 if (accounts.length > 0) {
                     // MetaMask tracks the nonce itself
-                    return { address: accounts[0], nonce: 0 }
+                    return { address: accounts[this.accountIndex], nonce: 0 }
                 } else {
                     throw new Error("no addresses found")
                 }

@@ -128,3 +128,53 @@ export function updateProvidedWeb3AccountAvailable(isAvailable) {
         isAvailable,
     })
 }
+
+export function ledgerAccountsRequested(deriviationPath) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_ACCOUNTS_REQUESTED,
+        deriviationPath,
+    })
+}
+
+export function ledgerError(errorMessage, errorName) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_ERROR,
+        errorMessage,
+        errorName
+    })
+}
+
+export function ledgerAccountsRetrieved(accounts) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_ACCOUNTS_RETRIEVED,
+        accounts,
+    })
+}
+
+export function ledgerDerivationPathSourceSelected(derivationPathSource) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_DERIVATION_PATH_SOURCE_SELECTED,
+        derivationPathSource,
+    })
+}
+
+export function changeLedgerAddressPage(page) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_CHANGE_ADDRESS_PAGE,
+        page,
+    })
+}
+
+export function changeLedgerAddressOffset(offset) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_CHANGE_ADDRESS_OFFSET,
+        offset,
+    })
+}
+
+export function changeCustomDerivationPath(derivationPath) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_LEDGER_CHANGE_CUSTOM_DERIVATION_PATH,
+        derivationPath,
+    })
+}

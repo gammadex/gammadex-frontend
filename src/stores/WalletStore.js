@@ -3,9 +3,18 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import * as WalletDao from "../util/WalletDao"
 import AccountType from "../AccountType"
-import * as EthereumNetworks from "../util/EthereumNetworks"
 
 class WalletStore extends EventEmitter {
+    LEDGER_DEFAULTS = {
+        accounts: [],
+        errorName: null,
+        errorMessage: null,
+        selectedDerivationPathSource: "default", // default or custom
+        customDerivationPath: "",
+        addressPage: 0,
+        addressOffset: null
+    }
+
     constructor() {
         super()
         this.selectedAccountType = null
@@ -43,6 +52,8 @@ class WalletStore extends EventEmitter {
             netDescription: null,
             accountAvailable: null
         }
+
+        this.resetLedgerValues()
     }
 
     emitChange() {
@@ -137,6 +148,14 @@ class WalletStore extends EventEmitter {
         return this.providedWeb3.accountAvailable
     }
 
+    getLedger() {
+        return this.ledger
+    }
+
+    resetLedgerValues() {
+        this.ledger = Object.assign({}, this.LEDGER_DEFAULTS)
+    }
+
     handleActions(action) {
         switch (action.type) {
             case ActionNames.WALLET_TYPE_SELECTED: {
@@ -154,6 +173,7 @@ class WalletStore extends EventEmitter {
                 this.keyStorePasswordError = null
                 this.rememberKeyStoreFile = false
                 this.rememberPrivateKey = false
+                this.resetLedgerValues()
                 this.emitChange()
                 break
             }
@@ -194,7 +214,6 @@ class WalletStore extends EventEmitter {
                 break
             }
             case ActionNames.ACCOUNT_REFRESH_ERROR: {
-                this.refreshError = action.selectedAccountType
                 this.refreshError = action.error
                 this.emitChange()
                 break
@@ -274,6 +293,53 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.WALLET_UPDATE_PROVIDED_WEB3_ACCOUNT_AVAILABLE: {
                 this.providedWeb3.accountAvailable = action.isAvailable
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_ACCOUNTS_REQUESTED: {
+                this.ledger.accounts = []
+                this.ledger.errorName = null
+                this.ledger.errorMessage = null
+                this.ledger.addressOffset = null
+                this.ledger.addressPage = 0
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_ERROR: {
+                this.ledger.errorMessage = action.errorMessage
+                this.ledger.errorName = action.errorName
+                this.ledger.accounts = []
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_ACCOUNTS_RETRIEVED: {
+                this.ledger.accounts = action.accounts
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_DERIVATION_PATH_SOURCE_SELECTED: {
+                this.ledger.selectedDerivationPathSource = action.derivationPathSource
+                this.ledger.accounts = []
+                this.ledger.errorMessage = null
+                this.ledger.errorName = null
+                this.ledger.addressOffset = null
+                this.ledger.addressPage = 0
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_CHANGE_ADDRESS_PAGE: {
+                this.ledger.addressPage = action.page
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_CHANGE_ADDRESS_OFFSET: {
+                this.ledger.addressOffset = action.offset
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LEDGER_CHANGE_CUSTOM_DERIVATION_PATH: {
+                this.ledger.customDerivationPath = action.derivationPath
+                this.ledger.selectedDerivationPathSource = "custom"
                 this.emitChange()
                 break
             }
