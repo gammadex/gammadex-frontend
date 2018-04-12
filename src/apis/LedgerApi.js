@@ -6,7 +6,7 @@ import * as AccountActions from "../actions/AccountActions"
 import * as WalletDao from "../util/WalletDao"
 import AccountType from "../AccountType"
 
-export function requestAddresses(deriviationPath) {
+export function requestAddresses(deriviationPath, page) {
     const web3 = LedgerUtil.getLedgerWeb3(deriviationPath, Config.getWeb3Url(), Config.getEthereumNetworkId())
 
     WalletActions.ledgerAccountsRequested(deriviationPath)
@@ -14,7 +14,7 @@ export function requestAddresses(deriviationPath) {
     web3.eth.getAccounts()
         .then(accounts => {
             console.log("Accounts", accounts)
-            WalletActions.ledgerAccountsRetrieved(accounts)
+            WalletActions.ledgerAccountsRetrieved(accounts, page)
         })
         .catch(err => {
             console.log("Error", err)

@@ -144,10 +144,11 @@ export function ledgerError(errorMessage, errorName) {
     })
 }
 
-export function ledgerAccountsRetrieved(accounts) {
+export function ledgerAccountsRetrieved(accounts, page) {
     dispatcher.dispatch({
         type: ActionNames.WALLET_LEDGER_ACCOUNTS_RETRIEVED,
         accounts,
+        page
     })
 }
 

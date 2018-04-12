@@ -301,7 +301,6 @@ class WalletStore extends EventEmitter {
                 this.ledger.errorName = null
                 this.ledger.errorMessage = null
                 this.ledger.addressOffset = null
-                this.ledger.addressPage = 0
                 this.emitChange()
                 break
             }
@@ -314,6 +313,7 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.WALLET_LEDGER_ACCOUNTS_RETRIEVED: {
                 this.ledger.accounts = action.accounts
+                this.ledger.addressPage = action.page
                 this.emitChange()
                 break
             }
