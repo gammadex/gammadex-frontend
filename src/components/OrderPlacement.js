@@ -26,15 +26,15 @@ export default class OrderPlacement extends React.Component {
         super(props)
         this.state = {
             buyOrderType: OrderType.LIMIT_ORDER,
-            buyOrderPriceControlled: 0,
-            buyOrderAmountControlled: 0,
-            buyOrderTotalEthControlled: 0,
+            buyOrderPriceControlled: "",
+            buyOrderAmountControlled: "",
+            buyOrderTotalEthControlled: "",
             buyOrderValid: true,
             buyOrderInvalidReason: "",
             sellOrderType: OrderType.LIMIT_ORDER,
-            sellOrderPriceControlled: 0,
-            sellOrderAmountControlled: 0,
-            sellOrderTotalEthControlled: 0,
+            sellOrderPriceControlled: "",
+            sellOrderAmountControlled: "",
+            sellOrderTotalEthControlled: "",
             sellOrderValid: true,
             sellOrderInvalidReason: "",
             tradesToExecute: [],
@@ -97,12 +97,12 @@ export default class OrderPlacement extends React.Component {
         } = this.state
 
         const disableBuyButton = (!buyOrderValid ||
-            (buyOrderType === OrderType.LIMIT_ORDER && BigNumber(String(buyOrderTotalEthControlled)).isZero()) ||
-            (buyOrderType === OrderType.MARKET_ORDER && BigNumber(String(buyOrderAmountControlled)).isZero())
+            (buyOrderType === OrderType.LIMIT_ORDER && (buyOrderTotalEthControlled === "" || BigNumber(String(buyOrderTotalEthControlled)).isZero())) ||
+            (buyOrderType === OrderType.MARKET_ORDER && (buyOrderAmountControlled === "" || BigNumber(String(buyOrderAmountControlled)).isZero()))
         )
         const disableSellButton = (!sellOrderValid ||
-            (sellOrderType === OrderType.LIMIT_ORDER && BigNumber(String(sellOrderTotalEthControlled)).isZero()) ||
-            (sellOrderType === OrderType.MARKET_ORDER && BigNumber(String(sellOrderAmountControlled)).isZero())
+            (sellOrderType === OrderType.LIMIT_ORDER && (sellOrderTotalEthControlled === "" || BigNumber(String(sellOrderTotalEthControlled)).isZero())) ||
+            (sellOrderType === OrderType.MARKET_ORDER && (sellOrderAmountControlled === "" || BigNumber(String(sellOrderAmountControlled)).isZero()))
         )
 
         let buyAmountValid = null

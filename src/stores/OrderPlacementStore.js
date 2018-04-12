@@ -8,18 +8,18 @@ class OrderPlacementStore extends EventEmitter {
     constructor() {
         super()
         this.sellOrderType = OrderType.LIMIT_ORDER
-        this.sellOrderPriceControlled = 0
-        this.sellOrderAmountControlled = 0
+        this.sellOrderPriceControlled = ""
+        this.sellOrderAmountControlled = ""
         this.sellOrderAmountWei = BigNumber(0)
-        this.sellOrderTotalEthControlled = 0
+        this.sellOrderTotalEthControlled = ""
         this.sellOrderTotalEthWei = BigNumber(0)
         this.sellOrderValid = true
         this.sellOrderInvalidReason = ""
         this.buyOrderType = OrderType.LIMIT_ORDER
-        this.buyOrderPriceControlled = 0
-        this.buyOrderAmountControlled = 0
+        this.buyOrderPriceControlled = ""
+        this.buyOrderAmountControlled = ""
         this.buyOrderAmountWei = BigNumber(0)
-        this.buyOrderTotalEthControlled = 0
+        this.buyOrderTotalEthControlled = ""
         this.buyOrderTotalEthWei = BigNumber(0)
         this.buyOrderValid = true
         this.buyOrderInvalidReason = ""
@@ -164,6 +164,28 @@ class OrderPlacementStore extends EventEmitter {
                 this.orderModal = false
                 this.emitChange()
                 break
+            }
+            case ActionNames.BUY_ORDER_CLEAR: {
+                this.buyOrderPriceControlled = ""
+                this.buyOrderAmountControlled = ""
+                this.buyOrderAmountWei = BigNumber(0)
+                this.buyOrderTotalEthControlled = ""
+                this.buyOrderTotalEthWei = BigNumber(0)
+                this.buyOrderValid = true
+                this.buyOrderInvalidReason = ""
+                this.emitChange();
+                break;
+            }
+            case ActionNames.SELL_ORDER_CLEAR: {
+                this.sellOrderPriceControlled = ""
+                this.sellOrderAmountWei = BigNumber(0)
+                this.sellOrderAmountControlled = ""
+                this.sellOrderTotalEthWei = BigNumber(0)
+                this.sellOrderTotalEthControlled = ""
+                this.sellOrderValid = true
+                this.sellOrderInvalidReason = ""
+                this.emitChange();
+                break;
             }
         }
     }

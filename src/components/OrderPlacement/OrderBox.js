@@ -3,14 +3,14 @@ import {FormGroup, Label, Col, Input, Button} from 'reactstrap'
 import Conditional from "../CustomComponents/Conditional"
 import OrderType from "../../OrderType"
 import NumericInput from "./NumericInput.js"
-import {Box, BoxSection} from "../CustomComponents/Box"
+import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
 import OrderSide from "../../OrderSide"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 
 export default class OrderBox extends React.Component {
     onOrderTypeChange = (event) => {
         const orderType = (event.target.value === "Limit") ? OrderType.LIMIT_ORDER : OrderType.MARKET_ORDER
-        if(this.props.side === OrderSide.BUY) {
+        if (this.props.side === OrderSide.BUY) {
             OrderPlacementActions.buyOrderTypeChanged(orderType)
         } else {
             OrderPlacementActions.sellOrderTypeChanged(orderType)
@@ -18,7 +18,7 @@ export default class OrderBox extends React.Component {
     }
 
     onOrderPriceChange = (event) => {
-        if(this.props.side === OrderSide.BUY) {
+        if (this.props.side === OrderSide.BUY) {
             OrderPlacementActions.buyOrderPriceChanged(Number(event.target.value))
         } else {
             OrderPlacementActions.sellOrderPriceChanged(Number(event.target.value))
@@ -26,7 +26,7 @@ export default class OrderBox extends React.Component {
     }
 
     onOrderAmountChange = (event) => {
-        if(this.props.side === OrderSide.BUY) {
+        if (this.props.side === OrderSide.BUY) {
             OrderPlacementActions.buyOrderAmountChanged(Number(event.target.value))
         } else {
             OrderPlacementActions.sellOrderAmountChanged(Number(event.target.value))
@@ -34,7 +34,7 @@ export default class OrderBox extends React.Component {
     }
 
     onOrderTotalChange = (event) => {
-        if(this.props.side === OrderSide.BUY) {
+        if (this.props.side === OrderSide.BUY) {
             OrderPlacementActions.buyOrderTotalEthChanged(Number(event.target.value))
         } else {
             OrderPlacementActions.sellOrderTotalEthChanged(Number(event.target.value))
@@ -42,11 +42,15 @@ export default class OrderBox extends React.Component {
     }
 
     onSubmit = () => {
-        if(this.props.side === OrderSide.BUY) {
+        if (this.props.side === OrderSide.BUY) {
             OrderPlacementActions.executeBuy()
         } else {
             OrderPlacementActions.executeSell()
         }
+    }
+
+    onClear = () => {
+        this.props.side == OrderSide.BUY ? OrderPlacementActions.clearBuy() : OrderPlacementActions.clearSell();
     }
     
     render() {
@@ -62,7 +66,14 @@ export default class OrderBox extends React.Component {
         const isLimitOrder = orderType === OrderType.LIMIT_ORDER
 
         return (
-            <Box title={title + " " + tokenName}>
+            <Box>
+                <BoxHeader>
+                    <div className="hdr-stretch">
+                        <strong className="card-title">{title + " " + tokenName}</strong>
+                        <Button size="sm" onClick={this.onClear}>Clear</Button>
+                    </div>
+                </BoxHeader>
+
                 <BoxSection className="order-box">
                     <FormGroup row>
                         <Label for={type + "OrderType"} sm={3}>Type</Label>
@@ -91,8 +102,7 @@ export default class OrderBox extends React.Component {
                                       valid={totalValid} errorMessage={totalErrorMessage}/>
                     </Conditional>
 
-                    <FormGroup row>
-                        <Label for="sellButton" sm={3}></Label>
+                    <FormGroup row className="hdr-stretch-ctr">
                         <Col sm={6}>
                             <Button block color="primary" id="sellButton" disabled={submitDisabled}
                                     onClick={this.onSubmit}>{submitButtonName}</Button>

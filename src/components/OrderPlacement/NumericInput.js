@@ -13,6 +13,8 @@ export default class NumericInput extends React.Component {
                         <Input type="number" min={0} id={fieldName}
                                value={value}
                                onChange={onChange}
+                               placeholder="0.00"
+                               step="any"
                                valid={valid}/>
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
