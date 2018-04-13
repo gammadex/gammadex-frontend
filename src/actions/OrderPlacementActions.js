@@ -441,11 +441,3 @@ export function confirmOrder() {
         })
     
 }
-
-export function clearBuy() {
-    dispatcher.dispatch({type: ActionNames.BUY_ORDER_CLEAR})
-}
-
-export function clearSell() {
-    dispatcher.dispatch({type: ActionNames.SELL_ORDER_CLEAR})
-}

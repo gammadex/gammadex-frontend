@@ -50,7 +50,8 @@ export default class OrderBox extends React.Component {
     }
 
     onClear = () => {
-        this.props.side == OrderSide.BUY ? OrderPlacementActions.clearBuy() : OrderPlacementActions.clearSell();
+        // Resetting the order type clears the form
+        this.props.side === OrderSide.BUY ?  OrderPlacementActions.buyOrderTypeChanged(this.props.orderType) : OrderPlacementActions.sellOrderTypeChanged(this.props.orderType)
     }
     
     render() {
