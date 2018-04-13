@@ -31,7 +31,7 @@ export function sellOrderTypeChanged(orderType) {
 // update total when price changed
 export function sellOrderPriceChanged(priceControlled) {
     const amountWei = OrderPlacementStore.getOrderPlacementState().sellOrderAmountWei
-    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
+    const totalEthWei = priceControlled === "" ? BigNumber(0) : BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
     dispatcher.dispatch({
@@ -46,9 +46,11 @@ export function sellOrderPriceChanged(priceControlled) {
 
 // update total when token amount is changed
 export function sellOrderAmountChanged(amountControlled) {
-    const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
-    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState()
-        .sellOrderPriceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
+    const amountControlledNum = amountControlled === "" ? BigNumber(0) : amountControlled
+    const sellPriceNum = OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled === "" ? 0 : OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled
+
+    const amountWei = tokEthToWei(amountControlledNum, TokenStore.getSelectedToken().address)
+    const totalEthWei = BigNumber(String(sellPriceNum)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
     dispatcher.dispatch({
@@ -64,7 +66,9 @@ export function sellOrderAmountChanged(amountControlled) {
 
 // update amount when total is changed, or zero out if total = 0
 export function sellOrderTotalEthChanged(totalEthControlled) {
-    const priceControlled = BigNumber(String(OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled))
+    const sellPriceNum = OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled === "" ? 0 : OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled
+    const priceControlled = BigNumber(String(sellPriceNum))
+
     if (priceControlled.isZero()) {
         const zero = BigNumber(0)
         const { orderValid, orderInvalidReason } = validateSellOrder(zero)
@@ -78,9 +82,10 @@ export function sellOrderTotalEthChanged(totalEthControlled) {
             orderInvalidReason
         })
     } else {
-        const amountControlled = BigNumber(String(totalEthControlled)).div(priceControlled)
+        const totalEthNum = totalEthControlled === "" ? 0 : totalEthControlled
+        const amountControlled = BigNumber(String(totalEthNum)).div(priceControlled)
         const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
-        const totalEthWei = baseEthToWei(totalEthControlled)
+        const totalEthWei = baseEthToWei(totalEthNum)
         const { orderValid, orderInvalidReason } = validateSellOrder(amountWei)
         dispatcher.dispatch({
             type: ActionNames.SELL_ORDER_TOTAL_CHANGED,
@@ -121,9 +126,10 @@ export function buyOrderTypeChanged(orderType) {
 
 export function buyOrderPriceChanged(priceControlled) {
     const amountWei = OrderPlacementStore.getOrderPlacementState().buyOrderAmountWei
-    const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
+    const totalEthWei = priceControlled === "" ? BigNumber(0) : BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
+
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_PRICE_CHANGED,
         priceControlled,
@@ -135,11 +141,14 @@ export function buyOrderPriceChanged(priceControlled) {
 }
 
 export function buyOrderAmountChanged(amountControlled) {
-    const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
-    const totalEthWei = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled))
-        .times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
+    const amountControlledNum = amountControlled === "" ? BigNumber(0) : amountControlled
+    const buyPriceNum = OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled === "" ? 0 : OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled
+
+    const amountWei = tokEthToWei(amountControlledNum, TokenStore.getSelectedToken().address)
+    const totalEthWei = BigNumber(String(buyPriceNum)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
     const totalEthControlled = baseWeiToEth(totalEthWei)
     const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
+
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_AMOUNT_CHANGED,
         amountWei,
@@ -152,7 +161,9 @@ export function buyOrderAmountChanged(amountControlled) {
 }
 
 export function buyOrderTotalEthChanged(totalEthControlled) {
-    const priceControlled = BigNumber(String(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled))
+    const buyPriceNum = OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled === "" ? 0 : OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled
+    const priceControlled = BigNumber(String(buyPriceNum))
+
     if (priceControlled.isZero()) {
         const zero = BigNumber(0)
         const { orderValid, orderInvalidReason } = validateBuyOrder(zero, zero)
@@ -166,9 +177,10 @@ export function buyOrderTotalEthChanged(totalEthControlled) {
             orderInvalidReason
         })
     } else {
-        const amountControlled = BigNumber(String(totalEthControlled)).div(priceControlled)
+        const totalEthNum = totalEthControlled === "" ? 0 : totalEthControlled
+        const amountControlled = BigNumber(String(totalEthNum)).div(priceControlled)
         const amountWei = tokEthToWei(amountControlled, TokenStore.getSelectedToken().address)
-        const totalEthWei = baseEthToWei(totalEthControlled)
+        const totalEthWei = baseEthToWei(totalEthNum)
         const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
         dispatcher.dispatch({
             type: ActionNames.BUY_ORDER_TOTAL_CHANGED,

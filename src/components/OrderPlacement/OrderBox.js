@@ -19,25 +19,25 @@ export default class OrderBox extends React.Component {
 
     onOrderPriceChange = (event) => {
         if (this.props.side === OrderSide.BUY) {
-            OrderPlacementActions.buyOrderPriceChanged(Number(event.target.value))
+            OrderPlacementActions.buyOrderPriceChanged(event.target.value)
         } else {
-            OrderPlacementActions.sellOrderPriceChanged(Number(event.target.value))
+            OrderPlacementActions.sellOrderPriceChanged(event.target.value)
         }
     }
 
     onOrderAmountChange = (event) => {
         if (this.props.side === OrderSide.BUY) {
-            OrderPlacementActions.buyOrderAmountChanged(Number(event.target.value))
+            OrderPlacementActions.buyOrderAmountChanged(event.target.value)
         } else {
-            OrderPlacementActions.sellOrderAmountChanged(Number(event.target.value))
+            OrderPlacementActions.sellOrderAmountChanged(event.target.value)
         }
     }
 
     onOrderTotalChange = (event) => {
         if (this.props.side === OrderSide.BUY) {
-            OrderPlacementActions.buyOrderTotalEthChanged(Number(event.target.value))
+            OrderPlacementActions.buyOrderTotalEthChanged(event.target.value)
         } else {
-            OrderPlacementActions.sellOrderTotalEthChanged(Number(event.target.value))
+            OrderPlacementActions.sellOrderTotalEthChanged(event.target.value)
         }
     }
 
