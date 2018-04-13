@@ -3,7 +3,8 @@ import {FormGroup, FormFeedback, Label, Col, Input} from 'reactstrap'
 
 export default class NumericInput extends React.Component {
     render() {
-        const {name, unitName, fieldName, value, onChange, valid = null, errorMessage = null} = this.props
+        const {name, unitName, fieldName, value, onChange, valid = true, errorMessage = null} = this.props
+        const isInvalid = valid != null && !valid;
 
         return (
             <FormGroup row>
@@ -15,7 +16,7 @@ export default class NumericInput extends React.Component {
                                onChange={onChange}
                                placeholder="0.00"
                                step="any"
-                               valid={valid}/>
+                               invalid={isInvalid}/>
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
