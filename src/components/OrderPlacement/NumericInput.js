@@ -16,7 +16,7 @@ export default class NumericInput extends React.Component {
                                onChange={onChange}
                                placeholder="0.00"
                                step="any"
-                               invalid={isInvalid}/>
+                               invalid={isInvalid.toString()}/>
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
