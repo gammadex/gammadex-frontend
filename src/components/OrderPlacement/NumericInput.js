@@ -2,6 +2,35 @@ import React from "react"
 import {FormGroup, FormFeedback, Label, Col, Input} from 'reactstrap'
 
 export default class NumericInput extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = { prevKey: null }
+    }
+
+    /**
+     * Only accept numeric inputs
+     */
+    onKeyDown = (e) => {
+        // Allow navigation, backspace, delete, insert and tab
+        if ((e.keyCode > 34 && e.keyCode < 41) || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 45 || e.keyCode == 46) {
+            return
+        }
+
+        // Allow CTRL-A, copy/paste
+        if (e.ctrlKey === true && (e.keyCode == 65 || e.keyCode == 67 || e.keyCode == 86 || e.keyCode == 88)) {
+            return
+        }
+
+        // Take the existing value and concatenate the next character. If the result is
+        // NaN then reject the character.
+        const check = Number(this.props.value + e.key)
+        if ((this.state.prevKey === "." && e.key === ".") || isNaN(check)) {
+            e.preventDefault()
+        }
+
+        this.state.prevKey = e.key
+    }
+
     render() {
         const {name, unitName, fieldName, value, onChange, valid = true, errorMessage = null} = this.props
         const isInvalid = valid != null && !valid;
@@ -16,7 +45,7 @@ export default class NumericInput extends React.Component {
                                onChange={onChange}
                                placeholder="0.00"
                                step="any"
-                               invalid={isInvalid}/>
+                               invalid={isInvalid} onKeyDown={this.onKeyDown}/>
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
