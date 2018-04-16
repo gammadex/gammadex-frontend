@@ -7,6 +7,13 @@ export default class NumericInput extends React.Component {
         this.state = { prevKey: null }
     }
 
+    onPaste = (e) => {
+        const check = Number(this.props.value + e.clipboardData.getData('Text'))
+        if (isNaN(check) || check < 0) {
+            e.preventDefault()
+        }
+    }
+
     /**
      * Only accept numeric inputs
      */
@@ -45,7 +52,7 @@ export default class NumericInput extends React.Component {
                                onChange={onChange}
                                placeholder="0.00"
                                step="any"
-                               invalid={isInvalid.toString()} onKeyDown={this.onKeyDown}/>
+                               invalid={isInvalid} onKeyDown={this.onKeyDown} onPaste={this.onPaste}/>
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
