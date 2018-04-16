@@ -7,4 +7,4 @@ export function stripDecimalsOffLongNumber(number, minWholeDigits) {
 
     return match ? match[1] : number
 }
-
+// Number(1e-10).toFixed(20)

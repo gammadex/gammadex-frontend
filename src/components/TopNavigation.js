@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import DevelopmentToolbar from '../components/TopNavigation/DevelopmentToolbar'
-import { Link } from 'react-router-dom'
-
+import {Link} from 'react-router-dom'
 import Logout from '../components/Logout'
 import Routes from '../Routes'
+import GasPriceChooser from "../components/GasPriceChooser"
 
 class TopNavigation extends Component {
 
@@ -22,7 +22,11 @@ class TopNavigation extends Component {
                             <Link to={Routes.History} className="nav-link">History</Link>
                         </li>
                     </ul>
+
                     <form className="form-inline">
+                        <div className="form-group mr-1">
+                            <GasPriceChooser/>
+                        </div>
                         <DevelopmentToolbar/>
                         <div className="form-group ml-1">
                             <Logout/>

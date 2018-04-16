@@ -4,11 +4,12 @@ import {formatDateForDisplay} from "../../util/DateUtil"
 export default class Date extends React.Component {
     render() {
         const children = React.Children.toArray(this.props.children)
-        if (!children.length > 0) {
+        const fromDate = this.props.date
+        if (! fromDate && !children.length > 0) {
             return ""
         }
 
-        const date = children[0].toString()
+        const date = fromDate ? fromDate : children[0].toString()
         const withYear = !!this.props.year
         const noSeconds = !!this.props.noSeconds
 
