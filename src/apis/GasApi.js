@@ -1,5 +1,4 @@
 import * as GasActions from '../actions/GasActions'
-import fetch from "fetch-polyfill"
 
 let timer = null
 
