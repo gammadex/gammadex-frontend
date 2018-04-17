@@ -1,4 +1,5 @@
 import * as GasActions from '../actions/GasActions'
+import {gweiToWei} from '../EtherConversion'
 
 let timer = null
 
@@ -15,10 +16,10 @@ export function retrieveGasPrices() {
             const {safeLow, average, fast, fastest} = json
 
             GasActions.gasPricesRetrieved(
-                Math.round(safeLow / 10),
-                Math.round(average / 10),
-                Math.round(fast / 10),
-                Math.round(fastest / 10),
+                gweiToWei(safeLow / 10),
+                gweiToWei(average / 10),
+                gweiToWei(fast / 10),
+                gweiToWei(fastest / 10),
                 new Date())
         })
         .catch(error => {

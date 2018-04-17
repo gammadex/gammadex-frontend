@@ -24,7 +24,8 @@ class Config {
     }
 
     getEnv() {
-        return config[this.getReactEnv()]
+        const env = this.getReactEnv() ? this.getReactEnv() : 'production' // default set so tests can use Config.xxx
+        return config[env]
     }
 
     getEnvTokens() {

@@ -1,11 +1,13 @@
 import React from "react"
-import Slider, {Range} from 'rc-slider'
+import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import GasPriceStore from '../stores/GasPriceStore'
-import * as GasApi from "../apis/GasApi"
+import * as GasActions from "../actions/GasActions"
 import Date from "./CustomComponents/Date"
 import {Box, BoxSection} from "./CustomComponents/Box"
 import {Popover, PopoverBody} from 'reactstrap'
+import {gweiToWei, weiToGwei} from "../EtherConversion"
+import * as _ from "lodash"
 
 export default class GasPriceChooser extends React.Component {
     constructor(props) {
@@ -14,12 +16,12 @@ export default class GasPriceChooser extends React.Component {
         this.saveGasPrices = this.saveGasPrices.bind(this)
 
         this.state = {
-            safeLow: null,
-            average: null,
-            fast: null,
-            fastest: null,
+            safeLowWei: null,
+            averageWei: null,
+            fastWei: null,
+            fastestWei: null,
             lastRetrieveTime: null,
-            currentGasPriceGwei: 1,
+            currentGasPriceWei: 1,
             popoverOpen: false
         }
     }
@@ -30,22 +32,20 @@ export default class GasPriceChooser extends React.Component {
     }
 
     saveGasPrices() {
-        const {safeLow, average, fast, fastest} = GasPriceStore.getPrices()
+        const {safeLowWei, averageWei, fastWei, fastestWei} = GasPriceStore.getPrices()
 
         this.setState({
-            safeLow,
-            average,
-            fast,
-            fastest,
+            safeLowWei,
+            averageWei,
+            fastWei,
+            fastestWei,
             lastRetrieveTime: GasPriceStore.getLastRetrieveTime(),
-            currentGasPriceGwei: GasPriceStore.getCurrentGasPriceGwei(),
+            currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei(),
         })
     }
 
-    onSliderChange = (value) => {
-        this.setState({
-            currentGasPriceGwei: value
-        })
+    onSliderChange = (valueInGwei) => {
+        GasActions.setCurrentGasPrice(gweiToWei(valueInGwei))
     }
 
     toggleGasPrice = () => {
@@ -54,8 +54,17 @@ export default class GasPriceChooser extends React.Component {
         });
     }
 
+    static safeWeiToGwei(wei) {
+        return (_.isObject(wei) || _.isNumber(wei)) ? weiToGwei(wei).toString() : wei
+    }
+
     render() {
-        const {popoverOpen, safeLow, average, fast, currentGasPriceGwei, lastRetrieveTime} = this.state
+        const {popoverOpen, safeLowWei, averageWei, fastWei, currentGasPriceWei, lastRetrieveTime} = this.state
+
+        const safeLowGwei = GasPriceChooser.safeWeiToGwei(safeLowWei)
+        const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
+        const fastGwei = GasPriceChooser.safeWeiToGwei(fastWei)
+        const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
 
         return (
             <div>
@@ -104,15 +113,15 @@ export default class GasPriceChooser extends React.Component {
                                             <tbody>
                                             <tr>
                                                 <td>Slow (&lt;30m)</td>
-                                                <td>{safeLow} Gwei</td>
+                                                <td>{safeLowGwei} Gwei</td>
                                             </tr>
                                             <tr>
                                                 <td>Standard (&lt;5m)</td>
-                                                <td>{average} Gwei</td>
+                                                <td>{averageGwei} Gwei</td>
                                             </tr>
                                             <tr>
                                                 <td>Fast (&lt;2m)</td>
-                                                <td>{fast} Gwei</td>
+                                                <td>{fastGwei} Gwei</td>
                                             </tr>
                                             </tbody>
                                         </table>

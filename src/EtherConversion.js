@@ -26,3 +26,11 @@ export function tokWeiToEth(wei, tokenAddress) {
 export function tokEthToWei(eth, tokenAddress) {
     return ethToWei(eth, Config.getTokenDecimalsByAddress(tokenAddress))
 }
+
+export function weiToGwei(wei) {
+    return BigNumber(String(wei)).div(BigNumber(1000000000))
+}
+
+export function gweiToWei(gwei) {
+    return BigNumber(String(gwei)).times(BigNumber(1000000000))
+}

@@ -8,7 +8,7 @@ class GasPriceStore extends EventEmitter {
 
         this.prices = []
         this.lastRetrieveTime = null
-        this.currentGasPriceGwei = null
+        this.currentGasPriceWei = null
     }
 
     getPrices() {
@@ -19,8 +19,8 @@ class GasPriceStore extends EventEmitter {
         return this.lastRetrieveTime
     }
 
-    getCurrentGasPriceGwei() {
-        return this.currentGasPriceGwei
+    getCurrentGasPriceWei() {
+        return this.currentGasPriceWei
     }
 
     emitChange() {
@@ -35,10 +35,15 @@ class GasPriceStore extends EventEmitter {
                 this.prices = prices
                 this.lastRetrieveTime = time
 
-                if (! this.currentGasPriceGwei) {
-                    this.currentGasPriceGwei = prices.average
+                if (! this.currentGasPriceWei) {
+                    this.currentGasPriceWei = prices.averageWei
                 }
 
+                this.emitChange()
+                break
+            }
+            case ActionNames.GAS_PRICES_SET_CURRENT_PRICE_WEI: {
+                this.currentGasPriceWei = action.currentPriceWei
                 this.emitChange()
                 break
             }
