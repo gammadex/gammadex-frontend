@@ -69,9 +69,9 @@ export function addDepositOrWithdrawal(depositType, tokenAddress, amount, hash) 
     })
 }
 
-export function depositEth(account, accountRetrieved, nonce, tokenAddress, amount) {
+export function depositEth(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
-        EtherDeltaWeb3.promiseDepositEther(account, nonce, amount)
+        EtherDeltaWeb3.promiseDepositEther(account, nonce, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
                 addDepositOrWithdrawal(DepositType.DEPOSIT, Config.getBaseAddress(), amount, hash)
@@ -86,9 +86,9 @@ export function depositEth(account, accountRetrieved, nonce, tokenAddress, amoun
     }
 }
 
-export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amount) {
+export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
-        EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount)
+        EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
                 addDepositOrWithdrawal(DepositType.WITHDRAWAL, Config.getBaseAddress(), amount, hash)
@@ -100,12 +100,12 @@ export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amou
     }
 }
 
-export function depositTok(account, accountRetrieved, nonce, tokenAddress, amount) {
+export function depositTok(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     // depositing an ERC-20 token is two-step:
     // 1) call the token contract to approve the transfer to the destination address = ED
     // 2) initiate the transfer in the ED smart contract
     if (accountRetrieved) {
-        EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount)
+        EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 2) // as tok deposit is two transactions
                 addDepositOrWithdrawal(DepositType.DEPOSIT, tokenAddress,
@@ -118,9 +118,9 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
     }
 }
 
-export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amount) {
+export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
-        EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount)
+        EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 nonceUpdated(nonce + 1)
                 addDepositOrWithdrawal(DepositType.WITHDRAWAL, tokenAddress,

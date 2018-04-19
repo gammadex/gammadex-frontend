@@ -3,6 +3,7 @@ import ActionNames from "./ActionNames"
 import OrderPlacementStore from "../stores/OrderPlacementStore"
 import OrderBookStore from "../stores/OrderBookStore"
 import AccountStore from "../stores/AccountStore"
+import GasPriceStore from "../stores/GasPriceStore"
 import TokenStore from "../stores/TokenStore"
 import BigNumber from 'bignumber.js'
 import _ from "lodash"
@@ -358,6 +359,8 @@ export function confirmTradeExecution() {
     })
     const { tradesToExecute } = OrderPlacementStore.getOrderPlacementState()
     const { account, nonce } = AccountStore.getAccountState()
+    const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
+
     const tradePromises = tradesToExecute.map(trade =>
         EtherDeltaWeb3.promiseTestTrade(account, trade.order, trade.fillAmountWei))
     Promise.all(tradePromises)
@@ -366,7 +369,7 @@ export function confirmTradeExecution() {
                 TradeActions.sendTransactionFailed("One or more trades failed to validate as of current block, suggesting the order book might have changed. Please review the order book and re-submit the trade if necessary")
             } else {
                 tradesToExecute.forEach((trade, i) => {
-                    EtherDeltaWeb3.promiseTrade(account, nonce + i, trade.order, trade.fillAmountWei)
+                    EtherDeltaWeb3.promiseTrade(account, nonce + i, trade.order, trade.fillAmountWei, gasPriceWei)
                         .once('transactionHash', hash => {
                             AccountActions.nonceUpdated(nonce + 1)
                             MyTradeActions.addMyTrade({

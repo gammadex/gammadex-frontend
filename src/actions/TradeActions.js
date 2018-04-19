@@ -3,6 +3,7 @@ import ActionNames from "./ActionNames"
 import AccountStore from "../stores/AccountStore"
 import TokenStore from "../stores/TokenStore"
 import TradeStore from "../stores/TradeStore"
+import GasPriceStore from "../stores/GasPriceStore"
 import Config from "../Config";
 import * as MockOrderUtil from "../MockOrderUtil"
 import OrderSide from "../OrderSide";
@@ -81,6 +82,8 @@ export function tradeExecutionConfirmed() {
     const tokenAddress = TokenStore.getSelectedToken().address
     const { modalOrder, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = TradeStore.getTradeState()
     const { account, nonce } = AccountStore.getAccountState()
+    const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
+
     // amount is in amountGet terms
     let amountWei = 0
     if (MockOrderUtil.isTakerSell(modalOrder)) {
@@ -93,7 +96,7 @@ export function tradeExecutionConfirmed() {
     EtherDeltaWeb3.promiseTestTrade(account, modalOrder, amountWei)
         .then(isTradable => {
             if (isTradable) {
-                EtherDeltaWeb3.promiseTrade(account, nonce, modalOrder, amountWei)
+                EtherDeltaWeb3.promiseTrade(account, nonce, modalOrder, amountWei, gasPriceWei)
                     .once('transactionHash', hash => {
                         AccountActions.nonceUpdated(nonce + 1)
                         sentTransaction(hash)

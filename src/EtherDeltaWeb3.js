@@ -11,7 +11,7 @@ import OrderFactory from './OrderFactory';
 
 let web3 = window.web3
 const gasLimit = 250000
-const gasPrice = 10 * 1000000000
+const gasPrice = 100 * 1000000000
 
 class EtherDeltaWeb3 {
     // default accounts are now initialised in BootstrapAccount.initAccounts rather than EtherDeltaWeb3 constructor
@@ -71,26 +71,26 @@ class EtherDeltaWeb3 {
         return this.contractToken.methods.balanceOf(account).call()
     }
 
-    promiseDepositEther(account, nonce, amount) {
-        return this.accountProvider.promiseDepositEther(account, nonce, amount)
+    promiseDepositEther(account, nonce, amount, gasPriceWei) {
+        return this.accountProvider.promiseDepositEther(account, nonce, amount, gasPriceWei)
     }
 
-    promiseWithdrawEther(account, nonce, amount) {
-        return this.accountProvider.promiseWithdrawEther(account, nonce, amount)
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
+        return this.accountProvider.promiseWithdrawEther(account, nonce, amount, gasPriceWei)
     }
 
-    promiseTokenApprove(account, nonce, tokenAddress, amount) {
-        return this.accountProvider.promiseTokenApprove(account, nonce, tokenAddress, amount)
+    promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
+        return this.accountProvider.promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei)
     }
 
-    promiseDepositToken(account, nonce, tokenAddress, amount) {
-        this.promiseTokenApprove(account, nonce, tokenAddress, amount)
+    promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) {
+        this.promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei)
             .on('error', error => { console.log(`failed to approve token deposit: ${error.message}`) })
-        return this.accountProvider.promiseDepositToken(account, nonce, tokenAddress, amount)
+        return this.accountProvider.promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei)
     }
 
-    promiseWithdrawToken(account, nonce, tokenAddress, amount) {
-        return this.accountProvider.promiseWithdrawToken(account, nonce, tokenAddress, amount)
+    promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei) {
+        return this.accountProvider.promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei)
     }
 
     promiseTestTrade(account, order, amount) {
@@ -133,12 +133,12 @@ class EtherDeltaWeb3 {
     //
     // - if taker is selling TOK (hits bid), maker is buying TOK = tokenGet
     // and therefore maker is selling ETH = tokenGive. AmountGet in units of TOK
-    promiseTrade(account, nonce, order, amount) {
-        return this.accountProvider.promiseTrade(account, nonce, order, amount)
+    promiseTrade(account, nonce, order, amount, gasPriceWei) {
+        return this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei)
     }
 
-    promiseCancelOrder(account, nonce, order) {
-        return this.accountProvider.promiseCancelOrder(account, nonce, order)
+    promiseCancelOrder(account, nonce, order, gasPriceWei) {
+        return this.accountProvider.promiseCancelOrder(account, nonce, order, gasPriceWei)
     }
 
     promiseTransactionReceipt(txHash) {
@@ -168,14 +168,14 @@ class AccountProvider {
 
     refreshAccount() { throw new Error("method should be implemented") }
     promiseRefreshNonce() { throw new Error("method should be implemented") }
-    promiseDepositEther(account, nonce, amount) { throw new Error("method should be implemented") }
-    promiseWithdrawEther(account, nonce, amount) { throw new Error("method should be implemented") }
-    promiseTokenApprove(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
-    promiseDepositToken(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
-    promiseWithdrawToken(account, nonce, tokenAddress, amount) { throw new Error("method should be implemented") }
+    promiseDepositEther(account, nonce, amount, gasPriceWei) { throw new Error("method should be implemented") }
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei) { throw new Error("method should be implemented") }
+    promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) { throw new Error("method should be implemented") }
+    promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) { throw new Error("method should be implemented") }
+    promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei) { throw new Error("method should be implemented") }
 
-    promiseTrade(account, nonce, order, amount) { throw new Error("method should be implemented") }
-    promiseCancelOrder(account, nonce, order) { throw new Error("method should be implemented") }
+    promiseTrade(account, nonce, order, amount, gasPriceWei) { throw new Error("method should be implemented") }
+    promiseCancelOrder(account, nonce, order, gasPriceWei) { throw new Error("method should be implemented") }
     promiseSignData(data) { throw new Error("method should be implemented") }
 
 }
@@ -202,33 +202,33 @@ class MetaMaskAccountProvider extends AccountProvider {
         return Promise.resolve(0)
     }
 
-    promiseDepositEther(account, nonce, amount) {
+    promiseDepositEther(account, nonce, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.deposit()
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice, value: amount })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei, value: amount })
     }
 
-    promiseWithdrawEther(account, nonce, amount) {
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.withdraw(amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
-    promiseTokenApprove(account, nonce, tokenAddress, amount) {
+    promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
         this.contractToken.options.address = tokenAddress
         return this.contractToken.methods.approve(Config.getEtherDeltaAddress(), amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
-    promiseDepositToken(account, nonce, tokenAddress, amount) {
+    promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.depositToken(tokenAddress, amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
-    promiseWithdrawToken(account, nonce, tokenAddress, amount) {
+    promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
-    promiseTrade(account, nonce, order, amount) {
+    promiseTrade(account, nonce, order, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.trade(
             order.tokenGet,
             order.amountGet,
@@ -241,10 +241,10 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.r,
             order.s,
             amount)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
-    promiseCancelOrder(account, nonce, order) {
+    promiseCancelOrder(account, nonce, order, gasPriceWei) {
         return this.contractEtherDelta.methods.cancelOrder(
             order.tokenGet,
             order.amountGet,
@@ -255,7 +255,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.v,
             order.r,
             order.s)
-            .send({ from: account, gas: gasLimit, gasPrice: gasPrice })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
     promiseSignData(data, account) {
@@ -294,10 +294,10 @@ class WalletAccountProvider extends AccountProvider {
         return this.web3.eth.getTransactionCount(this.walletAddress)
     }
 
-    promiseSendRawTransaction(nonce, txTo, txValue, txData) {
+    promiseSendRawTransaction(nonce, txTo, txValue, txData, gasPriceWei) {
         const rawTx = {
             nonce: this.web3.utils.numberToHex(nonce),
-            gasPrice: this.web3.utils.numberToHex(gasPrice),
+            gasPrice: this.web3.utils.numberToHex(gasPriceWei),
             gasLimit: this.web3.utils.numberToHex(gasLimit),
             to: txTo,
             value: txValue,
@@ -309,38 +309,43 @@ class WalletAccountProvider extends AccountProvider {
         return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
     }
 
-    promiseDepositEther(account, nonce, amount) {
+    promiseDepositEther(account, nonce, amount, gasPriceWei) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(amount),
-            this.contractEtherDelta.methods.deposit().encodeABI())
+            this.contractEtherDelta.methods.deposit().encodeABI(),
+            gasPriceWei)
     }
 
-    promiseWithdrawEther(account, nonce, amount) {
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
-            this.contractEtherDelta.methods.withdraw(amount).encodeABI())
+            this.contractEtherDelta.methods.withdraw(amount).encodeABI(),
+            gasPriceWei)
     }
 
-    promiseTokenApprove(account, nonce, tokenAddress, amount) {
+    promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
         this.contractToken.options.address = tokenAddress
         return this.promiseSendRawTransaction(nonce, tokenAddress,
             this.web3.utils.numberToHex(0),
-            this.contractToken.methods.approve(Config.getEtherDeltaAddress(), amount).encodeABI())
+            this.contractToken.methods.approve(Config.getEtherDeltaAddress(), amount).encodeABI(),
+            gasPriceWei)
     }
 
-    promiseDepositToken(account, nonce, tokenAddress, amount) {
+    promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) {
         return this.promiseSendRawTransaction(nonce + 1, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
-            this.contractEtherDelta.methods.depositToken(tokenAddress, amount).encodeABI())
+            this.contractEtherDelta.methods.depositToken(tokenAddress, amount).encodeABI(),
+            gasPriceWei)
     }
 
-    promiseWithdrawToken(account, nonce, tokenAddress, amount) {
+    promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
-            this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount).encodeABI())
+            this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount).encodeABI(),
+            gasPriceWei)
     }
 
-    promiseTrade(account, nonce, order, amount) {
+    promiseTrade(account, nonce, order, amount, gasPriceWei) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.trade(
@@ -354,10 +359,11 @@ class WalletAccountProvider extends AccountProvider {
                 order.v,
                 order.r,
                 order.s,
-                amount).encodeABI())
+                amount).encodeABI(),
+                gasPriceWei)
     }
 
-    promiseCancelOrder(account, nonce, order) {
+    promiseCancelOrder(account, nonce, order, gasPriceWei) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.cancelOrder(
@@ -369,7 +375,8 @@ class WalletAccountProvider extends AccountProvider {
                 order.nonce,
                 order.v,
                 order.r,
-                order.s).encodeABI())
+                order.s).encodeABI(),
+                gasPriceWei)
     }
 
     promiseSignData(data, account) {

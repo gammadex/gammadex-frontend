@@ -1,6 +1,7 @@
 import React from "react"
 import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
+import GasPriceStore from '../stores/GasPriceStore'
 import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
@@ -16,13 +17,15 @@ export default class AccountDetail extends React.Component {
     constructor(props) {
         super(props)
         this.state = AccountStore.getAccountState()
-        this.state.tooltipOpen = false;
+        this.state.tooltipOpen = false
+        this.state.currentGasPriceWei = null
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
         this.onAccountChange = this.onAccountChange.bind(this)
         this.onTokenChange = this.onTokenChange.bind(this)
         this.timerFired = this.timerFired.bind(this)
-        this.toggle = this.toggle.bind(this);
+        this.toggle = this.toggle.bind(this)
+        this.onGasStoreChange = this.onGasStoreChange.bind(this)
     }
 
     componentWillMount() {
@@ -35,12 +38,14 @@ export default class AccountDetail extends React.Component {
         AccountStore.on("change", this.onAccountChange)
         TokenStore.on("change", this.onTokenChange)
         TimerRelay.on("change", this.timerFired)
+        GasPriceStore.on("change", this.onGasStoreChange)
     }
 
     componentWillUnmount() {
         AccountStore.removeListener("change", this.onAccountChange)
         TokenStore.removeListener("change", this.onTokenChange)
         TimerRelay.removeListener("change", this.timerFired)
+        GasPriceStore.removeListener("change", this.onGasStoreChange)
     }
 
     onInputChange(event) {
@@ -70,6 +75,12 @@ export default class AccountDetail extends React.Component {
         this.setState(accountState)
     }
 
+    onGasStoreChange() {
+        this.setState({
+            currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei()
+        });
+    }
+
     toggle() {
         this.setState({
           tooltipOpen: !this.state.tooltipOpen
@@ -90,7 +101,8 @@ export default class AccountDetail extends React.Component {
             nonce,
             modalValue,
             modalIsEth,
-            modalIsDeposit
+            modalIsDeposit,
+            currentGasPriceWei
         } = this.state
 
         if (modalIsDeposit) {
@@ -100,14 +112,16 @@ export default class AccountDetail extends React.Component {
                     accountRetrieved,
                     nonce,
                     token.address,
-                    baseEthToWei(modalValue))
+                    baseEthToWei(modalValue),
+                    currentGasPriceWei)
             } else {
                 AccountActions.depositTok(
                     account,
                     accountRetrieved,
                     nonce,
                     token.address,
-                    tokEthToWei(modalValue))
+                    tokEthToWei(modalValue, token.address),
+                    currentGasPriceWei)
             }
         } else {
             if (modalIsEth) {
@@ -116,14 +130,16 @@ export default class AccountDetail extends React.Component {
                     accountRetrieved,
                     nonce,
                     token.address,
-                    baseEthToWei(modalValue))
+                    baseEthToWei(modalValue),
+                    currentGasPriceWei)
             } else {
                 AccountActions.withdrawTok(
                     account,
                     accountRetrieved,
                     nonce,
                     token.address,
-                    tokEthToWei(modalValue))
+                    tokEthToWei(modalValue, token.address),
+                    currentGasPriceWei)
             }
         }
     }

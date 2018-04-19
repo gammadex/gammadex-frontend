@@ -73,7 +73,7 @@ export default class GasPriceChooser extends React.Component {
                 </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom">
-                    <div className="shadow">
+                    <div className="shadow gas-prices">
                         <PopoverBody>
                             <Box title="Gas Price Per Unit">
                                 <BoxSection>
