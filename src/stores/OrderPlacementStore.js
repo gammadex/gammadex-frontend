@@ -108,6 +108,7 @@ class OrderPlacementStore extends EventEmitter {
                 this.sellOrderAmountWei = action.amountWei
                 this.sellOrderTotalEthWei = action.totalEthWei
                 this.sellOrderTotalEthControlled = action.totalEthControlled
+                this.sellOrderPriceControlled = action.priceControlled
                 this.sellOrderValid = action.orderValid
                 this.sellOrderInvalidReason = action.orderInvalidReason
                 this.emitChange()
@@ -137,6 +138,7 @@ class OrderPlacementStore extends EventEmitter {
                 this.buyOrderAmountWei = action.amountWei
                 this.buyOrderTotalEthWei = action.totalEthWei
                 this.buyOrderTotalEthControlled = action.totalEthControlled
+                this.buyOrderPriceControlled = action.priceControlled
                 this.buyOrderValid = action.orderValid
                 this.buyOrderInvalidReason = action.orderInvalidReason
                 this.emitChange()
