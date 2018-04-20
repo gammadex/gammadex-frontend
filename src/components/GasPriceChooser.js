@@ -59,9 +59,8 @@ export default class GasPriceChooser extends React.Component {
     }
 
     static safeWeiToGwei(wei) {
-        return (_.isObject(wei) || _.isNumber(wei)) ? weiToGwei(wei).toString() : wei
+        return (_.isObject(wei) || _.isNumber(wei)) ? weiToGwei(wei).toNumber() : wei
     }
-
 
     getTimeDescription() {
         const {safeLowWei, averageWei, fastWei, currentGasPriceWei} = this.state
@@ -114,8 +113,7 @@ export default class GasPriceChooser extends React.Component {
                                         </div>
                                     </div>
 
-                                    <Slider min={1} max={100} defaultValue={40} onChange={this.onSliderChange}
-                                            value={currentGasPriceGwei}/>
+                                    <Slider min={1} max={100} defaultValue={40} onChange={this.onSliderChange} value={currentGasPriceGwei}/>
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
