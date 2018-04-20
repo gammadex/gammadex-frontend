@@ -4,7 +4,6 @@ import {FormGroup, FormFeedback, Label, Col, Input} from 'reactstrap'
 export default class NumericInput extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {prevKey: null}
     }
 
     static cleanValueToDecimal(value) {

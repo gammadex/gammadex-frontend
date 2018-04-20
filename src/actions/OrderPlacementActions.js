@@ -40,7 +40,7 @@ function calcTotal(priceControlled, amountWei, amountControlled, ethControlled) 
  */
 function calcAmount(priceControlled, totalEthControlled) {
     const priceNum = priceControlled === "" ? 0 : priceControlled
-    const priceBN = priceNum === 0 ? BigNumber(1) : BigNumber(String(priceNum))
+    const priceBN = priceNum == 0 ? BigNumber(1) : BigNumber(String(priceNum))
 
     const totalEthNum = totalEthControlled === "" ? 0 : totalEthControlled
     const amountControlled = BigNumber(String(totalEthNum)).div(priceBN).toFixed()
