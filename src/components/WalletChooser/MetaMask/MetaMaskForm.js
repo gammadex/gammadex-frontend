@@ -52,8 +52,8 @@ class MetaMaskForm extends React.Component {
         return <div>
             <h4>Use Metamask Wallet</h4>
             <div className="form-group">
-                <a href="#" className={"btn btn-primary " + submitDisabledClass}
-                   onClick={this.selectMetaMask}>Unlock</a>
+                <button className={"btn btn-primary " + submitDisabledClass}
+                   onClick={this.selectMetaMask}>Unlock</button>
             </div>
 
             <Conditional displayCondition={available === false}>

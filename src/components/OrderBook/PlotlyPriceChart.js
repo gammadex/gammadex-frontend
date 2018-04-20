@@ -16,10 +16,6 @@ export default class PlotlyPriceChart extends React.Component {
         plotCreatedForToken: null
     }
 
-    constructor(props) {
-        super(props)
-    }
-
     componentDidMount() {
         this.createNewChart()
     }
@@ -165,7 +161,7 @@ export default class PlotlyPriceChart extends React.Component {
     }
 
     onOhlcSpanChange = (event) => {
-        const mins = parseInt(event.target.value)
+        const mins = parseInt(event.target.value, 10)
 
         this.setState({
             ohlcIntervalMins: mins
@@ -192,9 +188,9 @@ export default class PlotlyPriceChart extends React.Component {
 
     render() {
         const {chartElements, ohlcIntervalMins} = this.state
-        const {trades, token} = this.props
+        const {trades} = this.props
 
-        if (!trades || trades.length == 0) {
+        if (!trades || trades.length === 0) {
             return <div></div>
         }
 

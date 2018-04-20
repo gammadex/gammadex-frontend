@@ -21,7 +21,7 @@ class OpenOrdersStore extends EventEmitter {
     }
 
     getOpenOrderHashes() {
-        return this.openOrders.filter(o => o.state != OrderState.CLOSED).map(o => o.hash.toLowerCase())
+        return this.openOrders.filter(o => o.state !== OrderState.CLOSED).map(o => o.hash.toLowerCase())
     }
 
     emitChange() {
@@ -37,7 +37,7 @@ class OpenOrdersStore extends EventEmitter {
             }
             case ActionNames.CANCEL_OPEN_ORDER: {
                 this.openOrders.filter(openOrder => openOrder.hash === action.orderHash).forEach(openOrder => {
-                    openOrder.state = OrderState.PENDING_CANCEL,
+                    openOrder.state = OrderState.PENDING_CANCEL
                     openOrder.pendingCancelTx = action.txHash
                 })
                 this.emitChange()
@@ -45,7 +45,7 @@ class OpenOrdersStore extends EventEmitter {
             }
             case ActionNames.CANCEL_OPEN_ORDER_SUCCEEDED: {
                 this.openOrders.filter(openOrder => openOrder.hash === action.orderHash).forEach(openOrder => {
-                    openOrder.state = OrderState.CLOSED,
+                    openOrder.state = OrderState.CLOSED
                     openOrder.pendingCancelTx = null
                 })
                 this.emitChange()
@@ -53,7 +53,7 @@ class OpenOrdersStore extends EventEmitter {
             }
             case ActionNames.CANCEL_OPEN_ORDER_FAILED: {
                 this.openOrders.filter(openOrder => openOrder.hash === action.orderHash).forEach(openOrder => {
-                    openOrder.state = OrderState.OPEN,
+                    openOrder.state = OrderState.OPEN
                     openOrder.pendingCancelTx = null
                 })
                 this.emitChange()

@@ -19,7 +19,7 @@ export default class Round extends React.Component {
         const url = this.props.url ? this.props.url : null
 
         if (url) {
-            return <a target="_blank" rel="noopener" href={url} data-toggle="tooltip"
+            return <a target="_blank" rel="noopener noreferrer" href={url} data-toggle="tooltip"
                       title={originalNumber}>{cleanNumber}</a>
         } else {
             return <span data-toggle="tooltip" title={originalNumber}>{cleanNumber}</span>

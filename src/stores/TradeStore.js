@@ -6,16 +6,16 @@ class TradeStore extends EventEmitter {
     constructor() {
         super()
         this.modal = false
-        this.modalOrder = null,
-        this.weiFillAmount = 0,
-        this.fillAmountControlled = 0,
-        this.weiTotalEth = 0,
-        this.totalEthControlled = 0,
-        this.fillAmountValid = true,
-        this.fillAmountInvalidReason = "",
-        this.showTransactionModal = false,
-        this.transactionHash = "",
-        this.transactionModalIsError = false,
+        this.modalOrder = null
+        this.weiFillAmount = 0
+        this.fillAmountControlled = 0
+        this.weiTotalEth = 0
+        this.totalEthControlled = 0
+        this.fillAmountValid = true
+        this.fillAmountInvalidReason = ""
+        this.showTransactionModal = false
+        this.transactionHash = ""
+        this.transactionModalIsError = false
         this.transactionModalErrorText = ""
     }
 
@@ -47,8 +47,8 @@ class TradeStore extends EventEmitter {
                 this.modalOrder = action.order
                 this.weiFillAmount = action.weiFillAmount
                 this.fillAmountControlled = action.fillAmountControlled
-                this.weiTotalEth = action.weiTotalEth,
-                this.totalEthControlled = action.totalEthControlled,
+                this.weiTotalEth = action.weiTotalEth
+                this.totalEthControlled = action.totalEthControlled
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()
@@ -62,8 +62,8 @@ class TradeStore extends EventEmitter {
             case ActionNames.FILL_AMOUNT_CHANGED: {
                 this.weiFillAmount = action.weiFillAmount
                 this.fillAmountControlled = action.fillAmountControlled
-                this.weiTotalEth = action.weiTotalEth,
-                this.totalEthControlled = action.totalEthControlled,
+                this.weiTotalEth = action.weiTotalEth
+                this.totalEthControlled = action.totalEthControlled
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
                 this.emitChange()

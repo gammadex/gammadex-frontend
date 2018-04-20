@@ -2,12 +2,8 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-//import pptBuys from "../__test-data__/PPT_buys2.json"
-//import pptSells from "../__test-data__/PPT_sells2.json"
-//import venTrades from '../__test-data__/VenTrades'
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
-import Conditional from "./CustomComponents/Conditional"
 
 export default class OrderBook extends React.Component {
     constructor(props) {

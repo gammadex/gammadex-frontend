@@ -1,10 +1,8 @@
 import React from "react"
-import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import TradeStore from '../stores/TradeStore'
 import TokenStore from '../stores/TokenStore'
 import Config from '../Config'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Col, FormFeedback, Alert } from 'reactstrap'
-import TransactionStatus from "../TransactionStatus"
 
 import * as TradeActions from "../actions/TradeActions"
 import * as MockOrderUtil from "../MockOrderUtil"
@@ -126,7 +124,7 @@ export default class TradeDetail extends React.Component {
                 transactionAlert = <Alert color="danger">{transactionModalErrorText}</Alert>
             } else {
                 transactionAlert = <Alert color="success">
-                    Transaction sent. Check progress in <a target="_blank" rel="noopener" href={`${Config.getEtherscanUrl()}/tx/${transactionHash}`}>{"etherscan"}</a> (opens in new window)
+                    Transaction sent. Check progress in <a target="_blank" rel="noopener noreferrer" href={`${Config.getEtherscanUrl()}/tx/${transactionHash}`}>{"etherscan"}</a> (opens in new window)
                 </Alert>
             }
         }

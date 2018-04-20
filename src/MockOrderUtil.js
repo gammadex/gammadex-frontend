@@ -17,8 +17,7 @@ export function orderDetailFromOrder(order) {
 
     const updated = (new Date()).toISOString()
 
-    let price = 0
-    let contractAvailableVolume = order.amountGet  // this is in order.amountGet terms: TOK units for 
+    let contractAvailableVolume = order.amountGet  // this is in order.amountGet terms: TOK units for
     // maker buy and ETH units for maker sell
 
     return {

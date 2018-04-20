@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './pages/App.js'
 import * as ApplicationBootstrapper from "./util/ApplicationBootstrapper"

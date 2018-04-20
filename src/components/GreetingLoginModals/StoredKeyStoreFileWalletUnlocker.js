@@ -6,7 +6,7 @@ import * as AccountActions from "../../actions/AccountActions"
 import * as KeyUtil from "../../util/KeyUtil"
 import AccountType from "../../AccountType"
 import * as WalletDao from "../../util/WalletDao"
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
+import {Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import Conditional from "../CustomComponents/Conditional"
 
 export default class StoredKeyStoreFileWalletUnlocker extends React.Component {

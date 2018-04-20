@@ -6,7 +6,7 @@ import EtherDeltaWeb3 from "../../EtherDeltaWeb3"
 import * as AccountActions from "../../actions/AccountActions"
 import AccountType from "../../AccountType"
 import * as WalletDao from "../../util/WalletDao"
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
+import {Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import * as Encryption from "../../util/Encryption"
 import Conditional from "../CustomComponents/Conditional"
 
@@ -75,25 +75,25 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         return <Modal isOpen={showModal} toggle={this.hideModal}>
             <ModalHeader toggle={this.hideModal}>Unlock saved private key</ModalHeader>
             <form onSubmit={this.handleUnlock}>
-            <ModalBody>
-                <div className="form-group">
-                    <input type="password"
-                           name="password"
-                           placeholder="Private key password"
-                           className={"form-control " + passwordErrorClass}
-                           onChange={this.handlePasswordChange}/>
-                </div>
+                <ModalBody>
+                    <div className="form-group">
+                        <input type="password"
+                               name="password"
+                               placeholder="Private key password"
+                               className={"form-control " + passwordErrorClass}
+                               onChange={this.handlePasswordChange}/>
+                    </div>
 
-                <Conditional displayCondition={passwordError}>
-                    <Alert color="danger">
-                        Sorry, wrong password. Please try again.
-                    </Alert>
-                </Conditional>
+                    <Conditional displayCondition={passwordError}>
+                        <Alert color="danger">
+                            Sorry, wrong password. Please try again.
+                        </Alert>
+                    </Conditional>
 
-            </ModalBody>
-            <ModalFooter>
-                <input className="btn btn-primary" type="submit"  value="Unlock" />
-            </ModalFooter>
+                </ModalBody>
+                <ModalFooter>
+                    <input className="btn btn-primary" type="submit" value="Unlock"/>
+                </ModalFooter>
             </form>
         </Modal>
     }

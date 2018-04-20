@@ -4,10 +4,6 @@ import Config from "../../Config"
 import DepositHistoryRow from "./DepositHistoryRow"
 
 export default class DepositHistoryTable extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         const {depositHistory} = this.props
         const sortedDepositsTimeDesc = _.reverse(_.sortBy(depositHistory

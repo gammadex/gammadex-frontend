@@ -6,7 +6,6 @@ import TradeStore from "../stores/TradeStore"
 import GasPriceStore from "../stores/GasPriceStore"
 import Config from "../Config";
 import * as MockOrderUtil from "../MockOrderUtil"
-import OrderSide from "../OrderSide";
 import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei } from "../EtherConversion";
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"

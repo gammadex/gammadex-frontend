@@ -4,10 +4,6 @@ import _ from "lodash"
 import Config from "../../Config"
 
 export default class MyTradesTable extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         const {trades} = this.props
         const sortedTradesTimeDesc = _.reverse(_.sortBy(trades

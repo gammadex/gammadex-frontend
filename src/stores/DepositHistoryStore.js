@@ -2,8 +2,6 @@ import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import TransactionStatus from "../TransactionStatus"
-import DepositType from "../DepositType"
-import Config from "../Config"
 
 // TODO hydrate from gammadex backend
 class DepositHistoryStore extends EventEmitter {

@@ -1,5 +1,4 @@
 import React from "react"
-import Empty from "../../../CustomComponents/Empty"
 
 export default class PasswordSection extends React.Component {
     render() {

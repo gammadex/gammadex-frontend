@@ -8,10 +8,6 @@ import Date from "../CustomComponents/Date"
 import Round from "../../components/CustomComponents/Round"
 
 export default class DepositHistoryRow extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         const { tokenAddress, status, timestamp, depositType, amount, txHash } = this.props.depositHistory
         const tokenName = Config.getTokenName(tokenAddress)

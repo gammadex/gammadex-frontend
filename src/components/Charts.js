@@ -1,11 +1,10 @@
 import React from "react"
-import AccountDetail from '../components/AccountDetail'
 import OrderBookStore from '../stores/OrderBookStore'
 import PlotlyPriceChart from './OrderBook/PlotlyPriceChart'
 import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 import Resizer from './CustomComponents/Resizer'
 import Conditional from "./CustomComponents/Conditional"
-import {Box, BoxSection, BoxHeader} from "./CustomComponents/Box"
+import {Box, BoxHeader} from "./CustomComponents/Box"
 
 export default class Charts extends React.Component {
     constructor(props) {

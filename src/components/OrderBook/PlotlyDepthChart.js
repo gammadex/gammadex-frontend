@@ -4,10 +4,6 @@ import {cumulativeAdd} from "../../util/CumulativeOrderVolumeAdder"
 import {BoxSection} from "../CustomComponents/Box"
 
 export default class PlotlyDepthChart extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     componentDidMount() {
         this.createChart()
     }

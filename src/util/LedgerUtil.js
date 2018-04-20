@@ -1,7 +1,4 @@
-import abiEtherDelta from '../config/etherdelta.json'
-import abiToken from '../config/token.json'
 import * as Web3 from 'web3'
-import Tx from 'ethereumjs-tx'
 import createLedgerSubprovider from "../hacks/LedgerWeb3SubProvider"
 import TransportU2F from "@ledgerhq/hw-transport-u2f";
 import ProviderEngine from "web3-provider-engine";

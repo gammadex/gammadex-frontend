@@ -1,7 +1,7 @@
 import React from "react"
 import Round from "../CustomComponents/Round"
 import Etherscan from "../CustomComponents/Etherscan"
-import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Date from "../CustomComponents/Date"
 
 export default class OrdersTableRow extends React.Component {

@@ -123,7 +123,7 @@ export default class GasPriceChooser extends React.Component {
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
-                                            {timeDescription} transaction speed estimate from <a target="_blank" rel="noopener"
+                                            {timeDescription} transaction speed estimate from <a target="_blank"  rel="noopener noreferrer"
                                                                  href="https://ethgasstation.info/">ethgasstation.info</a>
                                         </div>
                                     </div>

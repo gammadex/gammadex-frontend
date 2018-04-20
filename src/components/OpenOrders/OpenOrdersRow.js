@@ -8,10 +8,6 @@ import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
 
 export default class OpenOrdersRow extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         const { openOrder } = this.props
         const tokenName = Config.getTokenName(openOrder.tokenAddress)

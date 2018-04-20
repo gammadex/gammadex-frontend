@@ -9,7 +9,7 @@ const networks = {
 }
 
 export function getNetworkDescription(netId) {
-    netId = parseInt(netId)
+    netId = parseInt(netId, 10)
 
     if (networks[netId]) {
         return networks[netId]
@@ -19,7 +19,7 @@ export function getNetworkDescription(netId) {
 }
 
 export function isMainNet(netId) {
-    const id = parseInt(netId)
+    const id = parseInt(netId, 10)
 
     return id === Config.getEthereumNetworkId()
 }

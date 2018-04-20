@@ -3,15 +3,10 @@ import abiToken from './config/token.json'
 import Config from './Config'
 import * as Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
-import createLedgerSubprovider from "./hacks/LedgerWeb3SubProvider"
-import TransportU2F from "@ledgerhq/hw-transport-u2f";
-import ProviderEngine from "web3-provider-engine";
-import RpcSubprovider from "web3-provider-engine/subproviders/rpc";
-import OrderFactory from './OrderFactory';
+import OrderFactory from './OrderFactory'
 
 let web3 = window.web3
 const gasLimit = 250000
-const gasPrice = 100 * 1000000000
 
 class EtherDeltaWeb3 {
     // default accounts are now initialised in BootstrapAccount.initAccounts rather than EtherDeltaWeb3 constructor

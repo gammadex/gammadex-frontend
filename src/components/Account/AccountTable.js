@@ -3,9 +3,6 @@ import AccountRow from "../Account/AccountRow"
 import Config from "../../Config"
 
 export default class AccountTable extends React.Component {
-    constructor(props) {
-        super(props)
-    }
     render() {
         const {
             token,

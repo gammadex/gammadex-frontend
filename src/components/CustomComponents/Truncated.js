@@ -8,8 +8,8 @@ export default class Truncated extends React.Component {
         }
 
         const toTruncate = children[0].toString()
-        const numKeepLeft = this.props.left ? parseInt(this.props.left) : 3
-        const numKeepRight = this.props.right ? parseInt(this.props.right) : 3
+        const numKeepLeft = this.props.left ? parseInt(this.props.left, 10) : 3
+        const numKeepRight = this.props.right ? parseInt(this.props.right, 10) : 3
         const spacer = this.props.spacer ? this.props.spacer : "..."
         const url = this.props.url ? this.props.url : null
 
@@ -22,7 +22,7 @@ export default class Truncated extends React.Component {
             let trunc = leftPart + spacer + rightPart
 
             if (url) {
-                truncated = <a target="_blank" rel="noopener" href={url} data-toggle="tooltip"
+                truncated = <a target="_blank" rel="noopener noreferrer" href={url} data-toggle="tooltip"
                                title={toTruncate}>{trunc}</a>
             } else {
                 truncated = <span data-toggle="tooltip" title={toTruncate}>{trunc}</span>

@@ -5,10 +5,6 @@ import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
 import {tokWeiToEth} from "../../EtherConversion";
 
 export default class AccountTableRow extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     showModal(isEth, isDeposit) {
         AccountActions.depositWithdraw(isEth, isDeposit)
     }

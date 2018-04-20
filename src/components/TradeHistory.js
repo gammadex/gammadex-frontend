@@ -1,9 +1,7 @@
 import React from "react"
-import * as OrderBookActions from "../actions/OrderBookActions"
 import OrderBookStore from '../stores/OrderBookStore'
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
-import Pagination from './CustomComponents/Pagination'
-import {Box, BoxSection} from "./CustomComponents/Box"
+import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 // TODO - use a TradeStore, not OrderBookStore

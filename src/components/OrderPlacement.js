@@ -1,11 +1,7 @@
 import React from "react"
 import {
-    FormGroup,
-    FormFeedback,
-    Label,
     Row,
     Col,
-    Input,
     Button,
     Modal,
     ModalHeader,
@@ -18,7 +14,6 @@ import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 import OrderPlacementStore from "../stores/OrderPlacementStore";
 import BigNumber from 'bignumber.js'
 import * as MockOrderUtil from "../MockOrderUtil"
-import { Box, BoxSection } from "./CustomComponents/Box"
 import OrderBox from "./OrderPlacement/OrderBox.js"
 
 export default class OrderPlacement extends React.Component {

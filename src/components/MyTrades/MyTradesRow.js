@@ -7,10 +7,6 @@ import Date from "../CustomComponents/Date"
 import Round from "../../components/CustomComponents/Round"
 
 export default class MyTradesRow extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         const { trade } = this.props
         const tokenName = Config.getTokenName(trade.tokenAddress)

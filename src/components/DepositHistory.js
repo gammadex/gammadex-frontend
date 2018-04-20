@@ -1,10 +1,7 @@
 import React from "react"
-import Config from '../Config'
 import TimerRelay from "../TimerRelay"
 import DepositHistoryTable from "./DepositHistory/DepositHistoryTable"
-import OrderState from "../OrderState"
 import * as AccountActions from "../actions/AccountActions"
-import DepositType from "../DepositType"
 import TransactionStatus from "../TransactionStatus"
 import DepositHistoryStore from "../stores/DepositHistoryStore"
 import { Box } from "./CustomComponents/Box"

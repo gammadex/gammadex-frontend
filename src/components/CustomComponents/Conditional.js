@@ -1,5 +1,4 @@
 import React from "react"
-import Empty from "./Empty"
 
 export default class Conditional extends React.Component {
     render() {

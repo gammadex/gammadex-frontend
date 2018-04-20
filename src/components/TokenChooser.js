@@ -3,7 +3,6 @@ import TokenStore from "../stores/TokenStore"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import Config from '../Config'
 import * as TokenActions from "../actions/TokenActions"
-import * as WebSocketActions from "../actions/WebSocketActions"
 import {withRouter} from "react-router-dom"
 
 class TokenChooser extends React.Component {

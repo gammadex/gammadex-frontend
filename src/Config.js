@@ -10,7 +10,7 @@ class Config {
                 label: tk.name
             }
         })
-        this.tokens = _.sortBy(tokens, (tk) => tk.label).filter(tk => tk.label != "ETH")
+        this.tokens = _.sortBy(tokens, (tk) => tk.label).filter(tk => tk.label !== "ETH")
     }
 
     isDevelopment() {

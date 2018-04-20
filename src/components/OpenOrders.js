@@ -1,12 +1,10 @@
 import React from "react"
-import Config from '../Config'
-import AccountStore from "../stores/AccountStore"
 import OpenOrdersStore from "../stores/OpenOrdersStore"
 import TimerRelay from "../TimerRelay"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
 import OrderState from "../OrderState"
 import * as OpenOrderActions from "../actions/OpenOrderActions"
-import {Box, BoxSection} from "./CustomComponents/Box"
+import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 export default class OpenOrders extends React.Component {
