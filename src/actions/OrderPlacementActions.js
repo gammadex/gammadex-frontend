@@ -27,8 +27,8 @@ import { tokEthToWei, tokWeiToEth, baseEthToWei, baseWeiToEth } from "../EtherCo
  */
 function calcTotal(priceControlled, amountWei, amountControlled, ethControlled) {
     if (amountControlled !== "" && priceControlled !== "") {
-        var totalEthWei = priceControlled === "" ? BigNumber(0) : BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
-        var totalEthControlled = baseWeiToEth(totalEthWei).toFixed()
+        const totalEthWei = priceControlled === "" ? BigNumber(0) : BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
+        const totalEthControlled = baseWeiToEth(totalEthWei).toFixed()
         return { totalEthWei: totalEthWei, totalEthControlled: totalEthControlled }
     }
     
@@ -40,7 +40,7 @@ function calcTotal(priceControlled, amountWei, amountControlled, ethControlled) 
  */
 function calcAmount(priceControlled, totalEthControlled) {
     const priceNum = priceControlled === "" ? 0 : priceControlled
-    const priceBN = priceNum == 0 ? BigNumber(1) : BigNumber(String(priceNum))
+    const priceBN = priceNum === 0 ? BigNumber(1) : BigNumber(String(priceNum))
 
     const totalEthNum = totalEthControlled === "" ? 0 : totalEthControlled
     const amountControlled = BigNumber(String(totalEthNum)).div(priceBN).toFixed()
