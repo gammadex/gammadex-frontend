@@ -70,11 +70,11 @@ export default class GasPriceChooser extends React.Component {
             return null
         }
 
-        if (currentGasPriceWei.isGreaterThan(fastWei)) {
+        if (currentGasPriceWei.isGreaterThanOrEqualTo(fastWei)) {
             return "under two minutes"
-        } else if (currentGasPriceWei.isGreaterThan(averageWei)) {
+        } else if (currentGasPriceWei.isGreaterThanOrEqualTo(averageWei)) {
             return "two to five minutes"
-        } else if (currentGasPriceWei.isGreaterThan(safeLowWei)) {
+        } else if (currentGasPriceWei.isGreaterThanOrEqualTo(safeLowWei)) {
             return "five to 30 minutes"
         } else {
             return "over 30 minutes"
@@ -125,7 +125,7 @@ export default class GasPriceChooser extends React.Component {
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
-                                            {timeDescription} speed estimate from <a target="_blank" rel="noopener"
+                                            {timeDescription} transaction speed estimate from <a target="_blank" rel="noopener"
                                                                  href="https://ethgasstation.info/">ethgasstation.info</a>
                                         </div>
                                     </div>
