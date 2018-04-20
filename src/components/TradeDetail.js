@@ -104,7 +104,7 @@ export default class TradeDetail extends React.Component {
                     <Input type="number" min={0} id="amount"
                         value={fillAmountControlled}
                         onChange={this.fillAmountChanged.bind(this)}
-                        valid={fillAmountValid} />
+                        invalid={!fillAmountValid} />
                     <FormFeedback>{fillAmountInvalidReason}</FormFeedback>
                 </Col>
                 <Col sm={2}>
