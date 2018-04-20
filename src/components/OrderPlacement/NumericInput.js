@@ -4,45 +4,23 @@ import {FormGroup, FormFeedback, Label, Col, Input} from 'reactstrap'
 export default class NumericInput extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { prevKey: null }
+        this.state = {prevKey: null}
     }
 
-    /**
-     * Prevent negative or non-numeric values from being pasted
-     */
-    onPaste = (e) => {
-        const check = Number(this.props.value + e.clipboardData.getData('Text'))
-        if (isNaN(check) || check < 0) {
-            e.preventDefault()
-        }
+    static cleanValueToDecimal(value) {
+        return value
+            .replace(/[^0-9.]/g, () => "") // globally strip everything that isn't a digit or a .
+            .replace(/^([0-9]*\.[0-9]*).*/, (m, p1) => p1) // replace any poo following sensible decimal (e.g. second ".")
     }
 
-    /**
-     * Only accept numeric inputs
-     */
-    onKeyDown = (e) => {
-        // Allow navigation, backspace, delete, insert and tab
-        if ((e.keyCode > 34 && e.keyCode < 41) || [8, 9, 45, 46].includes(e.keyCode)) {
-            return
-        }
+    onChangeFilteringInput = (e) => {
+        const cleanValue = NumericInput.cleanValueToDecimal(e.target.value)
 
-        // Allow CTRL-A, copy/paste
-        if (e.ctrlKey === true && [65, 67, 86, 88].includes(e.keyCode)) {
-            return
-        }
-
-        // Take the existing value and concatenate the next character. If the result is
-        // NaN then reject the character.
-        const check = Number(this.props.value + e.key)
-        if ((this.state.prevKey === "." && e.key === ".") || isNaN(check)) {
-            e.preventDefault()
-        }
-
-        this.state.prevKey = e.key
+        this.props.onChange(cleanValue)
     }
 
     render() {
-        const {name, unitName, fieldName, value, onChange, valid = true, errorMessage = null} = this.props
+        const {name, unitName, fieldName, value, valid = true, errorMessage = null} = this.props
         const isInvalid = valid !== null && !valid;
 
         return (
@@ -50,12 +28,11 @@ export default class NumericInput extends React.Component {
                 <Label for={fieldName} sm={3}>{name}</Label>
                 <Col sm={9}>
                     <div className="input-group">
-                        <Input type="number" min={0} id={fieldName}
+                        <Input id={fieldName}
                                value={value}
-                               onChange={onChange}
+                               onChange={this.onChangeFilteringInput}
                                placeholder="0.00"
-                               step="any"
-                               invalid={isInvalid} onKeyDown={this.onKeyDown} onPaste={this.onPaste}/>
+                               invalid={isInvalid}/>
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
