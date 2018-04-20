@@ -25,3 +25,18 @@ export function setCurrentGasPrice(currentPriceWei) {
         currentPriceWei,
     })
 }
+
+export function ethereumPriceRetrieved(ethereumPriceUsd, time) {
+    dispatcher.dispatch({
+        type: ActionNames.ETHEREUM_PRICE_RETRIEVED,
+        ethereumPriceUsd,
+        time
+    })
+}
+
+export function ethereumPriceRetrieveError(error) {
+    dispatcher.dispatch({
+        type: ActionNames.ETHEREUM_PRICE_ERROR,
+        error,
+    })
+}

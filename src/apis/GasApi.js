@@ -1,7 +1,8 @@
 import * as GasActions from '../actions/GasActions'
 import {gweiToWei} from '../EtherConversion'
 
-let timer = null
+let etherGasStationTimer = null
+let coinMarketCapTimer = null
 
 export function retrieveGasPrices() {
     fetch('https://ethgasstation.info/json/ethgasAPI.json')
@@ -29,11 +30,41 @@ export function retrieveGasPrices() {
 
 export function startGasStationPollLoop(seconds = 120) {
     retrieveGasPrices()
-    timer = window.setInterval(retrieveGasPrices, seconds * 1000);
+    etherGasStationTimer = window.setInterval(retrieveGasPrices, seconds * 1000);
 }
 
 export function stopGasStationPollLoop() {
-    if (timer) {
-        window.clearInterval(timer)
+    if (etherGasStationTimer) {
+        window.clearInterval(etherGasStationTimer)
+    }
+}
+
+export function retrieveEthereumPrice() {
+    fetch('https://api.coinmarketcap.com/v1/ticker/ethereum/')
+        .then(response => {
+            if (response.status === 200) {
+                return response.json()
+            } else {
+                throw new Error("Problem retrieving Ethereum price")
+            }
+        })
+        .then(json => {
+            const priceUsd = json[0]['price_usd']
+
+            GasActions.ethereumPriceRetrieved(priceUsd, new Date())
+        })
+        .catch(error => {
+            GasActions.ethereumPriceRetrieveError(error)
+        })
+}
+
+export function startCoinMarketCapPollLoop(seconds = 120) {
+    retrieveEthereumPrice()
+    coinMarketCapTimer = window.setInterval(retrieveEthereumPrice, seconds * 1000);
+}
+
+export function stopCoinMarketCapPollLoop() {
+    if (coinMarketCapTimer) {
+        window.clearInterval(coinMarketCapTimer)
     }
 }

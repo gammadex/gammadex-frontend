@@ -3,11 +3,11 @@ import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import GasPriceStore from '../stores/GasPriceStore'
 import * as GasActions from "../actions/GasActions"
-import Date from "./CustomComponents/Date"
 import {Box, BoxSection} from "./CustomComponents/Box"
 import {Popover, PopoverBody} from 'reactstrap'
-import {gweiToWei, weiToGwei} from "../EtherConversion"
+import {gweiToWei, weiToGwei, gweiToEth} from "../EtherConversion"
 import * as _ from "lodash"
+import {OperationWeights} from "../ContractOperations"
 
 export default class GasPriceChooser extends React.Component {
     constructor(props) {
@@ -20,9 +20,11 @@ export default class GasPriceChooser extends React.Component {
             averageWei: null,
             fastWei: null,
             fastestWei: null,
-            lastRetrieveTime: null,
+            lastGasPriceRetrieveTime: null,
             currentGasPriceWei: 1,
-            popoverOpen: false
+            popoverOpen: false,
+            ethereumPriceUsd: null,
+            ethereumPriceRetrieveTime: null
         }
     }
 
@@ -39,8 +41,10 @@ export default class GasPriceChooser extends React.Component {
             averageWei,
             fastWei,
             fastestWei,
-            lastRetrieveTime: GasPriceStore.getLastRetrieveTime(),
+            lastGasPriceRetrieveTime: GasPriceStore.getGasPriceLastRetrieveTime(),
             currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei(),
+            ethereumPriceUsd: GasPriceStore.getEthereumPriceUsd(),
+            ethereumPriceRetrieveTime: GasPriceStore.getEthereumPriceRetrieveTime()
         })
     }
 
@@ -55,16 +59,35 @@ export default class GasPriceChooser extends React.Component {
     }
 
     static safeWeiToGwei(wei) {
-        return (_.isObject(wei) || _.isNumber(wei)) ? weiToGwei(wei).toString() : wei
+        return (_.isObject(wei) || _.isNumber(wei)) ? weiToGwei(wei).toNumber() : wei
+    }
+
+    getTimeDescription() {
+        const {safeLowWei, averageWei, fastWei, currentGasPriceWei} = this.state
+
+        if (! safeLowWei || !averageWei || !fastWei || !currentGasPriceWei) {
+            return null
+        }
+
+        if (currentGasPriceWei.isGreaterThanOrEqualTo(fastWei)) {
+            return "under two minutes"
+        } else if (currentGasPriceWei.isGreaterThanOrEqualTo(averageWei)) {
+            return "two to five minutes"
+        } else if (currentGasPriceWei.isGreaterThanOrEqualTo(safeLowWei)) {
+            return "five to 30 minutes"
+        } else {
+            return "over 30 minutes"
+        }
     }
 
     render() {
-        const {popoverOpen, safeLowWei, averageWei, fastWei, currentGasPriceWei, lastRetrieveTime} = this.state
+        const {popoverOpen, currentGasPriceWei, ethereumPriceUsd} = this.state
 
-        const safeLowGwei = GasPriceChooser.safeWeiToGwei(safeLowWei)
-        const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
-        const fastGwei = GasPriceChooser.safeWeiToGwei(fastWei)
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
+
+        const gasCostsEth = _.mapValues(OperationWeights, gwei => gweiToEth(gwei * currentGasPriceGwei).toFixed(6))
+        const gasCostsUsd = _.mapValues(gasCostsEth, e => (e * ethereumPriceUsd).toFixed(2))
+        const timeDescription = this.getTimeDescription()
 
         return (
             <div>
@@ -90,8 +113,7 @@ export default class GasPriceChooser extends React.Component {
                                         </div>
                                     </div>
 
-                                    <Slider min={1} max={100} defaultValue={40} onChange={this.onSliderChange}
-                                            value={currentGasPriceGwei}/>
+                                    <Slider min={1} max={100} defaultValue={40} onChange={this.onSliderChange} value={currentGasPriceGwei}/>
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
@@ -99,34 +121,41 @@ export default class GasPriceChooser extends React.Component {
                                         </div>
                                     </div>
 
-                                </BoxSection>
-                                <BoxSection>
-
-                                    <div>
-                                        <a target="_blank" rel="noopener"
-                                           href="https://ethgasstation.info/">ethgasstation.info</a> prices as of <Date
-                                        date={lastRetrieveTime}/>
+                                    <div className="row">
+                                        <div className="col-lg-12 text-center">
+                                            {timeDescription} transaction speed estimate from <a target="_blank" rel="noopener"
+                                                                 href="https://ethgasstation.info/">ethgasstation.info</a>
+                                        </div>
                                     </div>
 
+                                </BoxSection>
+                                <BoxSection>
                                     <div>
                                         <table className="table">
                                             <tbody>
                                             <tr>
-                                                <td>Slow (&lt;30m)</td>
-                                                <td>{safeLowGwei} Gwei</td>
+                                                <th>Operation</th>
+                                                <th>Gas Fee (ETH)</th>
+                                                <th>Gas Fee (USD)</th>
                                             </tr>
                                             <tr>
-                                                <td>Standard (&lt;5m)</td>
-                                                <td>{averageGwei} Gwei</td>
+                                                <td>Trade</td>
+                                                <td>{gasCostsEth.TAKE_ORDER}</td>
+                                                <td>${gasCostsUsd.TAKE_ORDER}</td>
                                             </tr>
                                             <tr>
-                                                <td>Fast (&lt;2m)</td>
-                                                <td>{fastGwei} Gwei</td>
+                                                <td>Deposit</td>
+                                                <td>{gasCostsEth.DEPOSIT}</td>
+                                                <td>${gasCostsUsd.DEPOSIT}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Withdraw</td>
+                                                <td>{gasCostsEth.WITHDRAW}</td>
+                                                <td>${gasCostsUsd.WITHDRAW}</td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </BoxSection>
                                 <BoxSection>
                                     <div className="row">

@@ -11,4 +11,5 @@ ReactDOM.render(<App />, document.getElementById('app'), () => {
     WalletApi.startMetaMaskCheckLoop()
     TimerApi.startTimer()
     GasApi.startGasStationPollLoop()
+    GasApi.startCoinMarketCapPollLoop()
 })

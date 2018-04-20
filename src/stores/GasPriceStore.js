@@ -7,7 +7,7 @@ class GasPriceStore extends EventEmitter {
         super()
 
         this.prices = []
-        this.lastRetrieveTime = null
+        this.lastGasPriceRetrieveTime = null
         this.currentGasPriceWei = null
     }
 
@@ -15,12 +15,20 @@ class GasPriceStore extends EventEmitter {
         return this.prices
     }
 
-    getLastRetrieveTime() {
-        return this.lastRetrieveTime
+    getGasPriceLastRetrieveTime() {
+        return this.lastGasPriceRetrieveTime
     }
 
     getCurrentGasPriceWei() {
         return this.currentGasPriceWei
+    }
+
+    getEthereumPriceUsd() {
+        return this.ethereumPriceUsd
+    }
+
+    getEthereumPriceRetrieveTime() {
+        return this.ethereumPriceRetrieveTime
     }
 
     emitChange() {
@@ -33,7 +41,7 @@ class GasPriceStore extends EventEmitter {
                 const {time, ...prices} = action
 
                 this.prices = prices
-                this.lastRetrieveTime = time
+                this.lastGasPriceRetrieveTime = time
 
                 if (! this.currentGasPriceWei) {
                     this.currentGasPriceWei = prices.averageWei
@@ -48,7 +56,15 @@ class GasPriceStore extends EventEmitter {
                 break
             }
             case ActionNames.GAS_PRICES_RETRIEVE_ERROR: {
-                //this.emitChange()
+                break
+            }
+            case ActionNames.ETHEREUM_PRICE_RETRIEVED: {
+                this.ethereumPriceUsd = action.ethereumPriceUsd
+                this.ethereumPriceRetrieveTime = action.time
+                this.emitChange()
+                break
+            }
+            case ActionNames.ETHEREUM_PRICE_ERROR: {
                 break
             }
         }
