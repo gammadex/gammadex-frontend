@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {weiToGwei, gweiToWei} from '../EtherConversion'
+import {weiToGwei, gweiToWei, gweiToEth} from '../EtherConversion'
 
 test("check weiToGwei", () => {
     const gwei = weiToGwei(60 * 1000000000)
@@ -21,6 +21,14 @@ test("check gweiToWei", () => {
     const gwei = gweiToWei(60)
 
     let expected = BigNumber("60000000000")
+
+    expect(gwei).toEqual(expected)
+})
+
+test("check gweiToEth", () => {
+    const gwei = gweiToEth("1000000000")
+
+    let expected = BigNumber("1")
 
     expect(gwei).toEqual(expected)
 })

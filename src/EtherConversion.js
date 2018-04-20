@@ -34,3 +34,7 @@ export function weiToGwei(wei) {
 export function gweiToWei(gwei) {
     return BigNumber(String(gwei)).times(BigNumber(1000000000))
 }
+
+export function gweiToEth(gwei) {
+    return BigNumber(String(gwei)).div(BigNumber(1000000000))
+}
