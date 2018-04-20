@@ -7,6 +7,9 @@ export default class NumericInput extends React.Component {
         this.state = { prevKey: null }
     }
 
+    /**
+     * Prevent negative or non-numeric values from being pasted
+     */
     onPaste = (e) => {
         const check = Number(this.props.value + e.clipboardData.getData('Text'))
         if (isNaN(check) || check < 0) {
@@ -19,12 +22,12 @@ export default class NumericInput extends React.Component {
      */
     onKeyDown = (e) => {
         // Allow navigation, backspace, delete, insert and tab
-        if ((e.keyCode > 34 && e.keyCode < 41) || e.keyCode === 8 || e.keyCode === 9 || e.keyCode === 45 || e.keyCode === 46) {
+        if ((e.keyCode > 34 && e.keyCode < 41) || [8, 9, 45, 46].includes(e.keyCode)) {
             return
         }
 
         // Allow CTRL-A, copy/paste
-        if (e.ctrlKey === true && (e.keyCode === 65 || e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 88)) {
+        if (e.ctrlKey === true && [65, 67, 86, 88].includes(e.keyCode)) {
             return
         }
 
