@@ -9,6 +9,7 @@ export default class NumericInput extends React.Component {
     static cleanValueToDecimal(value) {
         return value
             .replace(/[^0-9.]/g, () => "") // globally strip everything that isn't a digit or a .
+            .replace(/^\./, () => "0.") // force numbers starting with . to be 0.
             .replace(/^([0-9]*\.[0-9]*).*/, (m, p1) => p1) // replace any poo following sensible decimal (e.g. second ".")
     }
 
