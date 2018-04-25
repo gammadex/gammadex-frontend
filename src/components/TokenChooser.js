@@ -1,20 +1,28 @@
 import React from "react"
 import TokenStore from "../stores/TokenStore"
-import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import Config from '../Config'
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
+import Conditional from "./CustomComponents/Conditional"
+import TokenCreator from "./TokenChooser/TokenCreator"
+import TokenDisplay from "./TokenChooser/TokenDisplay"
+import {Box, BoxSection, BoxHeader} from "./CustomComponents/Box"
 
 class TokenChooser extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            searchedToken: "",
+            selectedToken: null,
+            tokenList: Config.getTokens(),
+            serverTickers: {},
+            showMyTokens: false,
+            showAddToken: false,
+            userDefTokens: []
+        }
+
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
-    }
-    state = {
-        searchedToken: "",
-        selectedToken: null,
-        tokenList: Config.getTokens(),
-        serverTickers: {},
     }
 
     componentWillMount() {
@@ -45,69 +53,44 @@ class TokenChooser extends React.Component {
         this.props.history.push(`/exchange/${tokenSymbol}`)
     }
 
-    render() {
-        const {tokenList, searchedToken, selectedToken, serverTickers} = this.state
-
-        let filteredTokens = this.getTokensToDisplay(tokenList, serverTickers, searchedToken)
-
-        const tokenRows = filteredTokens.map(token => {
-            const isSelected = selectedToken && token.symbol === selectedToken.name
-
-            return <TokenChooserRow
-                key={token.address}
-                token={token}
-                isSelected={isSelected}
-                onTokenSelect={this.onTokenSelect}
-            />
-        })
-
-        return (
-            <div className="card token-chooser">
-                <div className="card-header">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <strong className="card-title">Tokens</strong>
-                        </div>
-                        <div className="col-lg-6">
-                            <input onChange={this.onSearchTokenChange}
-                                   value={this.state.searchedToken}
-                                   placeholder="Search"
-                                   className="form-control float-right"/>
-                        </div>
-                    </div>
-                </div>
-                <div className="table-responsive">
-                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
-                        <thead>
-                        <tr>
-                            <th>Symbol</th>
-                            <th>Volume ETH</th>
-                            <th>% Change</th>
-                        </tr>
-                        </thead>
-                        <tbody>{tokenRows}</tbody>
-                    </table>
-                </div>
-            </div>
-        )
+    toggleMyTokens = event => {
+        this.setState({showMyTokens: !this.state.showMyTokens})
     }
 
-    getTokensToDisplay(tokenList, serverTickers, searchedToken) {
+    toggleAddTokens = event => {
+        this.setState({showAddToken: !this.state.showAddToken})
+    }
+
+    onCreateToken = token => {
+        this.setState({userDefTokens: [...this.state.userDefTokens, token]})
+        this.toggleAddTokens()
+    }
+
+    removeUserToken = token => {
+        const truncatedList = this.state.userDefTokens.filter(ut =>{
+            ut.address !== token.address
+        })
+
+        this.setState({userDefTokens: truncatedList})
+    }
+
+    static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
         // merge server side info in with token list from config
         const allTokens = tokenList.map(t => {
-            const symbol = t.label
-            const address = t.value
+            const symbol = t.label !== undefined ? t.label : t.symbol
+            const address = t.value !== undefined ? t.value : t.address
+            
+            let token = {symbol: symbol, address: address}
+            
             const tokenDetails = serverTickers[address.toLowerCase()]
-
-            const token = {symbol: symbol, address: address}
             if (tokenDetails) {
-                return Object.assign(token, {
+                token = Object.assign(token, {
                     percentChange: tokenDetails.percentChange,
-                    volume: tokenDetails.baseVolume,
+                    volume: tokenDetails.baseVolume
                 })
-            } else {
-                return token
             }
+
+            return token
         })
 
         // filter by search criteria if present
@@ -116,6 +99,56 @@ class TokenChooser extends React.Component {
         } else {
             return allTokens
         }
+    }
+
+    render() {
+        const {tokenList, searchedToken, selectedToken, serverTickers, userDefTokens} = this.state
+        
+        const userTokens = TokenChooser.getTokensToDisplay(userDefTokens, serverTickers, searchedToken, selectedToken)
+        const systemTokens = TokenChooser.getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken)
+
+        return (
+            <div className="card token-chooser">
+                <div className="card-header hdr-stretch">
+                    <strong className="card-title">Tokens</strong>
+                    <form className="form-inline">
+                        <input onChange={this.onSearchTokenChange}
+                                value={this.state.searchedToken}
+                                placeholder="Search"
+                                className="form-control"/>
+                        <button value={this.state.searchedToken}
+                                data-toggle="tooltip" data-placement="right"
+                                title={(this.state.showMyTokens ? "Hide" : "Show") + " My Tokens"}
+                                className="btn-sm btn-primary form-control lmargin" onClick={this.toggleMyTokens}>
+                            {this.state.showMyTokens ? "^" : "V"}
+                        </button>
+                    </form>
+                </div>
+
+                <Conditional displayCondition={this.state.showMyTokens}>
+                    <Box>
+                        <BoxHeader>
+                            <div className="hdr-stretch">
+                                <strong className="card-title">My Tokens</strong>
+                                <button className="btn btn-sm btn-secondary col-sm-2"
+                                        onClick={this.toggleAddTokens}>{this.state.showAddToken ? "Accept" : "Edit"}</button>
+                            </div>
+                        </BoxHeader>
+
+                        <TokenDisplay tokenList={userTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}
+                                      editMode={this.state.showAddToken} removeToken={this.removeUserToken}/>
+
+                        <Conditional displayCondition={this.state.showAddToken}>
+                            <TokenCreator create={this.onCreateToken}/>
+                        </Conditional>
+                    </Box>
+                </Conditional>
+
+                <Box title={this.state.showMyTokens ? "System Tokens" : ""}>
+                    <TokenDisplay tokenList={systemTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}/>
+                </Box>
+            </div>
+        )
     }
 }
 
