@@ -11,7 +11,8 @@
     "tokens": [
       { "address": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
       { "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180", "name": "TST", "decimals": 18 },
-      { "address": "0xf5f62BA849d31CE5852426d5D14f649cddB37025", "name": "TEU", "decimals": 18 }
+      { "address": "0xf5f62BA849d31CE5852426d5D14f649cddB37025", "name": "TEU", "decimals": 18 },
+      { "address": "0x7d3613dd9b10999115fe455c0295e4b8ab8dc35e", "name": "BARRY", "decimals": 18 }
     ],
     "defaultPair": { "token": "TST", "base": "ETH" }
   },
