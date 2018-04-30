@@ -9,8 +9,6 @@ import OrderSide from "./OrderSide"
 import * as EthJsUtil from "ethereumjs-util"
 import { tokEthToWei, baseEthToWei } from './EtherConversion';
 
-const etherDeltaAddress = Config.getEtherDeltaAddress()
-
 class OrderFactory {
 
     createUnsignedOrder = (makerSide, expires, price, amount, tokenAddress) => {
@@ -27,7 +25,7 @@ class OrderFactory {
             baseEthToWei(amountBaseBigNum)
         const nonce = Number(Math.random().toString().slice(2))
 
-        const contractAddr = etherDeltaAddress
+        const contractAddr = Config.getEtherDeltaAddress()
         const unsignedOrderObject = {
             amountGet,
             amountGive,
@@ -229,7 +227,7 @@ class OrderFactory {
         }
 
         const unpacked = [
-            etherDeltaAddress,
+            Config.getEtherDeltaAddress(),
             tokenGet,
             amountGet,
             tokenGive,

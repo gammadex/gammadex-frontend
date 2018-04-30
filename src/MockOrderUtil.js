@@ -60,7 +60,7 @@ export function orderDetailToSocketOrder(orderDetail) {
         availableVolumeBase = availableVolume.times(orderDetail.price).dp(0, BigNumber.ROUND_FLOOR)
         ethAvailableVolumeBase = baseWeiToEth(availableVolumeBase)
 
-        amount = -availableVolume
+        amount = availableVolume.negated()
     } else {
         availableVolumeBase = BigNumber(orderDetail.contractAvailableVolume)
         ethAvailableVolumeBase = baseWeiToEth(availableVolumeBase)

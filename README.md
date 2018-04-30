@@ -97,9 +97,9 @@ Workaround:
 * *Using D3 and React* https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
 * *TechchanJS* http://bl.ocks.org/andredumas/af8674d57980790137a0
 
-### ERC-20 Test Token:
+### ERC-20 Test Tokenw:
 
-* https://github.com/uzyn/ERC20-TST
+* TST - https://github.com/uzyn/ERC20-TST
 
 #### To request TST tokens:
 
@@ -112,6 +112,12 @@ Workaround:
 * click write
 * go to metamask and export your private key then paste it into myetherwallet to unlock, hit send
 * this should give you 10 tokens
+
+* BARRY - http://www.darrenbeck.co.uk/ethereum/crypto/solidity/barry/
+
+#### To request BARRY tokens:
+
+* send ETH to 0x7d3613dd9b10999115fe455c0295e4b8ab8dc35e and you will receive double the amount in BARRY
 
 ### Ledger Nano
 
