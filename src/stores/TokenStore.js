@@ -3,6 +3,7 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import Config from '../Config'
 import _ from "lodash"
+import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -11,6 +12,14 @@ class TokenStore extends EventEmitter {
         this.searchToken = ""
         this.serverTickers = {}
         this.invalidTokenIdentifier = null
+        this.createToken = {
+            address: "",
+            lName: "",
+            name: "",
+            decimals: ""
+        }
+        this.tokenCheckError = ""
+        this.checkingAddress = false
     }
 
     getSelectedToken() {
@@ -29,8 +38,44 @@ class TokenStore extends EventEmitter {
         return this.invalidTokenIdentifier
     }
 
+    getCreateToken() {
+        return this.createToken
+    }
+
+    isCheckingAddress() {
+        return this.checkingAddress
+    }
+
+    getTokenCheckError() {
+        return this.tokenCheckError
+    }
+
     emitChange() {
         this.emit("change")
+    }
+
+    checkAddress = address => {
+        EtherDeltaWeb3.promiseGetTokenDetails(address)
+            .then(res => {
+                this.createToken.address = address
+                this.createToken.lName = res[0]
+                this.createToken.name = res[1]
+                this.createToken.decimals = res[2]
+                this.tokenCheckError = ""
+                this.checkingAddress = false
+                this.emitChange()
+            })
+            .catch(e => {
+                this.createToken.address = address
+                this.createToken.lName = ""
+                this.createToken.name = ""
+                this.createToken.decimals = ""
+                this.tokenCheckError = "Invalid Address"
+                this.checkingAddress = false
+                this.emitChange()
+            })
+        
+        this.checkingAddress = true
     }
 
     handleActions(action) {
@@ -55,6 +100,11 @@ class TokenStore extends EventEmitter {
             }
             case ActionNames.INVALID_TOKEN: {
                 this.invalidTokenIdentifier = action.tokenIdentifier
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_ADDRESS_LOOKUP: {
+                this.checkAddress(action.address)
                 this.emitChange()
                 break
             }

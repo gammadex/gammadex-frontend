@@ -22,3 +22,10 @@ export function invalidToken(tokenIdentifier) {
         tokenIdentifier
     })
 }
+
+export function tokenLookup(address) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_ADDRESS_LOOKUP,
+        address
+    })
+}

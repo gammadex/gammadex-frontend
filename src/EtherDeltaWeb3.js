@@ -151,6 +151,24 @@ class EtherDeltaWeb3 {
     hexToNumber = (hex) => {
         return this.web3.utils.hexToNumber(hex)
     }
+
+    /**
+     * Returns a Promise which will return an array of name, symbol and decimals.
+     *
+     * @param {string} address token address
+     */
+    promiseGetTokenDetails(address) {
+        try {
+            this.contractToken.options.address = address
+        }
+        catch (error) {
+            return Promise.reject(error)
+        }
+
+        return Promise.all([this.contractToken.methods.name().call(),
+                            this.contractToken.methods.symbol().call(),
+                            this.contractToken.methods.decimals().call()]);
+    }
 }
 
 class AccountProvider {

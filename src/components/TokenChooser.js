@@ -49,8 +49,8 @@ class TokenChooser extends React.Component {
         TokenActions.searchToken(event.target.value)
     }
 
-    onTokenSelect = (tokenSymbol, tokenAddress) => {
-        this.props.history.push(`/exchange/${tokenSymbol}`)
+    onTokenSelect = (tokenName, tokenAddress) => {
+        this.props.history.push(`/exchange/${tokenName}`)
     }
 
     toggleMyTokens = event => {
@@ -67,7 +67,7 @@ class TokenChooser extends React.Component {
     }
 
     removeUserToken = token => {
-        const truncatedList = this.state.userDefTokens.filter(ut =>{
+        const truncatedList = this.state.userDefTokens.filter(ut => {
             ut.address !== token.address
         })
 
@@ -77,10 +77,10 @@ class TokenChooser extends React.Component {
     static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
         // merge server side info in with token list from config
         const allTokens = tokenList.map(t => {
-            const symbol = t.label !== undefined ? t.label : t.symbol
+            const name = t.label !== undefined ? t.label : t.name
             const address = t.value !== undefined ? t.value : t.address
             
-            let token = {symbol: symbol, address: address}
+            let token = {name: name, address: address}
             
             const tokenDetails = serverTickers[address.toLowerCase()]
             if (tokenDetails) {
@@ -95,7 +95,7 @@ class TokenChooser extends React.Component {
 
         // filter by search criteria if present
         if (searchedToken && searchedToken.length > 0) {
-            return allTokens.filter(t => t.symbol.toLowerCase().includes(searchedToken.toLowerCase()))
+            return allTokens.filter(t => t.name.toLowerCase().includes(searchedToken.toLowerCase()))
         } else {
             return allTokens
         }
@@ -113,9 +113,9 @@ class TokenChooser extends React.Component {
                     <strong className="card-title">Tokens</strong>
                     <form className="form-inline">
                         <input onChange={this.onSearchTokenChange}
-                                value={this.state.searchedToken}
-                                placeholder="Search"
-                                className="form-control"/>
+                               value={this.state.searchedToken}
+                               placeholder="Search"
+                               className="form-control"/>
                         <button value={this.state.searchedToken}
                                 data-toggle="tooltip" data-placement="right"
                                 title={(this.state.showMyTokens ? "Hide" : "Show") + " My Tokens"}
