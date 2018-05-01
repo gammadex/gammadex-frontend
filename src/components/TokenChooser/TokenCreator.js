@@ -37,28 +37,9 @@ export default class TokenCreator extends React.Component {
     addressChange = event => {
         const token = {
             address: event.target.value,
-            name: this.state.token.name,
-            decimals: this.state.token.decimals
-        }
-
-        this.setState({token: token})
-    }
-
-    nameChange = event => {
-        const token = {
-            address: this.state.token.address,
-            name: event.target.value,
-            decimals: this.state.token.decimals
-        }
-
-        this.setState({token: token})
-    }
-
-    decimalsChange = event => {
-        const token = {
-            address: this.state.token.address,
-            name: this.state.token.name,
-            decimals: event.target.value
+            lName: "",
+            name: "",
+            decimals: ""
         }
 
         this.setState({token: token})
