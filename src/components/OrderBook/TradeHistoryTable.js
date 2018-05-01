@@ -4,18 +4,12 @@ import * as JsxUtils from "../../JsxUtils"
 
 export default class TradeHistoryTable extends React.Component {
 
-    toKey(trade) {
-        let key = trade.txHash
-        if(trade.hasOwnProperty('logIndex')) {
-            key = `${key}_${trade.logIndex}`
-        }
-        return key
-    }
-
     render() {
-        const {base, token, trades, pageSize} = this.props
+        const { base, token, trades, pageSize } = this.props
 
-        const rows = trades.map(trade => <TradeHistoryRow key={this.toKey(trade)} trade={trade} token={token}/>)
+        const rows = trades.map((trade, i) => {
+            return <TradeHistoryRow key={`${trade.txHash}_${i}`} trade={trade} token={token} />
+        })
 
         const numEmptyRows = pageSize - trades.length
         const emptyRows = JsxUtils.emptyRows(numEmptyRows, 4)
@@ -24,16 +18,16 @@ export default class TradeHistoryTable extends React.Component {
             <div className="table-responsive trade-history">
                 <table className="table table-striped table-bordered table-no-bottom-border">
                     <thead>
-                    <tr>
-                        <th>Price</th>
-                        <th>Size ({token})</th>
-                        <th>Total ({base})</th>
-                        <th>Date</th>
-                    </tr>
+                        <tr>
+                            <th>Price</th>
+                            <th>Size ({token})</th>
+                            <th>Total ({base})</th>
+                            <th>Date</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {rows}
-                    {emptyRows}
+                        {rows}
+                        {emptyRows}
                     </tbody>
                 </table>
             </div>
