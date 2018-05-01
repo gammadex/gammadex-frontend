@@ -14,8 +14,7 @@ export function refreshMyTrade(txHash) {
     EtherDeltaWeb3.promiseTransactionReceipt(txHash)
         .then(receipt => {
             if (receipt) {
-                const status = (EtherDeltaWeb3.hexToNumber(receipt.status) === 1) ?
-                    TransactionStatus.COMPLETE : TransactionStatus.FAILED
+                const status = receipt.status ? TransactionStatus.COMPLETE : TransactionStatus.FAILED
                 dispatcher.dispatch({
                     type: ActionNames.MY_TRADE_STATUS_UPDATE,
                     txHash,

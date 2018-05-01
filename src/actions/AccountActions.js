@@ -165,7 +165,7 @@ export function refreshDeposit(deposit) {
     EtherDeltaWeb3.promiseTransactionReceipt(deposit.txHash)
         .then(receipt => {
             if (receipt) {
-                if (EtherDeltaWeb3.hexToNumber(receipt.status) === 1) {
+                if (receipt.status) {
                     dispatcher.dispatch({
                         type: ActionNames.DEPOSIT_OR_WITHDRAWAL_SUCCEEDED,
                         txHash: deposit.txHash

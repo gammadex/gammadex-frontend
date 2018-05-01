@@ -21,6 +21,7 @@ import OrderFactory from "../OrderFactory";
 import MockSocket from "../MockSocket";
 import OrderType from "../OrderType";
 import { tokEthToWei, tokWeiToEth, baseEthToWei, baseWeiToEth } from "../EtherConversion"
+import EtherDeltaSocket from "../EtherDeltaSocket";
 
 /**
  * Calculate a total value when the price changes
@@ -31,7 +32,7 @@ function calcTotal(priceControlled, amountWei, amountControlled, ethControlled) 
         const totalEthControlled = baseWeiToEth(totalEthWei).toFixed()
         return { totalEthWei: totalEthWei, totalEthControlled: totalEthControlled }
     }
-    
+
     return { totalEthWei: BigNumber(0), totalEthControlled: "" }
 }
 
@@ -66,7 +67,7 @@ export function sellOrderPriceChanged(priceControlled) {
     const { sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
     const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled)
     const { orderValid, orderInvalidReason } = validateSellOrder(sellOrderAmountWei)
-    
+
     dispatcher.dispatch({
         type: ActionNames.SELL_ORDER_PRICE_CHANGED,
         priceControlled,
@@ -184,7 +185,7 @@ export function buyOrderTotalEthChanged(totalEthControlled) {
         totalEthWei,
         priceControlled
     } = calcAmount(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled, totalEthControlled)
-    
+
     const { orderValid, orderInvalidReason } = validateBuyOrder(amountWei, totalEthWei)
 
     dispatcher.dispatch({
@@ -432,19 +433,24 @@ export function confirmOrder() {
                 r: sig.r,
                 s: sig.s,
             }
-            MockSocket.submitOrder(signedOrderObject)
-            OpenOrderActions.addOpenOrder({
-                environment: Config.getReactEnv(),
-                order: signedOrderObject,
-                hash: hash,
-                makerSide: makerSide,
-                tokenAddress: tokenAddress,
-                price: price,
-                amount: amount,
-                state: OrderState.OPEN,
-                pendingCancelTx: null,
-                timestamp: (new Date()).toJSON()
-            })
+            // MockSocket.submitOrder(signedOrderObject)
+            EtherDeltaSocket.emitOrder(signedOrderObject)
+                .then((result) => {
+                    if (result && result.status === 202) {
+                        OpenOrderActions.addOpenOrder({
+                            environment: Config.getReactEnv(),
+                            order: signedOrderObject,
+                            hash: hash,
+                            makerSide: makerSide,
+                            tokenAddress: tokenAddress,
+                            price: price,
+                            amount: amount,
+                            state: OrderState.OPEN,
+                            pendingCancelTx: null,
+                            timestamp: (new Date()).toJSON()
+                        })
+                    }
+                })
         })
-    
+
 }

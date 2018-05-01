@@ -1,6 +1,7 @@
 import dispatcher from "../dispatcher"
 import EtherDeltaWebSocket from "../EtherDeltaSocket"
 import TokenStore from '../stores/TokenStore'
+import AccountStore from '../stores/AccountStore'
 import ActionNames from "./ActionNames"
 import Config from "../Config"
 
@@ -80,5 +81,5 @@ export function connect() {
 }
 
 export function getMarket() {
-    EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address)
+    EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address, AccountStore.getAccountState().account)
 }

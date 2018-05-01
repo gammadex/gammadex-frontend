@@ -30,7 +30,7 @@ export function refreshOpenOrder(openOrder) {
     EtherDeltaWeb3.promiseTransactionReceipt(openOrder.pendingCancelTx)
         .then(receipt => {
             if (receipt) {
-                if(EtherDeltaWeb3.hexToNumber(receipt.status) === 1) {
+                if(receipt.status) {
                     dispatcher.dispatch({
                         type: ActionNames.CANCEL_OPEN_ORDER_SUCCEEDED,
                         orderHash: openOrder.hash

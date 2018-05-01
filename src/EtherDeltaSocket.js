@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 
 class EtherDeltaWebSocket {
     init(url, socketEventHandlers, messageHandlers) {
-        this.socket = io(url, {transports: ['websocket'], autoConnect: false});
+        this.socket = io(url, { transports: ['websocket'], autoConnect: false });
 
         const handlers = Object.assign({}, socketEventHandlers, messageHandlers)
 
@@ -15,6 +15,7 @@ class EtherDeltaWebSocket {
         })
 
         this.socket.open()
+        this.emitOrder = this.emitOrder.bind(this)
     }
 
     getMarket(tokenAddress, userAddress) {
@@ -23,7 +24,7 @@ class EtherDeltaWebSocket {
             return
         }
 
-        console.log(`Requesting market ${tokenAddress}`)
+        console.log(`Requesting market for token: ${tokenAddress}, user: ${userAddress}`)
 
         const message = {}
         if (tokenAddress) {
@@ -34,6 +35,16 @@ class EtherDeltaWebSocket {
         }
 
         this.socket.emit('getMarket', message)
+    }
+
+    emitOrder(order) {
+        const self = this
+        return new Promise(function (resolve, reject) {
+            self.socket.emit('message', order)
+            self.socket.once('messageResult', (messageResult) => {
+                resolve(messageResult)
+            })
+        })
     }
 }
 
