@@ -3,10 +3,19 @@ import TradeHistoryRow from './TradeHistoryRow'
 import * as JsxUtils from "../../JsxUtils"
 
 export default class TradeHistoryTable extends React.Component {
+
+    toKey(trade) {
+        let key = trade.txHash
+        if(trade.hasOwnProperty('logIndex')) {
+            key = `${key}_${trade.logIndex}`
+        }
+        return key
+    }
+
     render() {
         const {base, token, trades, pageSize} = this.props
 
-        const rows = trades.map(trade => <TradeHistoryRow key={trade.txHash} trade={trade} token={token}/>)
+        const rows = trades.map(trade => <TradeHistoryRow key={this.toKey(trade)} trade={trade} token={token}/>)
 
         const numEmptyRows = pageSize - trades.length
         const emptyRows = JsxUtils.emptyRows(numEmptyRows, 4)

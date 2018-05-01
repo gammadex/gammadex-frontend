@@ -13,6 +13,10 @@ class Config {
         this.tokens = _.sortBy(tokens, (tk) => tk.label).filter(tk => tk.label !== "ETH")
     }
 
+    isMock() {
+        return this.getReactEnv() === "mock"
+    }
+
     isDevelopment() {
         return this.getReactEnv() === "development"
     }
@@ -105,6 +109,15 @@ class Config {
 
     getEthereumNetworkId() {
         return this.getEnv().ethereumNetworkId
+    }
+
+    getSocketEnv() {
+        return process.env.SOCKET
+    }
+
+    getSocket() {
+        const env = this.getSocketEnv() ? this.getSocketEnv() : 'default'
+        return this.getEnv().sockets[env]
     }
 }
 

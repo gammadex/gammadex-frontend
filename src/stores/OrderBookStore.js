@@ -154,6 +154,11 @@ class OrderBookStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.MESSAGE_RECEIVED_TRADES: {
+                this.mergeTrades(action.message)
+                this.emitChange()
+                break
+            }            
         }
     }
 
@@ -194,13 +199,18 @@ class OrderBookStore extends EventEmitter {
             const token = TokenStore.getSelectedToken() // TODO - is it acceptable that this has to know about TokenStore?
 
             if (message.buys) {
-                this.buys = OrderMerger.mergeOrders(this.buys, message.buys, token.address, false)
+                this.bids = OrderMerger.mergeOrders(this.bids, message.buys, token.address, false)
             }
             if (message.sells) {
-                this.sells = OrderMerger.mergeOrders(this.sells, message.sells, token.address, true)
+                this.offers = OrderMerger.mergeOrders(this.offers, message.sells, token.address, true)
             }
         }
+    }
 
+    mergeTrades(message) {
+        if (message) {
+            this.trades = TradesMerger.mergeAndSortTrades(this.trades, message, TokenStore.getSelectedToken().address)
+        }
     }
 }
 

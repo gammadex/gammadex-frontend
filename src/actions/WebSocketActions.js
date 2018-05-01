@@ -2,10 +2,10 @@ import dispatcher from "../dispatcher"
 import EtherDeltaWebSocket from "../EtherDeltaSocket"
 import TokenStore from '../stores/TokenStore'
 import ActionNames from "./ActionNames"
+import Config from "../Config"
 
 export function connect() {
-    //const url = 'https://api.forkdelta.com'
-    const url = 'https://socket02.etherdelta.com'
+    const url = Config.getSocket()
 
     EtherDeltaWebSocket.init(
         url,

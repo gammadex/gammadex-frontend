@@ -1,5 +1,4 @@
 {
-  "socketServer": ["https://socket01.etherdelta.com","https://socket02.etherdelta.com","https://socket03.etherdelta.com","https://socket04.etherdelta.com","https://socket05.etherdelta.com","https://socket06.etherdelta.com"],
   "baseAddress": "0x0000000000000000000000000000000000000000",
   "baseDecimals": 18,
   "smallOrderThreshold": 0.001,
@@ -7,6 +6,9 @@
     "ethereumNetworkId": 3,
     "web3": "https://ropsten.infura.io",
     "etherscan": "https://ropsten.etherscan.io",
+    "sockets": {
+      "default": "http://localhost:4301"      
+    },    
     "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
     "tokens": [
       { "address": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
@@ -20,6 +22,16 @@
     "ethereumNetworkId": 1,
     "web3": "https://mainnet.infura.io",
     "etherscan": "https://etherscan.io",
+    "sockets": {
+      "etherdelta1": "https://socket01.etherdelta.com",
+      "etherdelta2": "https://socket02.etherdelta.com",
+      "etherdelta3": "https://socket03.etherdelta.com",
+      "etherdelta4": "https://socket04.etherdelta.com",
+      "etherdelta5": "https://socket05.etherdelta.com",
+      "etherdelta6": "https://socket06.etherdelta.com",
+      "forkdelta": "https://api.forkdelta.com",
+      "default": "https://socket02.etherdelta.com"      
+    },    
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "tokens": [
       { "address": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },

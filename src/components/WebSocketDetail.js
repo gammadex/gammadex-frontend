@@ -30,7 +30,7 @@ export default class WebSocketDetail extends React.Component {
     }
 
     connectToWebSocket() {
-        if(Config.isDevelopment()) {
+        if(Config.isMock()) {
             MockWebSocketActions.connect()
         } else {
             WebSocketActions.connect()
