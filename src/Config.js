@@ -43,6 +43,10 @@ class Config {
     // TODO - all these token functions should be somewhere else. Maybe cleanup when we start supporting custom tokens
 
     getTokenBySymbolOrAddress(symbolOrAddress) {
+        if (! symbolOrAddress) {
+            return null
+        }
+
         const matchingTokens = _.filter(this.getEnvTokens(),
             (tk) => {
                 return addressesLooselyMatch(tk.address.toLowerCase(), symbolOrAddress.toLowerCase()) ||
@@ -54,19 +58,23 @@ class Config {
     }
 
     getTokenName(address) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].name
+        const token = this.getTokenBySymbolOrAddress(address)
+        return token ? token.name : null
     }
 
     getTokenAddress(name) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].address
+        const token = this.getTokenBySymbolOrAddress(name)
+        return token ? token.address : null
     }
 
     getTokenDecimals(name) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].decimals
+        const token = this.getTokenBySymbolOrAddress(name)
+        return token ? token.decimals : null
     }
 
     getTokenDecimalsByAddress(address) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].decimals
+        const token = this.getTokenBySymbolOrAddress(address)
+        return token ? token.decimals : null
     }
 
     getBaseAddress() {

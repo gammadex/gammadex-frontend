@@ -21,8 +21,6 @@ class EtherDeltaWeb3 {
     }
 
     initForPrivateKey = (walletAddress, walletPrivateKey) => {
-        console.log(`using private key ${walletPrivateKey} with address ${walletAddress}`)
-
         // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
 
         this.web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))

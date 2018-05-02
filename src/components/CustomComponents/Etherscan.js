@@ -10,9 +10,14 @@ export default class Etherscan extends React.Component {
         const typeDescription = this.getTypeDescription(type)
         const address = this.props.address || childContent
         const etherscanUrl = Config.getEtherscanUrl()
+        const hrefOnly = !!this.props.href
 
-        return <a target="_blank" rel="noopener noreferrer" href={`${etherscanUrl}/${type}/${address}`} data-toggle="tooltip"
-                  title={"View " + typeDescription + " on etherscan.io"}>{linkText}</a>
+        if (hrefOnly) {
+            return `${etherscanUrl}/${type}/${address}`
+        } else {
+            return <a target="_blank" rel="noopener noreferrer" href={`${etherscanUrl}/${type}/${address}`} data-toggle="tooltip"
+                      title={"View " + typeDescription + " on etherscan.io"}>{linkText}</a>
+        }
     }
 
     getLinkText(childContent) {

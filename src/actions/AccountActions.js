@@ -180,9 +180,10 @@ export function refreshDeposit(deposit) {
         })
 }
 
-export function purgeDepositHistory() {
-    localStorage.removeItem("depositHistory")
+export function transfersReceived(transfers, incremental) {
     dispatcher.dispatch({
-        type: ActionNames.DEPOSIT_HISTORY_PURGED
+        type: ActionNames.TRANSFERS_RECEIVED,
+        transfers,
+        incremental
     })
 }

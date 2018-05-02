@@ -14,7 +14,6 @@ class DevelopmentToolbar extends Component {
         MyTradeActions.purge()
         MockSocket.purge()
         OpenOrderActions.purge()
-        AccountActions.purgeDepositHistory()
     }
 
     render() {
