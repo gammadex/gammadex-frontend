@@ -15,13 +15,13 @@ import * as TradeActions from "./TradeActions"
 import * as OpenOrderActions from "./OpenOrderActions"
 import Config from "../Config"
 import TransactionStatus from "../TransactionStatus"
-import OrderSide from "../OrderSide";
-import OrderState from "../OrderState";
-import OrderFactory from "../OrderFactory";
-import MockSocket from "../MockSocket";
-import OrderType from "../OrderType";
+import OrderSide from "../OrderSide"
+import OrderState from "../OrderState"
+import OrderFactory from "../OrderFactory"
+import MockSocket from "../MockSocket"
+import OrderType from "../OrderType"
 import { tokEthToWei, tokWeiToEth, baseEthToWei, baseWeiToEth } from "../EtherConversion"
-import EtherDeltaSocket from "../EtherDeltaSocket";
+import EtherDeltaSocket from "../EtherDeltaSocket"
 
 /**
  * Calculate a total value when the price changes

@@ -7,7 +7,7 @@ import Config from './Config'
 import OrderSide from "./OrderSide"
 
 import * as EthJsUtil from "ethereumjs-util"
-import { tokEthToWei, baseEthToWei } from './EtherConversion';
+import { tokEthToWei, baseEthToWei } from './EtherConversion'
 
 class OrderFactory {
 
@@ -76,7 +76,7 @@ class OrderFactory {
     // const sign = (msgToSignIn, privateKeyIn) => {
     //     try {
     //         const sig = this.web3.eth.accounts.sign(msgToSignIn.slice(2), '0x' + privateKeyIn)
-    //         const addr = this.web3.eth.accounts.recover(sig);
+    //         const addr = this.web3.eth.accounts.recover(sig)
     //         console.log(`address = ${addr}, priv key in = ${privateKeyIn}`)
     //         console.log(sig)
     //         const r = `${sig.r.toString('hex')}`
@@ -90,19 +90,19 @@ class OrderFactory {
     // }
     sign = (msgToSignIn, privateKeyIn) => {
         const privateKey = privateKeyIn.substring(0, 2) === '0x' ?
-            privateKeyIn.substring(2, privateKeyIn.length) : privateKeyIn;
-        const msgToSign = this.prefixMessage(msgToSignIn);
+            privateKeyIn.substring(2, privateKeyIn.length) : privateKeyIn
+        const msgToSign = this.prefixMessage(msgToSignIn)
         try {
             const sig = EthJsUtil.ecsign(
                 new Buffer(msgToSign.slice(2), 'hex'),
-                new Buffer(privateKey, 'hex'));
-            const r = `0x${sig.r.toString('hex')}`;
-            const s = `0x${sig.s.toString('hex')}`;
-            const v = sig.v;
-            const result = { r, s, v, msg: msgToSign };
-            return result;
+                new Buffer(privateKey, 'hex'))
+            const r = `0x${sig.r.toString('hex')}`
+            const s = `0x${sig.s.toString('hex')}`
+            const v = sig.v
+            const result = { r, s, v, msg: msgToSign }
+            return result
         } catch (err) {
-            throw new Error(err);
+            throw new Error(err)
         }
     }
 
@@ -110,14 +110,14 @@ class OrderFactory {
     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
     // https://github.com/ethereum/go-ethereum/issues/3731
     prefixMessage = (msgIn) => {
-        let msg = msgIn;
-        msg = new Buffer(msg.slice(2), 'hex');
+        let msg = msgIn
+        msg = new Buffer(msg.slice(2), 'hex')
         msg = Buffer.concat([
             new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),
-            msg]);
+            msg])
         msg = EtherDeltaWeb3.sha3(msg)
-        msg = new Buffer(msg.slice(2), 'hex');
-        return `0x${msg.toString('hex')}`;
+        msg = new Buffer(msg.slice(2), 'hex')
+        return `0x${msg.toString('hex')}`
     }
 
     orderHash = (tokenGet, amountGet, tokenGive, amountGive, expires, orderNonce) => {
@@ -163,7 +163,7 @@ class OrderFactory {
                 if (num & 1) { // eslint-disable-line no-bitwise
                     result = add(result, power, base)
                 }
-                num = num >> 1; // eslint-disable-line operator-assignment, no-bitwise
+                num = num >> 1 // eslint-disable-line operator-assignment, no-bitwise
                 if (num === 0) break
                 power = add(power, power, base)
             }

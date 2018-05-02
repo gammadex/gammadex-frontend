@@ -11,7 +11,7 @@ import {
 import OrderType from "../OrderType"
 import OrderSide from "../OrderSide"
 import * as OrderPlacementActions from "../actions/OrderPlacementActions"
-import OrderPlacementStore from "../stores/OrderPlacementStore";
+import OrderPlacementStore from "../stores/OrderPlacementStore"
 import BigNumber from 'bignumber.js'
 import * as MockOrderUtil from "../MockOrderUtil"
 import OrderBox from "./OrderPlacement/OrderBox.js"

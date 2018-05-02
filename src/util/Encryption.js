@@ -7,5 +7,5 @@ export function encrypt(message, password) {
 }
 
 export function decrypt(encrypted, password) {
-    return sjcl.decrypt(password, JSON.parse(encrypted));
+    return sjcl.decrypt(password, JSON.parse(encrypted))
 }

@@ -77,7 +77,7 @@ export function connect() {
     dispatcher.dispatch({
         type: ActionNames.WEB_SOCKET_CONSTRUCTED,
         url
-    });
+    })
 }
 
 export function getMarket() {

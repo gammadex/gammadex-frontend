@@ -1,7 +1,7 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
-import OrderState from "../OrderState";
+import OrderState from "../OrderState"
 
 // TODO hydrate from gammadex backend
 class OpenOrdersStore extends EventEmitter {

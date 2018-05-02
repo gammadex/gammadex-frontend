@@ -3,7 +3,7 @@ import io from 'socket.io-client'
 
 class EtherDeltaWebSocket {
     init(url, socketEventHandlers, messageHandlers) {
-        this.socket = io(url, { transports: ['websocket'], autoConnect: false });
+        this.socket = io(url, { transports: ['websocket'], autoConnect: false })
 
         const handlers = Object.assign({}, socketEventHandlers, messageHandlers)
 

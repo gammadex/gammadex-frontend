@@ -11,7 +11,7 @@ import {Box, BoxFooter} from "./CustomComponents/Box"
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
-import { baseEthToWei, tokEthToWei } from "../EtherConversion";
+import { baseEthToWei, tokEthToWei } from "../EtherConversion"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -78,13 +78,13 @@ export default class AccountDetail extends React.Component {
     onGasStoreChange() {
         this.setState({
             currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei()
-        });
+        })
     }
 
     toggle() {
         this.setState({
           tooltipOpen: !this.state.tooltipOpen
-        });
+        })
       }
 
     hideModal() {

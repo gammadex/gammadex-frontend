@@ -29,7 +29,7 @@ class WebSocketStore extends EventEmitter {
                 this.connected = false
                 this.connecting = true
                 this.emitChange()
-                break;
+                break
             }
             case ActionNames.WEB_SOCKET_OPENED: {
                 console.log("WebSocket opened")

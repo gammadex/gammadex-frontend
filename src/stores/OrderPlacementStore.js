@@ -1,7 +1,7 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
-import OrderType from "../OrderType";
+import OrderType from "../OrderType"
 import BigNumber from 'bignumber.js'
 
 class OrderPlacementStore extends EventEmitter {

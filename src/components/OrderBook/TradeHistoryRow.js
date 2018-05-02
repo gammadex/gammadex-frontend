@@ -6,18 +6,18 @@ import Date from "../CustomComponents/Date"
 
 export default class OrdersTableRow extends React.Component {
     constructor(props) {
-        super(props);
+        super(props)
 
-        this.toggle = this.toggle.bind(this);
+        this.toggle = this.toggle.bind(this)
         this.state = {
             popoverOpen: false
-        };
+        }
     }
 
     toggle() {
         this.setState({
             popoverOpen: !this.state.popoverOpen
-        });
+        })
     }
 
     render() {

@@ -4,7 +4,7 @@ export function getInitialDateRange(periodInMins, startTime, endTime, format = '
     const lengthInDays = parseInt(periodInMins, 10) >= (24 * 60) ? 5 : 2
 
     const calculatedStart = new Date(endTime)
-    calculatedStart.setDate(calculatedStart.getDate() - lengthInDays);
+    calculatedStart.setDate(calculatedStart.getDate() - lengthInDays)
     const actualStart = new Date(startTime)
 
     const start = actualStart > calculatedStart ? actualStart : calculatedStart

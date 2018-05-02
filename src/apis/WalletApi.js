@@ -10,7 +10,7 @@ let timer = null
  * https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
  */
 export function startMetaMaskCheckLoop(ms = 2000) {
-    timer = setInterval(updateWalletStoreProvidedWeb3Details, ms);
+    timer = setInterval(updateWalletStoreProvidedWeb3Details, ms)
 }
 
 export function stopMetaMaskCheckLoop() {

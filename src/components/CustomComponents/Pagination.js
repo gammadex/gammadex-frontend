@@ -50,7 +50,7 @@ export default class Pagination extends React.Component {
 
     prev(page) {
         const disabled = (page === 0)
-        const prevPage = page - 1;
+        const prevPage = page - 1
         return this.pageLink('Prev', prevPage, disabled)
     }
 

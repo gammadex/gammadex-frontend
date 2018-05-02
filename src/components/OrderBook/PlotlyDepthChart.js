@@ -45,7 +45,7 @@ export default class PlotlyDepthChart extends React.Component {
             name: 'offers',
         }
 
-        const data = [buyTrace, sellTrace];
+        const data = [buyTrace, sellTrace]
 
         const layout = {
             dragmode: 'zoom',

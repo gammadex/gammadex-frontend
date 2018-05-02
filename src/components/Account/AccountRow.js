@@ -2,7 +2,7 @@ import React from "react"
 import {Button} from 'reactstrap'
 import * as AccountActions from "../../actions/AccountActions"
 import TruncatedNumber from "../../components/CustomComponents/TruncatedNumber"
-import {tokWeiToEth} from "../../EtherConversion";
+import {tokWeiToEth} from "../../EtherConversion"
 
 export default class AccountTableRow extends React.Component {
     showModal(isEth, isDeposit) {

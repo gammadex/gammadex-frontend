@@ -30,7 +30,7 @@ export function retrieveGasPrices() {
 
 export function startGasStationPollLoop(seconds = 120) {
     retrieveGasPrices()
-    etherGasStationTimer = window.setInterval(retrieveGasPrices, seconds * 1000);
+    etherGasStationTimer = window.setInterval(retrieveGasPrices, seconds * 1000)
 }
 
 export function stopGasStationPollLoop() {
@@ -60,7 +60,7 @@ export function retrieveEthereumPrice() {
 
 export function startCoinMarketCapPollLoop(seconds = 120) {
     retrieveEthereumPrice()
-    coinMarketCapTimer = window.setInterval(retrieveEthereumPrice, seconds * 1000);
+    coinMarketCapTimer = window.setInterval(retrieveEthereumPrice, seconds * 1000)
 }
 
 export function stopCoinMarketCapPollLoop() {

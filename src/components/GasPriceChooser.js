@@ -55,7 +55,7 @@ export default class GasPriceChooser extends React.Component {
     toggleGasPrice = () => {
         this.setState({
             popoverOpen: !this.state.popoverOpen
-        });
+        })
     }
 
     static safeWeiToGwei(wei) {

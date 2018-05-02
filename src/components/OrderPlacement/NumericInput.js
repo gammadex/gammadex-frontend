@@ -21,7 +21,7 @@ export default class NumericInput extends React.Component {
 
     render() {
         const {name, unitName, fieldName, value, valid = true, errorMessage = null} = this.props
-        const isInvalid = valid !== null && !valid;
+        const isInvalid = valid !== null && !valid
 
         return (
             <FormGroup row>

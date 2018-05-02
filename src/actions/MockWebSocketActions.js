@@ -8,7 +8,7 @@ export function connect() {
     dispatcher.dispatch({
         type: ActionNames.WEB_SOCKET_CONSTRUCTED,
         url
-    });
+    })
     dispatcher.dispatch({
         type: ActionNames.WEB_SOCKET_OPENED
     })

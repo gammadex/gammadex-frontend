@@ -145,7 +145,7 @@ class EtherDeltaWeb3 {
     }
 
     sha3 = (msg) => {
-        return this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
+        return this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' })
     }
 
     hexToNumber = (hex) => {
@@ -167,7 +167,7 @@ class EtherDeltaWeb3 {
 
         return Promise.all([this.contractToken.methods.name().call(),
                             this.contractToken.methods.symbol().call(),
-                            this.contractToken.methods.decimals().call()]);
+                            this.contractToken.methods.decimals().call()])
     }
 }
 
@@ -316,9 +316,9 @@ class WalletAccountProvider extends AccountProvider {
             value: txValue,
             data: txData
         }
-        let tx = new Tx(rawTx);
+        let tx = new Tx(rawTx)
         const privateKey = new Buffer(this.walletPrivateKey, 'hex')
-        tx.sign(privateKey);
+        tx.sign(privateKey)
         return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
     }
 
