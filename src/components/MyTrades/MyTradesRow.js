@@ -5,11 +5,12 @@ import TransactionStatus from "../../TransactionStatus"
 import OrderSide from "../../OrderSide"
 import Date from "../CustomComponents/Date"
 import Round from "../../components/CustomComponents/Round"
+import TokenListApi from "../../apis/TokenListApi";
 
 export default class MyTradesRow extends React.Component {
     render() {
         const { trade } = this.props
-        const tokenName = Config.getTokenName(trade.tokenAddress)
+        const tokenName = TokenListApi.getTokenName(trade.tokenAddress)
         let statusColor = "warning"
         if (trade.status === TransactionStatus.COMPLETE) {
             statusColor = "success"

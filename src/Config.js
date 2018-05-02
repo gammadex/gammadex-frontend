@@ -1,18 +1,6 @@
 import config from './config/main.json'
-import _ from "lodash"
-import {addressesLooselyMatch, symbolsLooselyMatch} from './util/KeyUtil'
 
 class Config {
-    constructor() {
-        const tokens = this.getEnvTokens().map((tk) => {
-            return {
-                value: tk.address,
-                label: tk.name
-            }
-        })
-        this.tokens = _.sortBy(tokens, (tk) => tk.label).filter(tk => tk.label !== "ETH")
-    }
-
     isMock() {
         return this.getReactEnv() === "mock"
     }
@@ -36,39 +24,6 @@ class Config {
         return this.getEnv().tokens
     }
 
-    getTokens() {
-        return this.tokens
-    }
-
-    // TODO - all these token functions should be somewhere else. Maybe cleanup when we start supporting custom tokens
-
-    getTokenBySymbolOrAddress(symbolOrAddress) {
-        const matchingTokens = _.filter(this.getEnvTokens(),
-            (tk) => {
-                return addressesLooselyMatch(tk.address.toLowerCase(), symbolOrAddress.toLowerCase()) ||
-                    symbolsLooselyMatch(tk.name.toLowerCase(), symbolOrAddress.toLowerCase())
-            }
-        )
-
-        return (matchingTokens.length > 0) ? matchingTokens[0] : null
-    }
-
-    getTokenName(address) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].name
-    }
-
-    getTokenAddress(name) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].address
-    }
-
-    getTokenDecimals(name) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.name === name)[0].decimals
-    }
-
-    getTokenDecimalsByAddress(address) {
-        return _.filter(this.getEnvTokens(), (tk) => tk.address === address)[0].decimals
-    }
-
     getBaseAddress() {
         return config.baseAddress
     }
@@ -79,16 +34,6 @@ class Config {
 
     getSmallOrderThreshold() {
         return config.smallOrderThreshold
-    }
-
-    getDefaultToken() {
-        const name = this.getEnv().defaultPair.token
-        const address = this.getTokenAddress(name)
-
-        return {
-            name,
-            address
-        }
     }
 
     getDefaultPageSize() {

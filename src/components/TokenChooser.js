@@ -1,12 +1,13 @@
 import React from "react"
 import TokenStore from "../stores/TokenStore"
-import Config from '../Config'
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
 import Conditional from "./CustomComponents/Conditional"
 import TokenCreator from "./TokenChooser/TokenCreator"
 import TokenDisplay from "./TokenChooser/TokenDisplay"
-import {Box, BoxSection, BoxHeader} from "./CustomComponents/Box"
+import {Box, BoxHeader} from "./CustomComponents/Box"
+import TokenListApi from "../apis/TokenListApi";
+import _ from "lodash"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -15,11 +16,9 @@ class TokenChooser extends React.Component {
         this.state = {
             searchedToken: "",
             selectedToken: null,
-            tokenList: Config.getTokens(),
             serverTickers: {},
             showMyTokens: false,
-            showAddToken: false,
-            userDefTokens: []
+            showAddToken: false
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -42,6 +41,7 @@ class TokenChooser extends React.Component {
             selectedToken: TokenStore.getSelectedToken(),
             searchedToken: TokenStore.getSearchToken(),
             serverTickers: TokenStore.getServerTickers(),
+            userDefTokens: TokenStore.getUserTokens()
         })
     }
 
@@ -62,50 +62,26 @@ class TokenChooser extends React.Component {
     }
 
     onCreateToken = token => {
-        this.setState({userDefTokens: [...this.state.userDefTokens, token]})
+        TokenActions.addUserToken(token)
         this.toggleAddTokens()
     }
 
     removeUserToken = token => {
-        const truncatedList = this.state.userDefTokens.filter(ut => {
-            ut.address !== token.address
-        })
-
-        this.setState({userDefTokens: truncatedList})
+        TokenActions.removeUserToken(token)
     }
 
     static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
-        // merge server side info in with token list from config
-        const allTokens = tokenList.map(t => {
-            const name = t.label !== undefined ? t.label : t.name
-            const address = t.value !== undefined ? t.value : t.address
-            
-            let token = {name: name, address: address}
-            
-            const tokenDetails = serverTickers[address.toLowerCase()]
-            if (tokenDetails) {
-                token = Object.assign(token, {
-                    percentChange: tokenDetails.percentChange,
-                    volume: tokenDetails.baseVolume
-                })
-            }
-
-            return token
-        })
-
-        // filter by search criteria if present
-        if (searchedToken && searchedToken.length > 0) {
-            return allTokens.filter(t => t.name.toLowerCase().includes(searchedToken.toLowerCase()))
-        } else {
-            return allTokens
-        }
+        return _(tokenList).map(token => _.pick(token, ['name', 'address']))
+                           .map(token => _.assign(token, _.pick(serverTickers[token.address.toLowerCase()], ['percentChange', 'baseVolume'])))
+                           .filter(token => !searchedToken || searchedToken.length === 0 || token.name.toLowerCase().includes(searchedToken.toLowerCase()))
+                           .value()
     }
 
     render() {
-        const {tokenList, searchedToken, selectedToken, serverTickers, userDefTokens} = this.state
+        const {searchedToken, selectedToken, serverTickers} = this.state
         
-        const userTokens = TokenChooser.getTokensToDisplay(userDefTokens, serverTickers, searchedToken, selectedToken)
-        const systemTokens = TokenChooser.getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken)
+        const userTokens = TokenChooser.getTokensToDisplay(TokenListApi.getUserTokens(), serverTickers, searchedToken, selectedToken)
+        const systemTokens = TokenChooser.getTokensToDisplay(TokenListApi.getSystemTokens(), serverTickers, searchedToken, selectedToken)
 
         return (
             <div className="card token-chooser">

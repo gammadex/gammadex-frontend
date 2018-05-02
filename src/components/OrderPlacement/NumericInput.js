@@ -2,10 +2,6 @@ import React from "react"
 import {FormGroup, FormFeedback, Label, Col, Input} from 'reactstrap'
 
 export default class NumericInput extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     static cleanValueToDecimal(value) {
         return value
             .replace(/[^0-9.]/g, () => "") // globally strip everything that isn't a digit or a .

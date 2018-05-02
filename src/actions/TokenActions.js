@@ -29,3 +29,17 @@ export function tokenLookup(address) {
         address
     })
 }
+
+export function addUserToken(token) {
+    dispatcher.dispatch({
+        type: ActionNames.ADD_USER_TOKEN,
+        token
+    })
+}
+
+export function removeUserToken(token) {
+    dispatcher.dispatch({
+        type: ActionNames.REMOVE_USER_TOKEN,
+        token
+    })
+}

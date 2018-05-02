@@ -1,6 +1,6 @@
 import * as TokenActions from "../actions/TokenActions"
 import * as WebSocketActions from "../actions/WebSocketActions"
-import Config from "../Config"
+import TokenListApi from "../apis/TokenListApi"
 
 function getUrlTokenFromProps(props) {
     return (props && props.match && props.match.params && props.match.params[0]) ? props.match.params[0] : null
@@ -11,7 +11,7 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken, inva
     const currUrlToken = getUrlTokenFromProps(currProps)
 
     if (currUrlToken) {
-        const token = Config.getTokenBySymbolOrAddress(currUrlToken)
+        const token = TokenListApi.getTokenBySymbolOrAddress(currUrlToken)
 
         if (token) {
             const currentStateTokenName = currentStateToken ? currentStateToken.name : null

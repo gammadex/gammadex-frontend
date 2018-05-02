@@ -1,14 +1,14 @@
 import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
-import Config from '../Config'
 import _ from "lodash"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import TokenListApi from "../apis/TokenListApi"
 
 class TokenStore extends EventEmitter {
     constructor() {
         super()
-        this.selectedToken = Config.getDefaultToken()
+        this.selectedToken = TokenListApi.getDefaultToken()
         this.searchToken = ""
         this.serverTickers = {}
         this.invalidTokenIdentifier = null
@@ -48,6 +48,10 @@ class TokenStore extends EventEmitter {
 
     getTokenCheckError() {
         return this.tokenCheckError
+    }
+
+    getUserTokens() {
+        return TokenListApi.getUserTokens()
     }
 
     emitChange() {
@@ -105,6 +109,16 @@ class TokenStore extends EventEmitter {
             }
             case ActionNames.TOKEN_ADDRESS_LOOKUP: {
                 this.checkAddress(action.address)
+                this.emitChange()
+                break
+            }
+            case ActionNames.ADD_USER_TOKEN: {
+                TokenListApi.addUserToken(action.token)
+                this.emitChange()
+                break
+            }
+            case ActionNames.REMOVE_USER_TOKEN: {
+                TokenListApi.removeUserToken(action.token)
                 this.emitChange()
                 break
             }

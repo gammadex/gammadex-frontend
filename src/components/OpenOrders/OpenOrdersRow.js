@@ -6,11 +6,12 @@ import OrderSide from "../../OrderSide"
 import * as OpenOrderActions from "../../actions/OpenOrderActions"
 import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
+import TokenListApi from "../../apis/TokenListApi";
 
 export default class OpenOrdersRow extends React.Component {
     render() {
         const { openOrder } = this.props
-        const tokenName = Config.getTokenName(openOrder.tokenAddress)
+        const tokenName = TokenListApi.getTokenName(openOrder.tokenAddress)
         let buttonColor = "danger"
         let buttonLabel = "CANCEL"
         let buttonDisabled = false

@@ -1,9 +1,9 @@
 import OrderFactory from "./OrderFactory"
-import Config from './Config'
 import EtherDeltaWeb3 from "./EtherDeltaWeb3"
 import * as MockOrderUtil from "./MockOrderUtil"
 import BigNumber from 'bignumber.js'
 import OrderSide from "./OrderSide"
+import TokenListApi from "./apis/TokenListApi";
 
 // this is hacky as hell, but useful as we'll need some of this logic in the backend!
 class MockSocket {
@@ -105,12 +105,13 @@ class MockSocket {
     generateMockMarket() {
         const makerAddress = "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376"
         const makerPrivateKey = "222941a07030ef2477b547da97259a33f4e3a6febeb081da8210cffc86dd138f"
-        const buyOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.4, 0.08, Config.getTokenAddress('TST'), makerAddress, makerPrivateKey))
-        const buyOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.41, 0.31, Config.getTokenAddress('TST'), makerAddress, makerPrivateKey))
-        const buyOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.38, 20, Config.getTokenAddress('TST'), makerAddress, makerPrivateKey))
-        const sellOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.64, 0.11, Config.getTokenAddress('TST'), makerAddress, makerPrivateKey))
-        const sellOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.61, 0.75, Config.getTokenAddress('TST'), makerAddress, makerPrivateKey))
-        const sellOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.71, 100.4, Config.getTokenAddress('TST'), makerAddress, makerPrivateKey))
+        const address = TokenListApi.getTokenAddress('TST')
+        const buyOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.4, 0.08, address, makerAddress, makerPrivateKey))
+        const buyOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.41, 0.31, address, makerAddress, makerPrivateKey))
+        const buyOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.BUY, 10000000, 0.38, 20, address, makerAddress, makerPrivateKey))
+        const sellOrder1 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.64, 0.11, address, makerAddress, makerPrivateKey))
+        const sellOrder2 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.61, 0.75, address, makerAddress, makerPrivateKey))
+        const sellOrder3 = MockOrderUtil.orderDetailFromOrder(OrderFactory.createSignedOrder(OrderSide.SELL, 10000000, 0.71, 100.4, address, makerAddress, makerPrivateKey))
 
         return {
             orders: {
