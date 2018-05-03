@@ -17,7 +17,6 @@ class TokenChooser extends React.Component {
             searchedToken: "",
             selectedToken: null,
             serverTickers: {},
-            showMyTokens: false,
             showAddToken: false
         }
 
@@ -53,10 +52,6 @@ class TokenChooser extends React.Component {
         this.props.history.push(`/exchange/${tokenName}`)
     }
 
-    toggleMyTokens = event => {
-        this.setState({showMyTokens: !this.state.showMyTokens})
-    }
-
     toggleAddTokens = event => {
         this.setState({showAddToken: !this.state.showAddToken})
     }
@@ -85,44 +80,36 @@ class TokenChooser extends React.Component {
 
         return (
             <div className="card token-chooser">
-                <div className="card-header hdr-stretch">
-                    <strong className="card-title">Tokens</strong>
-                    <form className="form-inline">
-                        <input onChange={this.onSearchTokenChange}
-                               value={this.state.searchedToken}
-                               placeholder="Search"
-                               className="form-control"/>
-                        <button value={this.state.searchedToken}
-                                data-toggle="tooltip" data-placement="right"
-                                title={(this.state.showMyTokens ? "Hide" : "Show") + " My Tokens"}
-                                className="btn-sm btn-primary form-control lmargin" onClick={this.toggleMyTokens}>
-                            {this.state.showMyTokens ? "^" : "V"}
-                        </button>
-                    </form>
+                <div className="card-header">
+                    <div className="row hdr-stretch">
+                        <div className="col-lg-6">
+                            <strong className="card-title">Tokens</strong>
+                        </div>
+                        <div className="col-lg-6">
+                            <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                                   placeholder="Search" className="form-control"/>
+                        </div>
+                    </div>
                 </div>
 
-                <Conditional displayCondition={this.state.showMyTokens}>
-                    <Box>
-                        <BoxHeader>
-                            <div className="hdr-stretch">
-                                <strong className="card-title">My Tokens</strong>
-                                <button className="btn btn-sm btn-secondary col-sm-2"
-                                        onClick={this.toggleAddTokens}>{this.state.showAddToken ? "Accept" : "Edit"}</button>
-                            </div>
-                        </BoxHeader>
+                <TokenDisplay tokenList={systemTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}/>
 
-                        <TokenDisplay tokenList={userTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}
-                                      editMode={this.state.showAddToken} removeToken={this.removeUserToken}/>
+                <div className="card sub-card">
+                    <BoxHeader>
+                        <div className="hdr-stretch">
+                            <strong className="card-title">My Tokens</strong>
+                            <button className="btn btn-sm btn-secondary col-sm-2"
+                                    onClick={this.toggleAddTokens}>{this.state.showAddToken ? "Accept" : "Edit"}</button>
+                        </div>
+                    </BoxHeader>
 
-                        <Conditional displayCondition={this.state.showAddToken}>
-                            <TokenCreator create={this.onCreateToken}/>
-                        </Conditional>
-                    </Box>
-                </Conditional>
+                    <TokenDisplay tokenList={userTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}
+                                    editMode={this.state.showAddToken} removeToken={this.removeUserToken}/>
 
-                <Box title={this.state.showMyTokens ? "System Tokens" : ""}>
-                    <TokenDisplay tokenList={systemTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}/>
-                </Box>
+                    <Conditional displayCondition={this.state.showAddToken}>
+                        <TokenCreator create={this.onCreateToken}/>
+                    </Conditional>
+                </div>
             </div>
         )
     }

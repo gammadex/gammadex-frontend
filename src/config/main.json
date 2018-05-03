@@ -311,6 +311,7 @@
       { "address": "0x48f775efbe4f5ece6e0df2f7b5932df56823b990", "name": "R", "decimals": 0 },
       { "address": "0xa51153d9cf9d3cf6d58697b68eccc158d1e40388", "name": "PME", "decimals": 18 },
       { "address": "0xb23be73573bc7e03db6e5dfc62405368716d28a8", "name": "ONEK", "decimals": 18 },
+      { "address": "0x6781a0f84c7e9e846dcb84a9a5bd49333067b104", "name": "ZAP", "decimals": 18 },
       { "address": "0xf629cbd94d3791c9250152bd8dfbdf380e2a3b9c", "name": "ENJ", "decimals": 18 },
       { "address": "0xd65960facb8e4a2dfcb2c2212cb2e44a02e2a57e", "name": "SOAR", "decimals": 6 },
       { "address": "0xafe60511341a37488de25bef351952562e31fcc1", "name": "TBT", "decimals": 8 },

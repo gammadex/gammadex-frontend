@@ -4,6 +4,7 @@ import ActionNames from "../actions/ActionNames"
 import _ from "lodash"
 import TokenListApi from "../apis/TokenListApi"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import WalletStore from "./WalletStore"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -71,7 +72,7 @@ class TokenStore extends EventEmitter {
                 this.createToken.lName = ""
                 this.createToken.name = ""
                 this.createToken.decimals = ""
-                this.tokenCheckError = "Invalid Address"
+                this.tokenCheckError = "Invalid address on " + WalletStore.getProvidedWeb3Info().netDescription
                 this.checkingAddress = false
                 this.emitChange()
             })
