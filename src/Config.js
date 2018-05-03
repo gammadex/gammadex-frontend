@@ -13,10 +13,6 @@ class Config {
         this.tokens = _.sortBy(tokens, (tk) => tk.label).filter(tk => tk.label !== "ETH")
     }
 
-    isMock() {
-        return this.getReactEnv() === "mock"
-    }
-
     isDevelopment() {
         return this.getReactEnv() === "development"
     }

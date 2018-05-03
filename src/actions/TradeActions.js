@@ -5,7 +5,7 @@ import TokenStore from "../stores/TokenStore"
 import TradeStore from "../stores/TradeStore"
 import GasPriceStore from "../stores/GasPriceStore"
 import Config from "../Config"
-import * as MockOrderUtil from "../MockOrderUtil"
+import * as OrderUtil from "../OrderUtil"
 import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei } from "../EtherConversion"
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
@@ -67,10 +67,10 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     } else if (weiFillAmount.isGreaterThan(BigNumber(order.availableVolume))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Amount greater than max order amount (${order.ethAvailableVolume})`
-    } else if (MockOrderUtil.isTakerSell(order) && weiFillAmount.isGreaterThan(BigNumber(exchangeBalanceTokWei))) {
+    } else if (OrderUtil.isTakerSell(order) && weiFillAmount.isGreaterThan(BigNumber(exchangeBalanceTokWei))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedToken().address)})`
-    } else if (MockOrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
+    } else if (OrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Total amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
     }
@@ -85,7 +85,7 @@ export function tradeExecutionConfirmed() {
 
     // amount is in amountGet terms
     let amountWei = 0
-    if (MockOrderUtil.isTakerSell(modalOrder)) {
+    if (OrderUtil.isTakerSell(modalOrder)) {
         // taker is selling, amountWei is in wei units of TOK
         amountWei = weiFillAmount
     } else {
@@ -104,7 +104,7 @@ export function tradeExecutionConfirmed() {
                             account: account,
                             txHash: hash,
                             tokenAddress: tokenAddress,
-                            takerSide: MockOrderUtil.takerSide(modalOrder),
+                            takerSide: OrderUtil.takerSide(modalOrder),
                             price: modalOrder.price,
                             amountTok: fillAmountControlled,
                             totalEth: totalEthControlled,

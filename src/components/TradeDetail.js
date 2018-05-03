@@ -5,7 +5,7 @@ import Config from '../Config'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Col, FormFeedback, Alert } from 'reactstrap'
 
 import * as TradeActions from "../actions/TradeActions"
-import * as MockOrderUtil from "../MockOrderUtil"
+import * as OrderUtil from "../OrderUtil"
 
 export default class TradeDetail extends React.Component {
     constructor(props) {
@@ -84,7 +84,7 @@ export default class TradeDetail extends React.Component {
         let totalRow = null
         let transactionAlert = null
         if (modalOrder) {
-            takerSide = (MockOrderUtil.isTakerSell(modalOrder)) ? 'Sell' : 'Buy'
+            takerSide = (OrderUtil.isTakerSell(modalOrder)) ? 'Sell' : 'Buy'
             modalTitle = `${takerSide} ${selectedToken.name}`
             priceRow = <FormGroup row>
                 <Label for="price" sm={2}>Price</Label>

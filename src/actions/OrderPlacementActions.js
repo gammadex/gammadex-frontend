@@ -8,7 +8,7 @@ import TokenStore from "../stores/TokenStore"
 import BigNumber from 'bignumber.js'
 import _ from "lodash"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import * as MockOrderUtil from "../MockOrderUtil"
+import * as OrderUtil from "../OrderUtil"
 import * as AccountActions from "./AccountActions"
 import * as MyTradeActions from "./MyTradeActions"
 import * as TradeActions from "./TradeActions"
@@ -18,7 +18,6 @@ import TransactionStatus from "../TransactionStatus"
 import OrderSide from "../OrderSide"
 import OrderState from "../OrderState"
 import OrderFactory from "../OrderFactory"
-import MockSocket from "../MockSocket"
 import OrderType from "../OrderType"
 import { tokEthToWei, tokWeiToEth, baseEthToWei, baseWeiToEth } from "../EtherConversion"
 import EtherDeltaSocket from "../EtherDeltaSocket"
@@ -381,9 +380,9 @@ export function confirmTradeExecution() {
                                 environment: Config.getReactEnv(),
                                 account: account,
                                 txHash: hash,
-                                tokenAddress: MockOrderUtil.tokenAddress(trade.order),
-                                takerSide: MockOrderUtil.takerSide(trade.order),
-                                price: MockOrderUtil.priceOf(trade.order),
+                                tokenAddress: OrderUtil.tokenAddress(trade.order),
+                                takerSide: OrderUtil.takerSide(trade.order),
+                                price: OrderUtil.priceOf(trade.order),
                                 amountTok: trade.fillAmountTok,
                                 totalEth: trade.fillAmountEth,
                                 timestamp: (new Date()).toJSON(),
@@ -433,7 +432,6 @@ export function confirmOrder() {
                 r: sig.r,
                 s: sig.s,
             }
-            // MockSocket.submitOrder(signedOrderObject)
             EtherDeltaSocket.emitOrder(signedOrderObject)
                 .then((result) => {
                     if (result && result.status === 202) {

@@ -13,7 +13,7 @@ import OrderSide from "../OrderSide"
 import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 import OrderPlacementStore from "../stores/OrderPlacementStore"
 import BigNumber from 'bignumber.js'
-import * as MockOrderUtil from "../MockOrderUtil"
+import * as OrderUtil from "../OrderUtil"
 import OrderBox from "./OrderPlacement/OrderBox.js"
 
 export default class OrderPlacement extends React.Component {
@@ -116,7 +116,7 @@ export default class OrderPlacement extends React.Component {
         let takerSide = ""
         let trades = null
         if (tradesToExecute.length > 0) {
-            takerSide = (MockOrderUtil.isTakerBuy(tradesToExecute[0].order)) ? "Buy" : "Sell"
+            takerSide = (OrderUtil.isTakerBuy(tradesToExecute[0].order)) ? "Buy" : "Sell"
             trades = tradesToExecute.map(trade => {
                 return <Row key={trade.order.id}><Col>{`${takerSide} ${trade.fillAmountTok} ${token.name} for ${trade.fillAmountEth} ETH`}</Col></Row>
             })

@@ -1,7 +1,6 @@
 import React from "react"
 import WebSocketStore from '../stores/WebSocketStore'
 import * as WebSocketActions from "../actions/WebSocketActions"
-import * as MockWebSocketActions from "../actions/MockWebSocketActions"
 import Config from "../Config"
 
 export default class WebSocketDetail extends React.Component {
@@ -30,11 +29,7 @@ export default class WebSocketDetail extends React.Component {
     }
 
     connectToWebSocket() {
-        if(Config.isMock()) {
-            MockWebSocketActions.connect()
-        } else {
-            WebSocketActions.connect()
-        }
+        WebSocketActions.connect()
     }
 
     render() {
