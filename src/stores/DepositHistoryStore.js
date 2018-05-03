@@ -1,23 +1,25 @@
-import { EventEmitter } from "events"
+import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import TransactionStatus from "../TransactionStatus"
+import * as _ from "lodash"
 
 // TODO hydrate from gammadex backend
 class DepositHistoryStore extends EventEmitter {
     constructor() {
         super()
-        if(localStorage.depositHistory) {
-            this.depositHistory = JSON.parse(localStorage.depositHistory)
-        } else {
-            this.depositHistory = []
-        }
+        this.completedTransfers = []
+        this.depositHistory = []
     }
 
     getDepositHistoryState() {
         return {
             depositHistory: this.depositHistory
         }
+    }
+
+    getCompletedTransfers() {
+        return this.completedTransfers
     }
 
     emitChange() {
@@ -44,14 +46,20 @@ class DepositHistoryStore extends EventEmitter {
                 })
                 this.emitChange()
                 break
-            }       
+            }
             case ActionNames.DEPOSIT_HISTORY_PURGED: {
                 this.depositHistory = []
                 this.emitChange()
                 break
-            }     
+            }
+            case ActionNames.MESSAGE_RECEIVED_MARKET: {
+                if (action.message && !_.isUndefined(action.message.myFunds)) {
+                    console.log("MESSAGE_RECEIVED_MARKET in DepositHistoryStore")
+                    this.completedTransfers = action.message.myFunds.slice()
+                    this.emitChange()
+                }
+            }
         }
-        localStorage.depositHistory = JSON.stringify(this.depositHistory)
     }
 }
 

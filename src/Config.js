@@ -1,10 +1,6 @@
 import config from './config/main.json'
 
 class Config {
-    isMock() {
-        return this.getReactEnv() === "mock"
-    }
-
     isDevelopment() {
         return this.getReactEnv() === "development"
     }

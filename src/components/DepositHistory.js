@@ -4,20 +4,21 @@ import DepositHistoryTable from "./DepositHistory/DepositHistoryTable"
 import * as AccountActions from "../actions/AccountActions"
 import TransactionStatus from "../TransactionStatus"
 import DepositHistoryStore from "../stores/DepositHistoryStore"
-import { Box } from "./CustomComponents/Box"
+import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 export default class DepositHistory extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            transfers: DepositHistoryStore.getCompletedTransfers(),
             depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory
         }
         this.timerFired = this.timerFired.bind(this)
         this.depositHistoryChanged = this.depositHistoryChanged.bind(this)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         DepositHistoryStore.on("change", this.depositHistoryChanged)
         TimerRelay.on("change", this.timerFired)
     }
@@ -28,21 +29,31 @@ export default class DepositHistory extends React.Component {
     }
 
     depositHistoryChanged() {
-        this.setState({ depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory })
-    }
+        console.log("depositHistoryChanged in DepositHistory")
 
-    timerFired() {
-        this.state.depositHistory.filter(d => d.status === TransactionStatus.PENDING).forEach(d => {
-            AccountActions.refreshDeposit(d)
+        this.setState({
+            transfers: DepositHistoryStore.getCompletedTransfers(),
+            depositHistory: DepositHistoryStore.getDepositHistoryState().depositHistory
         })
     }
 
+    timerFired() {
+        /*
+        this.state.depositHistory.filter(d => d.status === TransactionStatus.PENDING).forEach(d => {
+            AccountActions.refreshDeposit(d)
+        })
+        */
+    }
+
     render() {
-        const { depositHistory } = this.state
+        const {depositHistory, transfers} = this.state
+
+
+        console.log("transfers", transfers)
 
         let content = <EmptyTableMessage>You have no open deposits or withdrawls</EmptyTableMessage>
-        if (depositHistory && depositHistory.length > 0) {
-            content = <DepositHistoryTable depositHistory={depositHistory} />
+        if (transfers && transfers.length > 0) {
+            content = <DepositHistoryTable depositHistory={transfers}/>
         }
 
         return (

@@ -21,8 +21,6 @@ class EtherDeltaWeb3 {
     }
 
     initForPrivateKey = (walletAddress, walletPrivateKey) => {
-        console.log(`using private key ${walletPrivateKey} with address ${walletAddress}`)
-
         // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
 
         this.web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
@@ -106,6 +104,20 @@ class EtherDeltaWeb3 {
 
     promiseAvailableVolume(order) {
         return this.contractEtherDelta.methods.availableVolume(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce,
+            order.user,
+            order.v,
+            order.r,
+            order.s).call()
+    }
+
+    promiseAmountFilled(order) {
+        return this.contractEtherDelta.methods.amountFilled(
             order.tokenGet,
             order.amountGet,
             order.tokenGive,
