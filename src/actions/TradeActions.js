@@ -115,7 +115,10 @@ export function tradeExecutionConfirmed() {
                     .on('error', error => { console.log(`failed to trade: ${error.message}`) })
                     .then(receipt => { }) // when tx is mined - we regularly poll the blockchain so this can be empty here
             } else {
-                sendTransactionFailed("Failed to validate trade as of current block.")
+                Promise.all([EtherDeltaWeb3.promiseAvailableVolume(modalOrder), EtherDeltaWeb3.promiseAmountFilled(modalOrder)])
+                    .then(res => {
+                        sendTransactionFailed(`Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${modalOrder.user}`)
+                    })
             }
         })
 }

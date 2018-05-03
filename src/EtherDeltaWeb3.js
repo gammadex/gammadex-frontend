@@ -116,6 +116,20 @@ class EtherDeltaWeb3 {
             order.s).call()
     }
 
+    promiseAmountFilled(order) {
+        return this.contractEtherDelta.methods.amountFilled(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce,
+            order.user,
+            order.v,
+            order.r,
+            order.s).call()
+    }
+
     promiseCurrentBlockNumber() {
         return this.web3.eth.getBlockNumber()
     }
