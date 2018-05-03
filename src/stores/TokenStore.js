@@ -2,8 +2,8 @@ import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import _ from "lodash"
-import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import TokenListApi from "../apis/TokenListApi"
+import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -59,12 +59,9 @@ class TokenStore extends EventEmitter {
     }
 
     checkAddress = address => {
-        EtherDeltaWeb3.promiseGetTokenDetails(address)
-            .then(res => {
-                this.createToken.address = address
-                this.createToken.lName = res[0]
-                this.createToken.name = res[1]
-                this.createToken.decimals = res[2]
+        TokenListApi.searchToken(address, false)
+            .then(token => {
+                this.createToken = token
                 this.tokenCheckError = ""
                 this.checkingAddress = false
                 this.emitChange()

@@ -1,6 +1,12 @@
 import Config from "../Config"
 import _ from "lodash"
 import {addressesLooselyMatch, symbolsLooselyMatch} from '../util/KeyUtil'
+import { isZeroAddress } from "ethereumjs-util";
+import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+
+function isAddress(addressMaybe) {
+    return addressMaybe.startsWith("0x")
+}
 
 class TokenListApi {
     constructor() {
@@ -45,8 +51,33 @@ class TokenListApi {
         return this.find({address}).decimals
     }
 
+    searchToken(address, addIfFound) {
+        return EtherDeltaWeb3.promiseGetTokenDetails(address)
+            .then(res => {
+                const createToken = {
+                    address: address,
+                    lName: res[0],
+                    name: res[1],
+                    decimals: res[2]
+                }
+
+                if (addIfFound) {
+                    this.addUserToken(createToken)
+                }
+
+                return createToken
+            })
+    }
+
     getTokenBySymbolOrAddress(symbolOrAddress) {
-        return this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.name, symbolOrAddress))
+        const found = this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.name, symbolOrAddress))
+        if (found) {
+            return Promise.resolve(found)
+        } else if (isAddress(symbolOrAddress)) {
+            return this.searchToken(symbolOrAddress, true);
+        }
+
+        return Promise.reject(symbolOrAddress)
     }
 
     getDefaultToken() {
