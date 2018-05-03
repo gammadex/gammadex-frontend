@@ -7,6 +7,7 @@ import * as WalletDao from "../../../util/WalletDao"
 import Conditional from "../../CustomComponents/Conditional"
 import * as EthereumNetworks from "../../../util/EthereumNetworks"
 import {withRouter} from "react-router-dom"
+import * as AccountApi from "../../../apis/AccountApi"
 
 class MetaMaskForm extends React.Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class MetaMaskForm extends React.Component {
     selectMetaMask = () => {
         EtherDeltaWeb3.initForMetaMask()
         WalletDao.forgetStoredWallet()
-        AccountActions.refreshAccount(AccountType.METAMASK, this.props.history)
+        AccountApi.refreshAccount(AccountType.METAMASK, this.props.history)
     }
 
     render() {

@@ -5,6 +5,7 @@ import * as ApplicationBootstrapper from "./util/ApplicationBootstrapper"
 import * as WalletApi from "./apis/WalletApi"
 import * as TimerApi from "./apis/TimerApi"
 import * as GasApi from "./apis/GasApi"
+import * as AccountApi from "./apis/AccountApi"
 
 ReactDOM.render(<App />, document.getElementById('app'), () => {
     ApplicationBootstrapper.initAccounts()
@@ -12,4 +13,5 @@ ReactDOM.render(<App />, document.getElementById('app'), () => {
     TimerApi.startTimer()
     GasApi.startGasStationPollLoop()
     GasApi.startCoinMarketCapPollLoop()
+    AccountApi.startPendingTransferCheckLoop()
 })

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import DepositHistory from '../components/DepositHistory'
+import Transfers from '../components/Transfers'
 import MyTrades from '../components/MyTrades'
 
 class History extends Component {
@@ -8,7 +8,7 @@ class History extends Component {
             <div className="row">
                 <div className="col-lg-1"></div>
                 <div className="col-lg-10">
-                    <DepositHistory/>
+                    <Transfers/>
                     <MyTrades/>
                 </div>
                 <div className="col-lg-1"></div>

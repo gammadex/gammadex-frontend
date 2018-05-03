@@ -12,6 +12,7 @@ import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
 import { baseEthToWei, tokEthToWei } from "../EtherConversion"
+import * as AccountApi from "../apis/AccountApi"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -30,7 +31,7 @@ export default class AccountDetail extends React.Component {
 
     componentWillMount() {
         if (this.state.accountRetrieved) {
-            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
@@ -54,14 +55,14 @@ export default class AccountDetail extends React.Component {
 
     onTokenChange() {
         if (this.state.accountRetrieved) {
-            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
     timerFired() {
         if (this.state.accountRetrieved) {
-            AccountActions.refreshNonce()
-            AccountActions.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
+            AccountApi.refreshNonce()
+            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
         }
     }
 
@@ -69,7 +70,7 @@ export default class AccountDetail extends React.Component {
         const accountState = AccountStore.getAccountState()
 
         if (accountState.account && this.state.account !== accountState.account) {
-            AccountActions.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
+            AccountApi.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
         }
 
         this.setState(accountState)
@@ -107,7 +108,7 @@ export default class AccountDetail extends React.Component {
 
         if (modalIsDeposit) {
             if (modalIsEth) {
-                AccountActions.depositEth(
+                AccountApi.depositEth(
                     account,
                     accountRetrieved,
                     nonce,
@@ -115,7 +116,7 @@ export default class AccountDetail extends React.Component {
                     baseEthToWei(modalValue),
                     currentGasPriceWei)
             } else {
-                AccountActions.depositTok(
+                AccountApi.depositTok(
                     account,
                     accountRetrieved,
                     nonce,
@@ -125,7 +126,7 @@ export default class AccountDetail extends React.Component {
             }
         } else {
             if (modalIsEth) {
-                AccountActions.withdrawEth(
+                AccountApi.withdrawEth(
                     account,
                     accountRetrieved,
                     nonce,
@@ -133,7 +134,7 @@ export default class AccountDetail extends React.Component {
                     baseEthToWei(modalValue),
                     currentGasPriceWei)
             } else {
-                AccountActions.withdrawTok(
+                AccountApi.withdrawTok(
                     account,
                     accountRetrieved,
                     nonce,

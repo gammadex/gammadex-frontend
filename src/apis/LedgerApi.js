@@ -5,6 +5,7 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
 import * as WalletDao from "../util/WalletDao"
 import AccountType from "../AccountType"
+import * as AccountApi from "./AccountApi"
 
 export function requestAddresses(deriviationPath, page) {
     const web3 = LedgerUtil.getLedgerWeb3(deriviationPath, Config.getWeb3Url(), Config.getEthereumNetworkId())
@@ -26,6 +27,6 @@ export function initAccount(deriviationPath, accountIndex, history) {
     const web3 = LedgerUtil.getLedgerWeb3(deriviationPath, Config.getWeb3Url(), Config.getEthereumNetworkId())
 
     EtherDeltaWeb3.initForLedger(web3, accountIndex)
-    AccountActions.refreshAccount(AccountType.LEDGER, history)
+    AccountApi.refreshAccount(AccountType.LEDGER, history)
     WalletDao.forgetStoredWallet()
 }

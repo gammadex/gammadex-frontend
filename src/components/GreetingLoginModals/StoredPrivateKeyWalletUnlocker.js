@@ -9,6 +9,7 @@ import * as WalletDao from "../../util/WalletDao"
 import {Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import * as Encryption from "../../util/Encryption"
 import Conditional from "../CustomComponents/Conditional"
+import * as AccountApi from "../../apis/AccountApi"
 
 export default class StoredPrivateKeyWalletUnlocker extends React.Component {
     constructor(props) {
@@ -54,7 +55,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
             const {address} = KeyUtil.convertPrivateKeyToAddress(privateKey)
 
             EtherDeltaWeb3.initForPrivateKey(address, privateKey)
-            AccountActions.refreshAccount(AccountType.PRIVATE_KEY)
+            AccountApi.refreshAccount(AccountType.PRIVATE_KEY)
         } catch (error) {
             WalletActions.passwordError(error)
         }

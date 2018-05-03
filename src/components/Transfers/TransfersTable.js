@@ -1,13 +1,13 @@
 import React from "react"
 import _ from "lodash"
 import Config from "../../Config"
-import DepositHistoryRow from "./DepositHistoryRow"
+import TransferRow from "./TransferRow"
 
-export default class DepositHistoryTable extends React.Component {
+export default class TransfersTable extends React.Component {
     render() {
-        const {depositHistory} = this.props
-        const sortedDepositsTimeDesc = _.reverse(_.sortBy(depositHistory, d => d.timestamp))
-        const rows = sortedDepositsTimeDesc.map(deposit => <DepositHistoryRow key={deposit.txHash} depositHistory={deposit}/>)
+        const {transfers} = this.props
+
+        const rows = transfers.map(transfer => <TransferRow key={transfer.txHash} transfer={transfer}/>)
 
         return (
             <div className="table-responsive deposit-history">

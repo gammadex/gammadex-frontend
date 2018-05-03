@@ -8,6 +8,7 @@ import AccountType from "../../AccountType"
 import * as WalletDao from "../../util/WalletDao"
 import {Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import Conditional from "../CustomComponents/Conditional"
+import * as AccountApi from "../../apis/AccountApi"
 
 export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
     constructor(props) {
@@ -54,7 +55,7 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
             const {address, privateKey} = KeyUtil.convertKeyFileToAddressAndKey(file, this.state.keyStorePassword)
 
             EtherDeltaWeb3.initForPrivateKey(address, privateKey)
-            AccountActions.refreshAccount(AccountType.KEY_STORE_FILE)
+            AccountApi.refreshAccount(AccountType.KEY_STORE_FILE)
         } catch (error) {
             WalletActions.passwordError(error)
         }

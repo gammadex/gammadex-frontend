@@ -10,6 +10,7 @@ import PasswordSection from "./KeyStoreForm/PasswordSection"
 import FileChooser from "./KeyStoreForm/FileChooser"
 import Conditional from "../../CustomComponents/Conditional"
 import {withRouter} from "react-router-dom"
+import * as AccountApi from "../../../apis/AccountApi"
 
 class KeyStoreFile extends React.Component {
     constructor(props) {
@@ -80,7 +81,7 @@ class KeyStoreFile extends React.Component {
             const {address, privateKey} = KeyUtil.convertKeyFileToAddressAndKey(this.state.selectedKeyStoreFile, this.state.keyStorePassword)
 
             EtherDeltaWeb3.initForPrivateKey(address, privateKey)
-            AccountActions.refreshAccount(AccountType.KEY_STORE_FILE, this.props.history)
+            AccountApi.refreshAccount(AccountType.KEY_STORE_FILE, this.props.history)
 
             if (this.state.rememberKeyStoreFile) {
                 WalletDao.saveKeyStoreWallet(this.state.selectedKeyStoreFile, this.state.keyStoreFileName)
