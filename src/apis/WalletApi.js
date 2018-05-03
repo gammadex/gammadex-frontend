@@ -1,8 +1,7 @@
 import * as WalletActions from "../actions/WalletActions"
 import * as EthereumNetworks from "../util/EthereumNetworks"
 import WalletStore from "../stores/WalletStore"
-
-let timer = null
+import Timer from "../util/Timer"
 
 /**
  * Poll for MetaMask login / logout - nasty but current best practice
@@ -10,13 +9,12 @@ let timer = null
  * https://github.com/MetaMask/faq/blob/master/DEVELOPERS.md#ear-listening-for-selected-account-changes
  */
 export function startMetaMaskCheckLoop(ms = 2000) {
-    timer = setInterval(updateWalletStoreProvidedWeb3Details, ms)
+    updateWalletStoreProvidedWeb3Details()
+    Timer.start(updateWalletStoreProvidedWeb3Details, ms)
 }
 
 export function stopMetaMaskCheckLoop() {
-    if (timer) {
-        clearInterval(timer)
-    }
+    Timer.stop(updateWalletStoreProvidedWeb3Details)
 }
 
 export function updateWalletStoreProvidedWeb3Details() {

@@ -125,6 +125,7 @@ export function refreshTransfers() {
 }
 
 export function startPendingTransferCheckLoop(ms = 3000) {
+    refreshTransfers()
     Timer.start(refreshTransfers, ms)
 }
 

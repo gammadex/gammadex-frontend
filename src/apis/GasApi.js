@@ -1,8 +1,6 @@
 import * as GasActions from '../actions/GasActions'
 import {gweiToWei} from '../EtherConversion'
-
-let etherGasStationTimer = null
-let coinMarketCapTimer = null
+import Timer from "../util/Timer"
 
 export function retrieveGasPrices() {
     fetch('https://ethgasstation.info/json/ethgasAPI.json')
@@ -30,13 +28,11 @@ export function retrieveGasPrices() {
 
 export function startGasStationPollLoop(seconds = 120) {
     retrieveGasPrices()
-    etherGasStationTimer = window.setInterval(retrieveGasPrices, seconds * 1000)
+    Timer.start(retrieveGasPrices, seconds * 1000)
 }
 
 export function stopGasStationPollLoop() {
-    if (etherGasStationTimer) {
-        window.clearInterval(etherGasStationTimer)
-    }
+    Timer.stop(retrieveGasPrices)
 }
 
 export function retrieveEthereumPrice() {
@@ -60,11 +56,9 @@ export function retrieveEthereumPrice() {
 
 export function startCoinMarketCapPollLoop(seconds = 120) {
     retrieveEthereumPrice()
-    coinMarketCapTimer = window.setInterval(retrieveEthereumPrice, seconds * 1000)
+    Timer.start(retrieveEthereumPrice, seconds * 1000)
 }
 
 export function stopCoinMarketCapPollLoop() {
-    if (coinMarketCapTimer) {
-        window.clearInterval(coinMarketCapTimer)
-    }
+    Timer.stop(retrieveEthereumPrice)
 }
