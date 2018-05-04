@@ -8,11 +8,15 @@ function isAddress(addressMaybe) {
     return addressMaybe.startsWith("0x")
 }
 
+function archive(userTokens) {
+    localStorage.userTokenList = JSON.stringify(userTokens)
+}
+
 class TokenListApi {
     constructor() {
         this.tokens = Config.getEnvTokens()
         this.systemTokens = _(this.tokens).filter(tk => tk.name !== "ETH").sortBy(tk => tk.name).value()
-        this.userTokens = []
+        this.userTokens = localStorage.userTokenList ? JSON.parse(localStorage.userTokenList) : []
     }
 
     getSystemTokens() {
@@ -25,10 +29,12 @@ class TokenListApi {
 
     addUserToken(token) {
         this.userTokens.push(token)
+        archive(this.userTokens)
     }
 
     removeUserToken(token) {
         this.userTokens = _.filter(this.userTokens, ut => ut.address !== token.address)
+        archive(this.userTokens)
     }
 
     find(criteria) {

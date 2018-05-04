@@ -55,6 +55,17 @@ class TokenStore extends EventEmitter {
         return TokenListApi.getUserTokens()
     }
 
+    reset(address) {
+        this.createToken = {
+            address: address,
+            lName: "",
+            name: "",
+            decimals: ""
+        }
+
+        this.tokenCheckError = ""
+    }
+
     emitChange() {
         this.emit("change")
     }
@@ -63,15 +74,17 @@ class TokenStore extends EventEmitter {
         TokenListApi.searchToken(address, false)
             .then(token => {
                 this.createToken = token
-                this.tokenCheckError = ""
+                if (TokenListApi.find({address: this.createToken.address})) {
+                    this.tokenCheckError = `Token ${this.createToken.name} already registered`
+                } else {
+                    this.tokenCheckError = ""
+                }
+
                 this.checkingAddress = false
                 this.emitChange()
             })
             .catch(e => {
-                this.createToken.address = address
-                this.createToken.lName = ""
-                this.createToken.name = ""
-                this.createToken.decimals = ""
+                this.reset(address)
                 this.tokenCheckError = "Invalid address on " + WalletStore.getProvidedWeb3Info().netDescription
                 this.checkingAddress = false
                 this.emitChange()
@@ -117,6 +130,11 @@ class TokenStore extends EventEmitter {
             }
             case ActionNames.REMOVE_USER_TOKEN: {
                 TokenListApi.removeUserToken(action.token)
+                this.emitChange()
+                break
+            }
+            case ActionNames.RESET_CREATE_TOKEN: {
+                this.reset(action.address)
                 this.emitChange()
                 break
             }
