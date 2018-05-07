@@ -1,0 +1,38 @@
+[
+  {
+    "txHash": "0x8dd2e9f539a6934f5b26164a7cf48e5a7f4a1423cfb6528ec8ee53cb691a2c3d",
+    "logIndex": 0,
+    "date": "2018-05-17T13:12:48.003Z",
+    "price": "0.0061",
+    "side": "buy",
+    "amount": "0.01",
+    "amountBase": "0.000061",
+    "buyer": "0xfFe373a8400E83691f7ED95EdF8C77d2D003793E",
+    "seller": "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376",
+    "tokenAddr": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180"
+  },
+  {
+    "txHash": "0x7ba4c8567d1fb1f40d249eb0cc31427b9a7cc2ee89c24cb6d519d676478457b1",
+    "logIndex": 1,
+    "date": "2018-05-18T13:12:48.003Z",
+    "price": "0.0061",
+    "side": "sell",
+    "amount": "0.01",
+    "amountBase": "0.000061",
+    "buyer": "0xfFe373a8400E83691f7ED95EdF8C77d2D003793E",
+    "seller": "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376",
+    "tokenAddr": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180"
+  },
+  {
+    "txHash": "0xd011cee80d2884f11f120d80a7cfb4e4cce8a7ee7f49c1f39db09c1bab908dd1",
+    "logIndex": 2,
+    "date": "2018-05-19T13:12:48.003Z",
+    "price": "0.0061",
+    "side": "sell",
+    "amount": "0.02",
+    "amountBase": "0.000122",
+    "buyer": "0x6a39017cdBAb52e4Dd6B98FcB2F20B08fA3B7C73",
+    "seller": "0xed230018BF455D72D8b6D416FE2e1b1D8d5D9376",
+    "tokenAddr": "0x90Ccb9e8B95260F98727C0B4A1Cf71fC35BF84c6"
+  }
+]

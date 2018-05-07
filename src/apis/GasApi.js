@@ -26,7 +26,7 @@ export function retrieveGasPrices() {
         })
 }
 
-export function startGasStationPollLoop(seconds = 120) {
+export function startGasStationPollLoop(seconds = 300) {
     retrieveGasPrices()
     Timer.start(retrieveGasPrices, seconds * 1000)
 }

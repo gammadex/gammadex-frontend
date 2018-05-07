@@ -68,7 +68,7 @@ export function connect() {
             funds: (message) => {
                 dispatcher.dispatch({
                     type: ActionNames.MESSAGE_RECEIVED_FUNDS,
-                    message,
+                    funds: message,
                 })
             },
         }

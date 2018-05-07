@@ -1,0 +1,32 @@
+[
+  {
+    "txHash": "0x4a59b50a1b21a7b72f4410d309ff261815b038b60f7072e7b07f9d475ae1bd9c",
+    "logIndex": 2,
+    "date": "2018-04-30T14:08:10.790Z",
+    "tokenAddr": "0x0000000000000000000000000000000000000000",
+    "kind": "Deposit",
+    "user": "0x7a7c8eA9EceC9DFe225Dd07b8c75e54a6aB83Bcf",
+    "amount": "3000000000000000000",
+    "balance": "3001012435277265477"
+  },
+  {
+    "txHash": "0xa2eead9be03e72d5f6f542b24144a2d784d7792352f3e38a4cfbb67daee7a509",
+    "logIndex": 37,
+    "date": "2018-04-30T14:08:10.790Z",
+    "tokenAddr": "0x0000000000000000000000000000000000000000",
+    "kind": "Withdraw",
+    "user": "0xAFf153Ed8474AcfDCA032EF67F68b5cE7b1A042B",
+    "amount": "15920000000000000000",
+    "balance": "15920034608274795286"
+  },
+  {
+    "txHash": "0xAAA9b50a1b21a7b72f4410d309ff261815b038b60f7072e7b07f9d475ae1bd9c",
+    "logIndex": 3,
+    "date": "2018-04-30T14:08:10.790Z",
+    "tokenAddr": "0x0000000000000000000000000000000000000000",
+    "kind": "Deposit",
+    "user": "0x7a7c8eA9EceC9DFe225Dd07b8c75e54a6aB83Bcf",
+    "amount": "3000000000000000000",
+    "balance": "3001012435277265477"
+  }
+]

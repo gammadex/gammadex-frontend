@@ -43,3 +43,10 @@ export function removeUserToken(token) {
         token
     })
 }
+
+export function resetCreate(address) {
+    dispatcher.dispatch({
+        type: ActionNames.RESET_CREATE_TOKEN,
+        address
+    })
+}

@@ -4,15 +4,11 @@ import Round from "../CustomComponents/Round"
 import Conditional from "../CustomComponents/Conditional"
 
 export default class TokenChooserRow extends React.Component {
-    onClick = (tokenName, tokenAddress) => {
-        this.props.onTokenSelect(tokenName, tokenAddress)
-    }
-
     onRowSelect = event => {
         this.props.onTokenSelect(this.props.token.name, this.props.token.address)
     }
 
-    onClick = event => {
+    onRemove = event => {
         this.props.remove(this.props.token)
     }
 
@@ -23,7 +19,7 @@ export default class TokenChooserRow extends React.Component {
         return (
             <tr className={"clickable " + selectedClass}>
                 <Conditional displayCondition={this.props.editMode}>
-                    <td><button className="btn-sm btn-primary" onClick={this.onClick}>X</button></td>
+                    <td><button className="btn-sm btn-primary" onClick={this.onRemove}>X</button></td>
                 </Conditional>
                 <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.name}</Truncated></td>
                 <td onClick={this.onRowSelect}><Round>{token.baseVolume}</Round></td>
