@@ -54,7 +54,8 @@ class TokenListApi {
     }
 
     getTokenDecimalsByAddress(address) {
-        return this.find({address}).decimals
+        const t = this.find({address})
+        return t ? t.decimals : 18
     }
 
     searchToken(address, addIfFound) {
