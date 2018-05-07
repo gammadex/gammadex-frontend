@@ -11,11 +11,23 @@ function archive(userTokens) {
     localStorage.userTokenList = JSON.stringify(userTokens)
 }
 
+/**
+ * Reads user tokens excluding those that are also in system tokens
+ */
+function readUserTokens(systemTokens, userTokens) {
+    if (!userTokens) {
+        return []
+    }
+
+    const systemSet = new Set(_.map(systemTokens, tk => tk.address))
+    return _.filter(JSON.parse(userTokens), tk => !systemSet.has(tk.address))
+}
+
 class TokenListApi {
     constructor() {
         this.tokens = Config.getEnvTokens()
         this.systemTokens = _(this.tokens).filter(tk => tk.name !== "ETH").sortBy(tk => tk.name).value()
-        this.userTokens = localStorage.userTokenList ? JSON.parse(localStorage.userTokenList) : []
+        this.userTokens = readUserTokens(this.systemTokens, localStorage.userTokenList)
     }
 
     getSystemTokens() {
