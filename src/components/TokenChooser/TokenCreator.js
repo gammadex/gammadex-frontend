@@ -6,6 +6,8 @@ import Conditional from "../CustomComponents/Conditional"
 export default class TokenCreator extends React.Component {
     constructor() {
         super()
+
+        TokenActions.resetCreate("")
         this.state = {
             token: TokenStore.getCreateToken(),
             checkingAddress: TokenStore.isCheckingAddress(),
@@ -30,22 +32,15 @@ export default class TokenCreator extends React.Component {
         this.setState({token: token, checkingAddress: ica, checkError: error})
     }
 
-    onClick = event => {
+    onAddToken = event => {
         this.props.create(this.state.token)
     }
 
-    addressChange = event => {
-        const token = {
-            address: event.target.value,
-            lName: "",
-            name: "",
-            decimals: ""
-        }
-
-        this.setState({token: token})
+    onAddressChange = event => {
+        TokenActions.resetCreate(event.target.value)
     }
 
-    checkAddress = event => {
+    onCheckAddress = event => {
         TokenActions.tokenLookup(this.state.token.address)
     }
 
@@ -63,12 +58,12 @@ export default class TokenCreator extends React.Component {
                     <div className="form-inline hdr-stretch col-sm-9">
                         <input className={"form-control" + (this.state.checkError !== "" ? " is-invalid" : "")}
                                id="address" placeholder="0x12345..."
-                               onChange={this.addressChange} value={this.state.token.address}/>
+                               onChange={this.onAddressChange} value={this.state.token.address}/>
                         <button className="btn btn-sm btn-info form-control"
                                 data-toggle="tooltip" data-placement="right"
                                 title="Check address and load token details"
                                 disabled={this.state.token.address === ""}
-                                onClick={this.checkAddress}>Check</button>
+                                onClick={this.onCheckAddress}>Check</button>
                         <div className="invalid-feedback">{this.state.checkError}</div>
                     </div>
                 </div>
@@ -90,8 +85,8 @@ export default class TokenCreator extends React.Component {
                 </Conditional>
 
                 <div className="row form-group form-inline hdr-stretch-ctr">
-                    <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onClick}
-                            disabled={this.state.token.name === ""}>Add</button>
+                    <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
+                            disabled={this.state.token.name === "" || this.state.checkError !== ""}>Add</button>
                 </div>
             </div>
         )

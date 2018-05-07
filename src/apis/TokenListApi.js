@@ -1,18 +1,33 @@
 import Config from "../Config"
 import _ from "lodash"
 import {addressesLooselyMatch, symbolsLooselyMatch} from '../util/KeyUtil'
-import { isZeroAddress } from "ethereumjs-util";
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
 function isAddress(addressMaybe) {
     return addressMaybe.startsWith("0x")
 }
 
+function archive(userTokens) {
+    localStorage.userTokenList = JSON.stringify(userTokens)
+}
+
+/**
+ * Reads user tokens excluding those that are also in system tokens
+ */
+function readUserTokens(systemTokens, userTokens) {
+    if (!userTokens) {
+        return []
+    }
+
+    const systemSet = new Set(_.map(systemTokens, tk => tk.address))
+    return _.filter(JSON.parse(userTokens), tk => !systemSet.has(tk.address))
+}
+
 class TokenListApi {
     constructor() {
         this.tokens = Config.getEnvTokens()
         this.systemTokens = _(this.tokens).filter(tk => tk.name !== "ETH").sortBy(tk => tk.name).value()
-        this.userTokens = []
+        this.userTokens = readUserTokens(this.systemTokens, localStorage.userTokenList)
     }
 
     getSystemTokens() {
@@ -25,10 +40,12 @@ class TokenListApi {
 
     addUserToken(token) {
         this.userTokens.push(token)
+        archive(this.userTokens)
     }
 
     removeUserToken(token) {
         this.userTokens = _.filter(this.userTokens, ut => ut.address !== token.address)
+        archive(this.userTokens)
     }
 
     find(criteria) {
@@ -48,7 +65,8 @@ class TokenListApi {
     }
 
     getTokenDecimalsByAddress(address) {
-        return this.find({address}).decimals
+        const t = this.find({address})
+        return t ? t.decimals : 18
     }
 
     searchToken(address, addIfFound) {
