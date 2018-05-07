@@ -6,7 +6,7 @@ import TradeStore from "../stores/TradeStore"
 import GasPriceStore from "../stores/GasPriceStore"
 import Config from "../Config"
 import * as OrderUtil from "../OrderUtil"
-import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei } from "../EtherConversion"
+import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei, safeBigNumber, weiToEth } from "../EtherConversion"
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
@@ -78,34 +78,38 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
 }
 
 export function tradeExecutionConfirmed() {
-    const tokenAddress = TokenStore.getSelectedToken().address
     const { modalOrder, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = TradeStore.getTradeState()
+    executeOrder(modalOrder, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled)
+}
+
+export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled) {
+    const tokenAddress = TokenStore.getSelectedToken().address
     const { account, nonce } = AccountStore.getAccountState()
     const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
 
     // amount is in amountGet terms
     let amountWei = 0
-    if (OrderUtil.isTakerSell(modalOrder)) {
+    if (OrderUtil.isTakerSell(order)) {
         // taker is selling, amountWei is in wei units of TOK
         amountWei = weiFillAmount
     } else {
         // taker is buying, amountWei in is wei units of ETH
         amountWei = weiTotalEth
     }
-    EtherDeltaWeb3.promiseTestTrade(account, modalOrder, amountWei)
+    EtherDeltaWeb3.promiseTestTrade(account, order, amountWei)
         .then(isTradable => {
             if (isTradable) {
-                EtherDeltaWeb3.promiseTrade(account, nonce, modalOrder, amountWei, gasPriceWei)
+                EtherDeltaWeb3.promiseTrade(account, nonce, order, amountWei, gasPriceWei)
                     .once('transactionHash', hash => {
                         AccountActions.nonceUpdated(nonce + 1)
-                        sentTransaction(hash)
+                        sentTransaction(hash, OrderUtil.takerSide(order))
                         MyTradeActions.addMyTrade({
                             environment: Config.getReactEnv(),
                             account: account,
                             txHash: hash,
                             tokenAddress: tokenAddress,
-                            takerSide: OrderUtil.takerSide(modalOrder),
-                            price: modalOrder.price,
+                            takerSide: OrderUtil.takerSide(order),
+                            price: order.price,
                             amountTok: fillAmountControlled,
                             totalEth: totalEthControlled,
                             timestamp: (new Date()).toJSON(),
@@ -115,30 +119,107 @@ export function tradeExecutionConfirmed() {
                     .on('error', error => { console.log(`failed to trade: ${error.message}`) })
                     .then(receipt => { }) // when tx is mined - we regularly poll the blockchain so this can be empty here
             } else {
-                Promise.all([EtherDeltaWeb3.promiseAvailableVolume(modalOrder), EtherDeltaWeb3.promiseAmountFilled(modalOrder)])
+                Promise.all([EtherDeltaWeb3.promiseAvailableVolume(order), EtherDeltaWeb3.promiseAmountFilled(order)])
                     .then(res => {
-                        sendTransactionFailed(`Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${modalOrder.user}`)
+                        sendTransactionFailed(
+                            `Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${order.user}`,
+                            OrderUtil.takerSide(order))
                     })
             }
         })
 }
 
-export function sentTransaction(txHash) {
+export function sentTransaction(txHash, takerSide) {
     dispatcher.dispatch({
         type: ActionNames.SENT_TRANSACTION,
-        txHash
+        txHash,
+        takerSide
     })
 }
 
-export function sendTransactionFailed(errorMessage) {
+export function sendTransactionFailed(errorMessage, takerSide) {
     dispatcher.dispatch({
         type: ActionNames.SEND_TRANSACTION_FAILED,
-        errorMessage
+        errorMessage,
+        takerSide
     })
 }
 
 export function hideTransactionModal() {
     dispatcher.dispatch({
         type: ActionNames.HIDE_TRANSACTION_MODAL
+    })
+}
+
+// ==== Experimental Order Book ====
+
+export function fillOrder(order) {
+    // accessing stores from action creator, good practice? Yes, it's ok if just reading.
+    // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
+    const weiFillAmount = BigNumber(order.availableVolume)
+    const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
+    const weiTotalEth = BigNumber(order.availableVolumeBase)
+    const totalEthControlled = BigNumber(order.ethAvailableVolumeBase)
+    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const fillOrder = {
+        order,
+        weiFillAmount,
+        fillAmountControlled,
+        weiTotalEth,
+        totalEthControlled,
+        fillAmountValid,
+        fillAmountInvalidReason
+    }
+    dispatcher.dispatch({
+        type: ActionNames.FILL_ORDER,
+        fillOrder
+    })
+}
+
+export function fillOrderAmountChanged(fillAmountControlled, fillOrder) {
+    const order = fillOrder.order
+    const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
+    const totalEthControlled = safeBigNumber(fillAmountControlled).times(safeBigNumber(order.price))
+    const weiTotalEth = baseEthToWei(totalEthControlled)
+    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const updatedFillOrder = {
+        order,
+        weiFillAmount,
+        fillAmountControlled,
+        weiTotalEth,
+        totalEthControlled,
+        fillAmountValid,
+        fillAmountInvalidReason
+    }
+    dispatcher.dispatch({
+        type: ActionNames.FILL_ORDER_CHANGED,
+        updatedFillOrder
+    })
+}
+
+export function maxFillOrder(fillOrder) {
+    if(OrderUtil.isTakerSell(fillOrder.order)) {
+        const { exchangeBalanceTokWei } = AccountStore.getAccountState()
+        const tokenAmountWei = BigNumber.min(BigNumber(fillOrder.order.availableVolume), BigNumber(exchangeBalanceTokWei))
+        fillOrderAmountChanged(tokWeiToEth(tokenAmountWei,TokenStore.getSelectedToken().address), fillOrder)
+    } else {
+        const { exchangeBalanceEthWei } = AccountStore.getAccountState()
+        const exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei)
+        const tokenAmountEth = exchangeBalanceEth.div(OrderUtil.priceOf(fillOrder.order))
+        const tokenAmountWei = BigNumber.min(BigNumber(fillOrder.order.availableVolume), tokEthToWei(tokenAmountEth, TokenStore.getSelectedToken().address))
+        fillOrderAmountChanged(tokWeiToEth(tokenAmountWei,TokenStore.getSelectedToken().address), fillOrder)
+    }
+}
+
+export function executeFillOrder(fillOrder) {
+    const tokenAddress = TokenStore.getSelectedToken().address
+    const { order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = fillOrder
+    executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled)
+}
+
+export function dismissTransactionAlert(takerSide) {
+    dispatcher.dispatch({
+        type: ActionNames.DISMISS_TRANSACTION_ALERT,
+        takerSide
     })
 }

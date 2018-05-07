@@ -4,9 +4,9 @@ import Round from "../CustomComponents/Round"
 
 export default class OrdersTableRow extends React.Component {
 
-    showTradeModal(order) {
-        TradeActions.executeTrade(order)
-    }
+    // showTradeModal(order) {
+    //     TradeActions.executeTrade(order)
+    // }
 
     render() {
         const {order, isMine, rowClass} = this.props
@@ -14,7 +14,7 @@ export default class OrdersTableRow extends React.Component {
         let mine = (isMine) ? " [mine]" : ""
 
         return (
-            <tr key={order.id} onClick={() => this.showTradeModal(order)} className="clickable">
+            <tr key={order.id} onClick={() => TradeActions.fillOrder(order)} className="clickable">
                 <td className={rowClass}><Round price>{order.price}</Round></td>
                 <td><Round>{order.ethAvailableVolume}</Round></td>
                 <td><Round>{order.ethAvailableVolumeBase}{mine}</Round></td>
