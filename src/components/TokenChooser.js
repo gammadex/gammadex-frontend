@@ -5,7 +5,7 @@ import {withRouter} from "react-router-dom"
 import Conditional from "./CustomComponents/Conditional"
 import TokenCreator from "./TokenChooser/TokenCreator"
 import TokenDisplay from "./TokenChooser/TokenDisplay"
-import {Box, BoxHeader} from "./CustomComponents/Box"
+import {BoxHeader} from "./CustomComponents/Box"
 import TokenListApi from "../apis/TokenListApi";
 import _ from "lodash"
 

@@ -1,7 +1,6 @@
 import Config from "../Config"
 import _ from "lodash"
 import {addressesLooselyMatch, symbolsLooselyMatch} from '../util/KeyUtil'
-import { isZeroAddress } from "ethereumjs-util";
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
 function isAddress(addressMaybe) {

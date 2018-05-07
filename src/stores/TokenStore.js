@@ -3,7 +3,6 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import _ from "lodash"
 import TokenListApi from "../apis/TokenListApi"
-import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import WalletStore from "./WalletStore"
 
 class TokenStore extends EventEmitter {
