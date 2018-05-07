@@ -32,8 +32,6 @@ export default class Transfers extends React.Component {
     render() {
         const {transfers} = this.state
 
-        console.log("transfers", transfers)
-
         let content = <EmptyTableMessage>You have no deposits or withdrawls</EmptyTableMessage>
         if (transfers && transfers.length > 0) {
             content = <TransfersTable transfers={transfers}/>

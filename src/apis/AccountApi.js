@@ -1,4 +1,3 @@
-
 import * as AccountActions from "../actions/AccountActions"
 import TransferStore from "../stores/TransferStore"
 import Timer from "../util/Timer"
@@ -6,6 +5,8 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import Config from "../Config"
 import DepositType from "../DepositType"
 import Routes from '../Routes'
+import TransactionStatus from "../TransactionStatus"
+import * as WebSocketActions from "../actions/WebSocketActions"
 
 export function refreshEthAndTokBalance(account, tokenAddress) {
     EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
@@ -25,6 +26,8 @@ export function refreshAccount(accountType, history) {
             if (history) { // TODO - unfortunate that this has to be passed in here from a component
                 history.push(Routes.Exchange)
             }
+
+            WebSocketActions.getMarket()
         })
         .catch(error => {
             AccountActions.accountRetrieveError(accountType, error)
@@ -110,18 +113,20 @@ export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amou
 }
 
 export function refreshTransfers() {
-    TransferStore.getPendingTransfers().forEach(transfer => {
-        EtherDeltaWeb3.promiseTransactionReceipt(transfer.txHash)
-            .then(receipt => {
-                if (receipt) {
-                    if (receipt.status) {
-                        AccountActions.transferSucceeded(transfer.txHash)
-                    } else {
-                        AccountActions.transferFailed(transfer.txHash)
+    TransferStore.getAllTransfers()
+        .filter(t => t.status === TransactionStatus.PENDING)
+        .forEach(transfer => {
+            EtherDeltaWeb3.promiseTransactionReceipt(transfer.txHash)
+                .then(receipt => {
+                    if (receipt) {
+                        if (receipt.status) {
+                            AccountActions.transferSucceeded(transfer.txHash)
+                        } else {
+                            AccountActions.transferFailed(transfer.txHash)
+                        }
                     }
-                }
-            })
-    })
+                })
+        })
 }
 
 export function startPendingTransferCheckLoop(ms = 3000) {

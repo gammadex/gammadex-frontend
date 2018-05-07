@@ -15,7 +15,7 @@ export default class TransferRow extends React.Component {
         const [statusColour, statusDescription, spinner] = this.getStatusElements(status)
 
         return (
-            <tr>
+            <tr key={txHash}>
                 <td><Date year="true">{date}</Date></td>
                 <td>{(kind === DepositType.DEPOSIT) ? "Deposit" : "Withdrawal"}</td>
                 <td>{tokenName}</td>
@@ -28,11 +28,11 @@ export default class TransferRow extends React.Component {
 
     getStatusElements(status) {
         if (status === TransactionStatus.COMPLETE) {
-            return ["success", "Complete", null]
+            return ["success", "Complete", <i/>]
         } else if (status === TransactionStatus.FAILED) {
-            return ["danger", "Failed", null]
+            return ["danger", "Failed", <i/>]
         } else {
-            return ["warning", "Pending", <i className="fa fa-spinner fa-spin"/>]
+            return ["warning", "Pending", <i/>]
         }
     }
 }
