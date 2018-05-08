@@ -1,6 +1,8 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import Round from "./CustomComponents/Round"
+import Config from "../Config"
+import EtherScan from "../components/CustomComponents/Etherscan"
 
 export default class TokenSummary extends React.Component {
     constructor(props) {
@@ -62,6 +64,10 @@ export default class TokenSummary extends React.Component {
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <div className="card-footer">
+                        <strong>{token.lName !== undefined ? token.lName : token.name}</strong> contract: <EtherScan type="address" address={token.address} display="truncate"/>
                     </div>
                 </div>
             )
