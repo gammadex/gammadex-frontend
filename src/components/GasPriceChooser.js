@@ -52,6 +52,10 @@ export default class GasPriceChooser extends React.Component {
         GasActions.setCurrentGasPrice(gweiToWei(valueInGwei))
     }
 
+    onUseRecommended = event => {
+        GasActions.gasPricesUseRecommended()
+    }
+
     toggleGasPrice = () => {
         this.setState({
             popoverOpen: !this.state.popoverOpen
@@ -100,13 +104,15 @@ export default class GasPriceChooser extends React.Component {
                         <PopoverBody>
                             <Box title="Gas Price Per Unit">
                                 <BoxSection>
-
                                     <div className="row">
-                                        <div className="col-lg-6">
+                                        <div className="col-lg-4">
                                             <div>Cheapest</div>
                                             <div>Slowest</div>
                                         </div>
-                                        <div className="col-lg-6">
+                                        <div>
+                                            <div><button className="btn btn-sm btn-link" onClick={this.onUseRecommended}>Recommended</button></div>
+                                        </div>
+                                        <div className="col-lg-4">
                                             <div className="float-right">Expensive</div>
                                             <br/>
                                             <div className="float-right">Fastest</div>
@@ -127,7 +133,6 @@ export default class GasPriceChooser extends React.Component {
                                                                  href="https://ethgasstation.info/">ethgasstation.info</a>
                                         </div>
                                     </div>
-
                                 </BoxSection>
                                 <BoxSection>
                                     <div>

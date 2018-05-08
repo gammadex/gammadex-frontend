@@ -1,6 +1,7 @@
 import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
+import BigNumber from 'bignumber.js'
 
 class GasPriceStore extends EventEmitter {
     constructor() {
@@ -8,7 +9,7 @@ class GasPriceStore extends EventEmitter {
 
         this.prices = []
         this.lastGasPriceRetrieveTime = null
-        this.currentGasPriceWei = null
+        this.currentGasPriceWei = localStorage.currentGasPriceWei && localStorage.currentGasPriceWei !== "" ? BigNumber(localStorage.currentGasPriceWei) : null
     }
 
     getPrices() {
@@ -43,7 +44,7 @@ class GasPriceStore extends EventEmitter {
                 this.prices = prices
                 this.lastGasPriceRetrieveTime = time
 
-                if (! this.currentGasPriceWei) {
+                if (!this.currentGasPriceWei) {
                     this.currentGasPriceWei = prices.averageWei
                 }
 
@@ -52,6 +53,7 @@ class GasPriceStore extends EventEmitter {
             }
             case ActionNames.GAS_PRICES_SET_CURRENT_PRICE_WEI: {
                 this.currentGasPriceWei = action.currentPriceWei
+                localStorage.currentGasPriceWei = String(this.currentGasPriceWei)
                 this.emitChange()
                 break
             }
@@ -65,6 +67,12 @@ class GasPriceStore extends EventEmitter {
                 break
             }
             case ActionNames.ETHEREUM_PRICE_ERROR: {
+                break
+            }
+            case ActionNames.GAS_PRICES_USE_RECOMMENDED: {
+                this.currentGasPriceWei = this.prices.averageWei
+                localStorage.currentGasPriceWei = ""
+                this.emitChange()
                 break
             }
         }

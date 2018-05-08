@@ -40,3 +40,7 @@ export function ethereumPriceRetrieveError(error) {
         error,
     })
 }
+
+export function gasPricesUseRecommended() {
+    dispatcher.dispatch({type: ActionNames.GAS_PRICES_USE_RECOMMENDED})
+}
