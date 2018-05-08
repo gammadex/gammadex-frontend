@@ -4,6 +4,7 @@ import AccountStore from "../stores/AccountStore"
 import TokenStore from "../stores/TokenStore"
 import TradeStore from "../stores/TradeStore"
 import GasPriceStore from "../stores/GasPriceStore"
+import OrderBookStore from "../stores/OrderBookStore"
 import Config from "../Config"
 import * as OrderUtil from "../OrderUtil"
 import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei, safeBigNumber, weiToEth } from "../EtherConversion"
@@ -12,6 +13,9 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import TransactionStatus from "../TransactionStatus"
+import FillOrderField from "../FillOrderField"
+import _ from "lodash"
+import OrderSide from "../OrderSide"
 
 export function executeTrade(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.
@@ -20,7 +24,7 @@ export function executeTrade(order) {
     const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
     const weiTotalEth = BigNumber(order.availableVolumeBase)
     const totalEthControlled = BigNumber(order.ethAvailableVolumeBase)
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     dispatcher.dispatch({
         type: ActionNames.EXECUTE_TRADE,
         order,
@@ -29,7 +33,8 @@ export function executeTrade(order) {
         weiTotalEth,
         totalEthControlled,
         fillAmountValid,
-        fillAmountInvalidReason
+        fillAmountInvalidReason,
+        fillAmountInvalidField
     })
 }
 
@@ -44,7 +49,7 @@ export function changedFillAmountControlled(fillAmountControlled) {
     const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
     const totalEthControlled = BigNumber(String(fillAmountControlled)).times(BigNumber(String(order.price)))
     const weiTotalEth = baseEthToWei(totalEthControlled)
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     dispatcher.dispatch({
         type: ActionNames.FILL_AMOUNT_CHANGED,
         weiFillAmount,
@@ -52,7 +57,8 @@ export function changedFillAmountControlled(fillAmountControlled) {
         weiTotalEth,
         totalEthControlled,
         fillAmountValid,
-        fillAmountInvalidReason
+        fillAmountInvalidReason,
+        fillAmountInvalidField
     })
 }
 
@@ -61,20 +67,22 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
     let fillAmountValid = true
     let fillAmountInvalidReason = ""
+    let fillAmountInvalidField = FillOrderField.AMOUNT
     if (weiFillAmount.isZero()) {
         fillAmountValid = false
-        fillAmountInvalidReason = "Amount must be greater than zero"
+        fillAmountInvalidReason = "Token amount must be greater than zero"
     } else if (weiFillAmount.isGreaterThan(BigNumber(order.availableVolume))) {
         fillAmountValid = false
-        fillAmountInvalidReason = `Amount greater than max order amount (${order.ethAvailableVolume})`
+        fillAmountInvalidReason = `Token amount greater than max order amount (${order.ethAvailableVolume})`
     } else if (OrderUtil.isTakerSell(order) && weiFillAmount.isGreaterThan(BigNumber(exchangeBalanceTokWei))) {
         fillAmountValid = false
-        fillAmountInvalidReason = `Amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedToken().address)})`
+        fillAmountInvalidReason = `Token amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedToken().address)})`
     } else if (OrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
         fillAmountValid = false
-        fillAmountInvalidReason = `Total amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
+        fillAmountInvalidReason = `Total ETH amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
+        fillAmountInvalidField = FillOrderField.TOTAL
     }
-    return { fillAmountValid: fillAmountValid, fillAmountInvalidReason: fillAmountInvalidReason }
+    return { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField }
 }
 
 export function tradeExecutionConfirmed() {
@@ -156,11 +164,27 @@ export function hideTransactionModal() {
 export function fillOrder(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
+
+    if (OrderUtil.isTakerBuy(order) &&
+        TradeStore.getTradeState().fillOrderTakerBuy &&
+        TradeStore.getTradeState().fillOrderTakerBuy.order.id === order.id) {
+        clearFillOrder(OrderSide.BUY)
+        return
+    }
+
+    if (OrderUtil.isTakerSell(order) &&
+        TradeStore.getTradeState().fillOrderTakerSell &&
+        TradeStore.getTradeState().fillOrderTakerSell.order.id === order.id) {
+        clearFillOrder(OrderSide.SELL)
+        return
+    }
+
+    const isBestExecution = orderIsBestExecution(order)
     const weiFillAmount = BigNumber(order.availableVolume)
     const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
     const weiTotalEth = BigNumber(order.availableVolumeBase)
     const totalEthControlled = BigNumber(order.ethAvailableVolumeBase)
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     const fillOrder = {
         order,
         weiFillAmount,
@@ -168,7 +192,9 @@ export function fillOrder(order) {
         weiTotalEth,
         totalEthControlled,
         fillAmountValid,
-        fillAmountInvalidReason
+        fillAmountInvalidReason,
+        fillAmountInvalidField,
+        isBestExecution
     }
     dispatcher.dispatch({
         type: ActionNames.FILL_ORDER,
@@ -176,12 +202,30 @@ export function fillOrder(order) {
     })
 }
 
+export function orderIsBestExecution(order) {
+    if (OrderUtil.isMakerBuy(order)) {
+        const orderIndex = (_.findIndex(OrderBookStore.getBids(), { id: order.id }))
+        const bestOrderIndex = _.findIndex(OrderBookStore.getBids(), (o) => {
+            return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
+                OrderUtil.priceOf(o).isGreaterThanOrEqualTo(OrderUtil.priceOf(order))
+        })
+        return orderIndex <= bestOrderIndex
+    } else {
+        const orderIndex = (_.findIndex(OrderBookStore.getOffers(), { id: order.id }))
+        const bestOrderIndex = _.findIndex(OrderBookStore.getOffers(), (o) => {
+            return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
+                OrderUtil.priceOf(o).isLessThanOrEqualTo(OrderUtil.priceOf(order))
+        })
+        return orderIndex <= bestOrderIndex
+    }
+}
+
 export function fillOrderAmountChanged(fillAmountControlled, fillOrder) {
     const order = fillOrder.order
     const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
     const totalEthControlled = safeBigNumber(fillAmountControlled).times(safeBigNumber(order.price))
     const weiTotalEth = baseEthToWei(totalEthControlled)
-    const { fillAmountValid, fillAmountInvalidReason } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     const updatedFillOrder = {
         order,
         weiFillAmount,
@@ -189,7 +233,9 @@ export function fillOrderAmountChanged(fillAmountControlled, fillOrder) {
         weiTotalEth,
         totalEthControlled,
         fillAmountValid,
-        fillAmountInvalidReason
+        fillAmountInvalidReason,
+        fillAmountInvalidField,
+        isBestExecution: true // TODO
     }
     dispatcher.dispatch({
         type: ActionNames.FILL_ORDER_CHANGED,
@@ -198,16 +244,19 @@ export function fillOrderAmountChanged(fillAmountControlled, fillOrder) {
 }
 
 export function maxFillOrder(fillOrder) {
-    if(OrderUtil.isTakerSell(fillOrder.order)) {
+    fillOrderAmountChanged(tokWeiToEth(getMaximumFillAmountWei(fillOrder.order), TokenStore.getSelectedToken().address), fillOrder)
+}
+
+// MAX ( order_available_volume, TOK/ETH_balance)
+export function getMaximumFillAmountWei(order) {
+    if (OrderUtil.isTakerSell(order)) {
         const { exchangeBalanceTokWei } = AccountStore.getAccountState()
-        const tokenAmountWei = BigNumber.min(BigNumber(fillOrder.order.availableVolume), BigNumber(exchangeBalanceTokWei))
-        fillOrderAmountChanged(tokWeiToEth(tokenAmountWei,TokenStore.getSelectedToken().address), fillOrder)
+        return BigNumber.min(BigNumber(order.availableVolume), BigNumber(exchangeBalanceTokWei))
     } else {
         const { exchangeBalanceEthWei } = AccountStore.getAccountState()
         const exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei)
-        const tokenAmountEth = exchangeBalanceEth.div(OrderUtil.priceOf(fillOrder.order))
-        const tokenAmountWei = BigNumber.min(BigNumber(fillOrder.order.availableVolume), tokEthToWei(tokenAmountEth, TokenStore.getSelectedToken().address))
-        fillOrderAmountChanged(tokWeiToEth(tokenAmountWei,TokenStore.getSelectedToken().address), fillOrder)
+        const tokenAmountEth = exchangeBalanceEth.div(OrderUtil.priceOf(order))
+        return BigNumber.min(BigNumber(order.availableVolume), tokEthToWei(tokenAmountEth, TokenStore.getSelectedToken().address))
     }
 }
 
@@ -220,6 +269,13 @@ export function executeFillOrder(fillOrder) {
 export function dismissTransactionAlert(takerSide) {
     dispatcher.dispatch({
         type: ActionNames.DISMISS_TRANSACTION_ALERT,
+        takerSide
+    })
+}
+
+export function clearFillOrder(takerSide) {
+    dispatcher.dispatch({
+        type: ActionNames.CLEAR_FILL_ORDER,
         takerSide
     })
 }

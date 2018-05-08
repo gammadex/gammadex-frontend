@@ -3,6 +3,7 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import { isTakerBuy } from "../OrderUtil"
 import OrderSide from "../OrderSide"
+import FillOrderField from "../FillOrderField"
 import { isNull } from "util";
 
 class TradeStore extends EventEmitter {
@@ -16,6 +17,7 @@ class TradeStore extends EventEmitter {
         this.totalEthControlled = 0
         this.fillAmountValid = true
         this.fillAmountInvalidReason = ""
+        this.fillAmountInvalidField = FillOrderField.AMOUNT
         this.showTransactionModal = false
         this.transactionHash = ""
         this.transactionModalIsError = false
@@ -38,6 +40,7 @@ class TradeStore extends EventEmitter {
             totalEthControlled: this.totalEthControlled,
             fillAmountValid: this.fillAmountValid,
             fillAmountInvalidReason: this.fillAmountInvalidReason,
+            fillAmountInvalidField: this.fillAmountInvalidField,
             showTransactionModal: this.showTransactionModal,
             transactionHash: this.transactionHash,
             transactionModalIsError: this.transactionModalIsError,
@@ -66,6 +69,7 @@ class TradeStore extends EventEmitter {
                 this.totalEthControlled = action.totalEthControlled
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
+                this.fillAmountInvalidField = action.fillAmountInvalidField
                 this.emitChange()
                 break
             }
@@ -81,26 +85,32 @@ class TradeStore extends EventEmitter {
                 this.totalEthControlled = action.totalEthControlled
                 this.fillAmountValid = action.fillAmountValid
                 this.fillAmountInvalidReason = action.fillAmountInvalidReason
+                this.fillAmountInvalidField = action.fillAmountInvalidField
                 this.emitChange()
                 break
             }
             case ActionNames.FILL_ORDER: {
                 if(isTakerBuy(action.fillOrder.order)) {
-                    if(this.fillOrderTakerBuy && this.fillOrderTakerBuy.order.id === action.fillOrder.order.id) {
-                        this.fillOrderTakerBuy = null
-                    } else {
-                        this.fillOrderTakerBuy = action.fillOrder
-                    }
+                    this.fillOrderTakerBuy = action.fillOrder
                     this.fillOrderTakerBuyTxHash = null,
                     this.fillOrderTakerBuyTxError = null
                 } else {
-                    if(this.fillOrderTakerSell && this.fillOrderTakerSell.order.id === action.fillOrder.order.id) {
-                        this.fillOrderTakerSell = null
-                    } else {
-                        this.fillOrderTakerSell = action.fillOrder
-                    }
+                    this.fillOrderTakerSell = action.fillOrder
                     this.fillOrderTakerSellTxHash = null,
                     this.fillOrderTakerSellTxError = null
+                }
+                this.emitChange()
+                break
+            }
+            case ActionNames.CLEAR_FILL_ORDER: {
+                if(action.takerSide === OrderSide.BUY) {
+                    this.fillOrderTakerBuy = null
+                    this.fillOrderTakerBuyTxHash = null,
+                    this.fillOrderTakerBuyTxError = null
+                } else {
+                    this.fillOrderTakerSell = null
+                    this.fillOrderTakerSellTxHash = null,
+                    this.fillOrderTakerSellTxError = null                    
                 }
                 this.emitChange()
                 break
