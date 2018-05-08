@@ -27,7 +27,7 @@ import EtherDeltaSocket from "../EtherDeltaSocket"
  */
 function calcTotal(priceControlled, amountWei, amountControlled, ethControlled) {
     if (amountControlled !== "" && priceControlled !== "") {
-        const totalEthWei = priceControlled === "" ? BigNumber(0) : BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
+        const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
         const totalEthControlled = baseWeiToEth(totalEthWei).toFixed()
         return { totalEthWei: totalEthWei, totalEthControlled: totalEthControlled }
     }
@@ -78,7 +78,7 @@ export function sellOrderPriceChanged(priceControlled) {
 }
 
 export function sellOrderAmountChanged(sellOrderAmountControlled) {
-    const sellOrderAmountWei = tokEthToWei(sellOrderAmountControlled === "" ? BigNumber(0) : sellOrderAmountControlled, TokenStore.getSelectedToken().address)
+    const sellOrderAmountWei = tokEthToWei(sellOrderAmountControlled, TokenStore.getSelectedToken().address)
     const { sellOrderPriceControlled, sellOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
 
     const { totalEthWei, totalEthControlled } = calcTotal(sellOrderPriceControlled, sellOrderAmountWei,
@@ -159,7 +159,7 @@ export function buyOrderPriceChanged(priceControlled) {
 }
 
 export function buyOrderAmountChanged(buyOrderAmountControlled) {
-    const buyOrderAmountWei = tokEthToWei(buyOrderAmountControlled === "" ? BigNumber(0) : buyOrderAmountControlled, TokenStore.getSelectedToken().address)
+    const buyOrderAmountWei = tokEthToWei(buyOrderAmountControlled, TokenStore.getSelectedToken().address)
     const { buyOrderPriceControlled, buyOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
 
     const { totalEthWei, totalEthControlled } = calcTotal(buyOrderPriceControlled, buyOrderAmountWei,

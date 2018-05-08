@@ -1,5 +1,5 @@
 import React from "react"
-import {FormGroup, FormFeedback, Label, Col, Input} from 'reactstrap'
+import { FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button } from 'reactstrap'
 
 export default class NumericInput extends React.Component {
     static cleanValueToDecimal(value) {
@@ -11,13 +11,21 @@ export default class NumericInput extends React.Component {
 
     onChangeFilteringInput = (e) => {
         const cleanValue = NumericInput.cleanValueToDecimal(e.target.value)
-
         this.props.onChange(cleanValue)
     }
 
+    onMax() {
+        this.props.onMax()
+    }
+
     render() {
-        const {name, unitName, fieldName, value, valid = true, errorMessage = null} = this.props
+        const { name, unitName, fieldName, value, valid = true, errorMessage = null, disabled = false, helpMessage = null, onMax = null } = this.props
         const isInvalid = valid !== null && !valid
+
+        let maxButton = null
+        if (typeof (onMax) === 'function') {
+            maxButton = <InputGroupAddon addonType="append"><Button color="secondary" onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
+        }
 
         return (
             <FormGroup row>
@@ -25,14 +33,17 @@ export default class NumericInput extends React.Component {
                 <Col sm={9}>
                     <div className="input-group">
                         <Input id={fieldName}
-                               value={value}
-                               onChange={this.onChangeFilteringInput}
-                               placeholder="0.00"
-                               invalid={isInvalid}/>
+                            disabled={disabled}
+                            value={value}
+                            onChange={this.onChangeFilteringInput}
+                            placeholder="0.00"
+                            invalid={isInvalid} />
+                        {maxButton}
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
                         <FormFeedback>{errorMessage}</FormFeedback>
+                        <FormText color="muted">{helpMessage}</FormText>
                     </div>
                 </Col>
             </FormGroup>

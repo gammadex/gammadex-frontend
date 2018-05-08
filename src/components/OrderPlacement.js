@@ -15,6 +15,7 @@ import OrderPlacementStore from "../stores/OrderPlacementStore"
 import BigNumber from 'bignumber.js'
 import * as OrderUtil from "../OrderUtil"
 import OrderBox from "./OrderPlacement/OrderBox.js"
+import ExperimentalOrderBox from "./OrderPlacement/Experimental/OrderBox.js"
 
 export default class OrderPlacement extends React.Component {
     constructor(props) {
@@ -134,7 +135,11 @@ export default class OrderPlacement extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
-                        <OrderBox
+                        <ExperimentalOrderBox
+                            type="buy"
+                            tokenName={token.name}
+                        />
+                        {/* <OrderBox
                             side={OrderSide.BUY}
                             type="buy"
                             title="Buy"
@@ -149,11 +154,15 @@ export default class OrderPlacement extends React.Component {
                             totalErrorMessage={buyTotalErrorMessage}
                             submitButtonName="BUY"
                             submitDisabled={disableBuyButton}
-                        />
+                        /> */}
                     </div>
 
                     <div className="col-lg-6">
-                        <OrderBox
+                        <ExperimentalOrderBox
+                            type="sell"
+                            tokenName={token.name}
+                        />
+                        {/* <OrderBox
                             side={OrderSide.SELL}
                             type="sell"
                             title="Sell"
@@ -166,7 +175,7 @@ export default class OrderPlacement extends React.Component {
                             total={sellOrderTotalEthControlled}
                             submitButtonName="SELL"
                             submitDisabled={disableSellButton}
-                        />
+                        /> */}
                     </div>
                 </div>
 

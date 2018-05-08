@@ -10,7 +10,7 @@ function processToken(token, currentStateToken, invalidTokenIdentifier) {
     const currentStateTokenName = currentStateToken ? currentStateToken.name : null
 
     if (token.name !== currentStateTokenName) {
-        TokenActions.selectToken(token.name, token.address)
+        TokenActions.selectToken(token)
         WebSocketActions.getMarket()
     }
 
@@ -29,7 +29,7 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken, inva
     const prevUrlToken = getUrlTokenFromProps(prevProps)
     const currUrlToken = getUrlTokenFromProps(currProps)
 
-    if (currUrlToken) {
+    if (currUrlToken && currUrlToken != prevUrlToken) {
         TokenListApi.getTokenBySymbolOrAddress(currUrlToken)
             .then(token => processToken(token, currentStateToken, invalidTokenIdentifier))
             .catch(bad => badToken(prevUrlToken, currUrlToken, invalidTokenIdentifier))

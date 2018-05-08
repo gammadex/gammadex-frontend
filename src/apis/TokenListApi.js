@@ -66,8 +66,7 @@ class TokenListApi {
     }
 
     getTokenDecimalsByAddress(address) {
-        const t = this.find({address})
-        return t ? t.decimals : 18
+        return this.find({address}).decimals
     }
 
     searchToken(address, addIfFound) {
@@ -101,12 +100,7 @@ class TokenListApi {
 
     getDefaultToken() {
         const name = Config.getEnv().defaultPair.token
-        const address = this.getTokenAddress(name)
-
-        return {
-            name,
-            address
-        }
+        return this.find({name})
     }
 }
 
