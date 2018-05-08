@@ -115,12 +115,12 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                             environment: Config.getReactEnv(),
                             account: account,
                             txHash: hash,
-                            tokenAddress: tokenAddress,
-                            takerSide: OrderUtil.takerSide(order),
+                            tokenAddr: tokenAddress,
+                            side: OrderUtil.takerSide(order),
                             price: order.price,
-                            amountTok: fillAmountControlled,
-                            totalEth: totalEthControlled,
-                            timestamp: (new Date()).toJSON(),
+                            amount: fillAmountControlled, // amountTok
+                            amountBase: totalEthControlled, // totalEth
+                            date: (new Date()).toJSON(),
                             status: TransactionStatus.PENDING
                         })
                     })

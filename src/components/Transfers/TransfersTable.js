@@ -14,10 +14,10 @@ export default class TransfersTable extends React.Component {
                 <table className="table table-striped table-bordered">
                     <thead>
                     <tr>
-                        <th>Date</th>
                         <th>Type</th>
                         <th>Asset</th>
                         <th>Amount</th>
+                        <th>Date</th>
                         <th>Status</th>
                         <th></th>
                     </tr>

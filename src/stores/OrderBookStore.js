@@ -155,7 +155,7 @@ class OrderBookStore extends EventEmitter {
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_TRADES: {
-                this.mergeTrades(action.message)
+                this.mergeTrades(action.trades)
                 this.emitChange()
                 break
             }            

@@ -1,8 +1,7 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
-export function selectToken(name, address) {
-    const token = {name, address}
+export function selectToken(token) {
     dispatcher.dispatch({
         type: ActionNames.SELECT_TOKEN,
         token

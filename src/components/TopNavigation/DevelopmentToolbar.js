@@ -9,7 +9,6 @@ import * as AccountActions from "../../actions/AccountActions"
 class DevelopmentToolbar extends Component {
 
     purge() {
-        MyTradeActions.purge()
         OpenOrderActions.purge()
     }
 
