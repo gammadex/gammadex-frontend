@@ -1,6 +1,9 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
+import { isTakerBuy } from "../OrderUtil"
+import OrderSide from "../OrderSide"
+import { isNull } from "util";
 
 class TradeStore extends EventEmitter {
     constructor() {
@@ -17,6 +20,12 @@ class TradeStore extends EventEmitter {
         this.transactionHash = ""
         this.transactionModalIsError = false
         this.transactionModalErrorText = ""
+        this.fillOrderTakerBuy = null,
+        this.fillOrderTakerSell = null,
+        this.fillOrderTakerBuyTxHash = null,
+        this.fillOrderTakerSellTxHash = null,
+        this.fillOrderTakerBuyTxError = null,
+        this.fillOrderTakerSellTxError = null
     }
 
     getTradeState() {
@@ -32,7 +41,13 @@ class TradeStore extends EventEmitter {
             showTransactionModal: this.showTransactionModal,
             transactionHash: this.transactionHash,
             transactionModalIsError: this.transactionModalIsError,
-            transactionModalErrorText: this.transactionModalErrorText
+            transactionModalErrorText: this.transactionModalErrorText,
+            fillOrderTakerBuy: this.fillOrderTakerBuy,
+            fillOrderTakerSell: this.fillOrderTakerSell,
+            fillOrderTakerBuyTxHash: this.fillOrderTakerBuyTxHash,
+            fillOrderTakerSellTxHash: this.fillOrderTakerSellTxHash,
+            fillOrderTakerBuyTxError: this.fillOrderTakerBuyTxError,
+            fillOrderTakerSellTxError: this.fillOrderTakerSellTxError
         }
     }
 
@@ -69,22 +84,81 @@ class TradeStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.FILL_ORDER: {
+                if(isTakerBuy(action.fillOrder.order)) {
+                    if(this.fillOrderTakerBuy && this.fillOrderTakerBuy.order.id === action.fillOrder.order.id) {
+                        this.fillOrderTakerBuy = null
+                    } else {
+                        this.fillOrderTakerBuy = action.fillOrder
+                    }
+                    this.fillOrderTakerBuyTxHash = null,
+                    this.fillOrderTakerBuyTxError = null
+                } else {
+                    if(this.fillOrderTakerSell && this.fillOrderTakerSell.order.id === action.fillOrder.order.id) {
+                        this.fillOrderTakerSell = null
+                    } else {
+                        this.fillOrderTakerSell = action.fillOrder
+                    }
+                    this.fillOrderTakerSellTxHash = null,
+                    this.fillOrderTakerSellTxError = null
+                }
+                this.emitChange()
+                break
+            }
+            case ActionNames.FILL_ORDER_CHANGED: {
+                if(isTakerBuy(action.updatedFillOrder.order)) {
+                    this.fillOrderTakerBuy = action.updatedFillOrder
+                } else {
+                    this.fillOrderTakerSell = action.updatedFillOrder
+                }
+                this.emitChange()
+                break
+            }            
             case ActionNames.HIDE_TRANSACTION_MODAL: {
                 this.showTransactionModal = false
                 this.emitChange()
                 break
             }
             case ActionNames.SENT_TRANSACTION: {
-                this.showTransactionModal = true
-                this.transactionModalIsError = false
-                this.transactionHash = action.txHash
+                if(action.takerSide === OrderSide.BUY) {
+                    this.fillOrderTakerBuy = null
+                    this.fillOrderTakerBuyTxHash = action.txHash,
+                    this.fillOrderTakerBuyTxError = null
+                } else {
+                    this.fillOrderTakerSell = null
+                    this.fillOrderTakerSellTxHash = action.txHash,
+                    this.fillOrderTakerSellTxError = null                    
+                }
+                // this.showTransactionModal = true
+                // this.transactionModalIsError = false
+                // this.transactionHash = action.txHash
+                this.emitChange()
+                break
+            }
+            case ActionNames.DISMISS_TRANSACTION_ALERT: {
+                if(action.takerSide === OrderSide.BUY) {
+                    this.fillOrderTakerBuyTxHash = null,
+                    this.fillOrderTakerBuyTxError = null
+                } else {
+                    this.fillOrderTakerSellTxHash = null,
+                    this.fillOrderTakerSellTxError = null                    
+                }
                 this.emitChange()
                 break
             }
             case ActionNames.SEND_TRANSACTION_FAILED: {
-                this.showTransactionModal = true
-                this.transactionModalIsError = true
-                this.transactionModalErrorText = action.errorMessage
+                if(action.takerSide === OrderSide.BUY) {
+                    this.fillOrderTakerBuy = null,
+                    this.fillOrderTakerBuyTxHash = null,
+                    this.fillOrderTakerBuyTxError = action.errorMessage
+                } else {
+                    this.fillOrderTakerSell = null,
+                    this.fillOrderTakerSellTxHash = null,
+                    this.fillOrderTakerSellTxError = action.errorMessage                    
+                }
+                // this.showTransactionModal = true
+                // this.transactionModalIsError = true
+                // this.transactionModalErrorText = action.errorMessage
                 this.emitChange()
                 break
             }            

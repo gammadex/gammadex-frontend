@@ -2,6 +2,16 @@
   "baseAddress": "0x0000000000000000000000000000000000000000",
   "baseDecimals": 18,
   "smallOrderThreshold": 0.001,
+  "gasLimit": {
+    "deposit": 250000,
+    "withdraw": 250000,
+    "approveTokenDeposit": 250000,
+    "depositToken": 250000,
+    "withdrawToken": 250000,
+    "trade": 250000,
+    "cancelOrder": 250000
+  },
+  "exchangeFeePercent": 0.003,
   "development": {
     "ethereumNetworkId": 3,
     "web3": "https://ropsten.infura.io",

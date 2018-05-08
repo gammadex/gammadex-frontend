@@ -60,6 +60,14 @@ class Config {
         const env = this.getSocketEnv() ? this.getSocketEnv() : 'default'
         return this.getEnv().sockets[env]
     }
+
+    getGasLimit(action) {
+        return config.gasLimit[action]
+    }
+
+    getExchangeFeePercent() {
+        return config.exchangeFeePercent
+    }
 }
 
 export default new Config()

@@ -3,12 +3,21 @@ import BigNumber from 'bignumber.js'
 import Config from "./Config"
 import TokenListApi from "./apis/TokenListApi"
 
+export function safeBigNumber(num) {
+    if(num == null) {
+        return BigNumber(0)
+    } else {
+        const strNum = String(num)
+        return BigNumber(strNum === "" ? "0" : strNum)
+    }
+}
+
 export function weiToEth(wei, decimals) {
-    return BigNumber(String(wei)).div(BigNumber(10 ** decimals))
+    return safeBigNumber(wei).div(BigNumber(10 ** decimals))
 }
 
 export function ethToWei(eth, decimals) {
-    return BigNumber(String(eth)).times(BigNumber(10 ** decimals)).dp(0, BigNumber.ROUND_FLOOR)
+    return safeBigNumber(eth).times(BigNumber(10 ** decimals)).dp(0, BigNumber.ROUND_FLOOR)
 }
 
 export function baseWeiToEth(wei) {
@@ -29,13 +38,13 @@ export function tokEthToWei(eth, tokenAddress) {
 }
 
 export function weiToGwei(wei) {
-    return BigNumber(String(wei)).div(BigNumber(1000000000))
+    return safeBigNumber(wei).div(BigNumber(1000000000))
 }
 
 export function gweiToWei(gwei) {
-    return BigNumber(String(gwei)).times(BigNumber(1000000000))
+    return safeBigNumber(gwei).times(BigNumber(1000000000))
 }
 
 export function gweiToEth(gwei) {
-    return BigNumber(String(gwei)).div(BigNumber(1000000000))
+    return safeBigNumber(gwei).div(BigNumber(1000000000))
 }
