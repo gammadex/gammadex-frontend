@@ -1,32 +1,23 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
-import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import TransactionStatus from "../TransactionStatus"
 
 export function addMyTrade(trade) {
     dispatcher.dispatch({
-        type: ActionNames.ADD_MY_TRADE,
+        type: ActionNames.ADD_PENDING_TRADE,
         trade
     })
 }
 
-export function refreshMyTrade(txHash) {
-    EtherDeltaWeb3.promiseTransactionReceipt(txHash)
-        .then(receipt => {
-            if (receipt) {
-                const status = receipt.status ? TransactionStatus.COMPLETE : TransactionStatus.FAILED
-                dispatcher.dispatch({
-                    type: ActionNames.MY_TRADE_STATUS_UPDATE,
-                    txHash,
-                    status
-                })
-            }
-        })
+export function myTradeFailedUpdate(txHash) {
+    dispatcher.dispatch({
+        type: ActionNames.MY_TRADE_STATUS_UPDATE_FAILED,
+        txHash
+    })
 }
 
-export function purge() {
-    localStorage.removeItem("myTrades")
+export function myTradeCompletedUpdate(txHash) {
     dispatcher.dispatch({
-        type: ActionNames.MY_TRADES_PURGED
+        type: ActionNames.MY_TRADE_STATUS_UPDATE_COMPLETED,
+        txHash
     })
 }

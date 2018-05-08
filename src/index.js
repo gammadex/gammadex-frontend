@@ -7,6 +7,7 @@ import * as TimerApi from "./apis/TimerApi"
 import * as GasApi from "./apis/GasApi"
 import * as AccountApi from "./apis/AccountApi"
 import * as WebSocketActions from "./actions/WebSocketActions"
+import * as MyTradeApi from "./apis/MyTradeApi"
 
 ReactDOM.render(<App />, document.getElementById('app'), () => {
     ApplicationBootstrapper.initAccounts()
@@ -15,5 +16,6 @@ ReactDOM.render(<App />, document.getElementById('app'), () => {
     GasApi.startGasStationPollLoop()
     GasApi.startCoinMarketCapPollLoop()
     AccountApi.startPendingTransferCheckLoop()
+    MyTradeApi.startPendingTradesCheckLoop()
     WebSocketActions.connect()
 })

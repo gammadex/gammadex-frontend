@@ -381,11 +381,11 @@ export function confirmTradeExecution() {
                                 account: account,
                                 txHash: hash,
                                 tokenAddress: OrderUtil.tokenAddress(trade.order),
-                                takerSide: OrderUtil.takerSide(trade.order),
+                                side: OrderUtil.takerSide(trade.order), // takerSide
                                 price: OrderUtil.priceOf(trade.order),
-                                amountTok: trade.fillAmountTok,
-                                totalEth: trade.fillAmountEth,
-                                timestamp: (new Date()).toJSON(),
+                                amount: trade.fillAmountTok, // amountTok
+                                amountBase: trade.fillAmountEth, // totalEth
+                                date: (new Date()).toJSON(),
                                 status: TransactionStatus.PENDING
                             })
                         })

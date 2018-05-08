@@ -9,6 +9,7 @@ import GasPriceStore from "../../../stores/GasPriceStore"
 import NumericInput from "../NumericInput.js"
 import { priceOf, isTakerSell } from "../../../OrderUtil.js"
 import OrderSide from "../../../OrderSide"
+import FillOrderField from "../../../FillOrderField"
 import * as TradeActions from "../../../actions/TradeActions"
 import Config from "../../../Config"
 import Conditional from "../../CustomComponents/Conditional"
@@ -32,6 +33,7 @@ export default class FillOrderBook extends React.Component {
         this.onTradeStoreChange = this.onTradeStoreChange.bind(this)
         this.isTakerBuyComponent = this.isTakerBuyComponent.bind(this)
         this.dismissTransactionAlert = this.dismissTransactionAlert.bind(this)
+        this.checkFillOrder = this.checkFillOrder.bind(this)
     }
 
     componentDidMount() {
@@ -53,9 +55,19 @@ export default class FillOrderBook extends React.Component {
     }
     onOrderBookChange() {
         this.setState({
-            orders: this.isTakerBuyComponent() ? OrderBookStore.getOffers() : OrderBookStore.getBids(),
+            orders: this.isTakerBuyComponent() ? OrderBookStore.getOffers() : OrderBookStore.getBids()
+        }, () => {
+            // this.checkFillOrder() <-- in react-flux you cannot call a dispatcher from within another dispatch loop!
+            // perhaps revisit this when we move to redux+thunk
         })
         // TODO trigger remove fillOrder action if the current fillOrder is no longer present in the order book (e.g. someone else got it) 
+    }
+
+    checkFillOrder() {
+        const { fillOrder, orders } = this.state
+        if (fillOrder && !this.ordersContains(orders, fillOrder)) {
+            TradeActions.clearFillOrder(this.props.type)
+        }
     }
 
     onTradeStoreChange() {
@@ -83,9 +95,13 @@ export default class FillOrderBook extends React.Component {
         })
     }
 
+    ordersContains(orders, fillOrder) {
+        return typeof _.find(orders, { id: fillOrder.order.id }) !== 'undefined'
+    }
+
     showTradeFields(orders, fillOrder) {
         if (orders.length === 0 || !fillOrder) return false
-        return typeof _.find(orders, { id: fillOrder.order.id }) !== 'undefined'
+        return this.ordersContains(orders, fillOrder)
     }
 
     onOrderAmountChange = (value) => {
@@ -143,21 +159,35 @@ export default class FillOrderBook extends React.Component {
             // calc = amount * 0.003
             const exchangeCost = safeBigNumber(isTakerSell(fillOrder.order) ? fillOrder.fillAmountControlled : fillOrder.totalEthControlled).times(safeBigNumber(Config.getExchangeFeePercent()))
             const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenName : "ETH"
+
+            const amountFieldValid = fillOrder.fillAmountInvalidField === FillOrderField.AMOUNT ? fillOrder.fillAmountValid : true
+            const amountFieldErrorMessage = fillOrder.fillAmountInvalidField === FillOrderField.AMOUNT ? fillOrder.fillAmountInvalidReason : ""
+            const totalFieldValid = fillOrder.fillAmountInvalidField === FillOrderField.TOTAL ? fillOrder.fillAmountValid : true
+            const totalFieldErrorMessage = fillOrder.fillAmountInvalidField === FillOrderField.TOTAL ? fillOrder.fillAmountInvalidReason : ""
+
+            let bestExecutionWarning = null
+            if (!fillOrder.isBestExecution) {
+                bestExecutionWarning = <Alert color="warning">You have not selected the best order in the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book
+                . The same amount of {tokenName} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
+            }
             body =
                 <BoxSection className="order-box">
+                    {bestExecutionWarning}
                     <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
                         fieldName={type + "OrderPrice"} disabled="true" />
                     <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenName}
                         onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
-                        valid={fillOrder.fillAmountValid} errorMessage={fillOrder.fillAmountInvalidReason}
+                        valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
                         onMax={this.onMaxAmount} />
                     <NumericInput name="Total" value={fillOrder.totalEthControlled.toFixed(3)} unitName="ETH"
-                        fieldName={type + "OrderTotal"} disabled="true" />
+                        fieldName={type + "OrderTotal"}
+                        valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
+                        disabled="true" />
                     <hr />
                     <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
-                        fieldName={type + "GasFeeEth"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
+                        fieldName={type + "GasFeeEth"} disabled="true" />
                     <NumericInput name="" value={(estimatedGasCost * ethereumPriceUsd).toFixed(3)} unitName="USD"
-                        fieldName={type + "GasFeeUsd"} disabled="true" />
+                        fieldName={type + "GasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
                     <hr />
                     <NumericInput name="0.3% Exchange Fee" value={exchangeCost.toFixed(8)} unitName={exchangeCostUnits}
                         fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
@@ -171,7 +201,7 @@ export default class FillOrderBook extends React.Component {
         } else {
             body =
                 <BoxSection className="order-box">
-                    {/* cannot disable the fade-in transaction for Alerts with reactstrap so failling back to EmptyTableMessage */}
+                    {/* cannot disable the fade-in transaction for Alerts with reactstrap so falling back to EmptyTableMessage */}
                     {/* <Alert color="secondary" isOpen={!transactionAlertVisible}>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book</Alert> */}
                     <Conditional displayCondition={!transactionAlertVisible}>
                         <EmptyTableMessage>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book</EmptyTableMessage>
