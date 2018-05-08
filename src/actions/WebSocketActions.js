@@ -59,16 +59,16 @@ export function connect() {
                     message,
                 })
             },
-            trades: (message) => {
+            trades: (trades) => {
                 dispatcher.dispatch({
                     type: ActionNames.MESSAGE_RECEIVED_TRADES,
-                    message,
+                    trades,
                 })
             },
-            funds: (message) => {
+            funds: (funds) => {
                 dispatcher.dispatch({
                     type: ActionNames.MESSAGE_RECEIVED_FUNDS,
-                    funds: message,
+                    funds,
                 })
             },
         }

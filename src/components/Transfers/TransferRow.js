@@ -12,27 +12,27 @@ export default class TransferRow extends React.Component {
     render() {
         const {tokenAddr, date, kind, amount, txHash, status} = this.props.transfer
         const tokenName = TokenListApi.getTokenName(tokenAddr)
-        const [statusColour, statusDescription, spinner] = this.getStatusElements(status)
+        const statusDescription = this.getStatusDescription(status)
 
         return (
             <tr key={txHash}>
-                <td><Date year="true">{date}</Date></td>
                 <td>{(kind === DepositType.DEPOSIT) ? "Deposit" : "Withdrawal"}</td>
                 <td>{tokenName}</td>
                 <td><Round price>{String(tokWeiToEth(amount, tokenAddr))}</Round></td>
-                <td><span className={statusColour}>{statusDescription} {spinner}</span></td>
+                <td><Date year="true">{date}</Date></td>
+                <td><span>{statusDescription}</span></td>
                 <td><Etherscan type="tx" address={txHash} display="icon"/></td>
             </tr>
         )
     }
 
-    getStatusElements(status) {
+    getStatusDescription(status) {
         if (status === TransactionStatus.COMPLETE) {
-            return ["success", "Complete", <i/>]
+            return "Complete"
         } else if (status === TransactionStatus.FAILED) {
-            return ["danger", "Failed", <i/>]
+            return "Failed"
         } else {
-            return ["warning", "Pending", <i/>]
+            return "Pending"
         }
     }
 }

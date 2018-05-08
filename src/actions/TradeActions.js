@@ -103,12 +103,12 @@ export function tradeExecutionConfirmed() {
                             environment: Config.getReactEnv(),
                             account: account,
                             txHash: hash,
-                            tokenAddress: tokenAddress,
-                            takerSide: OrderUtil.takerSide(modalOrder),
+                            tokenAddr: tokenAddress,
+                            side: OrderUtil.takerSide(modalOrder),
                             price: modalOrder.price,
-                            amountTok: fillAmountControlled,
-                            totalEth: totalEthControlled,
-                            timestamp: (new Date()).toJSON(),
+                            amount: fillAmountControlled, // amountTok
+                            amountBase: totalEthControlled, // totalEth
+                            date: (new Date()).toJSON(),
                             status: TransactionStatus.PENDING
                         })
                     })
