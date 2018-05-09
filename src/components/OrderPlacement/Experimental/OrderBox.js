@@ -4,6 +4,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, Ca
 import classnames from 'classnames'
 import EmptyTableMessage from "../../CustomComponents/EmptyTableMessage"
 import FillOrderBookTab from './FillOrderBookTab'
+import MakeOrderTab from './MakeOrderTab'
 import OrderSide from "../../../OrderSide"
 
 export default class OrderBox extends React.Component {
@@ -53,29 +54,23 @@ export default class OrderBox extends React.Component {
                                 onClick={() => { this.toggleTab('limit'); }}
                             >Limit</NavLink>
                         </NavItem>
-                        <NavItem>
+                        {/* <NavItem>
                             <NavLink
                                 className={classnames({ active: this.state.activeTab === 'market' })}
                                 onClick={() => { this.toggleTab('market'); }}
                             >Market</NavLink>
-                        </NavItem>
+                        </NavItem> */}
                     </Nav>
                     <TabContent activeTab={this.state.activeTab}>
                         <FillOrderBookTab tabId="orderbook" type={type} tokenName={tokenName}/>
-                        <TabPane tabId="limit">
-                            <Row>
-                                <Col sm="12">
-                                    <EmptyTableMessage>limit</EmptyTableMessage>
-                                </Col>
-                            </Row>
-                        </TabPane>
-                        <TabPane tabId="market">
+                        <MakeOrderTab tabId="limit" type={type} tokenName={tokenName}/>
+                        {/* <TabPane tabId="market">
                             <Row>
                                 <Col sm="12">
                                     <EmptyTableMessage>market</EmptyTableMessage>
                                 </Col>
                             </Row>
-                        </TabPane>
+                        </TabPane> */}
                     </TabContent>
                 </BoxSection>
             </Box>

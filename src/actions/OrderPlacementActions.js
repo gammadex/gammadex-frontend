@@ -227,56 +227,57 @@ export function validateBuyOrder(amountWei, totalEthWei) {
 export function executeBuy() {
     const tokenAddress = TokenStore.getSelectedToken().address
     const { buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthWei, buyOrderAmountWei, buyOrderType } = OrderPlacementStore.getOrderPlacementState()
-    let eligibleOffers = OrderBookStore.getOffers()
-    if (buyOrderType === OrderType.LIMIT_ORDER) {
-        eligibleOffers = _.filter(OrderBookStore.getOffers(),
-            (offer) => BigNumber(String(offer.price)).isLessThanOrEqualTo(BigNumber(String(buyOrderPriceControlled))))
-    }
-    let outstandingBaseAmountWei = buyOrderTotalEthWei
-    let outstandingTokAmountWei = buyOrderAmountWei
-    if (buyOrderType === OrderType.MARKET_ORDER) {
-        outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
-    }
-    const trades = _.flatMap(eligibleOffers, offer => {
-        let fillAmountWei = BigNumber.minimum(outstandingBaseAmountWei, BigNumber(offer.availableVolumeBase))
-        if (!fillAmountWei.isZero()) {
-            if (buyOrderType === OrderType.MARKET_ORDER) {
-                let fillAmountEth = baseWeiToEth(fillAmountWei)
-                let fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
-                const fillAmountTokWei = BigNumber.minimum(outstandingTokAmountWei,
-                    tokEthToWei(fillAmountTok, tokenAddress))
-                if (!fillAmountTokWei.isZero()) {
-                    outstandingTokAmountWei = outstandingTokAmountWei.minus(fillAmountTokWei)
+    const trades = []
+    // let eligibleOffers = OrderBookStore.getOffers()
+    // if (buyOrderType === OrderType.LIMIT_ORDER) {
+    //     eligibleOffers = _.filter(OrderBookStore.getOffers(),
+    //         (offer) => BigNumber(String(offer.price)).isLessThanOrEqualTo(BigNumber(String(buyOrderPriceControlled))))
+    // }
+    // let outstandingBaseAmountWei = buyOrderTotalEthWei
+    // let outstandingTokAmountWei = buyOrderAmountWei
+    // if (buyOrderType === OrderType.MARKET_ORDER) {
+    //     outstandingBaseAmountWei = BigNumber(AccountStore.getAccountState().exchangeBalanceEthWei)
+    // }
+    // const trades = _.flatMap(eligibleOffers, offer => {
+    //     let fillAmountWei = BigNumber.minimum(outstandingBaseAmountWei, BigNumber(offer.availableVolumeBase))
+    //     if (!fillAmountWei.isZero()) {
+    //         if (buyOrderType === OrderType.MARKET_ORDER) {
+    //             let fillAmountEth = baseWeiToEth(fillAmountWei)
+    //             let fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
+    //             const fillAmountTokWei = BigNumber.minimum(outstandingTokAmountWei,
+    //                 tokEthToWei(fillAmountTok, tokenAddress))
+    //             if (!fillAmountTokWei.isZero()) {
+    //                 outstandingTokAmountWei = outstandingTokAmountWei.minus(fillAmountTokWei)
 
-                    fillAmountTok = tokWeiToEth(fillAmountTokWei, tokenAddress)
-                    fillAmountEth = fillAmountTok.times(BigNumber(String(offer.price)))
-                    fillAmountWei = baseEthToWei(fillAmountEth)
+    //                 fillAmountTok = tokWeiToEth(fillAmountTokWei, tokenAddress)
+    //                 fillAmountEth = fillAmountTok.times(BigNumber(String(offer.price)))
+    //                 fillAmountWei = baseEthToWei(fillAmountEth)
 
-                    outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
-                    return [{
-                        order: offer,
-                        fillAmountWei: fillAmountWei,
-                        fillAmountEth: fillAmountEth,
-                        fillAmountTok: fillAmountTok
-                    }]
-                } else {
-                    return []
-                }
-            } else {
-                outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
-                const fillAmountEth = baseWeiToEth(fillAmountWei)
-                const fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
-                return [{
-                    order: offer,
-                    fillAmountWei: fillAmountWei,
-                    fillAmountEth: fillAmountEth,
-                    fillAmountTok: fillAmountTok
-                }]
-            }
-        } else {
-            return []
-        }
-    })
+    //                 outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
+    //                 return [{
+    //                     order: offer,
+    //                     fillAmountWei: fillAmountWei,
+    //                     fillAmountEth: fillAmountEth,
+    //                     fillAmountTok: fillAmountTok
+    //                 }]
+    //             } else {
+    //                 return []
+    //             }
+    //         } else {
+    //             outstandingBaseAmountWei = outstandingBaseAmountWei.minus(fillAmountWei)
+    //             const fillAmountEth = baseWeiToEth(fillAmountWei)
+    //             const fillAmountTok = fillAmountEth.div(BigNumber(String(offer.price)))
+    //             return [{
+    //                 order: offer,
+    //                 fillAmountWei: fillAmountWei,
+    //                 fillAmountEth: fillAmountEth,
+    //                 fillAmountTok: fillAmountTok
+    //             }]
+    //         }
+    //     } else {
+    //         return []
+    //     }
+    // })
     if (trades.length > 0) {
         dispatcher.dispatch({
             type: ActionNames.EXECUTE_TRADES,
