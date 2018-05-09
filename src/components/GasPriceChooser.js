@@ -95,7 +95,7 @@ export default class GasPriceChooser extends React.Component {
 
         return (
             <div>
-                <button className="btn" id="gasPrice" onClick={this.toggleGasPrice}>Gas
+                <button className="btn" id="gasPrice" type="button" onClick={this.toggleGasPrice}>Gas
                     Price: {currentGasPriceGwei}&nbsp;Gwei
                 </button>
 
