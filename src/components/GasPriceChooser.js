@@ -56,7 +56,8 @@ export default class GasPriceChooser extends React.Component {
         GasActions.gasPricesUseRecommended()
     }
 
-    toggleGasPrice = () => {
+    toggleGasPrice = (event) => {
+        event.preventDefault()
         this.setState({
             popoverOpen: !this.state.popoverOpen
         })
