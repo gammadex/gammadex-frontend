@@ -40,6 +40,8 @@ export default class FillOrderBook extends React.Component {
         OrderBookStore.on("change", this.onOrderBookChange)
         TradeStore.on("change", this.onTradeStoreChange)
         GasPriceStore.on("change", this.saveGasPrices)
+        this.onTradeStoreChange()
+        this.onOrderBookChange()
         this.saveGasPrices()
     }
 
