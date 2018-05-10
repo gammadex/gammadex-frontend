@@ -56,7 +56,7 @@ export default class MyTrades extends React.Component {
                 <div className="card-header">
                     <div className="row hdr-stretch">
                         <div className="col-lg-6">
-                            <strong className="card-title">My Trades</strong>
+                            <strong className="card-title">Trade History</strong>
                         </div>
                         <div className="col-lg-6 red">
                             <div className="float-right">

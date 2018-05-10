@@ -7,21 +7,17 @@ class History extends Component {
         return (
             <div>
                 <div className="row">
-                    <div className="col-lg-1"></div>
-                    <div className="col-lg-5 pr-2">
+                    <div className="col-lg-6 pr-2">
                         <Transfers type="Deposit" title="Deposit History"/>
                     </div>
-                    <div className="col-lg-5 pl-2">
+                    <div className="col-lg-6 pl-2">
                         <Transfers type="Withdraw" title="Withdraw History"/>
                     </div>
-                    <div className="col-lg-1"></div>
                 </div>
                 <div className="row">
-                    <div className="col-lg-1"></div>
-                    <div className="col-lg-10">
+                    <div className="col-lg-12">
                         <MyTrades/>
                     </div>
-                    <div className="col-lg-1"></div>
                 </div>
             </div>
         )
