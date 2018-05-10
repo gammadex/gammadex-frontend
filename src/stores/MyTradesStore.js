@@ -15,7 +15,11 @@ class MyTradesStore extends EventEmitter {
         this.updateAllTrades()
     }
 
-    getAllTrades() {
+    getAllTrades(tokenAddress) {
+        if (tokenAddress) {
+            return this.allTrades.filter(trade => trade.tokenAddr === tokenAddress)
+        }
+
         return this.allTrades
     }
 

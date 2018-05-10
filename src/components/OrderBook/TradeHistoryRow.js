@@ -4,7 +4,7 @@ import Etherscan from "../CustomComponents/Etherscan"
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
 import Date from "../CustomComponents/Date"
 
-export default class OrdersTableRow extends React.Component {
+export default class TradeHistoryRow extends React.Component {
     constructor(props) {
         super(props)
 
