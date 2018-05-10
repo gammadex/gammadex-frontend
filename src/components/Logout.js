@@ -22,6 +22,7 @@ export default class Logout extends React.Component {
     }
 
     onAccountStoreChange() {
+        console.log("@@@@@@@@ Logout updated")
         this.setState({
             account: AccountStore.getAccount(),
         })

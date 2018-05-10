@@ -6,6 +6,7 @@ class AccountStore extends EventEmitter {
     constructor() {
         super()
         this._clearState()
+        console.log("initialised AccountStore")
     }
 
     _clearState() {
@@ -47,6 +48,7 @@ class AccountStore extends EventEmitter {
     }
 
     emitChange() {
+        console.log("change", this)
         this.emit("change")
     }
 
@@ -58,6 +60,7 @@ class AccountStore extends EventEmitter {
                 this.accountRetrieved = true
                 this.selectedAccountType = action.selectedAccountType
                 this.accountSequenceNum += 1
+                console.log("ACCOUNT_RETRIEVED", this.account)
                 this.emitChange()
                 break
             }

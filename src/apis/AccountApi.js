@@ -19,8 +19,9 @@ export function refreshEthAndTokBalance(account, tokenAddress) {
 }
 
 export function refreshAccount(accountType, history) {
-    EtherDeltaWeb3.refreshAccount()
+    return EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
+
             AccountActions.accountRetrieved(addressNonce, accountType)
 
             if (history) { // TODO - unfortunate that this has to be passed in here from a component
@@ -28,6 +29,8 @@ export function refreshAccount(accountType, history) {
             }
 
             WebSocketActions.getMarket()
+
+            return true
         })
         .catch(error => {
             AccountActions.accountRetrieveError(accountType, error)

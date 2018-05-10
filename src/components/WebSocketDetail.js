@@ -28,14 +28,10 @@ export default class WebSocketDetail extends React.Component {
         this.setState(WebSocketStore.getConnectionState())
     }
 
-    connectToWebSocket() {
-        WebSocketActions.connect()
-    }
-
     render() {
         const {url, connecting, connected} = this.state
 
-        let status = <span><span className="text-danger">No connection  </span> <button className="btn" onClick={this.connectToWebSocket}>Connect</button></span>
+        let status = <span><span className="text-danger">No connection  </span></span>
         if (connecting) {
             status = <span className="text-warning">Connecting to {url}</span>
         } else if (connected) {

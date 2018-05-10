@@ -11,23 +11,30 @@ export default class MyTrades extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            trades: MyTradesStore.getAllTrades()
+            trades: MyTradesStore.getAllTrades(),
+            account: AccountStore.getAccountState().account,
         }
         this.updateMyTradesState = this.updateMyTradesState.bind(this)
+        this.updateAccount = this.updateAccount.bind(this)
+        console.log("initialissed MyTrades", this.updateAccount )
     }
 
     componentWillMount() {
+        console.log("BINDING")
         MyTradesStore.on("change", this.updateMyTradesState)
+        AccountStore.on("change", this.updateAccount)
     }
 
     componentWillUnmount() {
+        console.log("UN BINDING")
         MyTradesStore.removeListener("change", this.updateMyTradesState)
+        AccountStore.removeListener("change", this.updateAccount)
     }
 
-    updateAccountState() {
-        const {account} = AccountStore.getAccountState()
+    updateAccount() {
+        console.log("XXXXXXXXXX CHANGE")
         this.setState({
-            account: account
+            account: AccountStore.getAccountState().account
         })
     }
 
@@ -38,16 +45,24 @@ export default class MyTrades extends React.Component {
     }
 
     refresh = () => {
-        WebSocketActions.getMarket()
+        if (this.state.account) {
+            WebSocketActions.getMarket()
+        }
     }
 
     render() {
-        const {trades} = this.state
+        const {trades, account} = this.state
+
+        console.log("MyTrades account", account)
+
         const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades)
         const csvContent = TradeDisplayUtil.tradesToCsv(displayTrades)
+        const disabledClass = account ? "" : "disabled"
 
         let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
-        if (trades && trades.length > 0) {
+        if (! account) {
+            content = <EmptyTableMessage>Please log in to see trade history</EmptyTableMessage>
+        } else if (trades && trades.length > 0) {
             content = <MyTradesTable trades={displayTrades}/>
         }
 
@@ -60,8 +75,8 @@ export default class MyTrades extends React.Component {
                         </div>
                         <div className="col-lg-6 red">
                             <div className="float-right">
-                                <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv" className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
-                                <button className="btn btn-primary" onClick={this.refresh}><i className="fas fa-sync"/></button>
+                                <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv" className={"btn btn-primary mr-2 " + disabledClass}><i className="fas fa-download"/></Download>
+                                <button className={"btn btn-primary " + disabledClass} onClick={this.refresh}><i className="fas fa-sync"/></button>
                             </div>
                         </div>
                     </div>

@@ -67,10 +67,12 @@ export default class AccountDetail extends React.Component {
     }
 
     onAccountChange() {
+        console.log("@@@@@@@@ AccountDetail updated")
+
         const accountState = AccountStore.getAccountState()
 
         if (accountState.account && this.state.account !== accountState.account) {
-            AccountApi.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
+            //AccountApi.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
         }
 
         this.setState(accountState)
