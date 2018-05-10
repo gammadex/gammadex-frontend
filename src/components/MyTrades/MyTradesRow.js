@@ -10,31 +10,19 @@ import Etherscan from "../CustomComponents/Etherscan"
 
 export default class MyTradesRow extends React.Component {
     render() {
-        const { tokenAddr, side, price, amount, amountBase, date, txHash, status } = this.props.trade
-        const tokenName = TokenListApi.getTokenName(tokenAddr)
-        const statusDescription = this.getStatusDescription(status)
+        const { market, side, price, tokenName, amount, amountBase, date, txHash, status } = this.props.trade
 
         return (
             <tr>
-                <td>{`${tokenName}/ETH`}</td>
-                <td>{(side.toLowerCase() === OrderSide.SELL.toLowerCase()) ? "Sell" : "Buy"}</td>
-                <td><Round price>{String(price)}</Round></td>
-                <td><Round>{String(amount)}</Round> {tokenName}</td>
-                <td>{String(amountBase)}</td>
+                <td>{market}</td>
+                <td>{side}</td>
+                <td><Round price>{price}</Round></td>
+                <td><Round>{amount}</Round> {tokenName}</td>
+                <td>{amountBase}</td>
                 <td><Date year>{date}</Date></td>
-                <td>{statusDescription}</td>
+                <td>{status}</td>
                 <td><Etherscan type="tx" address={txHash} display="icon"/></td>
             </tr>
         )
-    }
-
-    getStatusDescription(status) {
-        if (status === TransactionStatus.COMPLETE) {
-            return "Complete"
-        } else if (status === TransactionStatus.FAILED) {
-            return "Failed"
-        } else {
-            return "Pending"
-        }
     }
 }

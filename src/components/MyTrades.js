@@ -7,6 +7,8 @@ import MyTradesTable from "./MyTrades/MyTradesTable"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
+import Download from "./CustomComponents/Download"
+import * as TradeDisplayUtil from "../util/TradeDisplayUtil"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -40,16 +42,32 @@ export default class MyTrades extends React.Component {
 
     render() {
         const {trades} = this.state
+        const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades)
+        const csvContent = TradeDisplayUtil.tradesToCsv(displayTrades)
 
         let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
         if (trades && trades.length > 0) {
-            content = <MyTradesTable trades={trades}/>
+            content = <MyTradesTable trades={displayTrades}/>
         }
 
         return (
-            <Box title="My Trades">
+            <div className="card token-chooser">
+                <div className="card-header">
+                    <div className="row hdr-stretch">
+                        <div className="col-lg-6">
+                            <strong className="card-title">My Trades</strong>
+                        </div>
+                        <div className="col-lg-6 red">
+                            <div className="float-right">
+                                <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv" className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {content}
-            </Box>
+            </div>
         )
     }
 }

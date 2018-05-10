@@ -7,8 +7,6 @@ export default class MyTradesTable extends React.Component {
     render() {
         const {trades} = this.props
 
-        console.log("trades", trades)
-
         const rows = trades.map(trade => <MyTradesRow key={trade.txHash} trade={trade}/>)
 
         return (
