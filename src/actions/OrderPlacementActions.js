@@ -146,7 +146,7 @@ export function buyOrderTypeChanged(orderType) {
 export function buyOrderPriceChanged(priceControlled) {
     const { buyOrderAmountWei, buyOrderAmountControlled, buyOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
     const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, buyOrderAmountWei, buyOrderAmountControlled, buyOrderTotalEthControlled)
-    const { orderValid, orderInvalidReason } = validateSellOrder(buyOrderAmountWei)
+    const { orderValid, orderInvalidReason } = validateBuyOrder(buyOrderAmountWei, totalEthWei)
 
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_PRICE_CHANGED,
