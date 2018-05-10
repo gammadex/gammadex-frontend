@@ -5,10 +5,10 @@ import * as JsxUtils from "../../JsxUtils"
 export default class TradeHistoryTable extends React.Component {
 
     render() {
-        const { base, token, trades, pageSize } = this.props
+        const { base, token, trades, pageSize, id } = this.props
 
         const rows = trades.map((trade, i) => {
-            return <TradeHistoryRow key={`${trade.txHash}_${i}`} trade={trade} token={token} />
+            return <TradeHistoryRow key={`${trade.txHash}_${i}`} trade={trade} token={token} id={id}/>
         })
 
         const numEmptyRows = pageSize - trades.length

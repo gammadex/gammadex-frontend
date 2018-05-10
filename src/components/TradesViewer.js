@@ -28,10 +28,10 @@ export default class TradesViewer extends React.Component {
 
     render() {
         const {trades} = this.state
-        const {token} = this.props
+        const {token, id} = this.props
 
         if (trades && trades.length > 0) {
-            return <TradeHistoryTable base="ETH" token={token.name} trades={trades}/>
+            return <TradeHistoryTable base="ETH" token={token.name} trades={trades} id={id}/>
         } else {
             return <EmptyTableMessage>There is no trade history for {token.name}</EmptyTableMessage>
         }

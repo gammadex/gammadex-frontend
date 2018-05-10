@@ -36,10 +36,10 @@ export default class TradeHistory extends React.Component {
                 </Nav>
                 <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId="marketTrades">
-                        <TradesViewer token={this.props.token} tradesSource={() => OrderBookStore.getTrades()} tradesEvent={OrderBookStore}/>
+                        <TradesViewer id={0} token={this.props.token} tradesSource={() => OrderBookStore.getTrades()} tradesEvent={OrderBookStore}/>
                     </TabPane>
                     <TabPane tabId="myTrades">
-                        <TradesViewer token={this.props.token} tradesSource={() => MyTradesStore.getAllTrades(this.props.token.address)} tradesEvent={MyTradesStore}/>
+                        <TradesViewer id={1} token={this.props.token} tradesSource={() => MyTradesStore.getAllTrades(this.props.token.address)} tradesEvent={MyTradesStore}/>
                     </TabPane>
                 </TabContent>
             </Box>

@@ -21,16 +21,17 @@ export default class TradeHistoryRow extends React.Component {
     }
 
     render() {
-        const {trade, token} = this.props
+        const {trade, token, id} = this.props
 
         const cssClass = (trade.side === 'buy') ? 'buy-green' : 'sell-red'
+        const popId = `Popover_${id}_${trade.txHash}`
 
         return (
             <tr>
                 <td onClick={this.toggle} className={"clickable " + cssClass}>
-                    <span id={"Popover" + trade.txHash}></span>
+                    <span id={popId}></span>
 
-                    <Popover placement="top" isOpen={this.state.popoverOpen} target={"Popover" + trade.txHash} toggle={this.toggle}>
+                    <Popover placement="top" isOpen={this.state.popoverOpen} target={popId} toggle={this.toggle}>
                         <PopoverHeader>{trade.side} of <Round>{trade.amount}</Round> {token}</PopoverHeader>
                         <PopoverBody>
                             <div><strong>Transaction: </strong> <Etherscan type="tx" address={trade.txHash} display="truncate"/></div>
