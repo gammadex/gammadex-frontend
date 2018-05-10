@@ -5,13 +5,24 @@ import MyTrades from '../components/MyTrades'
 class History extends Component {
     render() {
         return (
-            <div className="row">
-                <div className="col-lg-1"></div>
-                <div className="col-lg-10">
-                    <Transfers/>
-                    <MyTrades/>
+            <div>
+                <div className="row">
+                    <div className="col-lg-1"></div>
+                    <div className="col-lg-5 pr-2">
+                        <Transfers type="Deposit" title="Deposit History"/>
+                    </div>
+                    <div className="col-lg-5 pl-2">
+                        <Transfers type="Withdraw" title="Withdraw History"/>
+                    </div>
+                    <div className="col-lg-1"></div>
                 </div>
-                <div className="col-lg-1"></div>
+                <div className="row">
+                    <div className="col-lg-1"></div>
+                    <div className="col-lg-10">
+                        <MyTrades/>
+                    </div>
+                    <div className="col-lg-1"></div>
+                </div>
             </div>
         )
     }

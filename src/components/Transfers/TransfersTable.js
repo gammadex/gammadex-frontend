@@ -1,6 +1,4 @@
 import React from "react"
-import _ from "lodash"
-import Config from "../../Config"
 import TransferRow from "./TransferRow"
 
 export default class TransfersTable extends React.Component {
@@ -14,7 +12,6 @@ export default class TransfersTable extends React.Component {
                 <table className="table table-striped table-bordered">
                     <thead>
                     <tr>
-                        <th>Type</th>
                         <th>Asset</th>
                         <th>Amount</th>
                         <th>Date</th>

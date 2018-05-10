@@ -24,8 +24,6 @@ class EtherDeltaWebSocket {
             return
         }
 
-        console.log(`Requesting market for token: ${tokenAddress}, user: ${userAddress}`)
-
         const message = {}
         if (tokenAddress) {
             message['token'] = tokenAddress
