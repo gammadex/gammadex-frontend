@@ -3,7 +3,7 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import { isTakerBuy } from "../OrderUtil"
 import OrderSide from "../OrderSide"
-import FillOrderField from "../FillOrderField"
+import OrderEntryField from "../OrderEntryField"
 import { isNull } from "util";
 
 class TradeStore extends EventEmitter {
@@ -17,7 +17,7 @@ class TradeStore extends EventEmitter {
         this.totalEthControlled = 0
         this.fillAmountValid = true
         this.fillAmountInvalidReason = ""
-        this.fillAmountInvalidField = FillOrderField.AMOUNT
+        this.fillAmountInvalidField = OrderEntryField.AMOUNT
         this.showTransactionModal = false
         this.transactionHash = ""
         this.transactionModalIsError = false

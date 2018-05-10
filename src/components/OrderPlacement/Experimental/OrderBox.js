@@ -1,6 +1,6 @@
 import React from "react"
 import { Box, BoxSection, BoxHeader } from "../../CustomComponents/Box"
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap'
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, UncontrolledTooltip } from 'reactstrap'
 import classnames from 'classnames'
 import EmptyTableMessage from "../../CustomComponents/EmptyTableMessage"
 import FillOrderBookTab from './FillOrderBookTab'
@@ -31,7 +31,6 @@ export default class OrderBox extends React.Component {
         } = this.props
 
         const title = type === OrderSide.BUY ? 'Buy' : 'Sell'
-        const orderBookTitle = type === OrderSide.BUY ? 'Lift Offer' : 'Hit Bid'
 
         return (
             <Box>
@@ -46,31 +45,25 @@ export default class OrderBox extends React.Component {
                             <NavLink
                                 className={classnames({ active: this.state.activeTab === 'orderbook' })}
                                 onClick={() => { this.toggleTab('orderbook'); }}
-                            >{orderBookTitle}</NavLink>
+                            >Take <strong id={type + "TakeInfo"}>&#9432;</strong></NavLink>
+                            <UncontrolledTooltip placement="top" target={type + "TakeInfo"}>
+                                Take an existing order from the order book, by submitting a Trade transaction to the Ethereum Network.
+                                As the taker you will incur two costs: 1) gas fee, 2) EtherDelta Smart Contract fee
+                            </UncontrolledTooltip>
                         </NavItem>
                         <NavItem>
                             <NavLink
                                 className={classnames({ active: this.state.activeTab === 'limit' })}
                                 onClick={() => { this.toggleTab('limit'); }}
-                            >Limit</NavLink>
+                            >Make Order <strong id={type + "MakeInfo"}>&#9432;</strong></NavLink>
+                            <UncontrolledTooltip placement="top" target={type + "MakeInfo"}>
+                                Submit a new order to the GammaDex off-chain order book. There are zero fees to make an order in this way.
+                            </UncontrolledTooltip>                            
                         </NavItem>
-                        {/* <NavItem>
-                            <NavLink
-                                className={classnames({ active: this.state.activeTab === 'market' })}
-                                onClick={() => { this.toggleTab('market'); }}
-                            >Market</NavLink>
-                        </NavItem> */}
                     </Nav>
                     <TabContent activeTab={this.state.activeTab}>
-                        <FillOrderBookTab tabId="orderbook" type={type} tokenName={tokenName}/>
-                        <MakeOrderTab tabId="limit" type={type} tokenName={tokenName}/>
-                        {/* <TabPane tabId="market">
-                            <Row>
-                                <Col sm="12">
-                                    <EmptyTableMessage>market</EmptyTableMessage>
-                                </Col>
-                            </Row>
-                        </TabPane> */}
+                        <FillOrderBookTab tabId="orderbook" type={type} tokenName={tokenName} />
+                        <MakeOrderTab tabId="limit" type={type} tokenName={tokenName} />
                     </TabContent>
                 </BoxSection>
             </Box>

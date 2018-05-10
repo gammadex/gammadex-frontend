@@ -2,6 +2,7 @@
   "baseAddress": "0x0000000000000000000000000000000000000000",
   "baseDecimals": 18,
   "smallOrderThreshold": 0.001,
+  "blocksGoodTillCancel": 2000000000,
   "gasLimit": {
     "deposit": 250000,
     "withdraw": 250000,

@@ -9,8 +9,14 @@ export default class NumericInput extends React.Component {
             .replace(/^([0-9]*\.[0-9]*).*/, (m, p1) => p1) // replace any poo following sensible decimal (e.g. second ".")
     }
 
+    static cleanValueToInteger(value) {
+        return value
+            .replace(/[^0-9]/g, () => "") // globally strip everything that isn't a digit
+    }
+
     onChangeFilteringInput = (e) => {
-        const cleanValue = NumericInput.cleanValueToDecimal(e.target.value)
+        const { forceInteger = false } = this.props
+        const cleanValue = forceInteger ? NumericInput.cleanValueToInteger(e.target.value) : NumericInput.cleanValueToDecimal(e.target.value)
         this.props.onChange(cleanValue)
     }
 
@@ -19,7 +25,7 @@ export default class NumericInput extends React.Component {
     }
 
     render() {
-        const { name, unitName, fieldName, value, valid = true, errorMessage = null, disabled = false, helpMessage = null, onMax = null } = this.props
+        const { name, unitName, fieldName, value, valid = true, errorMessage = null, disabled = false, helpMessage = null, onMax = null, placeholder = "0.00" } = this.props
         const isInvalid = valid !== null && !valid
 
         let maxButton = null
@@ -36,7 +42,7 @@ export default class NumericInput extends React.Component {
                             disabled={disabled}
                             value={value}
                             onChange={this.onChangeFilteringInput}
-                            placeholder="0.00"
+                            placeholder={placeholder}
                             invalid={isInvalid} />
                         {maxButton}
                         <div className="input-group-append">

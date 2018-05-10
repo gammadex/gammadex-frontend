@@ -3,6 +3,9 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import OrderType from "../OrderType"
 import BigNumber from 'bignumber.js'
+import ExpiryType from "../ExpiryType"
+import OrderEntryField from "../OrderEntryField"
+import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 
 class OrderPlacementStore extends EventEmitter {
     constructor() {
@@ -13,16 +16,28 @@ class OrderPlacementStore extends EventEmitter {
         this.sellOrderAmountWei = BigNumber(0)
         this.sellOrderTotalEthControlled = ""
         this.sellOrderTotalEthWei = BigNumber(0)
+        this.sellOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
+        this.sellOrderExpireAfterBlocks = 10000
+        this.sellOrderExpireHumanReadableString = OrderPlacementActions.blocksToHumanReadableExpiry(10000)
         this.sellOrderValid = true
         this.sellOrderInvalidReason = ""
+        this.sellOrderInvalidField = OrderEntryField.AMOUNT
+        this.sellOrderHasPriceWarning = false
+        this.sellOrderPriceWarning = ""
         this.buyOrderType = OrderType.LIMIT_ORDER
         this.buyOrderPriceControlled = ""
         this.buyOrderAmountControlled = ""
         this.buyOrderAmountWei = BigNumber(0)
         this.buyOrderTotalEthControlled = ""
         this.buyOrderTotalEthWei = BigNumber(0)
+        this.buyOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
+        this.buyOrderExpireAfterBlocks = 10000
+        this.buyOrderExpireHumanReadableString = OrderPlacementActions.blocksToHumanReadableExpiry(10000)
         this.buyOrderValid = true
         this.buyOrderInvalidReason = ""
+        this.buyOrderInvalidField = OrderEntryField.AMOUNT
+        this.buyOrderHasPriceWarning = false
+        this.buyOrderPriceWarning = ""        
         this.tradesToExecute = []
         this.tradesModal = false
         this.orderModal = false
@@ -37,16 +52,28 @@ class OrderPlacementStore extends EventEmitter {
             sellOrderAmountWei: this.sellOrderAmountWei,
             sellOrderTotalEthControlled: this.sellOrderTotalEthControlled,
             sellOrderTotalEthWei: this.sellOrderTotalEthWei,
+            sellOrderExpiryType: this.sellOrderExpiryType,
+            sellOrderExpireAfterBlocks: this.sellOrderExpireAfterBlocks,
+            sellOrderExpireHumanReadableString: this.sellOrderExpireHumanReadableString,
             sellOrderValid: this.sellOrderValid,
             sellOrderInvalidReason: this.sellOrderInvalidReason,
+            sellOrderInvalidField: this.sellOrderInvalidField,
+            sellOrderHasPriceWarning: this.sellOrderHasPriceWarning,
+            sellOrderPriceWarning: this.sellOrderPriceWarning,
             buyOrderType: this.buyOrderType,
             buyOrderPriceControlled: this.buyOrderPriceControlled,
             buyOrderAmountControlled: this.buyOrderAmountControlled,
             buyOrderAmountWei: this.buyOrderAmountWei,
             buyOrderTotalEthControlled: this.buyOrderTotalEthControlled,
             buyOrderTotalEthWei: this.buyOrderTotalEthWei,
+            buyOrderExpiryType: this.buyOrderExpiryType,
+            buyOrderExpireAfterBlocks: this.buyOrderExpireAfterBlocks,
+            buyOrderExpireHumanReadableString: this.buyOrderExpireHumanReadableString,
             buyOrderValid: this.buyOrderValid,
             buyOrderInvalidReason: this.buyOrderInvalidReason,
+            buyOrderInvalidField: this.buyOrderInvalidField,
+            buyOrderHasPriceWarning: this.buyOrderHasPriceWarning,
+            buyOrderPriceWarning: this.buyOrderPriceWarning,            
             tradesToExecute: this.tradesToExecute,
             tradesModal: this.tradesModal,
             orderModal: this.orderModal,
@@ -69,6 +96,9 @@ class OrderPlacementStore extends EventEmitter {
                 this.sellOrderTotalEthWei = BigNumber(0)
                 this.sellOrderValid = true
                 this.sellOrderInvalidReason = ""
+                this.sellOrderInvalidField = OrderEntryField.AMOUNT
+                this.sellOrderHasPriceWarning = false
+                this.sellOrderPriceWarning = ""
                 this.emitChange()
                 break
             }
@@ -81,6 +111,31 @@ class OrderPlacementStore extends EventEmitter {
                 this.buyOrderTotalEthWei = BigNumber(0)
                 this.buyOrderValid = true
                 this.buyOrderInvalidReason = ""
+                this.buyOrderInvalidField = OrderEntryField.AMOUNT
+                this.buyOrderHasPriceWarning = false
+                this.buyOrderPriceWarning = ""                
+                this.emitChange()
+                break
+            }
+            case ActionNames.BUY_ORDER_EXPIRY_TYPE_CHANGED: {
+                this.buyOrderExpiryType = action.expiryType
+                this.emitChange()
+                break
+            }
+            case ActionNames.SELL_ORDER_EXPIRY_TYPE_CHANGED: {
+                this.sellOrderExpiryType = action.expiryType
+                this.emitChange()
+                break
+            }
+            case ActionNames.BUY_ORDER_EXPIRE_AFTER_BLOCKS_CHANGED: {
+                this.buyOrderExpireAfterBlocks = action.expireAfterBlocks
+                this.buyOrderExpireHumanReadableString = action.expireAfterHumanReadableString
+                this.emitChange()
+                break
+            }
+            case ActionNames.SELL_ORDER_EXPIRE_AFTER_BLOCKS_CHANGED: {
+                this.sellOrderExpireAfterBlocks = action.expireAfterBlocks
+                this.sellOrderExpireHumanReadableString = action.expireAfterHumanReadableString
                 this.emitChange()
                 break
             }
@@ -90,6 +145,9 @@ class OrderPlacementStore extends EventEmitter {
                 this.sellOrderTotalEthControlled = action.totalEthControlled
                 this.sellOrderValid = action.orderValid
                 this.sellOrderInvalidReason = action.orderInvalidReason
+                this.sellOrderInvalidField = action.orderInvalidField
+                this.sellOrderHasPriceWarning = action.hasPriceWarning
+                this.sellOrderPriceWarning = action.priceWarning
                 this.emitChange()
                 break
             }
@@ -100,6 +158,9 @@ class OrderPlacementStore extends EventEmitter {
                 this.sellOrderTotalEthControlled = action.totalEthControlled
                 this.sellOrderValid = action.orderValid
                 this.sellOrderInvalidReason = action.orderInvalidReason
+                this.sellOrderInvalidField = action.orderInvalidField
+                this.sellOrderHasPriceWarning = action.hasPriceWarning
+                this.sellOrderPriceWarning = action.priceWarning                
                 this.emitChange()
                 break
             }
@@ -111,6 +172,9 @@ class OrderPlacementStore extends EventEmitter {
                 this.sellOrderPriceControlled = action.priceControlled
                 this.sellOrderValid = action.orderValid
                 this.sellOrderInvalidReason = action.orderInvalidReason
+                this.sellOrderInvalidField = action.orderInvalidField
+                this.sellOrderHasPriceWarning = action.hasPriceWarning
+                this.sellOrderPriceWarning = action.priceWarning                
                 this.emitChange()
                 break
             }
@@ -120,6 +184,9 @@ class OrderPlacementStore extends EventEmitter {
                 this.buyOrderTotalEthControlled = action.totalEthControlled
                 this.buyOrderValid = action.orderValid
                 this.buyOrderInvalidReason = action.orderInvalidReason
+                this.buyOrderInvalidField = action.orderInvalidField
+                this.buyOrderHasPriceWarning = action.hasPriceWarning
+                this.buyOrderPriceWarning = action.priceWarning
                 this.emitChange()
                 break
             }
@@ -130,6 +197,9 @@ class OrderPlacementStore extends EventEmitter {
                 this.buyOrderTotalEthControlled = action.totalEthControlled
                 this.buyOrderValid = action.orderValid
                 this.buyOrderInvalidReason = action.orderInvalidReason
+                this.buyOrderInvalidField = action.orderInvalidField
+                this.buyOrderHasPriceWarning = action.hasPriceWarning
+                this.buyOrderPriceWarning = action.priceWarning                
                 this.emitChange()
                 break
             }
@@ -141,9 +211,24 @@ class OrderPlacementStore extends EventEmitter {
                 this.buyOrderPriceControlled = action.priceControlled
                 this.buyOrderValid = action.orderValid
                 this.buyOrderInvalidReason = action.orderInvalidReason
+                this.buyOrderInvalidField = action.orderInvalidField
+                this.buyOrderHasPriceWarning = action.hasPriceWarning
+                this.buyOrderPriceWarning = action.priceWarning                
                 this.emitChange()
                 break
-            }            
+            }
+            case ActionNames.SELL_ORDER_PRICE_WARNING_DISMISSED: {
+                this.sellOrderHasPriceWarning = false
+                this.sellOrderPriceWarning = ""
+                this.emitChange()
+                break
+            }
+            case ActionNames.BUY_ORDER_PRICE_WARNING_DISMISSED: {
+                this.buyOrderHasPriceWarning = false
+                this.buyOrderPriceWarning = ""
+                this.emitChange()
+                break
+            }
             case ActionNames.EXECUTE_TRADES: {
                 this.tradesToExecute = action.trades
                 this.tradesModal = true

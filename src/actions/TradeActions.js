@@ -13,7 +13,7 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import TransactionStatus from "../TransactionStatus"
-import FillOrderField from "../FillOrderField"
+import OrderEntryField from "../OrderEntryField"
 import _ from "lodash"
 import OrderSide from "../OrderSide"
 
@@ -67,7 +67,7 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
     let fillAmountValid = true
     let fillAmountInvalidReason = ""
-    let fillAmountInvalidField = FillOrderField.AMOUNT
+    let fillAmountInvalidField = OrderEntryField.AMOUNT
     if (weiFillAmount.isZero()) {
         fillAmountValid = false
         fillAmountInvalidReason = "Token amount must be greater than zero"
@@ -80,7 +80,7 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     } else if (OrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Total ETH amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
-        fillAmountInvalidField = FillOrderField.TOTAL
+        fillAmountInvalidField = OrderEntryField.TOTAL
     }
     return { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField }
 }

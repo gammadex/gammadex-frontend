@@ -68,6 +68,10 @@ class Config {
     getExchangeFeePercent() {
         return config.exchangeFeePercent
     }
+
+    getBlocksGoodTillCancel() {
+        return config['blocksGoodTillCancel']
+    }    
 }
 
 export default new Config()

@@ -9,7 +9,7 @@ import GasPriceStore from "../../../stores/GasPriceStore"
 import NumericInput from "../NumericInput.js"
 import { priceOf, isTakerSell } from "../../../OrderUtil.js"
 import OrderSide from "../../../OrderSide"
-import FillOrderField from "../../../FillOrderField"
+import OrderEntryField from "../../../OrderEntryField"
 import * as TradeActions from "../../../actions/TradeActions"
 import Config from "../../../Config"
 import Conditional from "../../CustomComponents/Conditional"
@@ -162,10 +162,10 @@ export default class FillOrderBook extends React.Component {
             const exchangeCost = safeBigNumber(isTakerSell(fillOrder.order) ? fillOrder.fillAmountControlled : fillOrder.totalEthControlled).times(safeBigNumber(Config.getExchangeFeePercent()))
             const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenName : "ETH"
 
-            const amountFieldValid = fillOrder.fillAmountInvalidField === FillOrderField.AMOUNT ? fillOrder.fillAmountValid : true
-            const amountFieldErrorMessage = fillOrder.fillAmountInvalidField === FillOrderField.AMOUNT ? fillOrder.fillAmountInvalidReason : ""
-            const totalFieldValid = fillOrder.fillAmountInvalidField === FillOrderField.TOTAL ? fillOrder.fillAmountValid : true
-            const totalFieldErrorMessage = fillOrder.fillAmountInvalidField === FillOrderField.TOTAL ? fillOrder.fillAmountInvalidReason : ""
+            const amountFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountValid : true
+            const amountFieldErrorMessage = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountInvalidReason : ""
+            const totalFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.TOTAL ? fillOrder.fillAmountValid : true
+            const totalFieldErrorMessage = fillOrder.fillAmountInvalidField === OrderEntryField.TOTAL ? fillOrder.fillAmountInvalidReason : ""
 
             let bestExecutionWarning = null
             if (!fillOrder.isBestExecution) {
