@@ -36,7 +36,6 @@ export default class Transfers extends React.Component {
         })
     }
     updateAccountState() {
-        console.log("@@@@@@@@ Transfers updated")
         this.setState({
             account: AccountStore.getAccountState().account
         })

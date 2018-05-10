@@ -16,23 +16,19 @@ export default class MyTrades extends React.Component {
         }
         this.updateMyTradesState = this.updateMyTradesState.bind(this)
         this.updateAccount = this.updateAccount.bind(this)
-        console.log("initialissed MyTrades", this.updateAccount )
     }
 
     componentWillMount() {
-        console.log("BINDING")
         MyTradesStore.on("change", this.updateMyTradesState)
         AccountStore.on("change", this.updateAccount)
     }
 
     componentWillUnmount() {
-        console.log("UN BINDING")
         MyTradesStore.removeListener("change", this.updateMyTradesState)
         AccountStore.removeListener("change", this.updateAccount)
     }
 
     updateAccount() {
-        console.log("XXXXXXXXXX CHANGE")
         this.setState({
             account: AccountStore.getAccountState().account
         })
@@ -52,8 +48,6 @@ export default class MyTrades extends React.Component {
 
     render() {
         const {trades, account} = this.state
-
-        console.log("MyTrades account", account)
 
         const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades)
         const csvContent = TradeDisplayUtil.tradesToCsv(displayTrades)

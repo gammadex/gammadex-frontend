@@ -39,8 +39,6 @@ class Ledger extends React.Component {
                 accounts, errorName, errorMessage, selectedDerivationPathSource, customDerivationPath, addressPage, addressOffset
             } = WalletStore.getLedger()
 
-            console.log(addressPage, "setState")
-
             return {
                 completedAccount: WalletStore.getCompletedAccount(),
                 refreshError: WalletStore.getRefreshError(),
@@ -57,7 +55,6 @@ class Ledger extends React.Component {
 
     connectToLedger = (page) => {
         const derivationPath = this.getDerivationPath(page)
-        console.log("derivationPath", derivationPath)
 
         LedgerApi.requestAddresses(derivationPath, page)
     }
@@ -66,8 +63,6 @@ class Ledger extends React.Component {
         const {selectedDerivationPathSource, customDerivationPath} = this.state
         const derivationPathBase = (selectedDerivationPathSource === "custom") ? customDerivationPath : "m/44'/60'/0'"
         const offset = page * 5
-
-        console.log(offset)
 
         return LedgerUtil.stripDerivationPathPrefix(derivationPathBase + "/" + offset)
     }

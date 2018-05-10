@@ -14,11 +14,9 @@ export function requestAddresses(deriviationPath, page) {
 
     web3.eth.getAccounts()
         .then(accounts => {
-            console.log("Accounts", accounts)
             WalletActions.ledgerAccountsRetrieved(accounts, page)
         })
         .catch(err => {
-            console.log("Error", err)
             WalletActions.ledgerError(err.message, err.name)
         })
 }

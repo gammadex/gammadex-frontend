@@ -11,7 +11,7 @@ import {Box, BoxFooter} from "./CustomComponents/Box"
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
-import { baseEthToWei, tokEthToWei } from "../EtherConversion"
+import {baseEthToWei, tokEthToWei} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 
 export default class AccountDetail extends React.Component {
@@ -67,8 +67,6 @@ export default class AccountDetail extends React.Component {
     }
 
     onAccountChange() {
-        console.log("@@@@@@@@ AccountDetail updated")
-
         const accountState = AccountStore.getAccountState()
 
         if (accountState.account && this.state.account !== accountState.account) {
@@ -86,12 +84,18 @@ export default class AccountDetail extends React.Component {
 
     toggle() {
         this.setState({
-          tooltipOpen: !this.state.tooltipOpen
+            tooltipOpen: !this.state.tooltipOpen
         })
-      }
+    }
 
     hideModal() {
         AccountActions.depositWithdrawCancel()
+    }
+
+    refreshBalances = () => {
+        const {account} = this.state
+
+        AccountApi.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
     }
 
     submit() {
@@ -173,18 +177,36 @@ export default class AccountDetail extends React.Component {
         const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
-            accountLink = <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
+            accountLink =
+                <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
         }
 
         let nonceTip = ''
         if (selectedAccountType !== AccountType.METAMASK) {
             let ntext = `Nonce: ${nonce}`
-            nonceTip = <Tooltip placement="right" isOpen={this.state.tooltipOpen} target="atName" toggle={this.toggle}>{ntext}</Tooltip>
+            nonceTip = <Tooltip placement="right" isOpen={this.state.tooltipOpen} target="atName"
+                                toggle={this.toggle}>{ntext}</Tooltip>
         }
+
+        const refreshDisabledClass = account ? "" : "disabled"
 
         return (
             <span>
-                <Box title="Accounts">
+                <div className="card history-table">
+                    <div className="card-header">
+                        <div className="row hdr-stretch">
+                            <div className="col-lg-6">
+                                <strong className="card-title">Account</strong>
+                            </div>
+                            <div className="col-lg-6 red">
+                                <div className="float-right">
+                                    <button className={"btn btn-primary " + refreshDisabledClass} onClick={this.refreshBalances}><i
+                                        className="fas fa-sync"/></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <AccountTable
                         token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
@@ -199,7 +221,7 @@ export default class AccountDetail extends React.Component {
                         <br/>
                         <Badge id="atName" color="secondary">{accountTypeName}</Badge> {nonceTip}
                     </BoxFooter>
-                </Box>
+                </div>
 
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
                     <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>
