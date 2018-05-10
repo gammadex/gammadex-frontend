@@ -91,7 +91,7 @@ export function tradeExecutionConfirmed() {
 }
 
 export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled) {
-    const tokenAddress = TokenStore.getSelectedToken().address
+    const tokenAddress = TokenStore.getSelectedToken().addressaddMyTrade
     const { account, nonce } = AccountStore.getAccountState()
     const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
 
