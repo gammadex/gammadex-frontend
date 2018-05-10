@@ -1,7 +1,5 @@
 import React from "react"
 import MyTradesRow from "./MyTradesRow"
-import _ from "lodash"
-import Config from "../../Config"
 
 export default class MyTradesTable extends React.Component {
     render() {

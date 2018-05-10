@@ -1,14 +1,6 @@
 import TransactionStatus from "../TransactionStatus"
-import {tokWeiToEth} from "../EtherConversion"
 import TokenListApi from "../apis/TokenListApi";
-import DepositType from "../DepositType"
 import OrderSide from "../OrderSide"
-
-// tokenAddr, side, price, amount, amountBase, date, txHash, status
-
-//         const tokenName = TokenListApi.getTokenName(tokenAddr)
-//const statusDescription = this.getStatusDescription(status)
-
 
 export function toDisplayableTrades(trades) {
     return trades.map(t => ({
