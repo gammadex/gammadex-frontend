@@ -29,7 +29,7 @@ export default class OpenOrdersRow extends React.Component {
             <tr>
                 <td>{`${tokenName}/ETH`}</td>
                 <td>{(openOrder.makerSide === OrderSide.SELL) ? "Sell" : "Buy"}</td>
-                <td><Round price>{openOrder.price}</Round></td>
+                <td><Round price softZeros>{openOrder.price}</Round></td>
                 <td><Round>{openOrder.amount}</Round> {tokenName}</td>
                 <td><Round>{openOrder.price * openOrder.amount}</Round></td>
                 <td><Date>{openOrder.timestamp}</Date></td>

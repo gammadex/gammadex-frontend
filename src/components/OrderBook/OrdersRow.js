@@ -15,7 +15,7 @@ export default class OrdersTableRow extends React.Component {
 
         return (
             <tr key={order.id} onClick={() => TradeActions.fillOrder(order)} className="clickable">
-                <td className={rowClass}><Round price>{order.price}</Round></td>
+                <td className={rowClass}><Round price softZeros>{order.price}</Round></td>
                 <td><Round>{order.ethAvailableVolume}</Round></td>
                 <td><Round>{order.ethAvailableVolumeBase}{mine}</Round></td>
             </tr>

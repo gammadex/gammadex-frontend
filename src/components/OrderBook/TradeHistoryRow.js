@@ -38,7 +38,7 @@ export default class TradeHistoryRow extends React.Component {
                         </PopoverBody>
                     </Popover>
 
-                    <Round price>{trade.price}</Round>
+                    <Round price softZeros>{trade.price}</Round>
                 </td>
                 <td onClick={this.toggle} className="clickable"><Round>{trade.amount}</Round></td>
                 <td onClick={this.toggle} className="clickable"><Round>{trade.amountBase}</Round></td>

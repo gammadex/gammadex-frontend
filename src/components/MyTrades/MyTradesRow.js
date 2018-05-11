@@ -11,7 +11,7 @@ export default class MyTradesRow extends React.Component {
             <tr>
                 <td>{market}</td>
                 <td>{side}</td>
-                <td><Round price>{price}</Round></td>
+                <td><Round price softZeros>{price}</Round></td>
                 <td><Round>{amount}</Round> {tokenName}</td>
                 <td>{amountBase}</td>
                 <td><Date year>{date}</Date></td>

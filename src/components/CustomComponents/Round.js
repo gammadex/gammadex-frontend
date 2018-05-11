@@ -1,5 +1,6 @@
 import React from "react"
 import {formatNumber, stripDecimalsOffLongNumber} from '../../util/FormatUtil'
+import SoftZeros from "./SoftZeros"
 
 export default class Round extends React.Component {
     DEFAULT_DPS = 3
@@ -16,16 +17,12 @@ export default class Round extends React.Component {
         const number = formatNumber(originalNumber, dps)
         const cleanNumber = stripDecimalsOffLongNumber(number, this.MAX_LENGTH_ALLOW_0_IN_DP)
 
-        const url = this.props.url ? this.props.url : null
-
-        if (url) {
-            return <a target="_blank" rel="noopener noreferrer" href={url} data-toggle="tooltip"
-                      title={originalNumber}>{cleanNumber}</a>
+        if (this.props.softZeros) {
+            return <span data-toggle="tooltip" title={originalNumber}><SoftZeros>{cleanNumber}</SoftZeros></span>
         } else {
             return <span data-toggle="tooltip" title={originalNumber}>{cleanNumber}</span>
         }
     }
-
 
     getNumberToRound() {
         const children = React.Children.toArray(this.props.children)

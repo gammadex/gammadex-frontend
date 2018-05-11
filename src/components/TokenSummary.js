@@ -46,15 +46,15 @@ export default class TokenSummary extends React.Component {
                             <tbody>
                             <tr>
                                 <td>Last Price</td>
-                                <td><Round price>{trade}</Round></td>
+                                <td><Round price softZeros>{trade}</Round></td>
                                 <td>24h Change</td>
-                                <td><Round price>{trade}</Round></td>
+                                <td><Round price softZeros>{trade}</Round></td>
                             </tr>
                             <tr>
                                 <td>24h High</td>
-                                <td><Round price>{trade}</Round></td>
+                                <td><Round price softZeros>{trade}</Round></td>
                                 <td>24h Low</td>
-                                <td><Round price>{trade}</Round></td>
+                                <td><Round price softZeros>{trade}</Round></td>
                             </tr>
                             <tr>
                                 <td>24h Vol ETH</td>
