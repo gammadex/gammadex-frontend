@@ -1,8 +1,9 @@
 export function splitTrailingZeros(number) {
     if (number.includes('.')) {
-        let splitIndex = number.length
+        const decimalPointIndex = number.lastIndexOf(".")
 
-        while (number[splitIndex-1] === "0" || number[splitIndex-1] === "." ) {
+        let splitIndex = number.length
+        while ((number[splitIndex-1] === "0" || number[splitIndex-1] === ".") && splitIndex > decimalPointIndex) {
             splitIndex -= 1
         }
 
