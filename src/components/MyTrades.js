@@ -11,7 +11,8 @@ export default class MyTrades extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            trades: MyTradesStore.getAllTrades()
+            trades: MyTradesStore.getAllTrades(),
+            filter: "",
         }
         this.updateMyTradesState = this.updateMyTradesState.bind(this)
     }
@@ -41,14 +42,23 @@ export default class MyTrades extends React.Component {
         WebSocketActions.getMarket()
     }
 
+    filterChanged = (event) => {
+        const filter = event.target.value
+        this.setState({filter})
+    }
+
     render() {
-        const {trades} = this.state
+        const {trades, filter} = this.state
+
         const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades)
         const csvContent = TradeDisplayUtil.tradesToCsv(displayTrades)
+        const filteredTrades = displayTrades.filter(
+            t => `${t.market}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
+        )
 
         let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
         if (trades && trades.length > 0) {
-            content = <MyTradesTable trades={displayTrades}/>
+            content = <MyTradesTable trades={filteredTrades}/>
         }
 
         return (
@@ -59,9 +69,13 @@ export default class MyTrades extends React.Component {
                             <strong className="card-title">Trade History</strong>
                         </div>
                         <div className="col-lg-6 red">
-                            <div className="float-right">
-                                <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv" className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
-                                <button className="btn btn-primary" onClick={this.refresh}><i className="fas fa-sync"/></button>
+                            <div className="float-right form-inline">
+                                <input placeholder="Search" className="form-control mr-2"
+                                       onChange={this.filterChanged}/>
+                                <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv"
+                                          className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
+                                <button className="btn btn-primary" onClick={this.refresh}><i className="fas fa-sync"/>
+                                </button>
                             </div>
                         </div>
                     </div>

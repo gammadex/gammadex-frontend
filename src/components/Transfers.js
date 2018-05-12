@@ -12,6 +12,7 @@ export default class Transfers extends React.Component {
 
         this.state = {
             transfers: TransferStore.getAllTransfers().filter(t => t.kind === this.props.type),
+            filter: "",
         }
 
         this.depositHistoryChanged = this.depositHistoryChanged.bind(this)
@@ -35,16 +36,24 @@ export default class Transfers extends React.Component {
         WebSocketActions.getMarket()
     }
 
+    filterChanged = (event) => {
+        const filter = event.target.value
+        this.setState({filter})
+    }
+
     render() {
-        const {transfers} = this.state
+        const {transfers, filter} = this.state
         const {title} = this.props
 
         const displayTransfers = TransferDisplayUtil.toDisplayableTransfers(transfers)
         const csvContent = TransferDisplayUtil.transfersToCsv(displayTransfers)
+        const filteredTransfers = displayTransfers.filter(
+            t => `${t.tokenName}::${t.amount}::${t.date}::${t.status}::${t.txHash}`.includes(filter)
+        )
 
         let content = <EmptyTableMessage>You have no deposits or withdrawls</EmptyTableMessage>
         if (transfers && transfers.length > 0) {
-            content = <TransfersTable transfers={displayTransfers}/>
+            content = <TransfersTable transfers={filteredTransfers}/>
         }
 
         return (
@@ -55,9 +64,13 @@ export default class Transfers extends React.Component {
                             <strong className="card-title">{title}</strong>
                         </div>
                         <div className="col-lg-6 red">
-                            <div className="float-right">
-                                <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv" className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
-                                <button className="btn btn-primary" onClick={this.refresh}><i className="fas fa-sync"/></button>
+                            <div className="float-right form-inline">
+                                <input placeholder="Search" className="form-control mr-2"
+                                       onChange={this.filterChanged}/>
+                                <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv"
+                                          className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
+                                <button className="btn btn-primary" onClick={this.refresh}><i className="fas fa-sync"/>
+                                </button>
                             </div>
                         </div>
                     </div>
