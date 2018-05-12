@@ -29,6 +29,6 @@ export function sortByTimeAndIdRemovingDuplicates(trades) {
 
 function filterByTokenAddress(trades, tokenAddress) {
     return _.filter(trades, trade => {
-        return tokenAddress === trade.tokenAddr
+        return tokenAddress.toLowerCase() === trade.tokenAddr.toLowerCase()
     })
 }
