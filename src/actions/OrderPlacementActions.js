@@ -128,10 +128,13 @@ export function sellOrderExpiryTypeChanged(expiryType) {
         type: ActionNames.SELL_ORDER_EXPIRY_TYPE_CHANGED,
         expiryType
     })
+    if(expiryType == ExpiryType.BLOCKS) {
+        sellOrderExpireAfterBlocksChanged(OrderPlacementStore.getOrderPlacementState().sellOrderExpireAfterBlocks)
+    }
 }
 
 export function sellOrderExpireAfterBlocksChanged(expireAfterBlocks) {
-    const expireAfterHumanReadableString = blocksToHumanReadableExpiry(expireAfterBlocks)
+    const expireAfterHumanReadableString = OrderUtil.blocksToHumanReadableExpiry(expireAfterBlocks)
     dispatcher.dispatch({
         type: ActionNames.SELL_ORDER_EXPIRE_AFTER_BLOCKS_CHANGED,
         expireAfterBlocks,
@@ -234,21 +237,18 @@ export function buyOrderExpiryTypeChanged(expiryType) {
         type: ActionNames.BUY_ORDER_EXPIRY_TYPE_CHANGED,
         expiryType
     })
+    if(expiryType == ExpiryType.BLOCKS) {
+        buyOrderExpireAfterBlocksChanged(OrderPlacementStore.getOrderPlacementState().buyOrderExpireAfterBlocks)
+    }
 }
 
 export function buyOrderExpireAfterBlocksChanged(expireAfterBlocks) {
-    const expireAfterHumanReadableString = blocksToHumanReadableExpiry(Number(expireAfterBlocks))
+    const expireAfterHumanReadableString = OrderUtil.blocksToHumanReadableExpiry(Number(expireAfterBlocks))
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_EXPIRE_AFTER_BLOCKS_CHANGED,
         expireAfterBlocks,
         expireAfterHumanReadableString
     })
-}
-
-export function blocksToHumanReadableExpiry(blocks) {
-    const seconds = blocks * 14
-    const days = (seconds / (60 * 60 * 24)).toFixed(1)
-    return `Order will expire in approximately ${days} days (based on 14s block time)`
 }
 
 export function validateBuyOrder(amountWei, totalEthWei, priceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled) {

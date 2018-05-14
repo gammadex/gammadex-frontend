@@ -1,14 +1,15 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
-export function gasPricesRetrieved(safeLowWei, averageWei, fastWei, fastestWei, time) {
+export function gasPricesRetrieved(safeLowWei, averageWei, fastWei, fastestWei, time, blockTime) {
     dispatcher.dispatch({
         type: ActionNames.GAS_PRICES_RETRIEVED,
         safeLowWei,
         averageWei,
         fastWei,
         fastestWei,
-        time
+        time,
+        blockTime
     })
 }
 

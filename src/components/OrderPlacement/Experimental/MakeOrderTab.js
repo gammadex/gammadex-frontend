@@ -153,7 +153,10 @@ export default class MakeOrderTab extends React.Component {
             expireAfterBlocks,
             expireAfterHumanReadableString } = this.state
 
-        const submitDisabled = !orderValid || total === "" || safeBigNumber(total).isZero()
+        const submitDisabled = !orderValid
+            || total === ""
+            || safeBigNumber(total).isZero()
+            || (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero()))
 
         const amountFieldValid = orderValid || orderInvalidField != OrderEntryField.AMOUNT
         const amountFieldErrorMessage = amountFieldValid ? "" : orderInvalidReason
@@ -181,7 +184,7 @@ export default class MakeOrderTab extends React.Component {
                 <NumericInput name="Total" value={total} unitName="ETH"
                     onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
                     valid={totalFieldValid} errorMessage={totalFieldErrorMessage} />
-                <hr/>
+                <hr />
                 <FormGroup row>
                     <Label for={type + "ExpiryType"} sm={3}>Expiry</Label>
                     <Col sm={9}>

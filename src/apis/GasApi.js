@@ -12,14 +12,15 @@ export function retrieveGasPrices() {
             }
         })
         .then(json => {
-            const {safeLow, average, fast, fastest} = json
+            const {safeLow, average, fast, fastest, block_time} = json
 
             GasActions.gasPricesRetrieved(
                 gweiToWei(safeLow / 10),
                 gweiToWei(average / 10),
                 gweiToWei(fast / 10),
                 gweiToWei(fastest / 10),
-                new Date())
+                new Date(),
+                block_time)
         })
         .catch(error => {
             GasActions.gasPricesRetrieveError(error)

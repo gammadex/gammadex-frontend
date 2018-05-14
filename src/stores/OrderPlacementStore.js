@@ -5,7 +5,6 @@ import OrderType from "../OrderType"
 import BigNumber from 'bignumber.js'
 import ExpiryType from "../ExpiryType"
 import OrderEntryField from "../OrderEntryField"
-import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 
 class OrderPlacementStore extends EventEmitter {
     constructor() {
@@ -18,7 +17,7 @@ class OrderPlacementStore extends EventEmitter {
         this.sellOrderTotalEthWei = BigNumber(0)
         this.sellOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
         this.sellOrderExpireAfterBlocks = 10000
-        this.sellOrderExpireHumanReadableString = OrderPlacementActions.blocksToHumanReadableExpiry(10000)
+        this.sellOrderExpireHumanReadableString = ""
         this.sellOrderValid = true
         this.sellOrderInvalidReason = ""
         this.sellOrderInvalidField = OrderEntryField.AMOUNT
@@ -32,7 +31,7 @@ class OrderPlacementStore extends EventEmitter {
         this.buyOrderTotalEthWei = BigNumber(0)
         this.buyOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
         this.buyOrderExpireAfterBlocks = 10000
-        this.buyOrderExpireHumanReadableString = OrderPlacementActions.blocksToHumanReadableExpiry(10000)
+        this.buyOrderExpireHumanReadableString = ""
         this.buyOrderValid = true
         this.buyOrderInvalidReason = ""
         this.buyOrderInvalidField = OrderEntryField.AMOUNT

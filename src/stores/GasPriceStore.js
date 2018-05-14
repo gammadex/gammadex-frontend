@@ -1,4 +1,4 @@
-import {EventEmitter} from "events"
+import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import BigNumber from 'bignumber.js'
@@ -9,6 +9,7 @@ class GasPriceStore extends EventEmitter {
 
         this.prices = []
         this.lastGasPriceRetrieveTime = null
+        this.blockTime = 14
         this.currentGasPriceWei = localStorage.currentGasPriceWei && localStorage.currentGasPriceWei !== "" ? BigNumber(localStorage.currentGasPriceWei) : null
     }
 
@@ -18,6 +19,10 @@ class GasPriceStore extends EventEmitter {
 
     getGasPriceLastRetrieveTime() {
         return this.lastGasPriceRetrieveTime
+    }
+
+    getBlockTime() {
+        return this.blockTime
     }
 
     getCurrentGasPriceWei() {
@@ -36,13 +41,21 @@ class GasPriceStore extends EventEmitter {
         this.emit("change")
     }
 
+    isNumeric(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     handleActions(action) {
         switch (action.type) {
             case ActionNames.GAS_PRICES_RETRIEVED: {
-                const {time, ...prices} = action
+                const { time, blockTime, ...prices } = action
 
                 this.prices = prices
                 this.lastGasPriceRetrieveTime = time
+
+                if(this.isNumeric(blockTime) && blockTime > 0) {
+                    this.blockTime = blockTime
+                }
 
                 if (!this.currentGasPriceWei) {
                     this.currentGasPriceWei = prices.averageWei
