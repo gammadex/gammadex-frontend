@@ -76,7 +76,8 @@ class TokenListApi {
                     address: address,
                     lName: res[0],
                     name: res[1],
-                    decimals: res[2]
+                    decimals: res[2],
+                    unlisted: true
                 }
 
                 if (addIfFound) {

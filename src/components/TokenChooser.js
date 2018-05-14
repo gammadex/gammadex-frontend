@@ -49,7 +49,10 @@ class TokenChooser extends React.Component {
     }
 
     onTokenSelect = (tokenName, tokenAddress) => {
-        this.props.history.push(`/exchange/${tokenName}`)
+        const newURL = `/exchange/${tokenName}`
+        if (newURL !== this.props.history.location.pathname) {
+            this.props.history.push(newURL)
+        }
     }
 
     toggleAddTokens = event => {

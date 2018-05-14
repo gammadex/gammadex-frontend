@@ -3,16 +3,16 @@ import Conditional from "./CustomComponents/Conditional"
 
 export default class TokenErrorMessage extends React.Component {
     render() {
-        const invalidToken = this.props.invalidToken
-
+        const warning = this.props.warning
+        
         return (
-            <Conditional displayCondition={invalidToken}>
+            <Conditional displayCondition={warning}>
                 <div className="alert alert-warning">
                     <div>
-                        <strong>No matching token</strong>
+                        <h3>{warning ? warning.title : ""}</h3>
                     </div>
 
-                    Sorry but the token '{invalidToken}' is not recognised as an address or symbol
+                    {warning ? warning.message : ""}
                 </div>
             </Conditional>
         )

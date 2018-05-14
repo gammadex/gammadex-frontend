@@ -11,19 +11,25 @@ class TokenStore extends EventEmitter {
         this.selectedToken = TokenListApi.getDefaultToken()
         this.searchToken = ""
         this.serverTickers = {}
-        this.invalidTokenIdentifier = null
+        this.tokenWarning = null
         this.createToken = {
             address: "",
             lName: "",
             name: "",
-            decimals: ""
+            decimals: "",
+            unlisted: true
         }
+
         this.tokenCheckError = ""
         this.checkingAddress = false
     }
 
     getSelectedToken() {
         return this.selectedToken
+    }
+
+    getSelectedTokenAddress() {
+        return this.selectedToken ? this.selectedToken.address : null
     }
 
     getSearchToken() {
@@ -34,8 +40,8 @@ class TokenStore extends EventEmitter {
         return this.serverTickers
     }
 
-    getInvalidTokenIdentifier() {
-        return this.invalidTokenIdentifier
+    getTokenWarning() {
+        return this.tokenWarning
     }
 
     getCreateToken() {
@@ -54,12 +60,17 @@ class TokenStore extends EventEmitter {
         return TokenListApi.getUserTokens()
     }
 
+    setWarning(title, message) {
+        this.tokenWarning = { title, message }
+    }
+
     reset(address) {
         this.createToken = {
             address: address,
             lName: "",
             name: "",
-            decimals: ""
+            decimals: "",
+            unlisted: true
         }
 
         this.tokenCheckError = ""
@@ -96,7 +107,11 @@ class TokenStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.SELECT_TOKEN: {
                 this.selectedToken = action.token
-                this.invalidTokenIdentifier = null
+                this.tokenWarning = null
+                if (this.selectedToken.unlisted) {
+                    this.setWarning("Unlisted Token", `Token ${this.selectedToken.name} is not listed on Gammadex -- proceed at your own risk`)
+                }
+
                 this.emitChange()
                 break
             }
@@ -113,7 +128,12 @@ class TokenStore extends EventEmitter {
                 break
             }
             case ActionNames.INVALID_TOKEN: {
-                this.invalidTokenIdentifier = action.tokenIdentifier
+                if (action.tokenIdentifier) {
+                    this.setWarning("No Matching Token", `Token ${action.tokenIdentifier} is not recognised as an address or symbol`)
+                } else {
+                    this.tokenWarning = null
+                }
+
                 this.emitChange()
                 break
             }

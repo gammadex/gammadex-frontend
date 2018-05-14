@@ -35,6 +35,7 @@ class WalletStore extends EventEmitter {
         this.confirmPrivateKeyPasswordError = null
         this.useEncryption = true
         this.keyStorePasswordError = null
+        this.rememberMetamask = true
 
         this.displayUnlockKeyStoreModal = WalletDao.isWalletSaved(AccountType.KEY_STORE_FILE) && !this.unlocked
         this.displayUnlockPrivateKeyModal = WalletDao.isWalletSaved(AccountType.PRIVATE_KEY) && WalletDao.readWallet().data.encrypted && !this.unlocked
@@ -148,6 +149,10 @@ class WalletStore extends EventEmitter {
         return this.providedWeb3.accountAvailable
     }
 
+    isRememberMetamask() {
+        return this.rememberMetamask
+    }
+
     getLedger() {
         return this.ledger
     }
@@ -173,6 +178,7 @@ class WalletStore extends EventEmitter {
                 this.keyStorePasswordError = null
                 this.rememberKeyStoreFile = false
                 this.rememberPrivateKey = false
+                this.rememberMetamask = false
                 this.resetLedgerValues()
                 this.emitChange()
                 break
@@ -220,6 +226,11 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.WALLET_CHANGE_REMEMBER_KEYSTORE: {
                 this.rememberKeyStoreFile = action.isRememberMe
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_CHANGE_REMEMBER_METAMASK: {
+                this.rememberMetamask = action.isRememberMe
                 this.emitChange()
                 break
             }

@@ -13,22 +13,25 @@ export default class MyTrades extends React.Component {
         this.state = {
             trades: MyTradesStore.getAllTrades(),
             filter: "",
+            account: AccountStore.getAccountState().account,
         }
         this.updateMyTradesState = this.updateMyTradesState.bind(this)
+        this.updateAccount = this.updateAccount.bind(this)
     }
 
     componentWillMount() {
         MyTradesStore.on("change", this.updateMyTradesState)
+        AccountStore.on("change", this.updateAccount)
     }
 
     componentWillUnmount() {
         MyTradesStore.removeListener("change", this.updateMyTradesState)
+        AccountStore.removeListener("change", this.updateAccount)
     }
 
-    updateAccountState() {
-        const {account} = AccountStore.getAccountState()
+    updateAccount() {
         this.setState({
-            account: account
+            account: AccountStore.getAccountState().account
         })
     }
 
@@ -39,7 +42,9 @@ export default class MyTrades extends React.Component {
     }
 
     refresh = () => {
-        WebSocketActions.getMarket()
+        if (this.state.account) {
+            WebSocketActions.getMarket()
+        }
     }
 
     filterChanged = (event) => {
@@ -48,16 +53,20 @@ export default class MyTrades extends React.Component {
     }
 
     render() {
-        const {trades, filter} = this.state
+        const {trades, filter, account} = this.state
 
         const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades)
         const csvContent = TradeDisplayUtil.tradesToCsv(displayTrades)
         const filteredTrades = displayTrades.filter(
             t => `${t.market}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
         )
+        const disabledClass = account ? "" : "disabled"
+
 
         let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
-        if (trades && trades.length > 0) {
+        if (!account) {
+            content = <EmptyTableMessage>Please log in to see trade history</EmptyTableMessage>
+        } else if (trades && trades.length > 0) {
             content = <MyTradesTable trades={filteredTrades}/>
         }
 
@@ -70,11 +79,13 @@ export default class MyTrades extends React.Component {
                         </div>
                         <div className="col-lg-6 red">
                             <div className="float-right form-inline">
-                                <input placeholder="Search" className="form-control mr-2"
+                                <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
                                        onChange={this.filterChanged}/>
                                 <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv"
-                                          className="btn btn-primary mr-2"><i className="fas fa-download"/></Download>
-                                <button className="btn btn-primary" onClick={this.refresh}><i className="fas fa-sync"/>
+                                          className={"btn btn-primary mr-2 " + disabledClass}><i
+                                    className="fas fa-download"/></Download>
+                                <button className={"btn btn-primary " + disabledClass} onClick={this.refresh}><i
+                                    className="fas fa-sync"/>
                                 </button>
                             </div>
                         </div>

@@ -10,12 +10,14 @@ import * as WebSocketActions from "./actions/WebSocketActions"
 import * as MyTradeApi from "./apis/MyTradeApi"
 
 ReactDOM.render(<App />, document.getElementById('app'), () => {
-    ApplicationBootstrapper.initAccounts()
-    WalletApi.startMetaMaskCheckLoop()
-    TimerApi.startTimer()
-    GasApi.startGasStationPollLoop()
-    GasApi.startCoinMarketCapPollLoop()
-    AccountApi.startPendingTransferCheckLoop()
-    MyTradeApi.startPendingTradesCheckLoop()
-    WebSocketActions.connect()
+    ApplicationBootstrapper.initAccounts().then((accountInitialised) => {
+        WalletApi.startMetaMaskCheckLoop()
+        TimerApi.startTimer()
+        GasApi.startGasStationPollLoop()
+        GasApi.startCoinMarketCapPollLoop()
+        AccountApi.startPendingTransferCheckLoop()
+        AccountApi.startEthAndTokBalanceRefreshLoop()
+        MyTradeApi.startPendingTradesCheckLoop()
+        WebSocketActions.connect()
+    })
 })

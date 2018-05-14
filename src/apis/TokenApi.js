@@ -9,19 +9,9 @@ function getUrlTokenFromProps(props) {
 function processToken(token, currentStateToken, invalidTokenIdentifier) {
     const currentStateTokenName = currentStateToken ? currentStateToken.name : null
 
+    TokenActions.selectToken(token)
     if (token.name !== currentStateTokenName) {
-        TokenActions.selectToken(token)
         WebSocketActions.getMarket()
-    }
-
-    if (invalidTokenIdentifier) {
-        TokenActions.invalidToken(null)
-    }
-}
-
-function badToken(prevUrlToken, currUrlToken, invalidTokenIdentifier) {
-    if (currUrlToken !== prevUrlToken && currUrlToken !== invalidTokenIdentifier) {
-        TokenActions.invalidToken(currUrlToken)
     }
 }
 
@@ -32,6 +22,6 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken, inva
     if (currUrlToken && currUrlToken != prevUrlToken) {
         TokenListApi.getTokenBySymbolOrAddress(currUrlToken)
             .then(token => processToken(token, currentStateToken, invalidTokenIdentifier))
-            .catch(bad => badToken(prevUrlToken, currUrlToken, invalidTokenIdentifier))
+            .catch(bad => TokenActions.invalidToken(currUrlToken))
     }
 }
