@@ -40,7 +40,7 @@ class TokenListApi {
     }
 
     removeUserToken(token) {
-        this.userTokens = _.filter(this.userTokens, ut => ut.address !== token.address)
+        this.userTokens = _.filter(this.userTokens, ut => ut.address.toLowerCase() !== token.address.toLowerCase())
         archive(this.userTokens)
     }
 
@@ -49,7 +49,7 @@ class TokenListApi {
     }
 
     getTokenName(address) {
-        const token = this.find({address})
+        const token = this.find((t) => { return t.address.toLowerCase() === address.toLowerCase(); })
         return (token) ? token.name : null
     }
 
@@ -62,7 +62,7 @@ class TokenListApi {
     }
 
     getTokenDecimalsByAddress(address) {
-        return this.find({address}).decimals
+        return this.find((t) => { return t.address.toLowerCase() === address.toLowerCase(); }).decimals
     }
 
     isAddress(addressMaybe) {
