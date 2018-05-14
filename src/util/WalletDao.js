@@ -36,6 +36,14 @@ export function savePrimaryKeyWallet(key, encrypted) {
     localStorage.wallet = JSON.stringify(wallet)
 }
 
+export function saveMetamaskWallet() {
+    const wallet = {
+        type: AccountType.METAMASK,
+    }
+
+    localStorage.wallet = JSON.stringify(wallet)
+}
+
 export function readWallet() {
     return localStorage.wallet ? JSON.parse(localStorage.wallet) : null
 }

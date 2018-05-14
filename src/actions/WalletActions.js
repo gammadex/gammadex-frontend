@@ -64,6 +64,13 @@ export function changedPrivateKeyRememberMe(isRememberMe) {
     })
 }
 
+export function changedMetamaskRememberMe(isRememberMe) {
+    dispatcher.dispatch({
+        type: ActionNames.WALLET_CHANGE_REMEMBER_METAMASK,
+        isRememberMe,
+    })
+}
+
 export function hideUnlockPrivateKeyModal() {
     dispatcher.dispatch({
         type: ActionNames.WALLET_HIDE_UNLOCK_PRIVATE_KEY_MODAL,
