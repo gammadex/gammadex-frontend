@@ -46,6 +46,10 @@ class AccountStore extends EventEmitter {
         return this.account
     }
 
+    getSelectedAccountType() {
+        return this.selectedAccountType
+    }
+
     emitChange() {
         this.emit("change")
     }

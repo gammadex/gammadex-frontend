@@ -1,7 +1,11 @@
 import * as WalletActions from "../actions/WalletActions"
 import * as EthereumNetworks from "../util/EthereumNetworks"
 import WalletStore from "../stores/WalletStore"
+import AccountStore from "../stores/AccountStore"
 import Timer from "../util/Timer"
+import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import * as AccountApi from "./AccountApi"
+import AccountType from "../AccountType"
 
 /**
  * Poll for MetaMask login / logout - nasty but current best practice
@@ -37,6 +41,13 @@ export function updateWalletStoreProvidedWeb3Details() {
                     if (accounts.length > 0) {
                         if (!WalletStore.isProvidedWeb3AccountAvailable()) {
                             WalletActions.updateProvidedWeb3AccountAvailable(true)
+                        }
+                        if (AccountStore.getSelectedAccountType()
+                            && AccountStore.getSelectedAccountType() === AccountType.METAMASK
+                            && accounts[0] !== AccountStore.getAccount()) {
+
+                            EtherDeltaWeb3.initForMetaMask()
+                            return AccountApi.refreshAccount(AccountType.METAMASK)
                         }
                     } else {
                         if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {
