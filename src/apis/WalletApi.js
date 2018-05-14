@@ -6,6 +6,7 @@ import Timer from "../util/Timer"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountApi from "./AccountApi"
 import AccountType from "../AccountType"
+import _ from "lodash"
 
 /**
  * Poll for MetaMask login / logout - nasty but current best practice
@@ -44,7 +45,7 @@ export function updateWalletStoreProvidedWeb3Details() {
                         }
                         if (AccountStore.getSelectedAccountType()
                             && AccountStore.getSelectedAccountType() === AccountType.METAMASK
-                            && accounts[0] !== AccountStore.getAccount()) {
+                            && _.toLower(accounts[0]) !== _.toLower(AccountStore.getAccount())) {
 
                             EtherDeltaWeb3.initForMetaMask()
                             return AccountApi.refreshAccount(AccountType.METAMASK)
