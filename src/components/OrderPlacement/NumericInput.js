@@ -30,7 +30,7 @@ export default class NumericInput extends React.Component {
 
         let maxButton = null
         if (typeof (onMax) === 'function') {
-            maxButton = <InputGroupAddon addonType="append"><Button color="secondary" onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
+            maxButton = <InputGroupAddon addonType="append"><Button color="link" onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
         }
 
         return (
