@@ -2,7 +2,6 @@ import React from "react"
 import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
-import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
 import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
@@ -11,7 +10,7 @@ import {Box, BoxFooter} from "./CustomComponents/Box"
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
-import { baseEthToWei, tokEthToWei } from "../EtherConversion"
+import {baseEthToWei, tokEthToWei} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 
 export default class AccountDetail extends React.Component {
@@ -23,29 +22,17 @@ export default class AccountDetail extends React.Component {
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
         this.onAccountChange = this.onAccountChange.bind(this)
-        this.onTokenChange = this.onTokenChange.bind(this)
-        this.timerFired = this.timerFired.bind(this)
         this.toggle = this.toggle.bind(this)
         this.onGasStoreChange = this.onGasStoreChange.bind(this)
     }
 
-    componentWillMount() {
-        if (this.state.accountRetrieved) {
-            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
-
     componentDidMount() {
         AccountStore.on("change", this.onAccountChange)
-        TokenStore.on("change", this.onTokenChange)
-        TimerRelay.on("change", this.timerFired)
         GasPriceStore.on("change", this.onGasStoreChange)
     }
 
     componentWillUnmount() {
         AccountStore.removeListener("change", this.onAccountChange)
-        TokenStore.removeListener("change", this.onTokenChange)
-        TimerRelay.removeListener("change", this.timerFired)
         GasPriceStore.removeListener("change", this.onGasStoreChange)
     }
 
@@ -53,27 +40,8 @@ export default class AccountDetail extends React.Component {
         AccountActions.depositWithdrawAmountUpdated(event.target.value)
     }
 
-    onTokenChange() {
-        if (this.state.accountRetrieved) {
-            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
-
-    timerFired() {
-        if (this.state.accountRetrieved) {
-            AccountApi.refreshNonce()
-            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
-
     onAccountChange() {
-        const accountState = AccountStore.getAccountState()
-
-        if (accountState.account && this.state.account !== accountState.account) {
-            AccountApi.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
-        }
-
-        this.setState(accountState)
+        this.setState(AccountStore.getAccountState())
     }
 
     onGasStoreChange() {
@@ -84,12 +52,18 @@ export default class AccountDetail extends React.Component {
 
     toggle() {
         this.setState({
-          tooltipOpen: !this.state.tooltipOpen
+            tooltipOpen: !this.state.tooltipOpen
         })
-      }
+    }
 
     hideModal() {
         AccountActions.depositWithdrawCancel()
+    }
+
+    refreshBalances = () => {
+        const {account} = this.state
+
+        AccountApi.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
     }
 
     submit() {
@@ -171,14 +145,18 @@ export default class AccountDetail extends React.Component {
         const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         let accountLink = <span className="text-danger">No account</span>
         if (accountRetrieved) {
-            accountLink = <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
+            accountLink =
+                <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
         }
 
         let nonceTip = ''
         if (selectedAccountType !== AccountType.METAMASK) {
             let ntext = `Nonce: ${nonce}`
-            nonceTip = <Tooltip placement="right" isOpen={this.state.tooltipOpen} target="atName" toggle={this.toggle}>{ntext}</Tooltip>
+            nonceTip = <Tooltip placement="right" isOpen={this.state.tooltipOpen} target="atName"
+                                toggle={this.toggle}>{ntext}</Tooltip>
         }
+
+        const refreshDisabledClass = account ? "" : "disabled"
 
         return (
             <span>

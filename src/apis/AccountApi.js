@@ -1,5 +1,7 @@
 import * as AccountActions from "../actions/AccountActions"
 import TransferStore from "../stores/TransferStore"
+import AccountStore from "../stores/AccountStore"
+import TokenStore from "../stores/TokenStore"
 import Timer from "../util/Timer"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import Config from "../Config"
@@ -18,9 +20,19 @@ export function refreshEthAndTokBalance(account, tokenAddress) {
         })
 }
 
+export function refreshEthAndTokBalanceUsingStore() {
+    const account = AccountStore.getAccount()
+    const tokenAddress = TokenStore.getSelectedTokenAddress()
+
+    if (account && tokenAddress) {
+        refreshEthAndTokBalance(account, tokenAddress)
+    }
+}
+
 export function refreshAccount(accountType, history) {
-    EtherDeltaWeb3.refreshAccount()
+    return EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
+
             AccountActions.accountRetrieved(addressNonce, accountType)
 
             if (history) { // TODO - unfortunate that this has to be passed in here from a component
@@ -28,6 +40,8 @@ export function refreshAccount(accountType, history) {
             }
 
             WebSocketActions.getMarket()
+
+            return true
         })
         .catch(error => {
             AccountActions.accountRetrieveError(accountType, error)
@@ -136,4 +150,13 @@ export function startPendingTransferCheckLoop(ms = 3000) {
 
 export function stopPendingTransferCheckLoop() {
     Timer.stop(refreshTransfers)
+}
+
+export function startEthAndTokBalanceRefreshLoop(ms = 3000) {
+    refreshEthAndTokBalanceUsingStore()
+    Timer.start(refreshEthAndTokBalanceUsingStore, ms)
+}
+
+export function stopEthAndTokBalanceRefreshLoop() {
+    Timer.stop(refreshEthAndTokBalanceUsingStore)
 }

@@ -26,6 +26,10 @@ class TokenStore extends EventEmitter {
         return this.selectedToken
     }
 
+    getSelectedTokenAddress() {
+        return this.selectedToken ? this.selectedToken.address : null
+    }
+
     getSearchToken() {
         return this.searchToken
     }

@@ -1,7 +1,6 @@
 import AccountType from "../AccountType"
 import * as WalletDao from "../util/WalletDao"
 import * as KeyUtil from "../util/KeyUtil"
-import * as AccountActions from "../actions/AccountActions"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountApi from "../apis/AccountApi"
 
@@ -12,11 +11,13 @@ export function initAccounts() {
 
     if (address) {
         EtherDeltaWeb3.initForPrivateKey(address, privateKey)
-        AccountApi.refreshAccount(AccountType.PRIVATE_KEY)
+        return AccountApi.refreshAccount(AccountType.PRIVATE_KEY)
     } else if (typeof web3 !== "undefined") { // Checking if Web3 has been injected by the browser (Mist/MetaMask)
         EtherDeltaWeb3.initForMetaMask()
-        AccountApi.refreshAccount(AccountType.METAMASK)
+        return AccountApi.refreshAccount(AccountType.METAMASK)
     }
+
+    return Promise.resolve(false)
 }
 
 function getUnsecuredPrivateKeyAccount() {
