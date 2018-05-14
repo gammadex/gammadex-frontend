@@ -17,18 +17,18 @@ class Exchange extends Component {
         super()
         this.state = {
             token: null,
-            invalidTokenIdentifier: null,
+            tokenWarning: null,
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
     }
 
     componentDidUpdate(prevProps) {
-        TokenApi.ensureCorrectToken(prevProps, this.props, this.state.token, this.state.invalidTokenIdentifier)
+        TokenApi.ensureCorrectToken(prevProps, this.props, this.state.token, this.state.tokenWarning)
     }
 
     componentWillMount() {
-        TokenApi.ensureCorrectToken(null, this.props, this.state.token, this.state.invalidTokenIdentifier)
+        TokenApi.ensureCorrectToken(null, this.props, this.state.token, this.state.tokenWarning)
 
         TokenStore.on("change", this.onTokenStoreChange)
         this.onTokenStoreChange()
@@ -41,12 +41,12 @@ class Exchange extends Component {
     onTokenStoreChange() {
         this.setState((prevState, props) => ({
             token: TokenStore.getSelectedToken(),
-            invalidTokenIdentifier: TokenStore.getInvalidTokenIdentifier(),
+            tokenWarning: TokenStore.getTokenWarning(),
         }))
     }
 
     render() {
-        const {token, invalidTokenIdentifier} = this.state
+        const {token, tokenWarning} = this.state
 
         return <div>
             <div className="row">
@@ -55,7 +55,7 @@ class Exchange extends Component {
                     <TokenChooser/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
-                    <TokenErrorMessage invalidToken={invalidTokenIdentifier}/>
+                    <TokenErrorMessage warning={tokenWarning}/>
                     <Charts token={token}/>
                     <OrderPlacement token={token}/>
                     <OrderBook token={token}/>
