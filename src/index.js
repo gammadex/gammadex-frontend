@@ -16,6 +16,7 @@ ReactDOM.render(<App />, document.getElementById('app'), () => {
         GasApi.startGasStationPollLoop()
         GasApi.startCoinMarketCapPollLoop()
         AccountApi.startPendingTransferCheckLoop()
+        AccountApi.startEthAndTokBalanceRefreshLoop()
         MyTradeApi.startPendingTradesCheckLoop()
         WebSocketActions.connect()
     })

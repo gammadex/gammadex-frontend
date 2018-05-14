@@ -2,7 +2,6 @@ import React from "react"
 import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
-import TimerRelay from "../TimerRelay"
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
 import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
@@ -23,29 +22,17 @@ export default class AccountDetail extends React.Component {
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
         this.onAccountChange = this.onAccountChange.bind(this)
-        this.onTokenChange = this.onTokenChange.bind(this)
-        this.timerFired = this.timerFired.bind(this)
         this.toggle = this.toggle.bind(this)
         this.onGasStoreChange = this.onGasStoreChange.bind(this)
     }
 
-    componentWillMount() {
-        if (this.state.accountRetrieved) {
-            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
-
     componentDidMount() {
         AccountStore.on("change", this.onAccountChange)
-        TokenStore.on("change", this.onTokenChange)
-        TimerRelay.on("change", this.timerFired)
         GasPriceStore.on("change", this.onGasStoreChange)
     }
 
     componentWillUnmount() {
         AccountStore.removeListener("change", this.onAccountChange)
-        TokenStore.removeListener("change", this.onTokenChange)
-        TimerRelay.removeListener("change", this.timerFired)
         GasPriceStore.removeListener("change", this.onGasStoreChange)
     }
 
@@ -53,27 +40,8 @@ export default class AccountDetail extends React.Component {
         AccountActions.depositWithdrawAmountUpdated(event.target.value)
     }
 
-    onTokenChange() {
-        if (this.state.accountRetrieved) {
-            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
-
-    timerFired() {
-        if (this.state.accountRetrieved) {
-            AccountApi.refreshNonce()
-            AccountApi.refreshEthAndTokBalance(this.state.account, TokenStore.getSelectedToken().address)
-        }
-    }
-
     onAccountChange() {
-        const accountState = AccountStore.getAccountState()
-
-        if (accountState.account && this.state.account !== accountState.account) {
-            //AccountApi.refreshEthAndTokBalance(accountState.account, TokenStore.getSelectedToken().address)
-        }
-
-        this.setState(accountState)
+        this.setState(AccountStore.getAccountState())
     }
 
     onGasStoreChange() {
@@ -192,21 +160,7 @@ export default class AccountDetail extends React.Component {
 
         return (
             <span>
-                <div className="card history-table">
-                    <div className="card-header">
-                        <div className="row hdr-stretch">
-                            <div className="col-lg-6">
-                                <strong className="card-title">Account</strong>
-                            </div>
-                            <div className="col-lg-6 red">
-                                <div className="float-right">
-                                    <button className={"btn btn-primary " + refreshDisabledClass} onClick={this.refreshBalances}><i
-                                        className="fas fa-sync"/></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <Box title="Accounts">
                     <AccountTable
                         token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
@@ -221,7 +175,7 @@ export default class AccountDetail extends React.Component {
                         <br/>
                         <Badge id="atName" color="secondary">{accountTypeName}</Badge> {nonceTip}
                     </BoxFooter>
-                </div>
+                </Box>
 
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
                     <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>
