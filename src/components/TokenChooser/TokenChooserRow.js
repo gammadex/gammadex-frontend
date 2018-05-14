@@ -19,7 +19,7 @@ export default class TokenChooserRow extends React.Component {
         return (
             <tr className={"clickable " + selectedClass}>
                 <Conditional displayCondition={this.props.editMode}>
-                    <td><button className="btn-sm btn-primary" onClick={this.onRemove}>X</button></td>
+                    <td onClick={this.onRemove}><span className="far fa-trash-alt"/></td>
                 </Conditional>
                 <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.name}</Truncated></td>
                 <td onClick={this.onRowSelect}><Round>{token.baseVolume}</Round></td>

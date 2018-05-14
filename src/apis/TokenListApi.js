@@ -3,10 +3,6 @@ import _ from "lodash"
 import {addressesLooselyMatch, symbolsLooselyMatch} from '../util/KeyUtil'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
-function isAddress(addressMaybe) {
-    return addressMaybe.startsWith("0x")
-}
-
 function archive(userTokens) {
     localStorage.userTokenList = JSON.stringify(userTokens)
 }
@@ -69,6 +65,10 @@ class TokenListApi {
         return this.find({address}).decimals
     }
 
+    isAddress(addressMaybe) {
+        return addressMaybe.startsWith("0x")
+    }
+
     searchToken(address, addIfFound) {
         return EtherDeltaWeb3.promiseGetTokenDetails(address)
             .then(res => {
@@ -92,7 +92,7 @@ class TokenListApi {
         const found = this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.name, symbolOrAddress))
         if (found) {
             return Promise.resolve(found)
-        } else if (isAddress(symbolOrAddress)) {
+        } else if (this.isAddress(symbolOrAddress)) {
             return this.searchToken(symbolOrAddress, true);
         }
 

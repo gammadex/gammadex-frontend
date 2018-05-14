@@ -73,7 +73,7 @@ class TokenStore extends EventEmitter {
             unlisted: true
         }
 
-        this.tokenCheckError = ""
+        this.tokenCheckError = address === "" || TokenListApi.isAddress(address) ? "" : "Invalid address on " + WalletStore.getProvidedWeb3Info().netDescription
     }
 
     emitChange() {

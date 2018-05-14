@@ -107,17 +107,21 @@ class TokenChooser extends React.Component {
                     <BoxHeader>
                         <div className="hdr-stretch">
                             <strong className="card-title">Unlisted Tokens</strong>
+                            {/*
                             <button className="btn btn-sm btn-secondary col-sm-2"
                                     onClick={this.toggleAddTokens}>{this.state.showAddToken ? "Accept" : "Edit"}</button>
+                            */}
                         </div>
                     </BoxHeader>
 
                     <TokenDisplay tokenList={userTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}
-                                    editMode={this.state.showAddToken} removeToken={this.removeUserToken}/>
+                                    editMode={true} removeToken={this.removeUserToken}/>
 
+                    <TokenCreator create={this.onCreateToken}/>
+                    {/*
                     <Conditional displayCondition={this.state.showAddToken}>
-                        <TokenCreator create={this.onCreateToken}/>
                     </Conditional>
+                    */}
                 </div>
             </div>
         )

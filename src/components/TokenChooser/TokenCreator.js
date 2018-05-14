@@ -2,6 +2,7 @@ import React from "react"
 import * as TokenActions from "../../actions/TokenActions"
 import TokenStore from "../../stores/TokenStore"
 import Conditional from "../CustomComponents/Conditional"
+import TokenListApi from "../../apis/TokenListApi";
 
 export default class TokenCreator extends React.Component {
     constructor() {
@@ -37,7 +38,11 @@ export default class TokenCreator extends React.Component {
     }
 
     onAddressChange = event => {
-        TokenActions.resetCreate(event.target.value)
+        const address = event.target.value
+        TokenActions.resetCreate(address)
+        if (TokenListApi.isAddress(address)) {
+            TokenActions.tokenLookup(address)
+        }
     }
 
     onCheckAddress = event => {
@@ -55,15 +60,10 @@ export default class TokenCreator extends React.Component {
 
                 <div className="row form-group">
                     <label className="col-sm-3 col-form-label" htmlFor="address">Address</label>
-                    <div className="form-inline hdr-stretch col-sm-9">
+                    <div className="col-sm-9">
                         <input className={"form-control" + (this.state.checkError !== "" ? " is-invalid" : "")}
                                id="address" placeholder="0x12345..."
                                onChange={this.onAddressChange} value={this.state.token.address}/>
-                        <button className="btn btn-sm btn-info form-control"
-                                data-toggle="tooltip" data-placement="right"
-                                title="Check address and load token details"
-                                disabled={this.state.token.address === ""}
-                                onClick={this.onCheckAddress}>Check</button>
                         <div className="invalid-feedback">{this.state.checkError}</div>
                     </div>
                 </div>
@@ -82,12 +82,12 @@ export default class TokenCreator extends React.Component {
                             </tbody>
                         </table>
                     </div>
-                </Conditional>
 
-                <div className="row form-group form-inline hdr-stretch-ctr">
-                    <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
-                            disabled={this.state.token.name === "" || this.state.checkError !== ""}>Add</button>
-                </div>
+                    <div className="row form-group form-inline hdr-stretch-ctr">
+                        <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
+                                disabled={this.state.token.name === "" || this.state.checkError !== ""}>Add</button>
+                    </div>
+                </Conditional>
             </div>
         )
     }
