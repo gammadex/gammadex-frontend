@@ -5,11 +5,14 @@ import { Box, BoxSection, BoxHeader } from "../../CustomComponents/Box"
 import NumericInput from "../NumericInput.js"
 import OrderSide from "../../../OrderSide"
 import OrderPlacementStore from "../../../stores/OrderPlacementStore"
+import AccountStore from "../../../stores/AccountStore"
 import { safeBigNumber } from "../../../EtherConversion";
 import * as OrderPlacementActions from "../../../actions/OrderPlacementActions"
 import OrderEntryField from "../../../OrderEntryField"
 import ExpiryType from "../../../ExpiryType"
 import Conditional from "../../CustomComponents/Conditional"
+import AccountType from "../../../AccountType"
+import OrderFactory from "../../../OrderFactory"
 
 export default class MakeOrderTab extends React.Component {
     constructor(props) {
@@ -25,9 +28,12 @@ export default class MakeOrderTab extends React.Component {
             orderPriceWarning: "",
             expiryType: ExpiryType.GOOD_TILL_CANCEL,
             expireAfterBlocks: 0,
-            expireAfterHumanReadableString: ""
+            expireAfterHumanReadableString: "",
+            orderHash: "",
+            selectedAccountType: null
         }
         this.saveOrderPlacementState = this.saveOrderPlacementState.bind(this)
+        this.saveAccountState = this.saveAccountState.bind(this)
         this.onDismissPriceWarningAlert = this.onDismissPriceWarningAlert.bind(this)
     }
 
@@ -38,11 +44,14 @@ export default class MakeOrderTab extends React.Component {
 
     componentDidMount() {
         OrderPlacementStore.on("change", this.saveOrderPlacementState)
+        AccountStore.on("change", this.saveAccountState)
         this.saveOrderPlacementState()
+        this.saveAccountState()
     }
 
     componentWillUnmount() {
         OrderPlacementStore.removeListener("change", this.saveOrderPlacementState)
+        AccountStore.removeListener("change", this.saveAccountState)
     }
 
     onOrderPriceChange = (value) => {
@@ -100,7 +109,8 @@ export default class MakeOrderTab extends React.Component {
                 orderPriceWarning: orderPlacementState.buyOrderPriceWarning,
                 expiryType: orderPlacementState.buyOrderExpiryType,
                 expireAfterBlocks: orderPlacementState.buyOrderExpireAfterBlocks,
-                expireAfterHumanReadableString: orderPlacementState.buyOrderExpireHumanReadableString
+                expireAfterHumanReadableString: orderPlacementState.buyOrderExpireHumanReadableString,
+                orderHash: orderPlacementState.buyOrderHash
             })
         } else {
             this.setState({
@@ -114,9 +124,16 @@ export default class MakeOrderTab extends React.Component {
                 orderPriceWarning: orderPlacementState.sellOrderPriceWarning,
                 expiryType: orderPlacementState.sellOrderExpiryType,
                 expireAfterBlocks: orderPlacementState.sellOrderExpireAfterBlocks,
-                expireAfterHumanReadableString: orderPlacementState.sellOrderExpireHumanReadableString
+                expireAfterHumanReadableString: orderPlacementState.sellOrderExpireHumanReadableString,
+                orderHash: orderPlacementState.sellOrderHash
             })
         }
+    }
+
+    saveAccountState() {
+        this.setState({
+            selectedAccountType: AccountStore.getAccountState().selectedAccountType
+        })
     }
 
     onSubmit = () => {
@@ -151,7 +168,9 @@ export default class MakeOrderTab extends React.Component {
             orderPriceWarning,
             expiryType,
             expireAfterBlocks,
-            expireAfterHumanReadableString } = this.state
+            expireAfterHumanReadableString,
+            orderHash,
+            selectedAccountType } = this.state
 
         const submitDisabled = !orderValid
             || total === ""
@@ -163,6 +182,11 @@ export default class MakeOrderTab extends React.Component {
         const totalFieldValid = orderValid || orderInvalidField != OrderEntryField.TOTAL
         const totalFieldErrorMessage = totalFieldValid ? "" : orderInvalidReason
 
+        let expiryMessage = <FormText color="muted">{expireAfterHumanReadableString}</FormText>
+        if(!orderValid && orderInvalidField === OrderEntryField.BLOCKS) {
+            expiryMessage = <FormText color="danger">{orderInvalidReason}</FormText>
+        }
+
         const expiryTypeText = expiryType === ExpiryType.GOOD_TILL_CANCEL
             ? "Order will remain active until cancelled. (expiry is set to two billion blocks, which is almost one thousand years!!)"
             : ""
@@ -171,6 +195,12 @@ export default class MakeOrderTab extends React.Component {
         if (orderHasPriceWarning && orderValid) {
             priceWarningAlert = <Alert color="danger" isOpen={orderHasPriceWarning} toggle={this.onDismissPriceWarningAlert}>{orderPriceWarning}</Alert>
         }
+
+        let prefixedOrderHash = orderHash
+        if(orderHash && orderHash != "") {
+            prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
+        }
+
         const body =
             <BoxSection className="order-box">
 
@@ -206,10 +236,26 @@ export default class MakeOrderTab extends React.Component {
                     <FormGroup row>
                         <Label for={type + "ExpiryType"} sm={3}></Label>
                         <Col sm={9}>
-                            <FormText color="muted">{expireAfterHumanReadableString}</FormText>
+                            {expiryMessage}
                         </Col>
                     </FormGroup>
 
+                </Conditional>
+
+                <Conditional displayCondition={orderValid && orderHash != "" && selectedAccountType && selectedAccountType === AccountType.METAMASK }>
+                    <hr />
+                    <FormGroup row>
+                        <Label for={type + "MetaMaskHash"} sm={3}>MetaMask Order Hash</Label>
+                        <Col sm={9}>
+                            <Input id={type + "MetaMaskHash"}
+                                disabled={true}
+                                value={prefixedOrderHash} />
+                            <FormText color="muted">
+                            This hex-encoded hash represents the above Order details in compressed form and is used by the EtherDelta Smart Contract.
+                            Please ensure it is this message you sign in MetaMask when prompted.
+                            </FormText>
+                        </Col>
+                    </FormGroup>
                 </Conditional>
 
                 {priceWarningAlert}

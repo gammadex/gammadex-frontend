@@ -55,7 +55,7 @@ export function isTakerSell(order) {
 
 export function blocksToHumanReadableExpiry(blocks) {
     if(blocks === "" || safeBigNumber(blocks).isZero()) {
-        return "Blocks must be greater than zero."
+        return "" // ui will display appropriate error message, see validateBuyOrder
     }
     const secondsInHour = 60 * 60
     const secondsInDay = secondsInHour * 24

@@ -1,4 +1,5 @@
 export default {
     AMOUNT: "AMOUNT",
-    TOTAL: "TOTAL"
+    TOTAL: "TOTAL",
+    BLOCKS: "BLOCKS"
 }
