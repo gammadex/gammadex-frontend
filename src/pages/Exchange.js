@@ -25,11 +25,11 @@ class Exchange extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        TokenApi.ensureCorrectToken(prevProps, this.props, this.state.token, this.state.tokenWarning)
+        TokenApi.ensureCorrectToken(prevProps, this.props, this.state.token)
     }
 
     componentWillMount() {
-        TokenApi.ensureCorrectToken(null, this.props, this.state.token, this.state.tokenWarning)
+        TokenApi.ensureCorrectToken(null, this.props, this.state.token)
 
         TokenStore.on("change", this.onTokenStoreChange)
         this.onTokenStoreChange()

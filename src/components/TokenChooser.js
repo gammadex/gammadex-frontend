@@ -16,8 +16,7 @@ class TokenChooser extends React.Component {
         this.state = {
             searchedToken: "",
             selectedToken: null,
-            serverTickers: {},
-            showAddToken: false
+            serverTickers: {}
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -55,13 +54,8 @@ class TokenChooser extends React.Component {
         }
     }
 
-    toggleAddTokens = event => {
-        this.setState({showAddToken: !this.state.showAddToken})
-    }
-
     onCreateToken = token => {
         TokenActions.addUserToken(token)
-        this.toggleAddTokens()
     }
 
     removeUserToken = token => {
@@ -107,10 +101,6 @@ class TokenChooser extends React.Component {
                     <BoxHeader>
                         <div className="hdr-stretch">
                             <strong className="card-title">Unlisted Tokens</strong>
-                            {/*
-                            <button className="btn btn-sm btn-secondary col-sm-2"
-                                    onClick={this.toggleAddTokens}>{this.state.showAddToken ? "Accept" : "Edit"}</button>
-                            */}
                         </div>
                     </BoxHeader>
 
@@ -118,10 +108,6 @@ class TokenChooser extends React.Component {
                                     editMode={true} removeToken={this.removeUserToken}/>
 
                     <TokenCreator create={this.onCreateToken}/>
-                    {/*
-                    <Conditional displayCondition={this.state.showAddToken}>
-                    </Conditional>
-                    */}
                 </div>
             </div>
         )

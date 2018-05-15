@@ -18,12 +18,12 @@ export default class TokenChooserRow extends React.Component {
 
         return (
             <tr className={"clickable " + selectedClass}>
-                <Conditional displayCondition={this.props.editMode}>
-                    <td onClick={this.onRemove}><span className="far fa-trash-alt"/></td>
-                </Conditional>
                 <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.name}</Truncated></td>
                 <td onClick={this.onRowSelect}><Round>{token.baseVolume}</Round></td>
                 <td onClick={this.onRowSelect}><Round>{token.percentChange}</Round></td>
+                <Conditional displayCondition={this.props.editMode}>
+                    <td onClick={this.onRemove}><span className="far fa-trash-alt"/></td>
+                </Conditional>
             </tr>
         )
     }

@@ -19,12 +19,12 @@ export default class TokenDisplay extends React.Component {
                 <table className="table table-striped table-bordered table-hover table-no-bottom-border">
                     <thead>
                     <tr>
-                        <Conditional displayCondition={this.props.editMode}>
-                            <th/>
-                        </Conditional>
                         <th>Symbol</th>
                         <th>Volume ETH</th>
                         <th>% Change</th>
+                        <Conditional displayCondition={this.props.editMode}>
+                            <th/>
+                        </Conditional>
                     </tr>
                     </thead>
                     <tbody>{tokenRows}</tbody>

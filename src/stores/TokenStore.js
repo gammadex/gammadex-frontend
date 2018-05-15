@@ -64,6 +64,10 @@ class TokenStore extends EventEmitter {
         this.tokenWarning = { title, message }
     }
 
+    setInvalidToken() {
+        this.tokenCheckError = `Invalid address on ${WalletStore.getProvidedWeb3Info().netDescription}`
+    }
+
     reset(address) {
         this.createToken = {
             address: address,
@@ -73,7 +77,11 @@ class TokenStore extends EventEmitter {
             unlisted: true
         }
 
-        this.tokenCheckError = address === "" || TokenListApi.isAddress(address) ? "" : "Invalid address on " + WalletStore.getProvidedWeb3Info().netDescription
+        if (address === "" || TokenListApi.isAddress(address)) {
+            this.tokenCheckError = ""
+        } else {
+            this.setInvalidToken()
+        }
     }
 
     emitChange() {
@@ -95,7 +103,7 @@ class TokenStore extends EventEmitter {
             })
             .catch(e => {
                 this.reset(address)
-                this.tokenCheckError = "Invalid address on " + WalletStore.getProvidedWeb3Info().netDescription
+                this.setInvalidToken()
                 this.checkingAddress = false
                 this.emitChange()
             })
@@ -144,6 +152,7 @@ class TokenStore extends EventEmitter {
             }
             case ActionNames.ADD_USER_TOKEN: {
                 TokenListApi.addUserToken(action.token)
+                this.reset("")
                 this.emitChange()
                 break
             }

@@ -6,7 +6,7 @@ function getUrlTokenFromProps(props) {
     return (props && props.match && props.match.params && props.match.params[0]) ? props.match.params[0] : null
 }
 
-function processToken(token, currentStateToken, invalidTokenIdentifier) {
+function processToken(token, currentStateToken) {
     const currentStateTokenName = currentStateToken ? currentStateToken.name : null
 
     TokenActions.selectToken(token)
@@ -15,13 +15,13 @@ function processToken(token, currentStateToken, invalidTokenIdentifier) {
     }
 }
 
-export function ensureCorrectToken(prevProps, currProps, currentStateToken, invalidTokenIdentifier) {
+export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
     const prevUrlToken = getUrlTokenFromProps(prevProps)
     const currUrlToken = getUrlTokenFromProps(currProps)
 
     if (currUrlToken && currUrlToken != prevUrlToken) {
         TokenListApi.getTokenBySymbolOrAddress(currUrlToken)
-            .then(token => processToken(token, currentStateToken, invalidTokenIdentifier))
+            .then(token => processToken(token, currentStateToken))
             .catch(bad => TokenActions.invalidToken(currUrlToken))
     }
 }

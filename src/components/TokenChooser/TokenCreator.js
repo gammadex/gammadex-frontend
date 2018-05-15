@@ -45,10 +45,6 @@ export default class TokenCreator extends React.Component {
         }
     }
 
-    onCheckAddress = event => {
-        TokenActions.tokenLookup(this.state.token.address)
-    }
-
     render() {
         return (
             <div className="order-box">
@@ -82,12 +78,12 @@ export default class TokenCreator extends React.Component {
                             </tbody>
                         </table>
                     </div>
-
-                    <div className="row form-group form-inline hdr-stretch-ctr">
-                        <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
-                                disabled={this.state.token.name === "" || this.state.checkError !== ""}>Add</button>
-                    </div>
                 </Conditional>
+
+                <div className="row form-group form-inline hdr-stretch-ctr">
+                    <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
+                            disabled={this.state.token.name === "" || this.state.checkError !== ""}>Add</button>
+                </div>
             </div>
         )
     }
