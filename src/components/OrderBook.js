@@ -2,7 +2,7 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import {Box} from "./CustomComponents/Box"
+import { Box } from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 
 export default class OrderBook extends React.Component {
@@ -36,40 +36,36 @@ export default class OrderBook extends React.Component {
     }
 
     saveOpenOrderHashes() {
-        this.setState({openOrderHashes: OpenOrdersStore.getOpenOrderHashes()})
+        this.setState({ openOrderHashes: OpenOrdersStore.getOpenOrderHashes() })
     }
 
     render() {
-        const {token, pageSize} = this.props
-        const {bids, offers, openOrderHashes} = this.state
+        const { token, pageSize } = this.props
+        const { bids, offers, openOrderHashes } = this.state
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
         if (bids && bids.length > 0) {
             bidsContent = <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                                       pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="buy-green"/>
+                pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="buy-green" />
         }
 
         let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
         if (offers && offers.length > 0) {
             offersContent = <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                                         pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="sell-red"/>
+                pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="sell-red" />
         }
 
         return (
 
-            <div className="row">
-                <div className="col-lg-6">
-                    <Box title="Offers">
-                        {offersContent}
-                    </Box>
-                </div>
+            <span>
+                <Box title="Offers">
+                    {offersContent}
+                </Box>
 
-                <div className="col-lg-6">
-                    <Box title="Bids">
-                        {bidsContent}
-                    </Box>
-                </div>
-            </div>
+                <Box title="Bids">
+                    {bidsContent}
+                </Box>
+            </span>
         )
     }
 }

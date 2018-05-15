@@ -206,7 +206,7 @@ export default class FillOrderBook extends React.Component {
                     {/* cannot disable the fade-in transaction for Alerts with reactstrap so falling back to EmptyTableMessage */}
                     {/* <Alert color="secondary" isOpen={!transactionAlertVisible}>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book</Alert> */}
                     <Conditional displayCondition={!transactionAlertVisible}>
-                        <EmptyTableMessage>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book</EmptyTableMessage>
+                        <EmptyTableMessage>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book to trade.</EmptyTableMessage>
                     </Conditional>
                     {transactionAlert}
                 </BoxSection>

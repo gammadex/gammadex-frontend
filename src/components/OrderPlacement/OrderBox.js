@@ -61,7 +61,7 @@ export default class OrderBox extends React.Component {
                             <NavLink
                                 className={classnames({ active: this.state.activeTab === 'orderbook' })}
                                 onClick={() => { this.toggleTab('orderbook'); }}>
-                                Take &nbsp;
+                                <strong>TRADE</strong> &nbsp;
                                 <span id={type + "TakePopOver"} onClick={this.toggleTakePopOver}>
                                     <i className="fas fa-question-circle"></i>
                                 </span>
@@ -82,7 +82,7 @@ export default class OrderBox extends React.Component {
                             <NavLink
                                 className={classnames({ active: this.state.activeTab === 'limit' })}
                                 onClick={() => { this.toggleTab('limit'); }}>
-                                Make &nbsp;
+                                <strong>ORDER</strong> &nbsp;
                                 <span id={type + "MakePopOver"} onClick={this.toggleMakePopOver}>
                                     <i className="fas fa-question-circle"></i>
                                 </span>

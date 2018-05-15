@@ -263,7 +263,7 @@ export default class MakeOrderTab extends React.Component {
                     <Col sm={6}>
                         <Button block color="primary" id="sellButton" disabled={submitDisabled}
                             hidden={orderHasPriceWarning && orderValid}
-                            onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
+                            onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
                     </Col>
                 </FormGroup>
             </BoxSection>
