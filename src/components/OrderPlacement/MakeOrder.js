@@ -260,8 +260,8 @@ export default class MakeOrder extends React.Component {
 
                 {priceWarningAlert}
                 <FormGroup row className="hdr-stretch-ctr">
-                    <Col sm={6}>
-                        <Button block color="primary" id="sellButton" disabled={submitDisabled}
+                    <Col sm={9}>
+                        <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id="sellButton" disabled={submitDisabled}
                             hidden={orderHasPriceWarning && orderValid}
                             onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
                     </Col>

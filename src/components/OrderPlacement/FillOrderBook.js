@@ -195,7 +195,7 @@ export default class FillOrderBook extends React.Component {
                         fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
                     <FormGroup row className="hdr-stretch-ctr">
                         <Col sm={6}>
-                            <Button block color="primary" id={type + "Button"} disabled={!fillOrder.fillAmountValid}
+                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={!fillOrder.fillAmountValid}
                                 onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
                         </Col>
                     </FormGroup>
