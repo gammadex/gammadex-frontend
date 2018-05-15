@@ -3,6 +3,8 @@ import * as WalletActions from "../actions/WalletActions"
 import * as WalletDao from "../util/WalletDao"
 import AccountStore from "../stores/AccountStore"
 import Conditional from "./CustomComponents/Conditional"
+import * as LifeCycleActions from "../actions/LifecycleActions"
+import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 
 export default class Logout extends React.Component {
     constructor(props) {
@@ -30,6 +32,7 @@ export default class Logout extends React.Component {
     handleLogout = () => {
         WalletDao.forgetStoredWallet()
         WalletActions.logout()
+        EtherDeltaWeb3.initForAnonymous()
     }
 
     render() {
