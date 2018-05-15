@@ -59,7 +59,7 @@ class TokenChooser extends React.Component {
     }
 
     removeUserToken = token => {
-        // swtich to the default token if the currently selected token is removed
+        // switch to the default token if the currently selected token is removed
         if (token.address === this.state.selectedToken.address) {
             const defToken = TokenListApi.getDefaultToken()
             this.onTokenSelect(defToken.name, defToken.address)

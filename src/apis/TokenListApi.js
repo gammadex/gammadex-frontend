@@ -49,7 +49,7 @@ class TokenListApi {
     }
 
     getTokenName(address) {
-        const token = this.find((t) => { return t.address.toLowerCase() === address.toLowerCase(); })
+        const token = this.find(t => t.address.toLowerCase() === address.toLowerCase())
         return (token) ? token.name : null
     }
 
@@ -62,7 +62,7 @@ class TokenListApi {
     }
 
     getTokenDecimalsByAddress(address) {
-        return this.find((t) => { return t.address.toLowerCase() === address.toLowerCase(); }).decimals
+        return this.find(t => t.address.toLowerCase() === address.toLowerCase()).decimals
     }
 
     isAddress(addressMaybe) {
@@ -89,14 +89,7 @@ class TokenListApi {
     }
 
     getTokenBySymbolOrAddress(symbolOrAddress) {
-        const found = this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.name, symbolOrAddress))
-        if (found) {
-            return Promise.resolve(found)
-        } else if (this.isAddress(symbolOrAddress)) {
-            return this.searchToken(symbolOrAddress, true);
-        }
-
-        return Promise.reject(symbolOrAddress)
+        return this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.name, symbolOrAddress))
     }
 
     getDefaultToken() {
