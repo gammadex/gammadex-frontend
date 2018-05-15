@@ -12,9 +12,9 @@ export default class Charts extends React.Component {
 
         this.state = {
             activeTab: "PriceChart",
-            allTrades: [],
-            allBids: [],
-            allOffers: [],
+            allTrades: OrderBookStore.getAllTradesSortedByDateAsc(),
+            allBids: OrderBookStore.getBids(),
+            allOffers: OrderBookStore.getOffers(),
         }
 
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
