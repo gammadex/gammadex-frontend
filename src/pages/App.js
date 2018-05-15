@@ -6,6 +6,7 @@ import TopNavigation from '../components/TopNavigation'
 import Exchange from './Exchange'
 import Wallets from './Wallets'
 import History from './History'
+import Debug from './Debug'
 import Routes from '../Routes'
 
 class App extends Component {
@@ -20,6 +21,7 @@ class App extends Component {
                         <Route path={Routes.Exchange + "*"} exact component={Exchange}/>
                         <Route path={Routes.Wallets} exact component={Wallets}/>
                         <Route path={Routes.History} exact component={History}/>
+                        <Route path={Routes.Debug} exact component={Debug}/>
                     </div>
 
                     <GreetingLoginModals/>
