@@ -4,10 +4,6 @@ import Round from "../CustomComponents/Round"
 
 export default class OrdersTableRow extends React.Component {
 
-    // showTradeModal(order) {
-    //     TradeActions.executeTrade(order)
-    // }
-
     render() {
         const {order, isMine, rowClass} = this.props
 

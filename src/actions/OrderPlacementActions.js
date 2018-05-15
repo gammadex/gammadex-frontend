@@ -396,65 +396,6 @@ export function executeSell() {
     sendOrder(order)
 }
 
-export function abortTradeExecution() {
-    dispatcher.dispatch({
-        type: ActionNames.HIDE_EXECUTE_TRADES_MODAL
-    })
-}
-
-export function abortOrder() {
-    dispatcher.dispatch({
-        type: ActionNames.HIDE_CREATE_ORDER_MODAL
-    })
-}
-
-export function confirmTradeExecution() {
-    dispatcher.dispatch({
-        type: ActionNames.HIDE_EXECUTE_TRADES_MODAL
-    })
-    const { tradesToExecute } = OrderPlacementStore.getOrderPlacementState()
-    const { account, nonce } = AccountStore.getAccountState()
-    const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
-
-    const tradePromises = tradesToExecute.map(trade =>
-        EtherDeltaWeb3.promiseTestTrade(account, trade.order, trade.fillAmountWei))
-    Promise.all(tradePromises)
-        .then(res => {
-            if (res.includes(false)) {
-                TradeActions.sendTransactionFailed("One or more trades failed to validate as of current block, suggesting the order book might have changed. Please review the order book and re-submit the trade if necessary")
-            } else {
-                tradesToExecute.forEach((trade, i) => {
-                    EtherDeltaWeb3.promiseTrade(account, nonce + i, trade.order, trade.fillAmountWei, gasPriceWei)
-                        .once('transactionHash', hash => {
-                            AccountActions.nonceUpdated(nonce + 1)
-                            MyTradeActions.addMyTrade({
-                                environment: Config.getReactEnv(),
-                                account: account,
-                                txHash: hash,
-                                tokenAddress: OrderUtil.tokenAddress(trade.order),
-                                side: OrderUtil.takerSide(trade.order), // takerSide
-                                price: OrderUtil.priceOf(trade.order),
-                                amount: trade.fillAmountTok, // amountTok
-                                amountBase: trade.fillAmountEth, // totalEth
-                                date: (new Date()).toJSON(),
-                                status: TransactionStatus.PENDING
-                            })
-                        })
-                        .on('error', error => { console.log(`failed to trade: ${error.message}`) })
-                        .then(receipt => { })
-                })
-                AccountActions.nonceUpdated(nonce + tradesToExecute.length)
-            }
-        })
-}
-
-export function confirmOrder() {
-    dispatcher.dispatch({
-        type: ActionNames.HIDE_CREATE_ORDER_MODAL
-    })
-    sendOrder(OrderPlacementStore.getOrderPlacementState().order)
-}
-
 export function expires(makerSide) {
     if (makerSide === OrderSide.BUY) {
         const { buyOrderExpiryType, buyOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()

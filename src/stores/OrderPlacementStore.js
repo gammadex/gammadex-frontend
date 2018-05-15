@@ -35,11 +35,7 @@ class OrderPlacementStore extends EventEmitter {
         this.buyOrderInvalidField = OrderEntryField.AMOUNT
         this.buyOrderHasPriceWarning = false
         this.buyOrderPriceWarning = ""
-        this.buyOrderHash = ""        
-        this.tradesToExecute = []
-        this.tradesModal = false
-        this.orderModal = false
-        this.order = null
+        this.buyOrderHash = ""
     }
 
     getOrderPlacementState() {
@@ -71,11 +67,7 @@ class OrderPlacementStore extends EventEmitter {
             buyOrderInvalidField: this.buyOrderInvalidField,
             buyOrderHasPriceWarning: this.buyOrderHasPriceWarning,
             buyOrderPriceWarning: this.buyOrderPriceWarning,     
-            buyOrderHash: this.buyOrderHash,       
-            tradesToExecute: this.tradesToExecute,
-            tradesModal: this.tradesModal,
-            orderModal: this.orderModal,
-            order: this.order
+            buyOrderHash: this.buyOrderHash
         }
     }
 
@@ -200,29 +192,6 @@ class OrderPlacementStore extends EventEmitter {
             case ActionNames.BUY_ORDER_PRICE_WARNING_DISMISSED: {
                 this.buyOrderHasPriceWarning = false
                 this.buyOrderPriceWarning = ""
-                this.emitChange()
-                break
-            }
-            case ActionNames.EXECUTE_TRADES: {
-                this.tradesToExecute = action.trades
-                this.tradesModal = true
-                this.emitChange()
-                break
-            }
-            case ActionNames.HIDE_EXECUTE_TRADES_MODAL: {
-                //this.tradesToExecute = [], blank this out when the trades are submitted to web3
-                this.tradesModal = false
-                this.emitChange()
-                break
-            }
-            case ActionNames.CREATE_ORDER: {
-                this.order = action.order
-                this.orderModal = true
-                this.emitChange()
-                break
-            }
-            case ActionNames.HIDE_CREATE_ORDER_MODAL: {
-                this.orderModal = false
                 this.emitChange()
                 break
             }

@@ -17,51 +17,6 @@ import OrderEntryField from "../OrderEntryField"
 import _ from "lodash"
 import OrderSide from "../OrderSide"
 
-export function executeTrade(order) {
-    // accessing stores from action creator, good practice? Yes, it's ok if just reading.
-    // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
-    const weiFillAmount = BigNumber(order.availableVolume)
-    const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
-    const weiTotalEth = BigNumber(order.availableVolumeBase)
-    const totalEthControlled = BigNumber(order.ethAvailableVolumeBase)
-    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
-    dispatcher.dispatch({
-        type: ActionNames.EXECUTE_TRADE,
-        order,
-        weiFillAmount,
-        fillAmountControlled,
-        weiTotalEth,
-        totalEthControlled,
-        fillAmountValid,
-        fillAmountInvalidReason,
-        fillAmountInvalidField
-    })
-}
-
-export function executeTradeAborted() {
-    dispatcher.dispatch({
-        type: ActionNames.EXECUTE_TRADE_ABORTED
-    })
-}
-
-export function changedFillAmountControlled(fillAmountControlled) {
-    const order = TradeStore.getTradeState().modalOrder
-    const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
-    const totalEthControlled = BigNumber(String(fillAmountControlled)).times(BigNumber(String(order.price)))
-    const weiTotalEth = baseEthToWei(totalEthControlled)
-    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
-    dispatcher.dispatch({
-        type: ActionNames.FILL_AMOUNT_CHANGED,
-        weiFillAmount,
-        fillAmountControlled,
-        weiTotalEth,
-        totalEthControlled,
-        fillAmountValid,
-        fillAmountInvalidReason,
-        fillAmountInvalidField
-    })
-}
-
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
@@ -83,11 +38,6 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
         fillAmountInvalidField = OrderEntryField.TOTAL
     }
     return { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField }
-}
-
-export function tradeExecutionConfirmed() {
-    const { modalOrder, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = TradeStore.getTradeState()
-    executeOrder(modalOrder, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled)
 }
 
 export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled) {
@@ -152,14 +102,6 @@ export function sendTransactionFailed(errorMessage, takerSide) {
         takerSide
     })
 }
-
-export function hideTransactionModal() {
-    dispatcher.dispatch({
-        type: ActionNames.HIDE_TRANSACTION_MODAL
-    })
-}
-
-// ==== Experimental Order Book ====
 
 export function fillOrder(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.

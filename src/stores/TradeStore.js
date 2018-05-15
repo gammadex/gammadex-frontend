@@ -9,19 +9,8 @@ import { isNull } from "util";
 class TradeStore extends EventEmitter {
     constructor() {
         super()
-        this.modal = false
-        this.modalOrder = null
-        this.weiFillAmount = 0
-        this.fillAmountControlled = 0
-        this.weiTotalEth = 0
-        this.totalEthControlled = 0
-        this.fillAmountValid = true
         this.fillAmountInvalidReason = ""
         this.fillAmountInvalidField = OrderEntryField.AMOUNT
-        this.showTransactionModal = false
-        this.transactionHash = ""
-        this.transactionModalIsError = false
-        this.transactionModalErrorText = ""
         this.fillOrderTakerBuy = null,
         this.fillOrderTakerSell = null,
         this.fillOrderTakerBuyTxHash = null,
@@ -32,19 +21,6 @@ class TradeStore extends EventEmitter {
 
     getTradeState() {
         return {
-            modal: this.modal,
-            modalOrder: this.modalOrder,
-            weiFillAmount: this.weiFillAmount,
-            fillAmountControlled: this.fillAmountControlled,
-            weiTotalEth: this.weiTotalEth,
-            totalEthControlled: this.totalEthControlled,
-            fillAmountValid: this.fillAmountValid,
-            fillAmountInvalidReason: this.fillAmountInvalidReason,
-            fillAmountInvalidField: this.fillAmountInvalidField,
-            showTransactionModal: this.showTransactionModal,
-            transactionHash: this.transactionHash,
-            transactionModalIsError: this.transactionModalIsError,
-            transactionModalErrorText: this.transactionModalErrorText,
             fillOrderTakerBuy: this.fillOrderTakerBuy,
             fillOrderTakerSell: this.fillOrderTakerSell,
             fillOrderTakerBuyTxHash: this.fillOrderTakerBuyTxHash,
@@ -60,35 +36,6 @@ class TradeStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
-            case ActionNames.EXECUTE_TRADE: {
-                this.modal = true
-                this.modalOrder = action.order
-                this.weiFillAmount = action.weiFillAmount
-                this.fillAmountControlled = action.fillAmountControlled
-                this.weiTotalEth = action.weiTotalEth
-                this.totalEthControlled = action.totalEthControlled
-                this.fillAmountValid = action.fillAmountValid
-                this.fillAmountInvalidReason = action.fillAmountInvalidReason
-                this.fillAmountInvalidField = action.fillAmountInvalidField
-                this.emitChange()
-                break
-            }
-            case ActionNames.EXECUTE_TRADE_ABORTED: {
-                this.modal = false
-                this.emitChange()
-                break
-            }
-            case ActionNames.FILL_AMOUNT_CHANGED: {
-                this.weiFillAmount = action.weiFillAmount
-                this.fillAmountControlled = action.fillAmountControlled
-                this.weiTotalEth = action.weiTotalEth
-                this.totalEthControlled = action.totalEthControlled
-                this.fillAmountValid = action.fillAmountValid
-                this.fillAmountInvalidReason = action.fillAmountInvalidReason
-                this.fillAmountInvalidField = action.fillAmountInvalidField
-                this.emitChange()
-                break
-            }
             case ActionNames.FILL_ORDER: {
                 if(isTakerBuy(action.fillOrder.order)) {
                     this.fillOrderTakerBuy = action.fillOrder
@@ -123,11 +70,6 @@ class TradeStore extends EventEmitter {
                 }
                 this.emitChange()
                 break
-            }            
-            case ActionNames.HIDE_TRANSACTION_MODAL: {
-                this.showTransactionModal = false
-                this.emitChange()
-                break
             }
             case ActionNames.SENT_TRANSACTION: {
                 if(action.takerSide === OrderSide.BUY) {
@@ -139,9 +81,6 @@ class TradeStore extends EventEmitter {
                     this.fillOrderTakerSellTxHash = action.txHash,
                     this.fillOrderTakerSellTxError = null                    
                 }
-                // this.showTransactionModal = true
-                // this.transactionModalIsError = false
-                // this.transactionHash = action.txHash
                 this.emitChange()
                 break
             }
@@ -166,9 +105,6 @@ class TradeStore extends EventEmitter {
                     this.fillOrderTakerSellTxHash = null,
                     this.fillOrderTakerSellTxError = action.errorMessage                    
                 }
-                // this.showTransactionModal = true
-                // this.transactionModalIsError = true
-                // this.transactionModalErrorText = action.errorMessage
                 this.emitChange()
                 break
             }            
