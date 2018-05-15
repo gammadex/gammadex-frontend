@@ -1,6 +1,12 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
 
+export function retrievingAccount() {
+    dispatcher.dispatch({
+        type: ActionNames.RETRIEVING_ACCOUNT,
+    })
+}
+
 export function accountRetrieved(addressNonce, accountType) {
     dispatcher.dispatch({
         type: ActionNames.ACCOUNT_RETRIEVED,

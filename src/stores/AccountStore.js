@@ -11,6 +11,7 @@ class AccountStore extends EventEmitter {
     _clearState() {
         this.selectedAccountType = null
         this.account = null
+        this.retrievingAccount = false
         this.accountRetrieved = false
         this.nonce = 0
         this.walletBalanceEthWei = 0
@@ -27,6 +28,7 @@ class AccountStore extends EventEmitter {
     getAccountState() {
         return {
             selectedAccountType: this.selectedAccountType,
+            retrievingAccount: this.retrievingAccount,
             account: this.account,
             accountRetrieved: this.accountRetrieved,
             nonce: this.nonce,
@@ -50,16 +52,27 @@ class AccountStore extends EventEmitter {
         return this.selectedAccountType
     }
 
+    isRetrievingAccount() {
+        return this.retrievingAccount
+    }
+
     emitChange() {
         this.emit("change")
     }
 
     handleActions(action) {
         switch (action.type) {
+            case ActionNames.RETRIEVING_ACCOUNT: {
+                this._clearState()
+                this.retrievingAccount = true
+                this.emitChange()
+                break
+            }
             case ActionNames.ACCOUNT_RETRIEVED: {
                 this.account = action.addressNonce.address
                 this.nonce = action.addressNonce.nonce
                 this.accountRetrieved = true
+                this.retrievingAccount = false
                 this.selectedAccountType = action.selectedAccountType
                 this.accountSequenceNum += 1
                 this.emitChange()
