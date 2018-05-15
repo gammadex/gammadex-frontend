@@ -9,6 +9,7 @@ import DepositType from "../DepositType"
 import Routes from '../Routes'
 import TransactionStatus from "../TransactionStatus"
 import * as WebSocketActions from "../actions/WebSocketActions"
+import * as LifeCycleActions from "../actions/LifecycleActions"
 
 export function refreshEthAndTokBalance(account, tokenAddress) {
     EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
@@ -30,6 +31,7 @@ export function refreshEthAndTokBalanceUsingStore() {
 }
 
 export function refreshAccount(accountType, history) {
+    LifeCycleActions.web3Initialised()
     AccountActions.retrievingAccount()
 
     return EtherDeltaWeb3.refreshAccount()

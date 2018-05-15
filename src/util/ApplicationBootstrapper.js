@@ -3,6 +3,7 @@ import * as WalletDao from "../util/WalletDao"
 import * as KeyUtil from "../util/KeyUtil"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountApi from "../apis/AccountApi"
+import * as LifeCycleActions from "../actions/LifecycleActions"
 
 // TODO - this hacky poo will go away when app wallet / account / web3 bootstrapping gets cleaned up
 
@@ -15,6 +16,9 @@ export function initAccounts() {
     } else if (typeof web3 !== "undefined" && WalletDao.isWalletSaved(AccountType.METAMASK)) { // If web3 is defined - it has been injected by the browser (Mist/MetaMask)
         EtherDeltaWeb3.initForMetaMask()
         return AccountApi.refreshAccount(AccountType.METAMASK)
+    } else {
+        LifeCycleActions.web3Initialised()
+        EtherDeltaWeb3.initForAnonymous()
     }
 
     return Promise.resolve(false)
