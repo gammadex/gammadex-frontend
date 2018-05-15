@@ -1,4 +1,0 @@
-export default {
-    LIMIT_ORDER: "LIMIT_ORDER",
-    MARKET_ORDER: "MARKET_ORDER"
-}

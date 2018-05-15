@@ -1,18 +1,18 @@
 import React from "react"
 import _ from "lodash"
 import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, Label, Input, FormText } from 'reactstrap'
-import { Box, BoxSection, BoxHeader } from "../../CustomComponents/Box"
-import NumericInput from "../NumericInput.js"
-import OrderSide from "../../../OrderSide"
-import OrderPlacementStore from "../../../stores/OrderPlacementStore"
-import AccountStore from "../../../stores/AccountStore"
-import { safeBigNumber } from "../../../EtherConversion";
-import * as OrderPlacementActions from "../../../actions/OrderPlacementActions"
-import OrderEntryField from "../../../OrderEntryField"
-import ExpiryType from "../../../ExpiryType"
-import Conditional from "../../CustomComponents/Conditional"
-import AccountType from "../../../AccountType"
-import OrderFactory from "../../../OrderFactory"
+import { Box, BoxSection, BoxHeader } from "../CustomComponents/Box"
+import NumericInput from "./NumericInput.js"
+import OrderSide from "../../OrderSide"
+import OrderPlacementStore from "../../stores/OrderPlacementStore"
+import AccountStore from "../../stores/AccountStore"
+import { safeBigNumber } from "../../EtherConversion";
+import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
+import OrderEntryField from "../../OrderEntryField"
+import ExpiryType from "../../ExpiryType"
+import Conditional from "../CustomComponents/Conditional"
+import AccountType from "../../AccountType"
+import OrderFactory from "../../OrderFactory"
 
 export default class MakeOrderTab extends React.Component {
     constructor(props) {

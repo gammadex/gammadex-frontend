@@ -8,26 +8,22 @@ import {
     ModalBody,
     ModalFooter
 } from 'reactstrap'
-import OrderType from "../OrderType"
 import OrderSide from "../OrderSide"
 import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 import OrderPlacementStore from "../stores/OrderPlacementStore"
 import BigNumber from 'bignumber.js'
 import * as OrderUtil from "../OrderUtil"
 import OrderBox from "./OrderPlacement/OrderBox.js"
-import ExperimentalOrderBox from "./OrderPlacement/Experimental/OrderBox.js"
 
 export default class OrderPlacement extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            buyOrderType: OrderType.LIMIT_ORDER,
             buyOrderPriceControlled: "",
             buyOrderAmountControlled: "",
             buyOrderTotalEthControlled: "",
             buyOrderValid: true,
             buyOrderInvalidReason: "",
-            sellOrderType: OrderType.LIMIT_ORDER,
             sellOrderPriceControlled: "",
             sellOrderAmountControlled: "",
             sellOrderTotalEthControlled: "",
@@ -74,13 +70,11 @@ export default class OrderPlacement extends React.Component {
         const { token } = this.props
 
         const {
-            buyOrderType,
             buyOrderPriceControlled,
             buyOrderAmountControlled,
             buyOrderTotalEthControlled,
             buyOrderValid,
             buyOrderInvalidReason,
-            sellOrderType,
             sellOrderPriceControlled,
             sellOrderAmountControlled,
             sellOrderTotalEthControlled,
@@ -93,25 +87,9 @@ export default class OrderPlacement extends React.Component {
         } = this.state
 
         const disableBuyButton = (!buyOrderValid ||
-            (buyOrderType === OrderType.LIMIT_ORDER && (buyOrderTotalEthControlled === "" || BigNumber(String(buyOrderTotalEthControlled)).isZero())) ||
-            (buyOrderType === OrderType.MARKET_ORDER && (buyOrderAmountControlled === "" || BigNumber(String(buyOrderAmountControlled)).isZero()))
-        )
+            (buyOrderTotalEthControlled === "" || BigNumber(String(buyOrderTotalEthControlled)).isZero()))
         const disableSellButton = (!sellOrderValid ||
-            (sellOrderType === OrderType.LIMIT_ORDER && (sellOrderTotalEthControlled === "" || BigNumber(String(sellOrderTotalEthControlled)).isZero())) ||
-            (sellOrderType === OrderType.MARKET_ORDER && (sellOrderAmountControlled === "" || BigNumber(String(sellOrderAmountControlled)).isZero()))
-        )
-
-        let buyAmountValid = null
-        let buyAmountErrorMessage = null
-        let buyTotalValid = null
-        let buyTotalErrorMessage = null
-        if (buyOrderType === OrderType.LIMIT_ORDER) {
-            buyTotalValid = buyOrderValid
-            buyTotalErrorMessage = buyOrderInvalidReason
-        } else {
-            buyAmountValid = buyOrderValid
-            buyAmountErrorMessage = buyOrderInvalidReason
-        }
+            (sellOrderTotalEthControlled === "" || BigNumber(String(sellOrderTotalEthControlled)).isZero()))
 
         // Taker modal
         let takerSide = ""
@@ -135,47 +113,17 @@ export default class OrderPlacement extends React.Component {
             <div>
                 <div className="row">
                     <div className="col-lg-6">
-                        <ExperimentalOrderBox
+                        <OrderBox
                             type="buy"
                             tokenName={token.name}
                         />
-                        {/* <OrderBox
-                            side={OrderSide.BUY}
-                            type="buy"
-                            title="Buy"
-                            tokenName={token.name}
-                            orderType={buyOrderType}
-                            price={buyOrderPriceControlled}
-                            amount={buyOrderAmountControlled}
-                            amountValid={buyAmountValid}
-                            amountErrorMessage={buyAmountErrorMessage}
-                            total={buyOrderTotalEthControlled}
-                            totalValid={buyTotalValid}
-                            totalErrorMessage={buyTotalErrorMessage}
-                            submitButtonName="BUY"
-                            submitDisabled={disableBuyButton}
-                        /> */}
                     </div>
 
                     <div className="col-lg-6">
-                        <ExperimentalOrderBox
+                        <OrderBox
                             type="sell"
                             tokenName={token.name}
                         />
-                        {/* <OrderBox
-                            side={OrderSide.SELL}
-                            type="sell"
-                            title="Sell"
-                            tokenName={token.name}
-                            orderType={sellOrderType}
-                            price={sellOrderPriceControlled}
-                            amount={sellOrderAmountControlled}
-                            amountValid={sellOrderValid}
-                            amountErrorMessage={sellOrderInvalidReason}
-                            total={sellOrderTotalEthControlled}
-                            submitButtonName="SELL"
-                            submitDisabled={disableSellButton}
-                        /> */}
                     </div>
                 </div>
 

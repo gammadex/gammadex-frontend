@@ -1,7 +1,6 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
-import OrderType from "../OrderType"
 import BigNumber from 'bignumber.js'
 import ExpiryType from "../ExpiryType"
 import OrderEntryField from "../OrderEntryField"
@@ -9,7 +8,6 @@ import OrderEntryField from "../OrderEntryField"
 class OrderPlacementStore extends EventEmitter {
     constructor() {
         super()
-        this.sellOrderType = OrderType.LIMIT_ORDER
         this.sellOrderPriceControlled = ""
         this.sellOrderAmountControlled = ""
         this.sellOrderAmountWei = BigNumber(0)
@@ -24,7 +22,6 @@ class OrderPlacementStore extends EventEmitter {
         this.sellOrderHasPriceWarning = false
         this.sellOrderPriceWarning = ""
         this.sellOrderHash = ""
-        this.buyOrderType = OrderType.LIMIT_ORDER
         this.buyOrderPriceControlled = ""
         this.buyOrderAmountControlled = ""
         this.buyOrderAmountWei = BigNumber(0)
@@ -47,7 +44,6 @@ class OrderPlacementStore extends EventEmitter {
 
     getOrderPlacementState() {
         return {
-            sellOrderType: this.sellOrderType,
             sellOrderPriceControlled: this.sellOrderPriceControlled,
             sellOrderAmountControlled: this.sellOrderAmountControlled,
             sellOrderAmountWei: this.sellOrderAmountWei,
@@ -62,7 +58,6 @@ class OrderPlacementStore extends EventEmitter {
             sellOrderHasPriceWarning: this.sellOrderHasPriceWarning,
             sellOrderPriceWarning: this.sellOrderPriceWarning,
             sellOrderHash: this.sellOrderHash,
-            buyOrderType: this.buyOrderType,
             buyOrderPriceControlled: this.buyOrderPriceControlled,
             buyOrderAmountControlled: this.buyOrderAmountControlled,
             buyOrderAmountWei: this.buyOrderAmountWei,
@@ -90,38 +85,6 @@ class OrderPlacementStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
-            case ActionNames.SELL_ORDER_TYPE_CHANGED: {
-                this.sellOrderType = action.orderType
-                this.sellOrderPriceControlled = ""
-                this.sellOrderAmountControlled = ""
-                this.sellOrderAmountWei = BigNumber(0)
-                this.sellOrderTotalEthControlled = ""
-                this.sellOrderTotalEthWei = BigNumber(0)
-                this.sellOrderValid = true
-                this.sellOrderInvalidReason = ""
-                this.sellOrderInvalidField = OrderEntryField.AMOUNT
-                this.sellOrderHasPriceWarning = false
-                this.sellOrderPriceWarning = ""
-                this.sellOrderHash = ""
-                this.emitChange()
-                break
-            }
-            case ActionNames.BUY_ORDER_TYPE_CHANGED: {
-                this.buyOrderType = action.orderType
-                this.buyOrderPriceControlled = ""
-                this.buyOrderAmountControlled = ""
-                this.buyOrderAmountWei = BigNumber(0)
-                this.buyOrderTotalEthControlled = ""
-                this.buyOrderTotalEthWei = BigNumber(0)
-                this.buyOrderValid = true
-                this.buyOrderInvalidReason = ""
-                this.buyOrderInvalidField = OrderEntryField.AMOUNT
-                this.buyOrderHasPriceWarning = false
-                this.buyOrderPriceWarning = ""      
-                this.buyOrderHash = ""          
-                this.emitChange()
-                break
-            }
             case ActionNames.BUY_ORDER_EXPIRY_CHANGED: {
                 this.buyOrderExpiryType = action.expiryType
                 this.buyOrderExpireAfterBlocks = action.expireAfterBlocks
