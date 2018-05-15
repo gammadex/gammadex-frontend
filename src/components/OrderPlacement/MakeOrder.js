@@ -14,7 +14,7 @@ import Conditional from "../CustomComponents/Conditional"
 import AccountType from "../../AccountType"
 import OrderFactory from "../../OrderFactory"
 
-export default class MakeOrderTab extends React.Component {
+export default class MakeOrder extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -268,14 +268,6 @@ export default class MakeOrderTab extends React.Component {
                 </FormGroup>
             </BoxSection>
 
-        return (
-            <TabPane tabId={tabId}>
-                <Row>
-                    <Col sm="12">
-                        {body}
-                    </Col>
-                </Row>
-            </TabPane>
-        )
+        return body
     }
 }

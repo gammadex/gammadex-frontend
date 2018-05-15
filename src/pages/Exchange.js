@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import TokenChooser from '../components/TokenChooser'
 import OrderBook from '../components/OrderBook'
-import OrderPlacement from '../components/OrderPlacement'
+import OrderBox from '../components/OrderPlacement/OrderBox'
 import TokenSummary from '../components/TokenSummary'
 import OpenOrders from '../components/OpenOrders'
 import TokenStore from '../stores/TokenStore'
@@ -53,12 +53,12 @@ class Exchange extends Component {
                 <div className="col-lg-3">
                     <TokenSummary token={token}/>
                     <TokenChooser/>
+                    <OrderBox tokenName={token.name}/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
                     <TokenErrorMessage warning={tokenWarning}/>
                     <BrowserWeb3Warning/>
                     <Charts token={token}/>
-                    <OrderPlacement token={token}/>
                     <OrderBook token={token}/>
                     <OpenOrders/>
                 </div>

@@ -124,7 +124,7 @@ export default class FillOrderBook extends React.Component {
 
     render() {
         const {
-            tabId, type, tokenName
+            type, tokenName
         } = this.props
 
         const {
@@ -212,14 +212,6 @@ export default class FillOrderBook extends React.Component {
                 </BoxSection>
         }
 
-        return (
-            <TabPane tabId={tabId}>
-                <Row>
-                    <Col sm="12">
-                        {body}
-                    </Col>
-                </Row>
-            </TabPane>
-        )
+        return body
     }
 }
