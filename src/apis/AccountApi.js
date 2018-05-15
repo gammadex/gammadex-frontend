@@ -30,6 +30,8 @@ export function refreshEthAndTokBalanceUsingStore() {
 }
 
 export function refreshAccount(accountType, history) {
+    AccountActions.retrievingAccount()
+
     return EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
 
