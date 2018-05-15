@@ -11,6 +11,7 @@ import Charts from '../components/Charts'
 import AccountDetail from '../components/AccountDetail'
 import TokenErrorMessage from '../components/TokenErrorMessage'
 import * as TokenApi from "../apis/TokenApi"
+import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
 
 class Exchange extends Component {
     constructor() {
@@ -56,6 +57,7 @@ class Exchange extends Component {
                 </div>
                 <div className="pl-0 col-lg-6 ">
                     <TokenErrorMessage warning={tokenWarning}/>
+                    <BrowserWeb3Warning/>
                     <Charts token={token}/>
                     <OrderPlacement token={token}/>
                     <OrderBook token={token}/>
