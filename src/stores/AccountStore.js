@@ -62,6 +62,10 @@ class AccountStore extends EventEmitter {
         return this.accountRetrieved
     }
 
+    isBalanceRetrieved() {
+        return this.balanceRetrieved
+    }
+
     emitChange() {
         this.emit("change")
     }

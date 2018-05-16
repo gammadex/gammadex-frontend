@@ -9,6 +9,8 @@ import OrderSide from "../../OrderSide"
 import OrderBoxType from "./OrderBoxType"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import OrderPlacementStore from "../../stores/OrderPlacementStore"
+import AccountStore from "../../stores/AccountStore"
+import Conditional from "../CustomComponents/Conditional"
 
 export default class OrderBox extends React.Component {
     constructor(props) {
@@ -20,23 +22,27 @@ export default class OrderBox extends React.Component {
         this.toggleTakePopOver = this.toggleTakePopOver.bind(this)
         this.toggleMakePopOver = this.toggleMakePopOver.bind(this)
         this.onOrderPlacementStoreChange = this.onOrderPlacementStoreChange.bind(this)
+        this.onAccountStoreChange = this.onAccountStoreChange.bind(this)
 
         this.state = {
             activeOrderBoxType: OrderBoxType.TRADE,
             activeTradeSide: OrderBoxType.BUY_TRADE,
             activeOrderSide: OrderBoxType.BUY_ORDER,
             popOverOpenTake: false,
-            popOverOpenMake: false
+            popOverOpenMake: false,
+            balanceRetrieved: AccountStore.isBalanceRetrieved(),
         }
     }
 
     componentDidMount() {
         OrderPlacementStore.on("change", this.onOrderPlacementStoreChange)
+        AccountStore.on("change", this.onAccountStoreChange)
         this.onOrderPlacementStoreChange()
     }
 
     componentWillUnmount() {
         OrderPlacementStore.removeListener("change", this.onOrderPlacementStoreChange)
+        AccountStore.removeListener("change", this.onAccountStoreChange)
     }
 
     onOrderPlacementStoreChange() {
@@ -45,6 +51,12 @@ export default class OrderBox extends React.Component {
             activeOrderBoxType: orderPlacementState.orderBoxType,
             activeTradeSide: orderPlacementState.orderBoxTradeSide,
             activeOrderSide: orderPlacementState.orderBoxOrderSide,
+        })
+    }
+
+    onAccountStoreChange() {
+        this.setState({
+            balanceRetrieved: AccountStore.isBalanceRetrieved()
         })
     }
 
@@ -88,6 +100,9 @@ export default class OrderBox extends React.Component {
                     <div className="hdr-stretch">
                         <strong className="card-title">TRADING</strong>
                     </div>
+                    <Conditional displayCondition={!this.state.balanceRetrieved}>
+                        Please log in to enable trading
+                    </Conditional>
                 </BoxHeader>
                 <BoxSection>
                     <Nav tabs>
