@@ -1,4 +1,4 @@
-import { EventEmitter } from "events"
+import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import OrderState from "../OrderState"
@@ -7,7 +7,7 @@ import OrderState from "../OrderState"
 class OpenOrdersStore extends EventEmitter {
     constructor() {
         super()
-        if(localStorage.openOrders) {
+        if (localStorage.openOrders) {
             this.openOrders = JSON.parse(localStorage.openOrders)
         } else {
             this.openOrders = []
@@ -22,6 +22,10 @@ class OpenOrdersStore extends EventEmitter {
 
     getOpenOrderHashes() {
         return this.openOrders.filter(o => o.state !== OrderState.CLOSED).map(o => o.hash.toLowerCase())
+    }
+
+    getOpenOrders() {
+        return this.openOrders
     }
 
     emitChange() {

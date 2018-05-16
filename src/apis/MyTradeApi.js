@@ -2,8 +2,6 @@ import MyTradesStore from '../stores/MyTradesStore'
 import * as MyTradeActions from '../actions/MyTradeActions'
 import TransactionStatus from "../TransactionStatus"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import ActionNames from "../actions/ActionNames"
-import dispatcher from "../dispatcher"
 import Timer from "../util/Timer"
 
 export function refreshMyTrades() {
@@ -23,7 +21,6 @@ export function refreshMyTrades() {
                 })
         })
 }
-
 
 export function startPendingTradesCheckLoop(ms = 10000) {
     Timer.start(refreshMyTrades, ms)

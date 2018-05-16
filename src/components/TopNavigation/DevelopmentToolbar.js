@@ -2,14 +2,12 @@ import React, {Component} from 'react'
 import WebSocketDetail from '../../components/WebSocketDetail'
 import Config from '../../Config'
 import {Button} from 'reactstrap'
-import * as MyTradeActions from "../../actions/MyTradeActions"
-import * as OpenOrderActions from "../../actions/OpenOrderActions"
-import * as AccountActions from "../../actions/AccountActions"
+import * as OpenOrderApi from "../../apis/OpenOrderApi"
 
 class DevelopmentToolbar extends Component {
 
     purge() {
-        OpenOrderActions.purge()
+        OpenOrderApi.purge()
     }
 
     render() {

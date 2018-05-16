@@ -1,9 +1,6 @@
 import React from "react"
 import OpenOrdersStore from "../stores/OpenOrdersStore"
-import TimerRelay from "../TimerRelay"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
-import OrderState from "../OrderState"
-import * as OpenOrderActions from "../actions/OpenOrderActions"
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import AccountStore from "../stores/AccountStore"
@@ -17,18 +14,15 @@ export default class OpenOrders extends React.Component {
         }
         this.updateOpenOrdersState = this.updateOpenOrdersState.bind(this)
         this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
-        this.timerFired = this.timerFired.bind(this)
     }
 
     componentWillMount() {
         OpenOrdersStore.on("change", this.updateOpenOrdersState)
-        TimerRelay.on("change", this.timerFired)
         AccountStore.on("change", this.accountStoreUpdated)
     }
 
     componentWillUnmount() {
         OpenOrdersStore.removeListener("change", this.updateOpenOrdersState)
-        TimerRelay.removeListener("change", this.timerFired)
         AccountStore.removeListener("change", this.accountStoreUpdated)
     }
 
@@ -40,12 +34,6 @@ export default class OpenOrders extends React.Component {
     accountStoreUpdated() {
         this.setState({
             accountRetrieved: AccountStore.isAccountRetrieved()
-        })
-    }
-
-    timerFired() {
-        this.state.openOrders.filter(openOrder => openOrder.state === OrderState.PENDING_CANCEL).forEach(openOrder => {
-            OpenOrderActions.refreshOpenOrder(openOrder)
         })
     }
 
