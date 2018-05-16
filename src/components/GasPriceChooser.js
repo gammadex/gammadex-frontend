@@ -56,6 +56,10 @@ export default class GasPriceChooser extends React.Component {
         GasActions.gasPricesUseRecommended()
     }
 
+    useExpensive = event => {
+        console.log("wibble")
+    }
+
     toggleGasPrice = (event) => {
         this.setState({
             popoverOpen: !this.state.popoverOpen
@@ -74,19 +78,21 @@ export default class GasPriceChooser extends React.Component {
         }
 
         if (currentGasPriceWei.isGreaterThanOrEqualTo(fastWei)) {
-            return "under two minutes"
+            return "Under two minutes"
         } else if (currentGasPriceWei.isGreaterThanOrEqualTo(averageWei)) {
-            return "two to five minutes"
+            return "Two to five minutes"
         } else if (currentGasPriceWei.isGreaterThanOrEqualTo(safeLowWei)) {
-            return "five to 30 minutes"
+            return "Five to 30 minutes"
         } else {
-            return "over 30 minutes"
+            return "Over 30 minutes"
         }
     }
 
     render() {
-        const {popoverOpen, currentGasPriceWei, ethereumPriceUsd} = this.state
+        const {popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei} = this.state
 
+        const fastGwei = GasPriceChooser.safeWeiToGwei(fastWei)
+        const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
 
         const gasCostsEth = _.mapValues(OperationWeights, gwei => gweiToEth(gwei * currentGasPriceGwei).toFixed(6))
@@ -106,20 +112,20 @@ export default class GasPriceChooser extends React.Component {
                                 <BoxSection>
                                     <div className="row">
                                         <div className="col-lg-4">
-                                            <div>Cheapest</div>
+                                            <div><a href="#" onClick={this.onUseRecommended}>Cheapest</a></div>
                                             <div>Slowest</div>
                                         </div>
-                                        <div>
-                                            <div><button className="btn btn-sm btn-link" onClick={this.onUseRecommended}>Recommended</button></div>
+                                        <div className="col-lg-4 txt-center">
+                                            <div><a href="#" onClick={this.onUseRecommended}>Average</a></div>
                                         </div>
                                         <div className="col-lg-4">
-                                            <div className="float-right">Expensive</div>
+                                            <div className="float-right"><a href="#" onClick={this.useExpensive}>Expensive</a></div>
                                             <br/>
                                             <div className="float-right">Fastest</div>
                                         </div>
                                     </div>
 
-                                    <Slider min={1} max={100} defaultValue={40} onChange={this.onSliderChange} value={currentGasPriceGwei}/>
+                                    <Slider min={1} max={fastGwei} defaultValue={averageGwei} onChange={this.onSliderChange} value={currentGasPriceGwei}/>
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
