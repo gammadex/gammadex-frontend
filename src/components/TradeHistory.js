@@ -14,7 +14,7 @@ export default class TradeHistory extends React.Component {
 
         this.state = {
             activeTab: "marketTrades",
-            accountPresent: !!AccountStore.getAccount(),
+            accountRetrieved: AccountStore.isAccountRetrieved(),
         }
 
         this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
@@ -22,7 +22,7 @@ export default class TradeHistory extends React.Component {
 
     accountStoreUpdated() {
         this.setState({
-            accountPresent: !!AccountStore.getAccount()
+            accountRetrieved: AccountStore.isAccountRetrieved()
         })
     }
 
@@ -33,10 +33,10 @@ export default class TradeHistory extends React.Component {
     }
 
     render() {
-        const {accountPresent} = this.state
+        const {accountRetrieved} = this.state
         
         let myTrades = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
-        if (accountPresent) {
+        if (accountRetrieved) {
             myTrades = <TradesViewer id={1} token={this.props.token} tradesSource={() => MyTradesStore.getAllTrades(this.props.token.address)} tradesEvent={MyTradesStore}/>
         }
 

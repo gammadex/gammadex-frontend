@@ -6,14 +6,17 @@ import OrderState from "../OrderState"
 import * as OpenOrderActions from "../actions/OpenOrderActions"
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
+import AccountStore from "../stores/AccountStore"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            openOrders: OpenOrdersStore.getOpenOrdersState().openOrders
+            openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
+            accountRetrieved: AccountStore.isAccountRetrieved(),
         }
         this.updateOpenOrdersState = this.updateOpenOrdersState.bind(this)
+        this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
         this.timerFired = this.timerFired.bind(this)
     }
 
@@ -32,6 +35,12 @@ export default class OpenOrders extends React.Component {
         this.setState({openOrders: openOrders})
     }
 
+    accountStoreUpdated() {
+        this.setState({
+            accountRetrieved: AccountStore.isAccountRetrieved()
+        })
+    }
+
     timerFired() {
         this.state.openOrders.filter(openOrder => openOrder.state === OrderState.PENDING_CANCEL).forEach(openOrder => {
             OpenOrderActions.refreshOpenOrder(openOrder)
@@ -39,10 +48,12 @@ export default class OpenOrders extends React.Component {
     }
 
     render() {
-        const {openOrders} = this.state
+        const {openOrders, accountRetrieved} = this.state
 
         let content = <EmptyTableMessage>You have no open orders</EmptyTableMessage>
-        if (openOrders && openOrders.length > 0) {
+        if (!accountRetrieved) {
+            content = <EmptyTableMessage>Please log in to see your open orders</EmptyTableMessage>
+        } else if (openOrders && openOrders.length > 0) {
             content = <OpenOrdersTable openOrders={openOrders}/>
         }
 

@@ -62,7 +62,6 @@ export default class MyTrades extends React.Component {
         )
         const disabledClass = account ? "" : "disabled"
 
-
         let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
         if (!account) {
             content = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
