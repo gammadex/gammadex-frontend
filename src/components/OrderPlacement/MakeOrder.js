@@ -154,7 +154,7 @@ export default class MakeOrder extends React.Component {
 
     render() {
         const {
-            tabId, type, tokenName
+            tabId, type, tokenName, cssClass
         } = this.props
 
         const {
@@ -202,7 +202,7 @@ export default class MakeOrder extends React.Component {
         }
 
         const body =
-            <BoxSection className="order-box">
+            <BoxSection className={"order-box " + cssClass}>
 
                 <NumericInput name="Price" value={price} unitName="ETH"
                     onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />

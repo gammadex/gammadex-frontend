@@ -6,46 +6,64 @@ import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import FillOrderBook from './FillOrderBook'
 import MakeOrder from './MakeOrder'
 import OrderSide from "../../OrderSide"
+import OrderBoxType from "./OrderBoxType"
+import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
+import OrderPlacementStore from "../../stores/OrderPlacementStore"
 
 export default class OrderBox extends React.Component {
     constructor(props) {
         super(props)
 
-        this.toggleTab = this.toggleTab.bind(this)
-        this.toggleOrderBookTab = this.toggleOrderBookTab.bind(this)
-        this.toggleLimitTab = this.toggleLimitTab.bind(this)
+        this.toggleOrderBoxType = this.toggleOrderBoxType.bind(this)
+        this.toggleTradeSide = this.toggleTradeSide.bind(this)
+        this.toggleOrderSide = this.toggleOrderSide.bind(this)
         this.toggleTakePopOver = this.toggleTakePopOver.bind(this)
         this.toggleMakePopOver = this.toggleMakePopOver.bind(this)
+        this.onOrderPlacementStoreChange = this.onOrderPlacementStoreChange.bind(this)
+
         this.state = {
-            activeTab: 'orderbook',
-            activeOrderBookTab: 'buyorderbook',
-            activeLimitTab: 'buylimit',
+            activeOrderBoxType: OrderBoxType.TRADE,
+            activeTradeSide: OrderBoxType.BUY_TRADE,
+            activeOrderSide: OrderBoxType.BUY_ORDER,
             popOverOpenTake: false,
             popOverOpenMake: false
         }
     }
 
-    toggleTab(tab) {
-        if (this.state.activeTab !== tab) {
-            this.setState({
-                activeTab: tab
-            })
+    componentDidMount() {
+        OrderPlacementStore.on("change", this.onOrderPlacementStoreChange)
+        this.onOrderPlacementStoreChange()
+    }
+
+    componentWillUnmount() {
+        OrderPlacementStore.removeListener("change", this.onOrderPlacementStoreChange)
+    }
+
+    onOrderPlacementStoreChange() {
+        const orderPlacementState = OrderPlacementStore.getOrderPlacementState()
+        this.setState({
+            activeOrderBoxType: orderPlacementState.orderBoxType,
+            activeTradeSide: orderPlacementState.orderBoxTradeSide,
+            activeOrderSide: orderPlacementState.orderBoxOrderSide,
+        })
+    }
+
+    toggleOrderBoxType(orderBoxType) {
+        if (this.state.activeOrderBoxType !== orderBoxType) {
+            OrderPlacementActions.orderBoxTypeChanged(orderBoxType)
         }
     }
 
-    toggleOrderBookTab(tab) {
-        if (this.state.activeOrderBookTab !== tab) {
-            this.setState({
-                activeOrderBookTab: tab
-            })
+    toggleTradeSide(tradeSide) {
+        if (this.state.activeTradeSide !== tradeSide) {
+            OrderPlacementActions.orderBoxTradeSideChanged(tradeSide)
+
         }
     }
 
-    toggleLimitTab(tab) {
-        if (this.state.activeLimitTab !== tab) {
-            this.setState({
-                activeLimitTab: tab
-            })
+    toggleOrderSide(orderSide) {
+        if (this.state.activeOrderSide !== orderSide) {
+            OrderPlacementActions.orderBoxOrderSideChanged(orderSide)
         }
     }
 
@@ -75,8 +93,8 @@ export default class OrderBox extends React.Component {
                     <Nav tabs>
                         <NavItem>
                             <NavLink
-                                className={classnames({ active: this.state.activeTab === 'orderbook' })}
-                                onClick={() => { this.toggleTab('orderbook'); }}>
+                                className={classnames({ active: this.state.activeOrderBoxType === OrderBoxType.TRADE })}
+                                onClick={() => this.toggleOrderBoxType(OrderBoxType.TRADE)}>
                                 <strong>TRADE</strong> &nbsp;
                                 <span id={"TakePopOver"} onClick={this.toggleTakePopOver}>
                                     <i className="fas fa-question-circle"></i>
@@ -96,8 +114,8 @@ export default class OrderBox extends React.Component {
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                className={classnames({ active: this.state.activeTab === 'limit' })}
-                                onClick={() => { this.toggleTab('limit'); }}>
+                                className={classnames({ active: this.state.activeOrderBoxType === OrderBoxType.ORDER })}
+                                onClick={() => this.toggleOrderBoxType(OrderBoxType.ORDER)}>
                                 <strong>ORDER</strong> &nbsp;
                                 <span id={"MakePopOver"} onClick={this.toggleMakePopOver}>
                                     <i className="fas fa-question-circle"></i>
@@ -114,73 +132,73 @@ export default class OrderBox extends React.Component {
                             </NavLink>
                         </NavItem>
                     </Nav>
-                    <TabContent activeTab={this.state.activeTab}>
-                        <TabPane tabId="orderbook">
+                    <TabContent activeTab={this.state.activeOrderBoxType}>
+                        <TabPane tabId={OrderBoxType.TRADE}>
 
                             <Nav tabs>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeOrderBookTab === 'buyorderbook' })}
-                                        onClick={() => { this.toggleOrderBookTab('buyorderbook'); }}>
+                                        className={classnames({ active: this.state.activeTradeSide === OrderBoxType.BUY_TRADE })}
+                                        onClick={() => this.toggleTradeSide(OrderBoxType.BUY_TRADE)}>
                                         <strong>BUY {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeOrderBookTab === 'sellorderbook' })}
-                                        onClick={() => { this.toggleOrderBookTab('sellorderbook'); }}>
+                                        className={classnames({ active: this.state.activeTradeSide === OrderBoxType.SELL_TRADE })}
+                                        onClick={() => this.toggleTradeSide(OrderBoxType.SELL_TRADE)}>
                                         <strong>SELL {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                             </Nav>
-                            <TabContent activeTab={this.state.activeOrderBookTab}>
-                                <TabPane tabId="buyorderbook">
+                            <TabContent activeTab={this.state.activeTradeSide}>
+                                <TabPane tabId={OrderBoxType.BUY_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} />
+                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} cssClass={"buy-box-green"} />
                                         </Col>
                                     </Row>
                                 </TabPane>
-                                <TabPane tabId="sellorderbook">
+                                <TabPane tabId={OrderBoxType.SELL_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} />
+                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} cssClass={"sell-box-red"} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                             </TabContent>
 
                         </TabPane>
-                        <TabPane tabId="limit">
+                        <TabPane tabId={OrderBoxType.ORDER}>
 
                             <Nav tabs>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeLimitTab === 'buylimit' })}
-                                        onClick={() => { this.toggleLimitTab('buylimit'); }}>
+                                        className={classnames({ active: this.state.activeOrderSide === OrderBoxType.BUY_ORDER })}
+                                        onClick={() => this.toggleOrderSide(OrderBoxType.BUY_ORDER)}>
                                         <strong>BUY {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeLimitTab === 'selllimit' })}
-                                        onClick={() => { this.toggleLimitTab('selllimit'); }}>
+                                        className={classnames({ active: this.state.activeOrderSide === OrderBoxType.SELL_ORDER })}
+                                        onClick={() => this.toggleOrderSide(OrderBoxType.SELL_ORDER)}>
                                         <strong>SELL {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                             </Nav>
-                            <TabContent activeTab={this.state.activeLimitTab}>
-                                <TabPane tabId="buylimit">
+                            <TabContent activeTab={this.state.activeOrderSide}>
+                                <TabPane tabId={OrderBoxType.BUY_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} />
+                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} cssClass={"buy-box-green"}/>
                                         </Col>
                                     </Row>
                                 </TabPane>
-                                <TabPane tabId="selllimit">
+                                <TabPane tabId={OrderBoxType.SELL_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} />
+                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} cssClass={"sell-box-red"}/>
                                         </Col>
                                     </Row>
                                 </TabPane>

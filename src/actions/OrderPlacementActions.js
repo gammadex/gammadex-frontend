@@ -56,6 +56,41 @@ function calcAmount(priceControlled, totalEthControlled) {
     }
 }
 
+export function orderBoxTypeChanged(orderBoxType) {
+    dispatcher.dispatch({
+        type: ActionNames.ORDER_BOX_TYPE_CHANGED,
+        orderBoxType
+    })
+}
+
+export function orderBoxTradeSideChanged(orderBoxTradeSide) {
+    dispatcher.dispatch({
+        type: ActionNames.ORDER_BOX_TRADE_SIDE_CHANGED,
+        orderBoxTradeSide
+    })
+}
+
+export function orderBoxOrderSideChanged(orderBoxOrderSide) {
+    dispatcher.dispatch({
+        type: ActionNames.ORDER_BOX_ORDER_SIDE_CHANGED,
+        orderBoxOrderSide
+    })
+}
+
+export function focusOnOrderBox(orderBoxSide) {
+    dispatcher.dispatch({
+        type: ActionNames.FOCUS_ON_ORDER_BOX,
+        orderBoxSide
+    })
+}
+
+export function focusOnTradeBox(tradeBoxSide) {
+    dispatcher.dispatch({
+        type: ActionNames.FOCUS_ON_TRADE_BOX,
+        tradeBoxSide
+    })
+}
+
 export function sellOrderPriceChanged(priceControlled) {
     const { sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled, sellOrderExpiryType, sellOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
     const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled)

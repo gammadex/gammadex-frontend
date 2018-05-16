@@ -4,10 +4,14 @@ import ActionNames from "../actions/ActionNames"
 import BigNumber from 'bignumber.js'
 import ExpiryType from "../ExpiryType"
 import OrderEntryField from "../OrderEntryField"
+import OrderBoxType from "../components/OrderPlacement/OrderBoxType"
 
 class OrderPlacementStore extends EventEmitter {
     constructor() {
         super()
+        this.orderBoxType = OrderBoxType.TRADE
+        this.orderBoxTradeSide = OrderBoxType.BUY_TRADE
+        this.orderBoxOrderSide = OrderBoxType.BUY_ORDER
         this.sellOrderPriceControlled = ""
         this.sellOrderAmountControlled = ""
         this.sellOrderAmountWei = BigNumber(0)
@@ -40,6 +44,9 @@ class OrderPlacementStore extends EventEmitter {
 
     getOrderPlacementState() {
         return {
+            orderBoxType: this.orderBoxType,
+            orderBoxTradeSide: this.orderBoxTradeSide,
+            orderBoxOrderSide: this.orderBoxOrderSide,
             sellOrderPriceControlled: this.sellOrderPriceControlled,
             sellOrderAmountControlled: this.sellOrderAmountControlled,
             sellOrderAmountWei: this.sellOrderAmountWei,
@@ -77,6 +84,33 @@ class OrderPlacementStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
+            case ActionNames.ORDER_BOX_TYPE_CHANGED: {
+                this.orderBoxType = action.orderBoxType
+                this.emitChange()
+                break
+            }        
+            case ActionNames.ORDER_BOX_TRADE_SIDE_CHANGED: {
+                this.orderBoxTradeSide = action.orderBoxTradeSide
+                this.emitChange()
+                break
+            }      
+            case ActionNames.ORDER_BOX_ORDER_SIDE_CHANGED: {
+                this.orderBoxOrderSide = action.orderBoxOrderSide
+                this.emitChange()
+                break
+            }   
+            case ActionNames.FOCUS_ON_ORDER_BOX: {
+                this.orderBoxType = OrderBoxType.ORDER
+                this.orderBoxOrderSide = action.orderBoxSide
+                this.emitChange()
+                break
+            } 
+            case ActionNames.FOCUS_ON_TRADE_BOX: {
+                this.orderBoxType = OrderBoxType.TRADE
+                this.orderBoxTradeSide = action.tradeBoxSide
+                this.emitChange()
+                break
+            }                                        
             case ActionNames.BUY_ORDER_EXPIRY_CHANGED: {
                 this.buyOrderExpiryType = action.expiryType
                 this.buyOrderExpireAfterBlocks = action.expireAfterBlocks

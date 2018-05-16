@@ -11,11 +11,13 @@ import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei, safeBigNumber, we
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
+import * as OrderPlacementActions from "../actions/OrderPlacementActions"
 import * as MyTradeActions from "../actions/MyTradeActions"
 import TransactionStatus from "../TransactionStatus"
 import OrderEntryField from "../OrderEntryField"
 import _ from "lodash"
 import OrderSide from "../OrderSide"
+import OrderBoxType from "../components/OrderPlacement/OrderBoxType"
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
@@ -142,6 +144,12 @@ export function fillOrder(order) {
         type: ActionNames.FILL_ORDER,
         fillOrder
     })
+
+    if (OrderUtil.isTakerBuy(order)) {
+        OrderPlacementActions.focusOnTradeBox(OrderBoxType.BUY_TRADE)
+    } else {
+        OrderPlacementActions.focusOnTradeBox(OrderBoxType.SELL_TRADE)
+    }
 }
 
 export function orderIsBestExecution(order) {
