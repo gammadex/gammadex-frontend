@@ -56,8 +56,12 @@ export default class GasPriceChooser extends React.Component {
         GasActions.gasPricesUseRecommended()
     }
 
-    useExpensive = event => {
-        console.log("wibble")
+    onUseCheapest = event => {
+        GasActions.gasPricesUseCheapest()
+    }
+
+    onUseExpensive = event => {
+        GasActions.gasPricesUseFastest()
     }
 
     toggleGasPrice = (event) => {
@@ -112,14 +116,14 @@ export default class GasPriceChooser extends React.Component {
                                 <BoxSection>
                                     <div className="row">
                                         <div className="col-lg-4">
-                                            <div><a href="#" onClick={this.onUseRecommended}>Cheapest</a></div>
+                                            <div><a href="#" onClick={this.onUseCheapest}>Cheapest</a></div>
                                             <div>Slowest</div>
                                         </div>
                                         <div className="col-lg-4 txt-center">
                                             <div><a href="#" onClick={this.onUseRecommended}>Average</a></div>
                                         </div>
                                         <div className="col-lg-4">
-                                            <div className="float-right"><a href="#" onClick={this.useExpensive}>Expensive</a></div>
+                                            <div className="float-right"><a href="#" onClick={this.onUseExpensive}>Expensive</a></div>
                                             <br/>
                                             <div className="float-right">Fastest</div>
                                         </div>

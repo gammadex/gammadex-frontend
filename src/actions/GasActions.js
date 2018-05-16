@@ -45,3 +45,11 @@ export function ethereumPriceRetrieveError(error) {
 export function gasPricesUseRecommended() {
     dispatcher.dispatch({type: ActionNames.GAS_PRICES_USE_RECOMMENDED})
 }
+
+export function gasPricesUseCheapest() {
+    dispatcher.dispatch({type: ActionNames.GAS_PRICES_USE_CHEAPEST})
+}
+
+export function gasPricesUseFastest() {
+    dispatcher.dispatch({type: ActionNames.GAS_PRICES_USE_FASTEST})
+}
