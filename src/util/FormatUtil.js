@@ -7,3 +7,20 @@ export function stripDecimalsOffLongNumber(number, minWholeDigits) {
 
     return match ? match[1] : number
 }
+
+export function truncate(toTruncate, options) {
+    const numKeepLeft = options && options.left ? parseInt(options.left, 10) : 3
+    const numKeepRight = options && options.right ? parseInt(options.right, 10) : 3
+    const spacer = options && options.spacer ? options.spacer : "..."
+
+    let truncated = toTruncate
+
+    if (toTruncate.length > (numKeepLeft + numKeepRight)) {
+        const leftPart = numKeepLeft > 0 ? toTruncate.substr(0, numKeepLeft) : ""
+        const rightPart = numKeepRight > 0 ? toTruncate.substr(-numKeepRight) : ""
+
+        truncated = leftPart + spacer + rightPart
+    }
+
+    return truncated
+}

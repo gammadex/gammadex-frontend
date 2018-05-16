@@ -4,6 +4,7 @@ import Config from './Config'
 import * as Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
 import OrderFactory from './OrderFactory'
+import { truncate } from './util/FormatUtil';
 
 let web3 = window.web3
 
@@ -183,9 +184,17 @@ class EtherDeltaWeb3 {
             return Promise.reject(error)
         }
 
-        return Promise.all([this.contractToken.methods.name().call(),
-            this.contractToken.methods.symbol().call(),
-            this.contractToken.methods.decimals().call()])
+        return this.contractToken.methods.totalSupply().call()
+            .then(supply => {
+                return Promise.all([this.contractToken.methods.name().call(),
+                                    this.contractToken.methods.symbol().call(),
+                                    this.contractToken.methods.decimals().call(),
+                                    Promise.resolve(supply)])
+                              .catch(err => {
+                                  const tAddr = truncate(address, {left: 7, right: 5})
+                                  return [tAddr, tAddr, 18]
+                              })
+            })
     }
 }
 
