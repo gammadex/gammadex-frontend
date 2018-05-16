@@ -159,14 +159,14 @@ export default class OrderBox extends React.Component {
                             <Nav tabs>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: !buyTradeActive })}
+                                        className={classnames({ active: buyTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.BUY_TRADE)}>
                                         <strong>BUY {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: !sellTradeActive })}
+                                        className={classnames({ active: sellTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.SELL_TRADE)}>
                                         <strong>SELL {tokenName}</strong> &nbsp;
                             </NavLink>
