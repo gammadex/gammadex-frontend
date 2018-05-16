@@ -15,9 +15,31 @@ export default class TradeHistory extends React.Component {
         this.state = {
             activeTab: "marketTrades",
             accountRetrieved: AccountStore.isAccountRetrieved(),
+            marketTrades: OrderBookStore.getTrades(),
+            myTrades: MyTradesStore.getAllTrades(this.props.token.address)
         }
 
         this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
+        this.marketTradesChanged = this.marketTradesChanged.bind(this)
+        this.myTradesChanged = this.myTradesChanged.bind(this)
+    }
+
+    componentWillMount() {
+        OrderBookStore.on("change", this.marketTradesChanged)
+        MyTradesStore.on("change", this.myTradesChanged)
+    }
+
+    componentWillUnmount() {
+        OrderBookStore.removeListener("change", this.marketTradesChanged)
+        MyTradesStore.removeListener("change", this.myTradesChanged)
+    }
+
+    marketTradesChanged() {
+        this.setState({marketTrades: OrderBookStore.getTrades()})
+    }
+
+    myTradesChanged() {
+        this.setState({myTrades: MyTradesStore.getAllTrades(this.props.token.address)})
     }
 
     accountStoreUpdated() {
@@ -33,11 +55,11 @@ export default class TradeHistory extends React.Component {
     }
 
     render() {
-        const {accountRetrieved} = this.state
-        
-        let myTrades = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
+        const {accountRetrieved, marketTrades, myTrades} = this.state
+
+        let myTradesComp = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
         if (accountRetrieved) {
-            myTrades = <TradesViewer id={1} token={this.props.token} tradesSource={() => MyTradesStore.getAllTrades(this.props.token.address)} tradesEvent={MyTradesStore}/>
+            myTradesComp = <TradesViewer id={1} token={this.props.token} tradesSource={myTrades}/>
         }
 
         return (
@@ -54,10 +76,10 @@ export default class TradeHistory extends React.Component {
                 </Nav>
                 <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId="marketTrades">
-                        <TradesViewer id={0} token={this.props.token} tradesSource={() => OrderBookStore.getTrades()} tradesEvent={OrderBookStore}/>
+                        <TradesViewer id={0} token={this.props.token} tradesSource={marketTrades}/>
                     </TabPane>
                     <TabPane tabId="myTrades">
-                        {myTrades}
+                        {myTradesComp}
                     </TabPane>
                 </TabContent>
             </Box>
