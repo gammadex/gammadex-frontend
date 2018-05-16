@@ -27,11 +27,13 @@ export default class TradeHistory extends React.Component {
     componentWillMount() {
         OrderBookStore.on("change", this.marketTradesChanged)
         MyTradesStore.on("change", this.myTradesChanged)
+        AccountStore.on("change", this.accountStoreUpdated)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.marketTradesChanged)
         MyTradesStore.removeListener("change", this.myTradesChanged)
+        AccountStore.removeListener("change", this.accountStoreUpdated)
     }
 
     marketTradesChanged() {
