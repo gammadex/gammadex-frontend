@@ -61,7 +61,7 @@ export default class TradeHistory extends React.Component {
 
         let myTradesComp = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
         if (accountRetrieved) {
-            myTradesComp = <TradesViewer id={1} token={this.props.token} tradesSource={myTrades}/>
+            myTradesComp = <TradesViewer id={1} token={this.props.token} trades={myTrades}/>
         }
 
         return (
@@ -78,7 +78,7 @@ export default class TradeHistory extends React.Component {
                 </Nav>
                 <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId="marketTrades">
-                        <TradesViewer id={0} token={this.props.token} tradesSource={marketTrades}/>
+                        <TradesViewer id={0} token={this.props.token} trades={marketTrades}/>
                     </TabPane>
                     <TabPane tabId="myTrades">
                         {myTradesComp}

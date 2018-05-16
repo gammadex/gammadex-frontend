@@ -11,8 +11,7 @@ export default class TradesViewer extends React.Component {
     }
 
     render() {
-        const trades = this.props.tradesSource
-        const {token, id} = this.props
+        const {token, id, trades} = this.props
 
         if (trades && trades.length > 0) {
             return <TradeHistoryTable base="ETH" token={token.name} trades={trades} id={id}/>
