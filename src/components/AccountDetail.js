@@ -5,13 +5,14 @@ import GasPriceStore from '../stores/GasPriceStore'
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
 import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
-import {Box, BoxFooter} from "./CustomComponents/Box"
+import {Box, BoxFooter, BoxSection} from "./CustomComponents/Box"
 
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
 import {baseEthToWei, tokEthToWei} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
+import Conditional from "./CustomComponents/Conditional"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -135,7 +136,8 @@ export default class AccountDetail extends React.Component {
             modal,
             modalValue,
             modalIsEth,
-            modalIsDeposit
+            modalIsDeposit,
+            balanceRetrieved
         } = this.state
 
         const modalToken = (modalIsEth ? "ETH" : token.name)
@@ -156,11 +158,15 @@ export default class AccountDetail extends React.Component {
                                 toggle={this.toggle}>{ntext}</Tooltip>
         }
 
-        const refreshDisabledClass = account ? "" : "disabled"
-
         return (
             <span>
                 <Box title="Accounts">
+                    <Conditional displayCondition={!balanceRetrieved}>
+                        <BoxSection>
+                            Please log in to enable deposits and withdrawals
+                        </BoxSection>
+                    </Conditional>
+
                     <AccountTable
                         token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
@@ -168,7 +174,8 @@ export default class AccountDetail extends React.Component {
                         exchangeBalanceEthWei={exchangeBalanceEthWei}
                         exchangeBalanceTokWei={exchangeBalanceTokWei}
                         ethTransaction={ethTransaction}
-                        tokTransaction={tokTransaction}/>
+                        tokTransaction={tokTransaction}
+                        accountsEnabled ={balanceRetrieved}/>
 
                     <BoxFooter>
                         Account: {accountLink}

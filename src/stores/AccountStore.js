@@ -23,6 +23,7 @@ class AccountStore extends EventEmitter {
         this.modalIsEth = false
         this.modalIsDeposit = false
         this.accountSequenceNum = 0 // number of times an account has been set up
+        this.balanceRetrieved = false
     }
 
     getAccountState() {
@@ -40,7 +41,8 @@ class AccountStore extends EventEmitter {
             modalValue: this.modalValue,
             modalIsEth: this.modalIsEth,
             modalIsDeposit: this.modalIsDeposit,
-            accountSequenceNum: this.accountSequenceNum
+            accountSequenceNum: this.accountSequenceNum,
+            balanceRetrieved: this.balanceRetrieved
         }
     }
 
@@ -83,6 +85,7 @@ class AccountStore extends EventEmitter {
                 this.walletBalanceTokWei = action.balance[1]
                 this.exchangeBalanceEthWei = action.balance[2]
                 this.exchangeBalanceTokWei = action.balance[3]
+                this.balanceRetrieved = true
                 this.emitChange()
                 break
             }

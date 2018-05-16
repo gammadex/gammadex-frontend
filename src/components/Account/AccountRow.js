@@ -10,7 +10,8 @@ export default class AccountTableRow extends React.Component {
     }
 
     render() {
-        const {token, walletBalanceWei, exchangeBalanceWei} = this.props
+        const {token, walletBalanceWei, exchangeBalanceWei, accountsEnabled} = this.props
+        const disabledClass = accountsEnabled ? "" : "disabled"
 
         return (
             <tr>
@@ -18,8 +19,12 @@ export default class AccountTableRow extends React.Component {
                     <div>{token.name}</div>
                     <div>
                         <Button size="sm" color="primary"
-                                onClick={() => this.showModal(token.name === "ETH", true)}>Deposit</Button>{' '}
-                        <Button size="sm" color="primary" onClick={() => this.showModal(token.name === "ETH", false)}>Withdraw</Button>{' '}
+                                onClick={() => {if (accountsEnabled) this.showModal(token.name === "ETH", true)}}
+                                className={disabledClass}>Deposit</Button>{' '}
+
+                        <Button size="sm" color="primary"
+                                onClick={() => {if (accountsEnabled) this.showModal(token.name === "ETH", false)}}
+                                className={disabledClass}>Withdraw</Button>{' '}
                     </div>
                 </td>
                 <td><TruncatedNumber length="8">{String(weiToEth(walletBalanceWei, token.decimals))}</TruncatedNumber>
