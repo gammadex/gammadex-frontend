@@ -95,7 +95,6 @@ export default class GasPriceChooser extends React.Component {
     render() {
         const {popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei} = this.state
 
-        const fastGwei = GasPriceChooser.safeWeiToGwei(fastWei)
         const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
 
@@ -129,7 +128,7 @@ export default class GasPriceChooser extends React.Component {
                                         </div>
                                     </div>
 
-                                    <Slider min={1} max={fastGwei} defaultValue={averageGwei} onChange={this.onSliderChange} value={currentGasPriceGwei}/>
+                                    <Slider min={1} max={100} defaultValue={averageGwei} onChange={this.onSliderChange} value={currentGasPriceGwei}/>
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
