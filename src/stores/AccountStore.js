@@ -24,6 +24,8 @@ class AccountStore extends EventEmitter {
         this.modalIsDeposit = false
         this.accountSequenceNum = 0 // number of times an account has been set up
         this.balanceRetrieved = false
+        this.retrievingBalance = false
+        this.balanceRetrievalFailed = false
     }
 
     getAccountState() {
@@ -42,7 +44,9 @@ class AccountStore extends EventEmitter {
             modalIsEth: this.modalIsEth,
             modalIsDeposit: this.modalIsDeposit,
             accountSequenceNum: this.accountSequenceNum,
-            balanceRetrieved: this.balanceRetrieved
+            balanceRetrieved: this.balanceRetrieved,
+            retrievingBalance: this.retrievingBalance,
+            balanceRetrievalFailed: this.balanceRetrievalFailed,
         }
     }
 
@@ -64,6 +68,14 @@ class AccountStore extends EventEmitter {
 
     isBalanceRetrieved() {
         return this.balanceRetrieved
+    }
+
+    isRetrievingBalance() {
+        return this.retrievingBalance
+    }
+
+    isBalanceRetrievalFailed() {
+        return this.balanceRetrievalFailed
     }
 
     emitChange() {
@@ -88,12 +100,22 @@ class AccountStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.RETRIEVING_BALANCE: {
+                this.retrievingBalance = true
+                this.balanceRetrieved = false
+                this.balanceRetrievalFailed = false
+                this.emitChange()
+                break
+            }
             case ActionNames.BALANCE_RETRIEVED: {
                 this.walletBalanceEthWei = action.balance[0]
                 this.walletBalanceTokWei = action.balance[1]
                 this.exchangeBalanceEthWei = action.balance[2]
                 this.exchangeBalanceTokWei = action.balance[3]
-                this.balanceRetrieved = true
+                if (action.notify) {
+                    this.balanceRetrieved = true
+                    this.retrievingBalance = false
+                }
                 this.emitChange()
                 break
             }
@@ -102,6 +124,10 @@ class AccountStore extends EventEmitter {
                 this.walletBalanceTokWei = 0
                 this.exchangeBalanceEthWei = 0
                 this.exchangeBalanceTokWei = 0
+                if (action.notify) {
+                    this.retrievingBalance = false
+                    this.balanceRetrievalFailed = true
+                }
                 this.emitChange()
                 break
             }

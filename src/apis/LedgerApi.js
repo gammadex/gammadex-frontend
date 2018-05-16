@@ -25,6 +25,6 @@ export function initAccount(deriviationPath, accountIndex, history) {
     const web3 = LedgerUtil.getLedgerWeb3(deriviationPath, Config.getWeb3Url(), Config.getEthereumNetworkId())
 
     EtherDeltaWeb3.initForLedger(web3, accountIndex)
-    AccountApi.refreshAccount(AccountType.LEDGER, history)
+    AccountApi.refreshAccountThenEthAndTokBalance(AccountType.LEDGER, history)
     WalletDao.forgetStoredWallet()
 }

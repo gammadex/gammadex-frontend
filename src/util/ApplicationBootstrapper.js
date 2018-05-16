@@ -12,10 +12,10 @@ export function initAccounts() {
 
     if (address) {
         EtherDeltaWeb3.initForPrivateKey(address, privateKey)
-        return AccountApi.refreshAccount(AccountType.PRIVATE_KEY)
+        return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY)
     } else if (typeof web3 !== "undefined" && WalletDao.isWalletSaved(AccountType.METAMASK)) { // If web3 is defined - it has been injected by the browser (Mist/MetaMask)
         EtherDeltaWeb3.initForMetaMask()
-        return AccountApi.refreshAccount(AccountType.METAMASK)
+        return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK)
     } else {
         LifeCycleActions.web3Initialised()
         EtherDeltaWeb3.initForAnonymous()

@@ -51,7 +51,7 @@ class MetaMaskForm extends React.Component {
             } else {
                 WalletDao.forgetStoredWallet()
             }
-            AccountApi.refreshAccount(AccountType.METAMASK, this.props.history)
+            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
         }
     }
 

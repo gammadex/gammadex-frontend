@@ -11,22 +11,27 @@ import TransactionStatus from "../TransactionStatus"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import * as LifeCycleActions from "../actions/LifecycleActions"
 
-export function refreshEthAndTokBalance(account, tokenAddress) {
+export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
+    if (notify) {
+        AccountActions.retrievingBalance()
+    }
+
     EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
         .then(balance => {
-            AccountActions.balanceRetrieved(balance)
+            AccountActions.balanceRetrieved(balance, notify)
         })
         .catch(error => {
-            AccountActions.balanceRetrievalFailed(error)
+            AccountActions.balanceRetrievalFailed(error, notify)
         })
 }
 
 export function refreshEthAndTokBalanceUsingStore() {
     const account = AccountStore.getAccount()
+    const retrievingBalance = AccountStore.isRetrievingBalance()
     const tokenAddress = TokenStore.getSelectedTokenAddress()
 
-    if (account && tokenAddress) {
-        refreshEthAndTokBalance(account, tokenAddress)
+    if (account && tokenAddress && !retrievingBalance) {
+        refreshEthAndTokBalance(account, tokenAddress, false)
     }
 }
 
@@ -45,10 +50,17 @@ export function refreshAccount(accountType, history) {
 
             WebSocketActions.getMarket()
 
-            return true
+            return addressNonce.address
         })
         .catch(error => {
             AccountActions.accountRetrieveError(accountType, error)
+        })
+}
+
+export function refreshAccountThenEthAndTokBalance(accountType, history) {
+    refreshAccount(accountType, history)
+        .then(address => {
+            refreshEthAndTokBalance(address, TokenStore.getSelectedTokenAddress(), true)
         })
 }
 

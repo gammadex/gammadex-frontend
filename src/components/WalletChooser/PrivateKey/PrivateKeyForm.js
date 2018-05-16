@@ -75,7 +75,7 @@ class PrivateKeyForm extends React.Component {
 
         if (isValidKey) {
             EtherDeltaWeb3.initForPrivateKey(privateKeyAddress, privateKey)
-            AccountApi.refreshAccount(AccountType.PRIVATE_KEY, this.props.history)
+            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, this.props.history)
 
             if (this.state.rememberKey) {
                 if (this.state.useEncryption) {
