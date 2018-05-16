@@ -124,7 +124,7 @@ export default class FillOrderBook extends React.Component {
 
     render() {
         const {
-            type, tokenName, cssClass
+            type, tokenName
         } = this.props
 
         const {
@@ -173,7 +173,7 @@ export default class FillOrderBook extends React.Component {
                 . The same amount of {tokenName} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
             }
             body =
-                <BoxSection className={"order-box " + cssClass}>
+                <BoxSection className={"order-box"}>
                     {bestExecutionWarning}
                     <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
                         fieldName={type + "OrderPrice"} disabled="true" />
@@ -202,7 +202,7 @@ export default class FillOrderBook extends React.Component {
                 </BoxSection>
         } else {
             body =
-                <BoxSection className={"order-box " + cssClass}>
+                <BoxSection className={"order-box"}>
                     {/* cannot disable the fade-in transaction for Alerts with reactstrap so falling back to EmptyTableMessage */}
                     {/* <Alert color="secondary" isOpen={!transactionAlertVisible}>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book</Alert> */}
                     <Conditional displayCondition={!transactionAlertVisible}>

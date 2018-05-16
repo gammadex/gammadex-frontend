@@ -80,7 +80,13 @@ export default class OrderBox extends React.Component {
     }
 
     render() {
+        const { activeTradeSide, activeOrderSide } = this.state
         const { tokenName } = this.props
+
+        const buyTradeActive = activeTradeSide === OrderBoxType.BUY_TRADE 
+        const sellTradeActive = activeTradeSide === OrderBoxType.SELL_TRADE 
+        const buyOrderActive = activeOrderSide === OrderBoxType.BUY_ORDER 
+        const sellOrderActive = activeOrderSide === OrderBoxType.SELL_ORDER 
 
         return (
             <Box>
@@ -138,14 +144,14 @@ export default class OrderBox extends React.Component {
                             <Nav tabs>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeTradeSide === OrderBoxType.BUY_TRADE })}
+                                        className={classnames({ active: !buyTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.BUY_TRADE)}>
                                         <strong>BUY {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeTradeSide === OrderBoxType.SELL_TRADE })}
+                                        className={classnames({ active: !sellTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.SELL_TRADE)}>
                                         <strong>SELL {tokenName}</strong> &nbsp;
                             </NavLink>
@@ -155,14 +161,14 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} cssClass={"buy-box-green"} />
+                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                                 <TabPane tabId={OrderBoxType.SELL_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} cssClass={"sell-box-red"} />
+                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} />
                                         </Col>
                                     </Row>
                                 </TabPane>
@@ -174,14 +180,14 @@ export default class OrderBox extends React.Component {
                             <Nav tabs>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeOrderSide === OrderBoxType.BUY_ORDER })}
+                                        className={classnames({ active: buyOrderActive })}
                                         onClick={() => this.toggleOrderSide(OrderBoxType.BUY_ORDER)}>
                                         <strong>BUY {tokenName}</strong> &nbsp;
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
-                                        className={classnames({ active: this.state.activeOrderSide === OrderBoxType.SELL_ORDER })}
+                                        className={classnames({ active: sellOrderActive })}
                                         onClick={() => this.toggleOrderSide(OrderBoxType.SELL_ORDER)}>
                                         <strong>SELL {tokenName}</strong> &nbsp;
                             </NavLink>
@@ -191,14 +197,14 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} cssClass={"buy-box-green"}/>
+                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                                 <TabPane tabId={OrderBoxType.SELL_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} cssClass={"sell-box-red"}/>
+                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} />
                                         </Col>
                                     </Row>
                                 </TabPane>
