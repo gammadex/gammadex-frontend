@@ -1,6 +1,6 @@
 import React from "react"
 import _ from "lodash"
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert } from 'reactstrap'
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, FormText } from 'reactstrap'
 import { Box, BoxSection, BoxHeader } from "../CustomComponents/Box"
 import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import OrderBookStore from "../../stores/OrderBookStore"
@@ -124,7 +124,7 @@ export default class FillOrderBook extends React.Component {
 
     render() {
         const {
-            type, tokenName
+            type, tokenName, balanceRetrieved
         } = this.props
 
         const {
@@ -172,6 +172,9 @@ export default class FillOrderBook extends React.Component {
                 bestExecutionWarning = <Alert color="warning">You have not selected the best order in the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book
                 . The same amount of {tokenName} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
             }
+
+            const submitDisabled = !fillOrder.fillAmountValid || !balanceRetrieved
+
             body =
                 <BoxSection className={"order-box"}>
                     {bestExecutionWarning}
@@ -195,8 +198,11 @@ export default class FillOrderBook extends React.Component {
                         fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
                     <FormGroup row className="hdr-stretch-ctr">
                         <Col sm={6}>
-                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={!fillOrder.fillAmountValid}
+                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled}
                                 onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
+                            <Conditional displayCondition={!balanceRetrieved}>                                
+                                <FormText color="muted">{`Please log in to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
+                            </Conditional>
                         </Col>
                     </FormGroup>
                 </BoxSection>

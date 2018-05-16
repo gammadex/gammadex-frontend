@@ -154,7 +154,7 @@ export default class MakeOrder extends React.Component {
 
     render() {
         const {
-            tabId, type, tokenName, cssClass
+            type, tokenName, balanceRetrieved
         } = this.props
 
         const {
@@ -175,6 +175,7 @@ export default class MakeOrder extends React.Component {
         const submitDisabled = !orderValid
             || total === ""
             || safeBigNumber(total).isZero()
+            || !balanceRetrieved
             || (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero()))
 
         const amountFieldValid = orderValid || orderInvalidField != OrderEntryField.AMOUNT
@@ -183,7 +184,7 @@ export default class MakeOrder extends React.Component {
         const totalFieldErrorMessage = totalFieldValid ? "" : orderInvalidReason
 
         let expiryMessage = <FormText color="muted">{expireAfterHumanReadableString}</FormText>
-        if(!orderValid && orderInvalidField === OrderEntryField.BLOCKS) {
+        if (!orderValid && orderInvalidField === OrderEntryField.BLOCKS) {
             expiryMessage = <FormText color="danger">{orderInvalidReason}</FormText>
         }
 
@@ -197,12 +198,12 @@ export default class MakeOrder extends React.Component {
         }
 
         let prefixedOrderHash = orderHash
-        if(orderHash && orderHash != "") {
+        if (orderHash && orderHash != "") {
             prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
         }
 
         const body =
-            <BoxSection className={"order-box " + cssClass}>
+            <BoxSection className={"order-box"}>
 
                 <NumericInput name="Price" value={price} unitName="ETH"
                     onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />
@@ -242,7 +243,7 @@ export default class MakeOrder extends React.Component {
 
                 </Conditional>
 
-                <Conditional displayCondition={orderValid && orderHash != "" && selectedAccountType && selectedAccountType === AccountType.METAMASK }>
+                <Conditional displayCondition={orderValid && orderHash != "" && selectedAccountType && selectedAccountType === AccountType.METAMASK}>
                     <hr />
                     <FormGroup row>
                         <Label for={type + "MetaMaskHash"} sm={3}>MetaMask Order Hash</Label>
@@ -251,8 +252,8 @@ export default class MakeOrder extends React.Component {
                                 disabled={true}
                                 value={prefixedOrderHash} />
                             <FormText color="muted">
-                            This hex-encoded hash represents the above Order details in compressed form and is used by the EtherDelta Smart Contract.
-                            Please ensure it is this message you sign in MetaMask when prompted.
+                                This hex-encoded hash represents the above Order details in compressed form and is used by the EtherDelta Smart Contract.
+                                Please ensure it is this message you sign in MetaMask when prompted.
                             </FormText>
                         </Col>
                     </FormGroup>
@@ -264,6 +265,9 @@ export default class MakeOrder extends React.Component {
                         <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id="sellButton" disabled={submitDisabled}
                             hidden={orderHasPriceWarning && orderValid}
                             onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
+                        <Conditional displayCondition={!balanceRetrieved}>
+                            <FormText color="muted">{`Please log in to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
+                        </Conditional>
                     </Col>
                 </FormGroup>
             </BoxSection>
