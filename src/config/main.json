@@ -62,7 +62,7 @@
       "etherdelta5": "https://socket05.etherdelta.com",
       "etherdelta6": "https://socket06.etherdelta.com",
       "forkdelta": "https://api.forkdelta.com",
-      "default": "https://socket02.etherdelta.com"
+      "default": "https://api.forkdelta.com"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "tokens": [

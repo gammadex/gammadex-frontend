@@ -41,7 +41,7 @@ export default class TokenCreator extends React.Component {
         const address = event.target.value
         TokenActions.resetCreate(address)
         if (TokenListApi.isAddress(address)) {
-            TokenActions.tokenLookup(address)
+            TokenActions.tokenLookup(address, false)
         }
     }
 

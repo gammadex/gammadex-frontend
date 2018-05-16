@@ -3,7 +3,6 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import _ from "lodash"
 import TokenListApi from "../apis/TokenListApi"
-import WalletStore from "./WalletStore"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -64,10 +63,6 @@ class TokenStore extends EventEmitter {
         this.tokenWarning = { title, message }
     }
 
-    setInvalidToken() {
-        this.tokenCheckError = `Invalid address on ${WalletStore.getProvidedWeb3Info().netDescription}`
-    }
-
     reset(address) {
         this.createToken = {
             address: address,
@@ -80,7 +75,7 @@ class TokenStore extends EventEmitter {
         if (address === "" || TokenListApi.isAddress(address)) {
             this.tokenCheckError = ""
         } else {
-            this.setInvalidToken()
+            this.tokenCheckError = "Invalid address"
         }
     }
 
@@ -88,7 +83,15 @@ class TokenStore extends EventEmitter {
         this.emit("change")
     }
 
-    checkAddress = address => {
+    selectToken = token => {
+        this.selectedToken = token
+        this.tokenWarning = null
+        if (this.selectedToken.unlisted) {
+            this.setWarning("Unlisted Token", `Token ${this.selectedToken.name} is not listed on GammaDex -- proceed at your own risk`)
+        }
+    }
+
+    checkAddress = (address, switchIfFound) => {
         TokenListApi.searchToken(address, false)
             .then(token => {
                 this.createToken = token
@@ -96,6 +99,9 @@ class TokenStore extends EventEmitter {
                     this.tokenCheckError = `Token ${this.createToken.name} already registered`
                 } else {
                     this.tokenCheckError = ""
+                    if (switchIfFound) {
+                        this.selectToken(this.createToken)
+                    }
                 }
 
                 this.checkingAddress = false
@@ -103,7 +109,7 @@ class TokenStore extends EventEmitter {
             })
             .catch(e => {
                 this.reset(address)
-                this.setInvalidToken()
+                this.tokenCheckError = "Invalid address"
                 this.checkingAddress = false
                 this.emitChange()
             })
@@ -114,12 +120,7 @@ class TokenStore extends EventEmitter {
     handleActions(action) {
         switch (action.type) {
             case ActionNames.SELECT_TOKEN: {
-                this.selectedToken = action.token
-                this.tokenWarning = null
-                if (this.selectedToken.unlisted) {
-                    this.setWarning("Unlisted Token", `Token ${this.selectedToken.name} is not listed on Gammadex -- proceed at your own risk`)
-                }
-
+                this.selectToken(action.token)
                 this.emitChange()
                 break
             }
@@ -146,7 +147,7 @@ class TokenStore extends EventEmitter {
                 break
             }
             case ActionNames.TOKEN_ADDRESS_LOOKUP: {
-                this.checkAddress(action.address)
+                this.checkAddress(action.address, action.switchIfFound)
                 this.emitChange()
                 break
             }

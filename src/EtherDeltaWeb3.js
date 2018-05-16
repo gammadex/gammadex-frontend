@@ -11,6 +11,8 @@ class EtherDeltaWeb3 {
     initForAnonymous = () => {
         this.web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
         this.accountProvider = new AccountProvider(this.web3)
+
+        this.initContract()
     }
 
     initForMetaMask = () => {

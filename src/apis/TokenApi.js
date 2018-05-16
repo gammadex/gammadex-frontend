@@ -20,8 +20,13 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
     const currUrlToken = getUrlTokenFromProps(currProps)
 
     if (currUrlToken && currUrlToken != prevUrlToken) {
-        TokenListApi.getTokenBySymbolOrAddress(currUrlToken)
-            .then(token => processToken(token, currentStateToken))
-            .catch(bad => TokenActions.invalidToken(currUrlToken))
+        const foundToken = TokenListApi.getTokenBySymbolOrAddress(currUrlToken);
+        if (foundToken) {
+            processToken(foundToken, currentStateToken)
+        } else if (TokenListApi.isAddress(currUrlToken)) {
+            TokenActions.tokenLookup(currUrlToken, true)
+        } else {
+            TokenActions.invalidToken(currUrlToken)
+        }
     }
 }
