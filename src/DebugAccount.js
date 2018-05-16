@@ -30,7 +30,7 @@ class DebugAccount extends Component {
 
         if (valid) {
             EtherDeltaWeb3.initForPrivateKey(account, "")
-            AccountApi.refreshAccount(AccountType.PRIVATE_KEY, this.props.history)
+            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, this.props.history)
             this.props.history.push("/")
         }
     }

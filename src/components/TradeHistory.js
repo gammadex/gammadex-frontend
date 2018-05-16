@@ -5,14 +5,49 @@ import {Box} from "./CustomComponents/Box"
 import TradesViewer from "./TradesViewer"
 import OrderBookStore from "../stores/OrderBookStore"
 import MyTradesStore from "../stores/MyTradesStore"
+import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
+import AccountStore from "../stores/AccountStore"
 
 export default class TradeHistory extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            activeTab: "marketTrades"
+            activeTab: "marketTrades",
+            accountRetrieved: AccountStore.isAccountRetrieved(),
+            marketTrades: OrderBookStore.getTrades(),
+            myTrades: MyTradesStore.getAllTrades(this.props.token.address)
         }
+
+        this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
+        this.marketTradesChanged = this.marketTradesChanged.bind(this)
+        this.myTradesChanged = this.myTradesChanged.bind(this)
+    }
+
+    componentWillMount() {
+        OrderBookStore.on("change", this.marketTradesChanged)
+        MyTradesStore.on("change", this.myTradesChanged)
+        AccountStore.on("change", this.accountStoreUpdated)
+    }
+
+    componentWillUnmount() {
+        OrderBookStore.removeListener("change", this.marketTradesChanged)
+        MyTradesStore.removeListener("change", this.myTradesChanged)
+        AccountStore.removeListener("change", this.accountStoreUpdated)
+    }
+
+    marketTradesChanged() {
+        this.setState({marketTrades: OrderBookStore.getTrades()})
+    }
+
+    myTradesChanged() {
+        this.setState({myTrades: MyTradesStore.getAllTrades(this.props.token.address)})
+    }
+
+    accountStoreUpdated() {
+        this.setState({
+            accountRetrieved: AccountStore.isAccountRetrieved()
+        })
     }
 
     toggleTab = tab => {
@@ -22,6 +57,13 @@ export default class TradeHistory extends React.Component {
     }
 
     render() {
+        const {accountRetrieved, marketTrades, myTrades} = this.state
+
+        let myTradesComp = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
+        if (accountRetrieved) {
+            myTradesComp = <TradesViewer id={1} token={this.props.token} trades={myTrades}/>
+        }
+
         return (
             <Box title="Trade History">
                 <Nav tabs>
@@ -36,10 +78,10 @@ export default class TradeHistory extends React.Component {
                 </Nav>
                 <TabContent activeTab={this.state.activeTab}>
                     <TabPane tabId="marketTrades">
-                        <TradesViewer id={0} token={this.props.token} tradesSource={() => OrderBookStore.getTrades()} tradesEvent={OrderBookStore}/>
+                        <TradesViewer id={0} token={this.props.token} trades={marketTrades}/>
                     </TabPane>
                     <TabPane tabId="myTrades">
-                        <TradesViewer id={1} token={this.props.token} tradesSource={() => MyTradesStore.getAllTrades(this.props.token.address)} tradesEvent={MyTradesStore}/>
+                        {myTradesComp}
                     </TabPane>
                 </TabContent>
             </Box>

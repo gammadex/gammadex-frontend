@@ -55,7 +55,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
             const {address} = KeyUtil.convertPrivateKeyToAddress(privateKey)
 
             EtherDeltaWeb3.initForPrivateKey(address, privateKey)
-            AccountApi.refreshAccount(AccountType.PRIVATE_KEY)
+            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY)
         } catch (error) {
             WalletActions.passwordError(error)
         }

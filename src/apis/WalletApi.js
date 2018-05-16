@@ -48,7 +48,7 @@ export function updateWalletStoreProvidedWeb3Details() {
                             && _.toLower(accounts[0]) !== _.toLower(AccountStore.getAccount())) {
 
                             EtherDeltaWeb3.initForMetaMask()
-                            return AccountApi.refreshAccount(AccountType.METAMASK)
+                            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK)
                         }
                     } else {
                         if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {

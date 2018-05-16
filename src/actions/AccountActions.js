@@ -23,17 +23,25 @@ export function accountRetrieveError(accountType, error) {
     })
 }
 
-export function balanceRetrieved(balance) {
+export function retrievingBalance() {
     dispatcher.dispatch({
-        type: ActionNames.BALANCE_RETRIEVED,
-        balance
+        type: ActionNames.RETRIEVING_BALANCE,
     })
 }
 
-export function balanceRetrievalFailed(error) {
+export function balanceRetrieved(balance, notify) {
+    dispatcher.dispatch({
+        type: ActionNames.BALANCE_RETRIEVED,
+        balance,
+        notify
+    })
+}
+
+export function balanceRetrievalFailed(error, notify) {
     dispatcher.dispatch({
         type: ActionNames.BALANCE_RETRIEVAL_FAILED,
-        error
+        error,
+        notify
     })
 }
 

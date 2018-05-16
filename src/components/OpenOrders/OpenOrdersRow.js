@@ -3,10 +3,10 @@ import Config from '../../Config'
 import { Button } from "reactstrap"
 import OrderState from "../../OrderState"
 import OrderSide from "../../OrderSide"
-import * as OpenOrderActions from "../../actions/OpenOrderActions"
 import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
 import TokenListApi from "../../apis/TokenListApi";
+import * as OpenOrderApi from "../../apis/OpenOrderApi"
 
 export default class OpenOrdersRow extends React.Component {
     render() {
@@ -16,7 +16,7 @@ export default class OpenOrdersRow extends React.Component {
         let buttonLabel = "CANCEL"
         let buttonDisabled = false
         let onClick = () => {
-            OpenOrderActions.cancelOpenOrder(openOrder)
+            OpenOrderApi.cancelOpenOrder(openOrder)
         }
         if (openOrder.state === OrderState.PENDING_CANCEL) {
             buttonColor = "warning"

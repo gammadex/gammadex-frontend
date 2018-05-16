@@ -5,13 +5,14 @@ import GasPriceStore from '../stores/GasPriceStore'
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
 import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
-import {Box, BoxFooter} from "./CustomComponents/Box"
+import {Box, BoxFooter, BoxSection} from "./CustomComponents/Box"
 
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
 import {baseEthToWei, tokEthToWei} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
+import Conditional from "./CustomComponents/Conditional"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -24,6 +25,8 @@ export default class AccountDetail extends React.Component {
         this.onAccountChange = this.onAccountChange.bind(this)
         this.toggle = this.toggle.bind(this)
         this.onGasStoreChange = this.onGasStoreChange.bind(this)
+        this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
+        this.tokenAddress = TokenStore.getSelectedToken().address
     }
 
     componentDidMount() {
@@ -50,6 +53,12 @@ export default class AccountDetail extends React.Component {
         })
     }
 
+    onTokenStoreChange() {
+        this.setState((prevState, props) => ({
+            tokenAddress: TokenStore.getSelectedToken().address,
+        }))
+    }
+
     toggle() {
         this.setState({
             tooltipOpen: !this.state.tooltipOpen
@@ -61,9 +70,11 @@ export default class AccountDetail extends React.Component {
     }
 
     refreshBalances = () => {
-        const {account} = this.state
+        const {account, accountRetrieved, tokenAddress, retrievingBalance} = this.state
 
-        AccountApi.refreshEthAndTokBalance(account, TokenStore.getSelectedToken().address)
+        if (accountRetrieved && ! retrievingBalance) {
+            AccountApi.refreshEthAndTokBalance(account, tokenAddress, true)
+        }
     }
 
     submit() {
@@ -77,7 +88,7 @@ export default class AccountDetail extends React.Component {
             modalValue,
             modalIsEth,
             modalIsDeposit,
-            currentGasPriceWei
+            currentGasPriceWei,
         } = this.state
 
         if (modalIsDeposit) {
@@ -135,7 +146,10 @@ export default class AccountDetail extends React.Component {
             modal,
             modalValue,
             modalIsEth,
-            modalIsDeposit
+            modalIsDeposit,
+            balanceRetrieved,
+            retrievingBalance,
+            balanceRetrievalFailed
         } = this.state
 
         const modalToken = (modalIsEth ? "ETH" : token.name)
@@ -156,11 +170,33 @@ export default class AccountDetail extends React.Component {
                                 toggle={this.toggle}>{ntext}</Tooltip>
         }
 
-        const refreshDisabledClass = account ? "" : "disabled"
+        const warningMessage = this.getAccountWarningMessage()
+        const refreshDisabledClass = (accountRetrieved && ! retrievingBalance) ? "" : "disabled"
 
         return (
             <span>
-                <Box title="Accounts">
+                <div className="card">
+                    <div className="card-header">
+                        <div className="row hdr-stretch">
+                            <div className="col-lg-6">
+                                <strong className="card-title">Account</strong>
+                            </div>
+                            <div className="col-lg-6 red">
+                                <div className="float-right">
+                                    <button className={"btn btn-primary " + refreshDisabledClass}
+                                            onClick={this.refreshBalances}><i
+                                        className="fas fa-sync"/></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Conditional displayCondition={!balanceRetrieved}>
+                        <BoxSection>
+                            {warningMessage}
+                        </BoxSection>
+                    </Conditional>
+
                     <AccountTable
                         token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
@@ -168,14 +204,15 @@ export default class AccountDetail extends React.Component {
                         exchangeBalanceEthWei={exchangeBalanceEthWei}
                         exchangeBalanceTokWei={exchangeBalanceTokWei}
                         ethTransaction={ethTransaction}
-                        tokTransaction={tokTransaction}/>
+                        tokTransaction={tokTransaction}
+                        accountsEnabled={balanceRetrieved}/>
 
                     <BoxFooter>
                         Account: {accountLink}
                         <br/>
                         <Badge id="atName" color="secondary">{accountTypeName}</Badge> {nonceTip}
                     </BoxFooter>
-                </Box>
+                </div>
 
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
                     <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>
@@ -189,5 +226,19 @@ export default class AccountDetail extends React.Component {
                 </Modal>
             </span>
         )
+    }
+
+    getAccountWarningMessage() {
+        const {retrievingBalance, balanceRetrievalFailed, accountRetrieved} = this.state
+
+        if (retrievingBalance) {
+            return "Checking balance"
+        } else if (balanceRetrievalFailed) {
+            return "There was a problem checking your balance"
+        } else if (!accountRetrieved) {
+            return "Please log in to enable deposits and withdrawals"
+        }
+
+        return ""
     }
 }
