@@ -18,6 +18,9 @@ import OrderEntryField from "../OrderEntryField"
 import _ from "lodash"
 import OrderSide from "../OrderSide"
 import OrderBoxType from "../components/OrderPlacement/OrderBoxType"
+import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
+import * as GlobalMessageActions from "./GlobalMessageActions"
+import TokenListApi from "../apis/TokenListApi"
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
@@ -43,18 +46,23 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
 }
 
 export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled) {
-    const tokenAddress = TokenStore.getSelectedToken().addressaddMyTrade
+    const tokenAddress = TokenStore.getSelectedToken().address
     const { account, nonce } = AccountStore.getAccountState()
     const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
 
     // amount is in amountGet terms
     let amountWei = 0
+    let amount = 0
+    let tokenName = 'ETH'
     if (OrderUtil.isTakerSell(order)) {
         // taker is selling, amountWei is in wei units of TOK
         amountWei = weiFillAmount
+        amount = tokWeiToEth(amountWei, tokenAddress).toString()
+        tokenName = TokenListApi.getTokenName(tokenAddress)
     } else {
         // taker is buying, amountWei in is wei units of ETH
         amountWei = weiTotalEth
+        amount = baseWeiToEth(amountWei).toString()
     }
     EtherDeltaWeb3.promiseTestTrade(account, order, amountWei)
         .then(isTradable => {
@@ -75,9 +83,17 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                             date: (new Date()).toJSON(),
                             status: TransactionStatus.PENDING
                         })
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTradeInitiated(amount, tokenName, hash))
                     })
-                    .on('error', error => { console.log(`failed to trade: ${error.message}`) })
-                    .then(receipt => { }) // when tx is mined - we regularly poll the blockchain so this can be empty here
+                    .on('error', error => {
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTradeFailed(amount, tokenName, error), 'danger')
+                    })
+                    .then(receipt => {
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTradeComplete(amount, tokenName), 'success')
+                    })
             } else {
                 Promise.all([EtherDeltaWeb3.promiseAvailableVolume(order), EtherDeltaWeb3.promiseAmountFilled(order)])
                     .then(res => {

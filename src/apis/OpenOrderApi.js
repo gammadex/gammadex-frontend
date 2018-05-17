@@ -5,18 +5,27 @@ import * as OpenOrderActions from "../actions/OpenOrderActions"
 import Timer from "../util/Timer"
 import OrderState from "../OrderState"
 import OpenOrdersStore from "../stores/OpenOrdersStore"
+import TokenListApi from "./TokenListApi"
+import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
+import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 
 export function cancelOpenOrder(openOrder) {
     const {account, nonce} = AccountStore.getAccountState()
+    const tokenName = TokenListApi.getTokenName(openOrder.tokenAddress)
+
     EtherDeltaWeb3.promiseCancelOrder(account, nonce, openOrder.order)
         .once('transactionHash', hash => {
             AccountActions.nonceUpdated(nonce + 1)
             OpenOrderActions.cancelOpenOrder(openOrder.hash, hash)
+            GlobalMessageActions.sendGlobalMessage(
+                GlobalMessageFormatters.getCancelInitiated(tokenName, hash))
         })
         .on('error', error => {
-            console.log(`failed to cancel open order: ${error.message}`)
+            GlobalMessageActions.sendGlobalMessage(
+                GlobalMessageFormatters.getCancelFailed(tokenName, error), "danger")
         })
         .then(receipt => {
+            GlobalMessageActions.sendGlobalMessage(GlobalMessageFormatters.getCancelComplete(tokenName), "success")
         })
 }
 

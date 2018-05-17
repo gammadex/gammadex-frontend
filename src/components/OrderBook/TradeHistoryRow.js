@@ -40,8 +40,8 @@ export default class TradeHistoryRow extends React.Component {
 
                     <Round price softZeros>{trade.price}</Round>
                 </td>
-                <td onClick={this.toggle} className="clickable"><Round>{trade.amount}</Round></td>
-                <td onClick={this.toggle} className="clickable"><Round>{trade.amountBase}</Round></td>
+                <td onClick={this.toggle} className="clickable"><Round>{String(trade.amount)}</Round></td>
+                <td onClick={this.toggle} className="clickable"><Round>{String(trade.amountBase)}</Round></td>
                 <td onClick={this.toggle} className="clickable">
                     <small><Date noSeconds>{trade.date}</Date><br/></small>
                 </td>
