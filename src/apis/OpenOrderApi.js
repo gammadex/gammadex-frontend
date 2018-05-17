@@ -9,11 +9,11 @@ import TokenListApi from "./TokenListApi"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 
-export function cancelOpenOrder(openOrder) {
+export function cancelOpenOrder(openOrder, gasPriceWei) {
     const {account, nonce} = AccountStore.getAccountState()
     const tokenName = TokenListApi.getTokenName(openOrder.tokenAddress)
 
-    EtherDeltaWeb3.promiseCancelOrder(account, nonce, openOrder.order)
+    EtherDeltaWeb3.promiseCancelOrder(account, nonce, openOrder.order, gasPriceWei)
         .once('transactionHash', hash => {
             AccountActions.nonceUpdated(nonce + 1)
             OpenOrderActions.cancelOpenOrder(openOrder.hash, hash)

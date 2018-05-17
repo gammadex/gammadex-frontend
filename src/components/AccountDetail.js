@@ -19,7 +19,7 @@ export default class AccountDetail extends React.Component {
         super(props)
         this.state = AccountStore.getAccountState()
         this.state.tooltipOpen = false
-        this.state.currentGasPriceWei = null
+        this.state.currentGasPriceWei = GasPriceStore.getCurrentGasPriceWei()
         this.hideModal = this.hideModal.bind(this)
         this.onInputChange = this.onInputChange.bind(this)
         this.onAccountChange = this.onAccountChange.bind(this)
