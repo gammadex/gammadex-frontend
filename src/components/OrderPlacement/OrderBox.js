@@ -107,7 +107,7 @@ export default class OrderBox extends React.Component {
                         <strong className="card-title">TRADING</strong>
                     </div>
                     <Conditional displayCondition={!balanceRetrieved}>
-                        Please log in to enable trading
+                        Please unlock a wallet to enable trading
                     </Conditional>
                 </BoxHeader>
                 <BoxSection>

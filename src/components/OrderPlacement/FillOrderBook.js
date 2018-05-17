@@ -201,7 +201,7 @@ export default class FillOrderBook extends React.Component {
                             <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled}
                                 onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
                             <Conditional displayCondition={!balanceRetrieved}>                                
-                                <FormText color="muted">{`Please log in to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
+                                <FormText color="muted">{`Please unlock a wallet to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
                             </Conditional>
                         </Col>
                     </FormGroup>

@@ -99,10 +99,10 @@ class MetaMaskForm extends React.Component {
             <Conditional displayCondition={isMainNet === false}>
                 <div className="form-group">
                     <div className="alert alert-danger">
-                        Sorry, the MetaMask network you are logged into is the {netDescription}, not
+                        Sorry, the MetaMask network you are connected to is the {netDescription}, not
                         the {mainNetDescription}.
 
-                        Please log in to the {mainNetDescription}.
+                        Please connect to the {mainNetDescription}.
                     </div>
                 </div>
             </Conditional>
@@ -112,7 +112,7 @@ class MetaMaskForm extends React.Component {
                     <div className="alert alert-danger">
                         Sorry, you are not logged in to MetaMask.
 
-                        Please log in to use this site.
+                        Please unlock a wallet to use this site.
                     </div>
                 </div>
             </Conditional>

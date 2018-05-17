@@ -59,7 +59,7 @@ export default class TradeHistory extends React.Component {
     render() {
         const {accountRetrieved, marketTrades, myTrades} = this.state
 
-        let myTradesComp = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
+        let myTradesComp = <EmptyTableMessage>Please unlock a wallet to see your trade history</EmptyTableMessage>
         if (accountRetrieved) {
             myTradesComp = <TradesViewer id={1} token={this.props.token} trades={myTrades}/>
         }

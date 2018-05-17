@@ -236,7 +236,7 @@ export default class AccountDetail extends React.Component {
         } else if (balanceRetrievalFailed) {
             return "There was a problem checking your balance"
         } else if (!accountRetrieved) {
-            return "Please log in to enable deposits and withdrawals"
+            return "Please unlock a wallet to enable deposits and withdrawals"
         }
 
         return ""

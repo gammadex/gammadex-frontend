@@ -266,7 +266,7 @@ export default class MakeOrder extends React.Component {
                             hidden={orderHasPriceWarning && orderValid}
                             onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
                         <Conditional displayCondition={!balanceRetrieved}>
-                            <FormText color="muted">{`Please log in to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
+                            <FormText color="muted">{`Please unlock a wallet to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
                         </Conditional>
                     </Col>
                 </FormGroup>

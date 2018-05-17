@@ -64,7 +64,7 @@ export default class MyTrades extends React.Component {
 
         let content = <EmptyTableMessage>You have no trades</EmptyTableMessage>
         if (!account) {
-            content = <EmptyTableMessage>Please log in to see your trade history</EmptyTableMessage>
+            content = <EmptyTableMessage>Please unlock a wallet to see your trade history</EmptyTableMessage>
         } else if (trades && trades.length > 0) {
             content = <MyTradesTable trades={filteredTrades}/>
         }

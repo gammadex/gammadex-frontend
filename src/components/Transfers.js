@@ -67,7 +67,7 @@ export default class Transfers extends React.Component {
 
         let content = <EmptyTableMessage>You have no deposits or withdrawls</EmptyTableMessage>
         if (!account) {
-            content = <EmptyTableMessage>Please log in to see {type.toLowerCase()} history</EmptyTableMessage>
+            content = <EmptyTableMessage>Please unlock a wallet to see {type.toLowerCase()} history</EmptyTableMessage>
         } else if (transfers && transfers.length > 0) {
             content = <TransfersTable transfers={filteredTransfers}/>
         }

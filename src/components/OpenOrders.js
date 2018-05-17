@@ -42,7 +42,7 @@ export default class OpenOrders extends React.Component {
 
         let content = <EmptyTableMessage>You have no open orders</EmptyTableMessage>
         if (!accountRetrieved) {
-            content = <EmptyTableMessage>Please log in to see your open orders</EmptyTableMessage>
+            content = <EmptyTableMessage>Please unlock a wallet to see your open orders</EmptyTableMessage>
         } else if (openOrders && openOrders.length > 0) {
             content = <OpenOrdersTable openOrders={openOrders}/>
         }

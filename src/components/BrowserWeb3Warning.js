@@ -52,7 +52,7 @@ export default class BrowserWeb3Warning extends React.Component {
                         </h3>
                     </div>
                     <div>
-                        If you wish to use MetaMask as your wallet, please log in to the {mainNetDescription}
+                        If you wish to use MetaMask as your wallet, please connect to the {mainNetDescription}
                     </div>
                 </div>
             </Conditional>
