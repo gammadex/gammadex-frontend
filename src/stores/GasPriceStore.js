@@ -89,7 +89,7 @@ class GasPriceStore extends EventEmitter {
                 break
             }
             case ActionNames.GAS_PRICES_USE_CHEAPEST: {
-                this.currentGasPriceWei = BigNumber(1)
+                this.currentGasPriceWei = this.prices.safeLowWei
                 localStorage.currentGasPriceWei = ""
                 this.emitChange()
                 break
