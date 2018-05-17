@@ -18,7 +18,8 @@ export function getTransferComplete(amount, type, unit) {
 
 export function getTransferFailed(amount, type, unit, error) {
     const ucType = _.capitalize(type)
-    return `${ucType} of ${amount} ${unit} failed - ${error.message}`
+    const errorMessage = (error && error.message) ? `- ${error.message}` : ''
+    return `${ucType} of ${amount} ${unit} failed ${errorMessage}`
 }
 
 export function getCancelInitiated(unit, txHash) {
@@ -35,7 +36,8 @@ export function getCancelComplete(unit) {
 }
 
 export function getCancelFailed(unit, error) {
-    return `Cancel open order of ${unit} failed - ${error.message}`
+    const errorMessage = (error && error.message) ? `- ${error.message}` : ''
+    return `Cancel open order of ${unit} failed ${errorMessage}`
 }
 
 export function getTradeInitiated(amount, unit, txHash) {
@@ -52,5 +54,6 @@ export function getTradeComplete(amount, unit) {
 }
 
 export function getTradeFailed(amount, unit, error) {
-    return `Trade of ${amount} ${unit} failed - ${error.message}`
+    const errorMessage = (error && error.message) ? `- ${error.message}` : ''
+    return `Trade of ${amount} ${unit} failed ${errorMessage}`
 }
