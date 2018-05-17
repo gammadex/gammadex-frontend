@@ -10,6 +10,7 @@ import Debug from './Debug'
 import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
 import SplashScreen from "./SplashScreen"
+import GlobalMessages from "../components/GlobalMessages"
 
 class App extends Component {
     constructor(props) {
@@ -52,10 +53,9 @@ class App extends Component {
             <HashRouter hashType="hashbang">
                 <div>
                     <TopNavigation/>
-
                     {contents}
-
                     <GreetingLoginModals/>
+                    <GlobalMessages/>
                 </div>
             </HashRouter>
         )

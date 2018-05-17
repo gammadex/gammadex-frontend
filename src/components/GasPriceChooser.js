@@ -8,6 +8,8 @@ import {Popover, PopoverBody} from 'reactstrap'
 import {gweiToWei, weiToGwei, gweiToEth} from "../EtherConversion"
 import * as _ from "lodash"
 import {OperationWeights} from "../ContractOperations"
+import WalletStore from "../stores/WalletStore"
+import AccountStore from "../stores/AccountStore"
 
 export default class GasPriceChooser extends React.Component {
     constructor(props) {
@@ -31,6 +33,10 @@ export default class GasPriceChooser extends React.Component {
     componentDidMount() {
         GasPriceStore.on("change", this.saveGasPrices)
         this.saveGasPrices()
+    }
+
+    componentWillUnmount() {
+        GasPriceStore.removeListener("change", this.saveGasPrices)
     }
 
     saveGasPrices() {

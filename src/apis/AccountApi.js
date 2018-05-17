@@ -10,6 +10,10 @@ import Routes from '../Routes'
 import TransactionStatus from "../TransactionStatus"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import * as LifeCycleActions from "../actions/LifecycleActions"
+import * as GlobalMessageActions from "../actions/GlobalMessageActions"
+import {baseWeiToEth, tokWeiToEth} from "../EtherConversion"
+import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
+import TokenListApi from "./TokenListApi"
 
 export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
     if (notify) {
@@ -73,17 +77,23 @@ export function refreshNonce() {
 
 export function depositEth(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
+        const ethAmount = baseWeiToEth(amount).toString()
         EtherDeltaWeb3.promiseDepositEther(account, nonce, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 AccountActions.nonceUpdated(nonce + 1)
                 AccountActions.addPendingTransfer(DepositType.DEPOSIT, Config.getBaseAddress(), amount, hash)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferInitiated(ethAmount, 'deposit', 'ETH', hash))
             })
             .on('error', error => {
-                console.log(`failed to deposit ether: ${error.message}`)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferFailed(ethAmount, 'deposit', 'ETH', error.message), "danger")
             })
             .then(receipt => {
                 // will be fired once the receipt is mined
-                refreshEthAndTokBalance(account, tokenAddress)
+                refreshEthAndTokBalance(account, tokenAddress, false)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferComplete(ethAmount, 'deposit', 'ETH'), "success")
             })
     } else {
         // TODO dispatch account retrieval failed action
@@ -92,16 +102,22 @@ export function depositEth(account, accountRetrieved, nonce, tokenAddress, amoun
 
 export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
+        const ethAmount = baseWeiToEth(amount).toString()
         EtherDeltaWeb3.promiseWithdrawEther(account, nonce, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 AccountActions.nonceUpdated(nonce + 1)
                 AccountActions.addPendingTransfer(DepositType.WITHDRAWAL, Config.getBaseAddress(), amount, hash)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferInitiated(ethAmount, 'withdrawal', 'ETH', hash))
             })
             .on('error', error => {
-                console.log(`failed to withdraw ether: ${error.message}`)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferFailed(ethAmount, 'withdrawal', 'ETH', error.message), "danger")
             })
             .then(receipt => {
-                refreshEthAndTokBalance(account, tokenAddress)
+                refreshEthAndTokBalance(account, tokenAddress, false)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferComplete(ethAmount, 'withdrawal', 'ETH'), "success")
             })
     }
 }
@@ -111,33 +127,47 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
     // 1) call the token contract to approve the transfer to the destination address = ED
     // 2) initiate the transfer in the ED smart contract
     if (accountRetrieved) {
+        const tokenAmount = tokWeiToEth(amount, tokenAddress).toString()
+        const tokenName = TokenListApi.getTokenName(tokenAddress)
         EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
                 AccountActions.addPendingTransfer(DepositType.DEPOSIT, tokenAddress,
                     amount, hash)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferInitiated(tokenAmount, 'deposit', tokenName, hash))
             })
             .on('error', error => {
-                console.log(`failed to deposit token: ${error.message}`)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'deposit', tokenName, error.message), "danger")
             })
             .then(receipt => {
-                refreshEthAndTokBalance(account, tokenAddress)
+                refreshEthAndTokBalance(account, tokenAddress, false)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferComplete(tokenAmount, 'deposit', tokenName), "success")
             })
     }
 }
 
 export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
+        const tokenAmount = tokWeiToEth(amount, tokenAddress).toString()
+        const tokenName = TokenListApi.getTokenName(tokenAddress)
         EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 AccountActions.nonceUpdated(nonce + 1)
                 AccountActions.addPendingTransfer(DepositType.WITHDRAWAL, tokenAddress, amount, hash)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferInitiated(tokenAmount, 'withdrawal', tokenName, hash))
             })
             .on('error', error => {
-                console.log(`failed to deposit token: ${error.message}`)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'withdrawal', tokenName, error.message), "danger")
             })
             .then(receipt => {
-                refreshEthAndTokBalance(account, tokenAddress)
+                refreshEthAndTokBalance(account, tokenAddress, false)
+                GlobalMessageActions.sendGlobalMessage(
+                    GlobalMessageFormatters.getTransferComplete(tokenAmount, 'withdrawal', tokenName), "success")
             })
     }
 }
