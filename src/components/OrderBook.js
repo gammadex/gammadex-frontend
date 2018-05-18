@@ -12,16 +12,22 @@ export default class OrderBook extends React.Component {
         this.state = {
             bids: OrderBookStore.getBids(),
             offers: OrderBookStore.getOffers(),
+            openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
+            pendingCancelIds: OpenOrdersStore.getOpenOrdersState().pendingCancelIds
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
+        this.saveOpenOrders = this.saveOpenOrders.bind(this)
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
+        OpenOrdersStore.on("change", this.saveOpenOrders)
+
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
+        OpenOrdersStore.removeListener("change", this.saveOpenOrders)
     }
 
     saveBidsAndOffers() {
@@ -31,20 +37,29 @@ export default class OrderBook extends React.Component {
         }))
     }
 
+    saveOpenOrders() {
+        this.setState((prevState, props) => ({
+            openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
+            pendingCancelIds: OpenOrdersStore.getOpenOrdersState().pendingCancelIds
+        }))
+    }
+
     render() {
         const { token, pageSize } = this.props
-        const { bids, offers } = this.state
+        const { bids, offers, openOrders, pendingCancelIds } = this.state
+
+        const openOrderIds = openOrders.map(o => o.id)
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
         if (bids && bids.length > 0) {
             bidsContent = <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                pageSize={pageSize} rowClass="buy-green" />
+                openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds} pageSize={pageSize} rowClass="buy-green" />
         }
 
         let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
         if (offers && offers.length > 0) {
             offersContent = <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                pageSize={pageSize} rowClass="sell-red" />
+                openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds} pageSize={pageSize} rowClass="sell-red" />
         }
 
         return (
