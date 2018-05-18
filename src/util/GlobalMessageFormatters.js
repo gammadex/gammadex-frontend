@@ -18,7 +18,7 @@ export function getTransferComplete(amount, type, unit) {
 
 export function getTransferFailed(amount, type, unit, error) {
     const ucType = _.capitalize(type)
-    const errorMessage = (error && error.message) ? `- ${error.message}` : ''
+    const errorMessage = extractMessage(error)
     return `${ucType} of ${amount} ${unit} failed ${errorMessage}`
 }
 
@@ -36,7 +36,7 @@ export function getCancelComplete(unit) {
 }
 
 export function getCancelFailed(unit, error) {
-    const errorMessage = (error && error.message) ? `- ${error.message}` : ''
+    const errorMessage = extractMessage(error)
     return `Cancel open order of ${unit} failed ${errorMessage}`
 }
 
@@ -54,6 +54,12 @@ export function getTradeComplete(amount, unit) {
 }
 
 export function getTradeFailed(amount, unit, error) {
-    const errorMessage = (error && error.message) ? `- ${error.message}` : ''
+    const errorMessage = extractMessage(error)
     return `Trade of ${amount} ${unit} failed ${errorMessage}`
+}
+
+function extractMessage(error) {
+    console.log("Transaction error", error)
+
+    return (error && error.message) ? `- ${error.message.substring(0, 1024)}` : ''
 }

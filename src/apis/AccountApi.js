@@ -87,7 +87,7 @@ export function depositEth(account, accountRetrieved, nonce, tokenAddress, amoun
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferFailed(ethAmount, 'deposit', 'ETH', error.message), "danger")
+                    GlobalMessageFormatters.getTransferFailed(ethAmount, 'deposit', 'ETH', error), "danger")
             })
             .then(receipt => {
                 // will be fired once the receipt is mined
@@ -112,7 +112,7 @@ export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amou
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferFailed(ethAmount, 'withdrawal', 'ETH', error.message), "danger")
+                    GlobalMessageFormatters.getTransferFailed(ethAmount, 'withdrawal', 'ETH', error), "danger")
             })
             .then(receipt => {
                 refreshEthAndTokBalance(account, tokenAddress, false)
@@ -139,7 +139,7 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'deposit', tokenName, error.message), "danger")
+                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'deposit', tokenName, error), "danger")
             })
             .then(receipt => {
                 refreshEthAndTokBalance(account, tokenAddress, false)
@@ -162,7 +162,7 @@ export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amou
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'withdrawal', tokenName, error.message), "danger")
+                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'withdrawal', tokenName, error), "danger")
             })
             .then(receipt => {
                 refreshEthAndTokBalance(account, tokenAddress, false)
