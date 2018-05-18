@@ -17,7 +17,6 @@ ReactDOM.render(<App />, document.getElementById('app'), () => {
         AccountApi.startPendingTransferCheckLoop()
         AccountApi.startEthAndTokBalanceRefreshLoop()
         MyTradeApi.startPendingTradesCheckLoop()
-        OpenOrderApi.startOpenOrdersRefreshLoop()
         WebSocketActions.connect()
     })
 })

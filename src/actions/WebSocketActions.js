@@ -59,6 +59,12 @@ export function connect() {
                     message,
                 })
             },
+            myOrders: (message) => {
+                dispatcher.dispatch({
+                    type: ActionNames.MESSAGE_RECEIVED_MY_ORDERS,
+                    message,
+                })
+            },            
             trades: (trades) => {
                 dispatcher.dispatch({
                     type: ActionNames.MESSAGE_RECEIVED_TRADES,

@@ -12,20 +12,16 @@ export default class OrderBook extends React.Component {
         this.state = {
             bids: OrderBookStore.getBids(),
             offers: OrderBookStore.getOffers(),
-            openOrderHashes: OpenOrdersStore.getOpenOrderHashes()
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
-        this.saveOpenOrderHashes = this.saveOpenOrderHashes.bind(this)
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
-        OpenOrdersStore.on("change", this.saveOpenOrderHashes)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
-        OpenOrdersStore.removeListener("change", this.saveOpenOrderHashes)
     }
 
     saveBidsAndOffers() {
@@ -35,24 +31,20 @@ export default class OrderBook extends React.Component {
         }))
     }
 
-    saveOpenOrderHashes() {
-        this.setState({ openOrderHashes: OpenOrdersStore.getOpenOrderHashes() })
-    }
-
     render() {
         const { token, pageSize } = this.props
-        const { bids, offers, openOrderHashes } = this.state
+        const { bids, offers } = this.state
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
         if (bids && bids.length > 0) {
             bidsContent = <OrdersTable base="ETH" token={token.name} orderTypeColName="Bid" orders={bids}
-                pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="buy-green" />
+                pageSize={pageSize} rowClass="buy-green" />
         }
 
         let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
         if (offers && offers.length > 0) {
             offersContent = <OrdersTable base="ETH" token={token.name} orderTypeColName="Offer" orders={offers}
-                pageSize={pageSize} openOrderHashes={openOrderHashes} rowClass="sell-red" />
+                pageSize={pageSize} rowClass="sell-red" />
         }
 
         return (

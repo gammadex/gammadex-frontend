@@ -53,6 +53,14 @@ export function isTakerSell(order) {
     return (takerSide(order) === OrderSide.SELL)
 }
 
+export function tokenAmountWei(order) {
+    if(isMakerBuy(order)) {
+        return order.amountGet
+    } else {
+        return order.amountGive
+    }
+}
+
 export function blocksToHumanReadableExpiry(blocks) {
     if(blocks === "" || safeBigNumber(blocks).isZero()) {
         return "" // ui will display appropriate error message, see validateBuyOrder

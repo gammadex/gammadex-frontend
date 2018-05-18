@@ -12,7 +12,6 @@ import * as OrderUtil from "../OrderUtil"
 import * as AccountActions from "./AccountActions"
 import * as MyTradeActions from "./MyTradeActions"
 import * as TradeActions from "./TradeActions"
-import * as OpenOrderActions from "./OpenOrderActions"
 import Config from "../Config"
 import TransactionStatus from "../TransactionStatus"
 import OrderSide from "../OrderSide"
@@ -491,18 +490,7 @@ export function sendOrder(order) {
             EtherDeltaSocket.emitOrder(signedOrderObject)
                 .then((result) => {
                     if (result && result.status === 202) {
-                        OpenOrderActions.addOpenOrder({
-                            environment: Config.getReactEnv(),
-                            order: signedOrderObject,
-                            hash: hash,
-                            makerSide: makerSide,
-                            tokenAddress: tokenAddress,
-                            price: price,
-                            amount: amount,
-                            state: OrderState.OPEN,
-                            pendingCancelTx: null,
-                            timestamp: (new Date()).toJSON()
-                        })
+                        // TODO hook in global message
                     }
                 })
         })

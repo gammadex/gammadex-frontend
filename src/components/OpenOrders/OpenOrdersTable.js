@@ -7,9 +7,7 @@ import OrderState from "../../OrderState"
 export default class OpenOrdersTable extends React.Component {
     render() {
         const { openOrders } = this.props
-        const sortedOrdersTimeDesc = _.reverse(_.sortBy(openOrders
-            .filter(order => order.environment === Config.getReactEnv() && order.state !== OrderState.CLOSED), o => o.timestamp))
-        const rows = sortedOrdersTimeDesc.map(openOrder => <OpenOrdersRow key={openOrder.hash} openOrder={openOrder} />)
+        const rows = openOrders.map(o => <OpenOrdersRow key={o.id} openOrder={o} />)
         return (
             <table className="table table-striped table-bordered">
                 <thead>
@@ -20,7 +18,8 @@ export default class OpenOrdersTable extends React.Component {
                         <th>Amount</th>
                         <th>Total (ETH)</th>
                         <th>Date</th>
-                        <th>Cancel</th>
+                        <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
