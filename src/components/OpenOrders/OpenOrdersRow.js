@@ -5,7 +5,7 @@ import OrderState from "../../OrderState"
 import OrderSide from "../../OrderSide"
 import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
-import TokenListApi from "../../apis/TokenListApi";
+import TokenListApi from "../../apis/TokenListApi"
 import * as OpenOrderApi from "../../apis/OpenOrderApi"
 import GasPriceStore from "../../stores/GasPriceStore"
 import { tokenAddress, makerSide, tokenAmountWei } from "../../OrderUtil"
@@ -38,11 +38,13 @@ export default class OpenOrdersRow extends React.Component {
     }
 
     cancelOrder() {
-        OpenOrderApi.cancelOpenOrder(this.props.openOrder, this.state.currentGasPriceWei)
+        if (!this.props.isPendingCancel) {
+            OpenOrderApi.requestOrderCancel(this.props.openOrder, this.state.currentGasPriceWei)
+        }
     }
 
     render() {
-        const { openOrder } = this.props
+        const { openOrder, isPendingCancel } = this.props
         const tokenAddr = tokenAddress(openOrder)
         const tokenName = TokenListApi.getTokenName(tokenAddr)
         const side = makerSide(openOrder) === OrderSide.SELL ? "Sell" : "Buy"
@@ -52,11 +54,10 @@ export default class OpenOrdersRow extends React.Component {
         if (!safeBigNumber(openOrder.amountFilled).isZero()) {
             status = "Partial Fill"
         }
-
-        const cancelOrderButton =
-            <a href="#/" id="cancelOrderButton" onClick={this.cancelOrder}>
-                <span className="fas fa-trash-alt sell-red"></span>
-            </a>
+        
+        const cancelOrderButton = <a href="#/" id={openOrder.id + "CancelOrder"} onClick={this.cancelOrder}>
+            <i className="fas fa-trash-alt sell-red"></i>
+        </a>
 
         return (
             <tr>
