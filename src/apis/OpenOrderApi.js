@@ -39,6 +39,13 @@ export function removePendingOrderCancel(id) {
     })
 }
 
+export function showAllTokensChanged(showAll) {
+    dispatcher.dispatch({
+        type: ActionNames.OPEN_ORDERS_SHOW_ALL_CHANGED,
+        showAll
+    })
+}
+
 export function cancelOpenOrder(openOrder, gasPriceWei) {
     const { account, nonce } = AccountStore.getAccountState()
     const tokenAddr = tokenAddress(openOrder)

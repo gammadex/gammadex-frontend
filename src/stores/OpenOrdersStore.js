@@ -11,7 +11,8 @@ class OpenOrdersStore extends EventEmitter {
         this.pendingCancelIds = []
         this.showConfirmModal = false
         this.confirmModalOrder = null
-        this.gasPriceWei = 0
+        this.gasPriceWei = 0,
+        this.showAllTokens = true
     }
 
     getOpenOrdersState() {
@@ -20,7 +21,8 @@ class OpenOrdersStore extends EventEmitter {
             pendingCancelIds: this.pendingCancelIds,
             showConfirmModal: this.showConfirmModal,
             confirmModalOrder: this.confirmModalOrder,
-            gasPriceWei: this.gasPriceWei
+            gasPriceWei: this.gasPriceWei,
+            showAllTokens: this.showAllTokens
         }
     }
 
@@ -77,6 +79,11 @@ class OpenOrdersStore extends EventEmitter {
                 this.emitChange()
                 break
             }            
+            case ActionNames.OPEN_ORDERS_SHOW_ALL_CHANGED: {
+                this.showAllTokens = action.showAll
+                this.emitChange()
+                break
+            }      
         }
     }
 }

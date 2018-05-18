@@ -1,8 +1,9 @@
 import React from "react"
-import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip } from 'reactstrap'
+import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip, FormGroup, Label, Col } from 'reactstrap'
 import OpenOrdersStore from "../stores/OpenOrdersStore"
+import TokenStore from "../stores/TokenStore"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
-import { Box } from "./CustomComponents/Box"
+import { Box, BoxSection, BoxHeader } from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import AccountStore from "../stores/AccountStore"
 import * as OpenOrderApi from "../apis/OpenOrderApi"
@@ -14,14 +15,21 @@ import OrderSide from "./../OrderSide"
 export default class OpenOrders extends React.Component {
     constructor(props) {
         super(props)
-        const { openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei } = OpenOrdersStore.getOpenOrdersState()
+        const { 
+            openOrders,
+            pendingCancelIds,
+            showConfirmModal,
+            confirmModalOrder,
+            gasPriceWei,
+            showAllTokens } = OpenOrdersStore.getOpenOrdersState()
         this.state = {
             openOrders: openOrders,
             pendingCancelIds: pendingCancelIds,
             accountRetrieved: AccountStore.isAccountRetrieved(),
             showConfirmModal: false,
             confirmModalOrder: null,
-            gasPriceWei: gasPriceWei
+            gasPriceWei: gasPriceWei,
+            showAllTokens: showAllTokens
         }
         this.updateOpenOrdersState = this.updateOpenOrdersState.bind(this)
         this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
@@ -40,14 +48,15 @@ export default class OpenOrders extends React.Component {
     }
 
     updateOpenOrdersState() {
-        const { openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei } = OpenOrdersStore.getOpenOrdersState()
+        const { openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei, showAllTokens} = OpenOrdersStore.getOpenOrdersState()
         this.setState(
             {
                 openOrders: openOrders,
                 pendingCancelIds: pendingCancelIds,
                 showConfirmModal: showConfirmModal,
                 confirmModalOrder: confirmModalOrder,
-                gasPriceWei: gasPriceWei
+                gasPriceWei: gasPriceWei,
+                showAllTokens: showAllTokens
             })
     }
 
@@ -58,7 +67,7 @@ export default class OpenOrders extends React.Component {
     }
 
     confirmCancel() {
-        const { confirmModalOrder, gasPriceWei} = this.state
+        const { confirmModalOrder, gasPriceWei } = this.state
         OpenOrderApi.hideCancelOrderModal()
         OpenOrderApi.cancelOpenOrder(confirmModalOrder, gasPriceWei)
     }
@@ -67,18 +76,28 @@ export default class OpenOrders extends React.Component {
         OpenOrderApi.hideCancelOrderModal()
     }
 
+    handleShowAll = (event) => {
+        OpenOrderApi.showAllTokensChanged(event.target.checked)
+    }
+
     render() {
-        const { openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder } = this.state
+        const { openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder, showAllTokens } = this.state
+
+        let filteredOpenOrders = openOrders
+        if(!showAllTokens) {
+            const currentToken = TokenStore.getSelectedTokenAddress()
+            filteredOpenOrders = openOrders.filter(o => tokenAddress(o) === currentToken)
+        }
 
         let content = <EmptyTableMessage>You have no open orders</EmptyTableMessage>
         if (!accountRetrieved) {
             content = <EmptyTableMessage>Please unlock a wallet to see your open orders</EmptyTableMessage>
-        } else if (openOrders && openOrders.length > 0) {
-            content = <OpenOrdersTable openOrders={openOrders} pendingCancelIds={pendingCancelIds} />
+        } else if (filteredOpenOrders && filteredOpenOrders.length > 0) {
+            content = <OpenOrdersTable openOrders={filteredOpenOrders} pendingCancelIds={pendingCancelIds} />
         }
 
         let modalText = ""
-        if(showConfirmModal && confirmModalOrder) {
+        if (showConfirmModal && confirmModalOrder) {
             const side = makerSide(confirmModalOrder) === OrderSide.SELL ? "Sell" : "Buy"
             const tokenAddr = tokenAddress(confirmModalOrder)
             const tokenName = TokenListApi.getTokenName(tokenAddr)
@@ -88,14 +107,34 @@ export default class OpenOrders extends React.Component {
 
         return (
             <span>
-                <Box title="Open Orders">
+                <div className="card-header">
+                    <div className="row hdr-stretch">
+                        <div className="col-lg-9">
+                            <strong className="card-title">Open Orders</strong>
+                        </div>
+                        <div className="col-lg-3">
+                            <div className="form-group">
+                                <div className="custom-control custom-checkbox my-1 mr-sm-2">
+                                    <input type="checkbox"
+                                        className="custom-control-input"
+                                        id="openOrdersAllTokens"
+                                        onChange={this.handleShowAll}
+                                        value="true"
+                                        checked={showAllTokens} />
+                                    <label className="custom-control-label" htmlFor="openOrdersAllTokens">Show All Tokens</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <Box>
                     {content}
                 </Box>
                 <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className}>
                     <ModalBody>{modalText}</ModalBody>
                     <ModalFooter>
-                        <Button color="danger" onClick={this.confirmCancel}>Cancel Order</Button>{' '}
-                        <Button color="secondary" onClick={this.abortCancel}>Abort</Button>
+                        <Button color="secondary" onClick={this.abortCancel}>Abort</Button>{' '}
+                        <Button color="primary" onClick={this.confirmCancel}>Cancel Order</Button>
                     </ModalFooter>
                 </Modal>
             </span>
