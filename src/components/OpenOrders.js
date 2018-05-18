@@ -109,12 +109,12 @@ export default class OpenOrders extends React.Component {
             <span>
                 <div className="card-header">
                     <div className="row hdr-stretch">
-                        <div className="col-lg-9">
+                        <div className="col-lg-6">
                             <strong className="card-title">Open Orders</strong>
                         </div>
-                        <div className="col-lg-3">
+                        <div className="col-lg-6">
                             <div className="form-group">
-                                <div className="custom-control custom-checkbox my-1 mr-sm-2">
+                                <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
                                     <input type="checkbox"
                                         className="custom-control-input"
                                         id="openOrdersAllTokens"
