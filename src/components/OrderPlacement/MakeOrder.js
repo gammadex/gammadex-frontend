@@ -29,7 +29,7 @@ export default class MakeOrder extends React.Component {
             expiryType: ExpiryType.GOOD_TILL_CANCEL,
             expireAfterBlocks: 0,
             expireAfterHumanReadableString: "",
-            orderHash: "",
+            orderHash: null,
             selectedAccountType: null
         }
         this.saveOrderPlacementState = this.saveOrderPlacementState.bind(this)
@@ -197,8 +197,8 @@ export default class MakeOrder extends React.Component {
             priceWarningAlert = <Alert color="danger" isOpen={orderHasPriceWarning} toggle={this.onDismissPriceWarningAlert}>{orderPriceWarning}</Alert>
         }
 
-        let prefixedOrderHash = orderHash
-        if (orderHash && orderHash != "") {
+        let prefixedOrderHash = ""
+        if (orderHash != null) {
             prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
         }
 
@@ -243,7 +243,7 @@ export default class MakeOrder extends React.Component {
 
                 </Conditional>
 
-                <Conditional displayCondition={orderValid && orderHash != "" && selectedAccountType && selectedAccountType === AccountType.METAMASK}>
+                <Conditional displayCondition={orderValid && orderHash != null && selectedAccountType && selectedAccountType === AccountType.METAMASK}>
                     <hr />
                     <FormGroup row>
                         <Label for={type + "MetaMaskHash"} sm={3}>MetaMask Order Hash</Label>

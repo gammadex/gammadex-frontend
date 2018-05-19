@@ -11,6 +11,7 @@ import { tokEthToWei, baseEthToWei } from './EtherConversion'
 
 class OrderFactory {
 
+    // NOTE: nonce is randomly generated so this is not referentially transparent
     createUnsignedOrder = (makerSide, expires, price, amount, tokenAddress) => {
         if (makerSide !== OrderSide.BUY && makerSide !== OrderSide.SELL) throw new Error('Maker side must be BUY or SELL')
         const amountBigNum = BigNumber(String(amount))

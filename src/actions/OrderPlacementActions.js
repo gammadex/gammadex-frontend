@@ -95,7 +95,7 @@ export function sellOrderPriceChanged(priceControlled) {
     const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled)
     const { orderValid, orderInvalidReason, orderInvalidField } = validateSellOrder(sellOrderAmountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
 
-    const hash = orderHash(orderValid, OrderSide.SELL, expires(OrderSide.SELL), priceControlled, sellOrderAmountControlled, TokenStore.getSelectedToken().address)
+    const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.SELL, expires(OrderSide.SELL), priceControlled, sellOrderAmountControlled, TokenStore.getSelectedToken().address)
 
     dispatcher.dispatch({
         type: ActionNames.SELL_ORDER_PRICE_CHANGED,
@@ -105,6 +105,7 @@ export function sellOrderPriceChanged(priceControlled) {
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        unsignedOrder,
         hash
     })
 }
@@ -117,7 +118,7 @@ export function sellOrderAmountChanged(sellOrderAmountControlled) {
         sellOrderAmountControlled, sellOrderTotalEthControlled)
     const { orderValid, orderInvalidReason, orderInvalidField } = validateSellOrder(sellOrderAmountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
 
-    const hash = orderHash(orderValid, OrderSide.SELL, expires(OrderSide.SELL), sellOrderPriceControlled, sellOrderAmountControlled, TokenStore.getSelectedToken().address)
+    const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.SELL, expires(OrderSide.SELL), sellOrderPriceControlled, sellOrderAmountControlled, TokenStore.getSelectedToken().address)
 
     dispatcher.dispatch({
         type: ActionNames.SELL_ORDER_AMOUNT_CHANGED,
@@ -128,6 +129,7 @@ export function sellOrderAmountChanged(sellOrderAmountControlled) {
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        unsignedOrder,
         hash
     })
 }
@@ -143,7 +145,7 @@ export function sellOrderTotalEthChanged(totalEthControlled) {
 
     const { orderValid, orderInvalidReason, orderInvalidField } = validateSellOrder(amountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
 
-    const hash = orderHash(orderValid, OrderSide.SELL, expires(OrderSide.SELL), priceControlled, amountControlled, TokenStore.getSelectedToken().address)
+    const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.SELL, expires(OrderSide.SELL), priceControlled, amountControlled, TokenStore.getSelectedToken().address)
 
     dispatcher.dispatch({
         type: ActionNames.SELL_ORDER_TOTAL_CHANGED,
@@ -155,6 +157,7 @@ export function sellOrderTotalEthChanged(totalEthControlled) {
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        unsignedOrder,
         hash
     })
 }
@@ -178,7 +181,7 @@ export function sellOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfte
     const { sellOrderAmountWei, sellOrderTotalEthWei, sellOrderPriceControlled, sellOrderAmountControlled, sellOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
     const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateSellOrder(sellOrderAmountWei, expiryType, expireAfterBlocks)
 
-    const hash = orderHash(
+    const { unsignedOrder, hash } = unsignedOrderOrNull(
         orderValid,
         OrderSide.SELL,
         expiryType === ExpiryType.GOOD_TILL_CANCEL ? Config.getBlocksGoodTillCancel() : expireAfterBlocks,
@@ -190,7 +193,7 @@ export function sellOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfte
         expiryType,
         expireAfterBlocks,
         expireAfterHumanReadableString,
-        hash,
+        unsignedOrder,
         orderValid,
         orderInvalidReason,
         orderInvalidField,
@@ -229,7 +232,7 @@ export function buyOrderPriceChanged(priceControlled) {
     const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, buyOrderAmountWei, buyOrderAmountControlled, buyOrderTotalEthControlled)
     const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderAmountWei, totalEthWei, priceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
 
-    const hash = orderHash(orderValid, OrderSide.BUY, expires(OrderSide.BUY), priceControlled, buyOrderAmountControlled, TokenStore.getSelectedToken().address)
+    const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.BUY, expires(OrderSide.BUY), priceControlled, buyOrderAmountControlled, TokenStore.getSelectedToken().address)
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_PRICE_CHANGED,
         priceControlled,
@@ -240,6 +243,7 @@ export function buyOrderPriceChanged(priceControlled) {
         orderInvalidField,
         hasPriceWarning,
         priceWarning,
+        unsignedOrder,
         hash
     })
 }
@@ -252,7 +256,7 @@ export function buyOrderAmountChanged(buyOrderAmountControlled) {
         buyOrderAmountControlled, buyOrderTotalEthControlled)
     const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderAmountWei, totalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
 
-    const hash = orderHash(orderValid, OrderSide.BUY, expires(OrderSide.BUY), buyOrderPriceControlled, buyOrderAmountControlled, TokenStore.getSelectedToken().address)
+    const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.BUY, expires(OrderSide.BUY), buyOrderPriceControlled, buyOrderAmountControlled, TokenStore.getSelectedToken().address)
 
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_AMOUNT_CHANGED,
@@ -265,6 +269,7 @@ export function buyOrderAmountChanged(buyOrderAmountControlled) {
         orderInvalidField,
         hasPriceWarning,
         priceWarning,
+        unsignedOrder,
         hash
     })
 }
@@ -280,7 +285,7 @@ export function buyOrderTotalEthChanged(totalEthControlled) {
 
     const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(amountWei, totalEthWei, priceControlled, amountControlled, totalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
 
-    const hash = orderHash(orderValid, OrderSide.BUY, expires(OrderSide.BUY), priceControlled, amountControlled, TokenStore.getSelectedToken().address)
+    const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.BUY, expires(OrderSide.BUY), priceControlled, amountControlled, TokenStore.getSelectedToken().address)
 
     dispatcher.dispatch({
         type: ActionNames.BUY_ORDER_TOTAL_CHANGED,
@@ -294,6 +299,7 @@ export function buyOrderTotalEthChanged(totalEthControlled) {
         orderInvalidField,
         hasPriceWarning,
         priceWarning,
+        unsignedOrder,
         hash
     })
 }
@@ -317,7 +323,7 @@ export function buyOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfter
     const { buyOrderAmountWei, buyOrderTotalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
     const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderAmountWei, buyOrderTotalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, expiryType, expireAfterBlocks)
 
-    const hash = orderHash(
+    const { unsignedOrder, hash } = unsignedOrderOrNull(
         orderValid,
         OrderSide.BUY,
         expiryType === ExpiryType.GOOD_TILL_CANCEL ? Config.getBlocksGoodTillCancel() : expireAfterBlocks,
@@ -329,10 +335,11 @@ export function buyOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfter
         expiryType,
         expireAfterBlocks,
         expireAfterHumanReadableString,
-        hash,
+        unsignedOrder,
         orderValid,
         orderInvalidReason,
-        orderInvalidField
+        orderInvalidField,
+        hash
     })
 }
 
@@ -393,6 +400,7 @@ export function executeBuy() {
         buyOrderAmountWei,
         buyOrderExpiryType,
         buyOrderExpireAfterBlocks,
+        buyOrderUnsigned,
         buyOrderHash } = OrderPlacementStore.getOrderPlacementState()
     const expires = buyOrderExpiryType === ExpiryType.GOOD_TILL_CANCEL ? Config.getBlocksGoodTillCancel() : buyOrderExpireAfterBlocks
     const selectedToken = TokenStore.getSelectedToken()
@@ -403,7 +411,8 @@ export function executeBuy() {
         amount: buyOrderAmountControlled,
         tokenAddress: selectedToken.address,
         tokenName: selectedToken.name,
-        hash: buyOrderHash
+        orderUnsigned: buyOrderUnsigned,
+        orderHash: buyOrderHash
     }
     sendOrder(order)
 }
@@ -415,6 +424,7 @@ export function executeSell() {
         sellOrderAmountWei,
         sellOrderExpiryType,
         sellOrderExpireAfterBlocks,
+        sellOrderUnsigned,
         sellOrderHash } = OrderPlacementStore.getOrderPlacementState()
     const expires = sellOrderExpiryType === ExpiryType.GOOD_TILL_CANCEL ? Config.getBlocksGoodTillCancel() : sellOrderExpireAfterBlocks
     const selectedToken = TokenStore.getSelectedToken()
@@ -425,7 +435,8 @@ export function executeSell() {
         amount: sellOrderAmountControlled,
         tokenAddress: selectedToken.address,
         tokenName: selectedToken.name,
-        hash: sellOrderHash
+        orderUnsigned: sellOrderUnsigned,
+        orderHash: sellOrderHash
     }
     sendOrder(order)
 }
@@ -441,38 +452,34 @@ export function expires(makerSide) {
 }
 
 // NOTE: nonce is randomly generated so this is not referentially transparent
-export function orderHash(orderValid, makerSide, expires, price, amount, tokenAddress) {
+export function unsignedOrderOrNull(orderValid, makerSide, expires, price, amount, tokenAddress) {
     if (orderValid && price != "" && amount != "" && expires != "" && expires > 0) {
+        const unsignedOrder = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
         const {
             tokenGet,
             amountGet,
             tokenGive,
             amountGive,
-            nonce } = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
-        return OrderFactory.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce)
+            nonce } = unsignedOrder
+        const hash = OrderFactory.orderHash(tokenGet, amountGet, tokenGive, amountGive, expires, nonce)
+        return { unsignedOrder, hash }
     } else {
-        return ""
+        return { unsignedOrder: null, hash: null }
     }
 }
 
 export function sendOrder(order) {
     const {
-        makerSide,
-        expires,
-        price,
-        amount,
-        tokenAddress,
-        hash
-    } = order
-    const {
-        tokenGet,
         amountGet,
-        tokenGive,
         amountGive,
-        nonce } = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
+        tokenGet,
+        tokenGive,
+        contractAddr,
+        nonce
+    } = order.orderUnsigned
+
     const { account } = AccountStore.getAccountState()
-    const contractAddr = Config.getEtherDeltaAddress()
-    EtherDeltaWeb3.promiseSignData(hash, account)
+    EtherDeltaWeb3.promiseSignData(order.orderHash, account)
         .then(sig => {
             const signedOrderObject = {
                 amountGet,
@@ -480,7 +487,7 @@ export function sendOrder(order) {
                 tokenGet,
                 tokenGive,
                 contractAddr,
-                expires,
+                expires: order.expires,
                 nonce,
                 user: account,
                 v: sig.v,
