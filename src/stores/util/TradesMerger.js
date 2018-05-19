@@ -21,9 +21,13 @@ export function mergeAndSortTrades(existing, incoming, tokenAddress) {
 // (only gammadex socket api sends logIndex)
 // for the above tx, ED/FD would send repeating txHash - resulting in false de-duping.
 export function sortByTimeAndIdRemovingDuplicates(trades) {
-    // TODO going to park the deDuping for now and review cases in the wild
-    // const deDuped = MessageUtils.removeDups(trades, 'txHash')
-    const sorted = _.sortBy(_.sortBy(trades, t => t.id), t => t.date)
+    const deDuped = MessageUtils.removeDupsWithSortKey(trades, (trade) => {
+        if(trade.hasOwnProperty('logIndex')) { // logIndex is only supported in our socket output
+            return `${trade.txHash}_${trade.logIndex}`
+        } else return trade.txHash
+    })
+
+    const sorted = _.sortBy(_.sortBy(deDuped, t => t.id), t => t.date)
     return _.reverse(sorted) // most recent by time first
 }
 
