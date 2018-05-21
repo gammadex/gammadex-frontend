@@ -21,6 +21,9 @@ import { tokEthToWei, tokWeiToEth, baseEthToWei, baseWeiToEth, safeBigNumber } f
 import EtherDeltaSocket from "../EtherDeltaSocket"
 import OrderEntryField from "../OrderEntryField"
 import ExpiryType from "../ExpiryType"
+import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
+import * as GlobalMessageActions from "./GlobalMessageActions"
+import TokenListApi from "../apis/TokenListApi"
 
 /**
  * Calculate a total value when the price changes
@@ -87,6 +90,18 @@ export function focusOnTradeBox(tradeBoxSide) {
     dispatcher.dispatch({
         type: ActionNames.FOCUS_ON_TRADE_BOX,
         tradeBoxSide
+    })
+}
+
+export function clearSellOrder() {
+    dispatcher.dispatch({
+        type: ActionNames.CLEAR_SELL_ORDER,
+    })
+}
+
+export function clearBuyOrder() {
+    dispatcher.dispatch({
+        type: ActionNames.CLEAR_BUY_ORDER,
     })
 }
 
@@ -494,10 +509,25 @@ export function sendOrder(order) {
                 r: sig.r,
                 s: sig.s,
             }
+            const side = OrderUtil.isMakerBuy(signedOrderObject) ? "BUY" : "SELL"
+            const tokenName = TokenListApi.getTokenName(OrderUtil.tokenAddress(signedOrderObject))
+            GlobalMessageActions.sendGlobalMessage(
+                GlobalMessageFormatters.getOrderInitiated(side, tokenName))
             EtherDeltaSocket.emitOrder(signedOrderObject)
                 .then((result) => {
                     if (result && result.status === 202) {
                         // TODO hook in global message
+                        if (OrderUtil.isMakerBuy(signedOrderObject)) {
+                            clearBuyOrder()
+                        } else {
+                            clearSellOrder()
+                        }
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getOrderAccepted(side, tokenName), 'success')
+                    } else if (result) {
+                        const error = `status: ${result.status}, message: ${result.message}`
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getOrderRejected(side, tokenName, error), 'danger')
                     }
                 })
         })

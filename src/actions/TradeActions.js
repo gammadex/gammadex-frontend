@@ -70,7 +70,6 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                 EtherDeltaWeb3.promiseTrade(account, nonce, order, amountWei, gasPriceWei)
                     .once('transactionHash', hash => {
                         AccountActions.nonceUpdated(nonce + 1)
-                        sentTransaction(hash, OrderUtil.takerSide(order))
                         MyTradeActions.addMyTrade({
                             environment: Config.getReactEnv(),
                             account: account,
@@ -97,9 +96,9 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
             } else {
                 Promise.all([EtherDeltaWeb3.promiseAvailableVolume(order), EtherDeltaWeb3.promiseAmountFilled(order)])
                     .then(res => {
-                        sendTransactionFailed(
-                            `Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${order.user}`,
-                            OrderUtil.takerSide(order))
+                        const error = `Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${order.user}`
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTradeFailed(amount, tokenName, error), 'danger')
                     })
             }
         })
@@ -230,13 +229,6 @@ export function executeFillOrder(fillOrder) {
     const tokenAddress = TokenStore.getSelectedToken().address
     const { order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = fillOrder
     executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled)
-}
-
-export function dismissTransactionAlert(takerSide) {
-    dispatcher.dispatch({
-        type: ActionNames.DISMISS_TRANSACTION_ALERT,
-        takerSide
-    })
 }
 
 export function clearFillOrder(takerSide) {

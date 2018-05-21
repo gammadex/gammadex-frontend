@@ -58,6 +58,30 @@ export function getTradeFailed(amount, unit, error) {
     return `Trade of ${amount} ${unit} failed ${errorMessage}`
 }
 
+export function getOrderInitiated(makerSide, unit) {
+    return (
+        <div>
+            <div>Submitted Order to {makerSide} {unit}</div>
+        </div>
+    )
+}
+
+export function getOrderAccepted(makerSide, unit) {
+    return (
+        <div>
+            <div>Order to {makerSide} {unit} accepted</div>
+        </div>
+    )
+}
+
+export function getOrderRejected(makerSide, unit, error) {
+    return (
+        <div>
+            <div>Order to {makerSide} {unit} rejected {error}</div>
+        </div>
+    )
+}
+
 function extractMessage(error) {
     console.log("Transaction error", error)
 

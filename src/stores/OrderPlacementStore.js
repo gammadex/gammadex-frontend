@@ -241,6 +241,44 @@ class OrderPlacementStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.CLEAR_SELL_ORDER: {
+                this.sellOrderPriceControlled = ""
+                this.sellOrderAmountControlled = ""
+                this.sellOrderAmountWei = BigNumber(0)
+                this.sellOrderTotalEthControlled = ""
+                this.sellOrderTotalEthWei = BigNumber(0)
+                this.sellOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
+                this.sellOrderExpireAfterBlocks = 10000
+                this.sellOrderExpireHumanReadableString = ""
+                this.sellOrderValid = true
+                this.sellOrderInvalidReason = ""
+                this.sellOrderInvalidField = OrderEntryField.AMOUNT
+                this.sellOrderHasPriceWarning = false
+                this.sellOrderPriceWarning = ""
+                this.sellOrderUnsigned = null
+                this.sellOrderHash = null
+                this.emitChange()
+                break
+            }
+            case ActionNames.CLEAR_BUY_ORDER: {
+                this.buyOrderPriceControlled = ""
+                this.buyOrderAmountControlled = ""
+                this.buyOrderAmountWei = BigNumber(0)
+                this.buyOrderTotalEthControlled = ""
+                this.buyOrderTotalEthWei = BigNumber(0)
+                this.buyOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
+                this.buyOrderExpireAfterBlocks = 10000
+                this.buyOrderExpireHumanReadableString = ""
+                this.buyOrderValid = true
+                this.buyOrderInvalidReason = ""
+                this.buyOrderInvalidField = OrderEntryField.AMOUNT
+                this.buyOrderHasPriceWarning = false
+                this.buyOrderPriceWarning = ""
+                this.buyOrderUnsigned = null
+                this.buyOrderHash = null
+                this.emitChange()
+                break
+            }            
         }
     }
 }

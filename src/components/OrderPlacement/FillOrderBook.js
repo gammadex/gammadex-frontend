@@ -23,8 +23,6 @@ export default class FillOrderBook extends React.Component {
         this.state = {
             orders: [],
             fillOrder: null,
-            fillOrderTxHash: null,
-            fillOrderTxError: null,
             currentGasPriceWei: 4000000000, // 4 gwei
             ethereumPriceUsd: 700.0 // TODO, eugh - how should the ui handle no USD price?
         }
@@ -32,7 +30,6 @@ export default class FillOrderBook extends React.Component {
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
         this.onTradeStoreChange = this.onTradeStoreChange.bind(this)
         this.isTakerBuyComponent = this.isTakerBuyComponent.bind(this)
-        this.dismissTransactionAlert = this.dismissTransactionAlert.bind(this)
         this.checkFillOrder = this.checkFillOrder.bind(this)
     }
 
@@ -76,15 +73,11 @@ export default class FillOrderBook extends React.Component {
         const tradeState = TradeStore.getTradeState()
         if (this.isTakerBuyComponent()) {
             this.setState({
-                fillOrder: tradeState.fillOrderTakerBuy,
-                fillOrderTxHash: tradeState.fillOrderTakerBuyTxHash,
-                fillOrderTxError: tradeState.fillOrderTakerBuyTxError,
+                fillOrder: tradeState.fillOrderTakerBuy
             })
         } else {
             this.setState({
-                fillOrder: tradeState.fillOrderTakerSell,
-                fillOrderTxHash: tradeState.fillOrderTakerSellTxHash,
-                fillOrderTxError: tradeState.fillOrderTakerSellTxError
+                fillOrder: tradeState.fillOrderTakerSell
             })
         }
     }
@@ -118,10 +111,6 @@ export default class FillOrderBook extends React.Component {
         TradeActions.executeFillOrder(this.state.fillOrder)
     }
 
-    dismissTransactionAlert() {
-        TradeActions.dismissTransactionAlert(this.props.type)
-    }
-
     render() {
         const {
             type, tokenName, balanceRetrieved
@@ -130,25 +119,10 @@ export default class FillOrderBook extends React.Component {
         const {
             orders,
             fillOrder,
-            fillOrderTxHash,
-            fillOrderTxError,
             currentGasPriceWei,
             ethereumPriceUsd
         } = this.state
 
-        const transactionAlertVisible = (fillOrderTxHash || fillOrderTxError) ? true : false
-        let transactionAlert = null
-        if (fillOrderTxHash) {
-            transactionAlert =
-                <Alert color="success" isOpen={transactionAlertVisible} toggle={this.dismissTransactionAlert}>
-                    Transaction sent. Check progress in <a className="alert-link" target="_blank" rel="noopener noreferrer" href={`${Config.getEtherscanUrl()}/tx/${fillOrderTxHash}`}>{"etherscan"}</a> (opens in new window)
-                </Alert>
-        } else if (fillOrderTxError) {
-            transactionAlert =
-                <Alert color="danger" isOpen={transactionAlertVisible} toggle={this.dismissTransactionAlert}>
-                    {fillOrderTxError}
-                </Alert>
-        }
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
             const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
@@ -200,7 +174,7 @@ export default class FillOrderBook extends React.Component {
                         <Col sm={6}>
                             <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled}
                                 onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
-                            <Conditional displayCondition={!balanceRetrieved}>                                
+                            <Conditional displayCondition={!balanceRetrieved}>
                                 <FormText color="muted">{`Please unlock a wallet to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
                             </Conditional>
                         </Col>
@@ -209,12 +183,7 @@ export default class FillOrderBook extends React.Component {
         } else {
             body =
                 <BoxSection className={"order-box"}>
-                    {/* cannot disable the fade-in transaction for Alerts with reactstrap so falling back to EmptyTableMessage */}
-                    {/* <Alert color="secondary" isOpen={!transactionAlertVisible}>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book</Alert> */}
-                    <Conditional displayCondition={!transactionAlertVisible}>
-                        <EmptyTableMessage>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book to trade.</EmptyTableMessage>
-                    </Conditional>
-                    {transactionAlert}
+                    <EmptyTableMessage>Select an order from the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book to trade.</EmptyTableMessage>
                 </BoxSection>
         }
 
