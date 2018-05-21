@@ -19,7 +19,6 @@ export default class OrdersTable extends React.Component {
                             <th>{orderTypeColName} ({base})</th>
                             <th>Size ({token})</th>
                             <th>Total ({base})</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

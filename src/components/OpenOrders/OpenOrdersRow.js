@@ -38,9 +38,7 @@ export default class OpenOrdersRow extends React.Component {
     }
 
     cancelOrder() {
-        if (!this.props.isPendingCancel) {
-            OpenOrderApi.requestOrderCancel(this.props.openOrder, this.state.currentGasPriceWei)
-        }
+        OpenOrderApi.requestOrderCancel(this.props.openOrder, this.state.currentGasPriceWei)
     }
 
     render() {
@@ -54,11 +52,12 @@ export default class OpenOrdersRow extends React.Component {
         if (!safeBigNumber(openOrder.amountFilled).isZero()) {
             status = "Partial Fill"
         }
-        
-        const cancelOrderButton = <a href="#/" id={openOrder.id + "CancelOrder"} onClick={this.cancelOrder}>
-            <i className="fas fa-trash-alt sell-red"></i>
-        </a>
 
+        const cancelOrderButton =
+            <button className={"btn btn-danger btn-sm"} disabled={isPendingCancel}
+                onClick={this.cancelOrder}><i className="fas fa-times" />
+            </button>
+            
         return (
             <tr>
                 <td>{`${tokenName}/ETH`}</td>
