@@ -3,15 +3,14 @@ import OrderBookStore from '../stores/OrderBookStore'
 import Round from "./CustomComponents/Round"
 import Config from "../Config"
 import EtherScan from "../components/CustomComponents/Etherscan"
+import _ from "lodash"
 
 export default class TokenSummary extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            trade: 0.011234,
-            bid: 0.011234,
-            offer: 0.011234,
+            tradeStats: OrderBookStore.getTradeStats()
         }
 
         this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
@@ -26,15 +25,18 @@ export default class TokenSummary extends React.Component {
     }
 
     saveCurrentPrices() {
-        this.setState(function (prevState, props) {
+        this.setState({
+            tradeStats: OrderBookStore.getTradeStats()
         })
     }
 
-    render() {
+    render() {tokenAddress
         const {token} = this.props
-        const {trade, bid, offer} = this.state
+        const {low, high, tokenVolume, ethVolume, last, percentChange, tokenAddress} = this.state.tradeStats
 
-        if (trade && bid && offer) {
+        if (tokenAddress && token.address && tokenAddress.toLowerCase() && token.address.toLowerCase()) {
+            console.log(tokenAddress.toLowerCase(),token.address.toLowerCase(),  tokenAddress.toLowerCase()===token.address.toLowerCase(), last)
+
             return (
                 <div className="card">
                     <div className="card-header">
@@ -46,21 +48,21 @@ export default class TokenSummary extends React.Component {
                             <tbody>
                             <tr>
                                 <td>Last Price</td>
-                                <td><Round price softZeros>{trade}</Round></td>
+                                <td><Round price softZeros>{last}</Round></td>
                                 <td>24h Change</td>
-                                <td><Round price softZeros>{trade}</Round></td>
+                                <td><Round percent softZeros>{percentChange}</Round>%</td>
                             </tr>
                             <tr>
                                 <td>24h High</td>
-                                <td><Round price softZeros>{trade}</Round></td>
+                                <td><Round price softZeros>{high}</Round></td>
                                 <td>24h Low</td>
-                                <td><Round price softZeros>{trade}</Round></td>
+                                <td><Round price softZeros>{low}</Round></td>
                             </tr>
                             <tr>
                                 <td>24h Vol ETH</td>
-                                <td><Round>{trade}</Round></td>
+                                <td><Round>{ethVolume}</Round></td>
                                 <td>24h Vol {token.name}</td>
-                                <td><Round>{trade}</Round></td>
+                                <td><Round>{tokenVolume}</Round></td>
                             </tr>
                             </tbody>
                         </table>

@@ -11,7 +11,7 @@ class EtherDeltaWebSocket {
         _.each(handlers, (handler, eventName) => {
             this.socket.on(eventName, (response) => {
                 console.log(`Received ${eventName}`, response)
-                if (Config.isDevelopment()) {
+                if (true || Config.isDevelopment()) {
                     global.messages = global.messages || {}
                     global.messages[eventName] = response
                 }

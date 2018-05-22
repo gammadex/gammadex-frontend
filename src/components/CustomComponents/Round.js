@@ -5,6 +5,7 @@ import SoftZeros from "./SoftZeros"
 export default class Round extends React.Component {
     DEFAULT_DPS = 3
     PRICE_DPS = 9
+    PERCENT_DPS = 2
     MAX_LENGTH_ALLOW_0_IN_DP = 10
 
     render() {
@@ -13,7 +14,7 @@ export default class Round extends React.Component {
             return null
         }
 
-        const dps = this.props.price ? this.PRICE_DPS : this.DEFAULT_DPS
+        const dps = this.props.price ? this.PRICE_DPS : this.props.percent ? this.PERCENT_DPS : this.DEFAULT_DPS
         const number = formatNumber(originalNumber, dps)
         const cleanNumber = stripDecimalsOffLongNumber(number, this.MAX_LENGTH_ALLOW_0_IN_DP)
 

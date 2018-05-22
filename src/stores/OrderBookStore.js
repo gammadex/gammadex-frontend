@@ -2,22 +2,22 @@ import {EventEmitter} from "events"
 import * as OrderMerger from './util/OrderMerger'
 import * as TradesMerger from './util/TradesMerger'
 import _ from "lodash"
-
+import * as TradeStatsExtractor from '../util/TradeStatsExtractor'
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import TokenStore from '../stores/TokenStore'
 import BigNumber from 'bignumber.js'
+import datejs from 'datejs'
 
 class OrderBookStore extends EventEmitter {
     constructor() {
         super()
-        this.pageSize = 10
         this.bids = []
         this.offers = []
         this.trades = []
-        this.bidsPage = 0
-        this.offersPage = 0
-        this.tradesPage = 0
+        this.tradeStats = {
+            low: null, high: null, token_vol: null, eth_vol: null, last: null, change: null, tokenAddress: null
+        }
     }
 
     getBids() {
@@ -28,89 +28,20 @@ class OrderBookStore extends EventEmitter {
         return _.reduce(this.bids.map(b => b.availableVolume), (sum, n) => BigNumber(sum).plus(BigNumber(n)), 0)
     }
 
-    getBidsOnCurrentPage() {
-        return this.sliceForPage(this.bids, this.bidsPage, this.pageSize)
-    }
-
-    getNumBidsPages() {
-        return Math.ceil(this.bids.length / this.pageSize)
-    }
-
-    getBidsPage() {
-        return this.bidsPage
-    }
-
-    getTwoLatestBidPrices() {
-        return this.getTwoLatestPricesOrNull(this.bids, 'updated', 'price')
-    }
-
     getOffers() {
         return this.offers
-    }
-
-    getOfferTotal() {
-        return _.reduce(this.offers.map(b => b.availableVolume), (sum, n) => BigNumber(sum).plus(BigNumber(n)), 0)
-    }
-
-    getOffersOnCurrentPage() {
-        return this.sliceForPage(this.offers, this.offersPage, this.pageSize)
-    }
-
-    getNumOffersPages() {
-        return Math.ceil(this.offers.length / this.pageSize)
-    }
-
-    getOffersPage() {
-        return this.offersPage
-    }
-
-    getTwoLatestOfferPrices() {
-        return this.getTwoLatestPricesOrNull(this.offers, 'updated', 'price')
     }
 
     getAllTradesSortedByDateAsc() {
         return _.reverse(this.trades.slice()) // TODO _.reverse seems to sort in place?
     }
 
-    getTradesOnCurrentPage() {
-        return this.sliceForPage(this.trades, this.tradesPage, this.pageSize)
-    }
-
-    getNumTradesPages() {
-        return Math.ceil(this.trades.length / this.pageSize)
-    }
-
-    getTradesPage() {
-        return this.tradesPage
-    }
-
     getTrades() {
         return this.trades
     }
 
-    getTwoLatestTradePrices() {
-        return this.getTwoLatestPricesOrNull(this.trades, 'date', 'price')
-    }
-
-    sliceForPage(list, page, pageSize) {
-        const numPagesTotal = Math.floor(1 + list.length / pageSize)
-        const actualPage = numPagesTotal < page ? numPagesTotal : page
-
-        return list.slice((actualPage) * pageSize, (actualPage + 1) * pageSize)
-    }
-
-    getTwoLatestPricesOrNull(list, sortField, priceField) {
-        if (list.length > 1) {
-            const prices = _.reverse(
-                _.sortBy(list, e => {
-                    return e[sortField]
-                })
-            )
-
-            return [prices[1][priceField], prices[0][priceField]]
-        } else {
-            return null
-        }
+    getTradeStats() {
+        return this.tradeStats
     }
 
     emitChange() {
@@ -119,21 +50,6 @@ class OrderBookStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
-            case ActionNames.CHANGE_BIDS_PAGE: {
-                this.bidsPage = action.page
-                this.emitChange()
-                break
-            }
-            case ActionNames.CHANGE_OFFERS_PAGE: {
-                this.offersPage = action.page
-                this.emitChange()
-                break
-            }
-            case ActionNames.CHANGE_TRADES_PAGE: {
-                this.tradesPage = action.page
-                this.emitChange()
-                break
-            }
             case ActionNames.WEB_SOCKET_OPENED: {
                 this.clearState()
                 this.emitChange()
@@ -163,9 +79,6 @@ class OrderBookStore extends EventEmitter {
     }
 
     clearState() {
-        this.bidsPage = 0
-        this.offersPage = 0
-        this.tradesPage = 0
         this.bids = []
         this.offers = []
         this.trades = []
@@ -178,6 +91,7 @@ class OrderBookStore extends EventEmitter {
 
         if (message.trades) {
             this.trades = TradesMerger.sortByTimeAndIdRemovingDuplicates(message.trades)
+            this.tradeStats = TradeStatsExtractor.extractStats(this.trades, new Date().addDays(-1))
         }
 
         if (message && message.orders) {
@@ -210,6 +124,7 @@ class OrderBookStore extends EventEmitter {
     mergeTrades(message) {
         if (message) {
             this.trades = TradesMerger.mergeAndSortTrades(this.trades, message, TokenStore.getSelectedToken().address)
+            this.tradeStats = TradeStatsExtractor.extractStats(this.trades, new Date().addDays(-1))
         }
     }
 }
