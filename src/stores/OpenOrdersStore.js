@@ -39,9 +39,10 @@ class OpenOrdersStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.MESSAGE_RECEIVED_MY_ORDERS: {
                 if (action.message) {
-                    const incomingOrderIds = action.message.map(o => o.id)
+                    const incomingOrders =  [...action.message.buys, ...action.message.sells]
+                    const incomingOrderIds = incomingOrders.map(o => o.id)
                     const openOrdersExcludingIncoming = this.openOrders.filter(o => !incomingOrderIds.includes(o.id))
-                    this.openOrders = [...openOrdersExcludingIncoming, ...action.message]
+                    this.openOrders = [...openOrdersExcludingIncoming, ...incomingOrders]
                 }
                 this.updateAllOpenOrders()
                 this.emitChange()
@@ -49,7 +50,7 @@ class OpenOrdersStore extends EventEmitter {
             }
             case ActionNames.MESSAGE_RECEIVED_MARKET: {
                 if (action.message && !_.isUndefined(action.message.myOrders)) {
-                    this.openOrders = action.message.myOrders
+                    this.openOrders = [...action.message.myOrders.buys, ...action.message.myOrders.sells]
                     this.updateAllOpenOrders()
                     this.emitChange()
                 }
