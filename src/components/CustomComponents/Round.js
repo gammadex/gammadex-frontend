@@ -11,17 +11,23 @@ export default class Round extends React.Component {
     render() {
         const originalNumber = this.getNumberToRound()
         if (!originalNumber) {
-            return null
+            if (this.props.fallback) {
+                return this.props.fallback
+            } else {
+                return null
+            }
         }
 
+        const suffix = this.props.suffix ? this.props.suffix : ''
         const dps = this.props.price ? this.PRICE_DPS : this.props.percent ? this.PERCENT_DPS : this.DEFAULT_DPS
         const number = formatNumber(originalNumber, dps)
         const cleanNumber = stripDecimalsOffLongNumber(number, this.MAX_LENGTH_ALLOW_0_IN_DP)
+        const className =  this.props.classNameFunc ?  this.props.classNameFunc(number, cleanNumber) : ''
 
         if (this.props.softZeros) {
-            return <span data-toggle="tooltip" title={originalNumber}><SoftZeros>{cleanNumber}</SoftZeros></span>
+            return <span data-toggle="tooltip" title={originalNumber} className={className}><SoftZeros>{cleanNumber}</SoftZeros>{suffix}</span>
         } else {
-            return <span data-toggle="tooltip" title={originalNumber}>{cleanNumber}</span>
+            return <span data-toggle="tooltip" title={originalNumber} className={className}>{cleanNumber}{suffix}</span>
         }
     }
 

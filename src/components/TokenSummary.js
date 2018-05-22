@@ -1,9 +1,7 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import Round from "./CustomComponents/Round"
-import Config from "../Config"
 import EtherScan from "../components/CustomComponents/Etherscan"
-import _ from "lodash"
 
 export default class TokenSummary extends React.Component {
     constructor(props) {
@@ -30,12 +28,11 @@ export default class TokenSummary extends React.Component {
         })
     }
 
-    render() {tokenAddress
+    render() {
         const {token} = this.props
         const {low, high, tokenVolume, ethVolume, last, percentChange, tokenAddress} = this.state.tradeStats
 
         if (tokenAddress && token.address && tokenAddress.toLowerCase() && token.address.toLowerCase()) {
-            console.log(tokenAddress.toLowerCase(),token.address.toLowerCase(),  tokenAddress.toLowerCase()===token.address.toLowerCase(), last)
 
             return (
                 <div className="card">
@@ -48,28 +45,31 @@ export default class TokenSummary extends React.Component {
                             <tbody>
                             <tr>
                                 <td>Last Price</td>
-                                <td><Round price softZeros>{last}</Round></td>
+                                <td><Round price softZeros fallback="-">{last}</Round></td>
                                 <td>24h Change</td>
-                                <td><Round percent softZeros>{percentChange}</Round>%</td>
+                                <td><Round percent softZeros suffix="%" fallback="-"
+                                           classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round>
+                                </td>
                             </tr>
                             <tr>
                                 <td>24h High</td>
-                                <td><Round price softZeros>{high}</Round></td>
+                                <td><Round price softZeros fallback="-">{high}</Round></td>
                                 <td>24h Low</td>
-                                <td><Round price softZeros>{low}</Round></td>
+                                <td><Round price softZeros fallback="-">{low}</Round></td>
                             </tr>
                             <tr>
                                 <td>24h Vol ETH</td>
-                                <td><Round>{ethVolume}</Round></td>
+                                <td><Round fallback="-">{ethVolume}</Round></td>
                                 <td>24h Vol {token.name}</td>
-                                <td><Round>{tokenVolume}</Round></td>
+                                <td><Round fallback="-">{tokenVolume}</Round></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
 
                     <div className="card-footer">
-                        <strong>{token.lName !== undefined ? token.lName : token.name}</strong> contract: <EtherScan type="address" address={token.address} display="truncate"/>
+                        <strong>{token.lName !== undefined ? token.lName : token.name}</strong> contract: <EtherScan
+                        type="address" address={token.address} display="truncate"/>
                     </div>
                 </div>
             )
