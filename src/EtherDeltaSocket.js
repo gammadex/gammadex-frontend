@@ -1,5 +1,6 @@
 import _ from "lodash"
 import io from 'socket.io-client'
+import Config from './Config'
 
 class EtherDeltaWebSocket {
     init(url, socketEventHandlers, messageHandlers) {
@@ -10,6 +11,10 @@ class EtherDeltaWebSocket {
         _.each(handlers, (handler, eventName) => {
             this.socket.on(eventName, (response) => {
                 console.log(`Received ${eventName}`, response)
+                if (Config.isDevelopment()) {
+                    global.messages = global.messages || {}
+                    global.messages[eventName] = response
+                }
                 handler(response)
             })
         })
