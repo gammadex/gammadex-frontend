@@ -38,9 +38,9 @@ export function extractStats(trades, fromTime) {
         ethVolume: BigNumber(0),
     })
 
-    const lastPrice = _.last(cleanTrades).price
-    const firstPrice = _.first(cleanTrades).price
-    const change = BigNumber(100).times(lastPrice.minus(firstPrice).dividedBy(firstPrice))
+    const lastPrice = _.first(cleanTrades).price
+    const firstPrice = _.last(cleanTrades).price
+    const change = BigNumber(100).times(((lastPrice.minus(firstPrice)).dividedBy(firstPrice)))
 
     return {
         low: rawTradeStats.low.toString(),
