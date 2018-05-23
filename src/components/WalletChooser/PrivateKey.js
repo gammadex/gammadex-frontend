@@ -33,7 +33,7 @@ export default class PrivateKey extends React.Component {
         const {completedAccount} = this.state
 
         if (completedAccount) {
-            return <UnlockedSuccessAlert message="You are now logged in with a private key wallet"/>
+            return <UnlockedSuccessAlert message="You have unlocked a private key wallet"/>
         } else {
             return <PrivateKeyForm/>
         }
