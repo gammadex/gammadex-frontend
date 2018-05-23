@@ -81,7 +81,7 @@ test("check volume is sum of trades after fromDate", () => {
         tokenVolume: "4395.6734",
         ethVolume: "4.53537884274",
         last: "0.0010311",
-        percentChange: "-0.096889836256176727",
+        percentChange: "0.096983803704781302",
         tokenAddress: "0x4470BB87d77b963A013DB939BE332f927f2b992e",
     }
 
