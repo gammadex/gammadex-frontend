@@ -8,6 +8,12 @@ npm run dev
 npm run prod
 ```
 
+## Debug Mode
+
+To use wallet address (read-only) without private key:
+
+https://localhost:3000/#!/debug/ 
+
 ## Running Tests
 
 ```
