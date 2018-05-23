@@ -230,11 +230,11 @@ class OrderFactory {
         const unpacked = [
             Config.getEtherDeltaAddress(),
             tokenGet,
-            amountGet,
+            BigNumber(amountGet),
             tokenGive,
-            amountGive,
-            expires,
-            orderNonce,
+            BigNumber(amountGive),
+            BigNumber(expires),
+            BigNumber(orderNonce),
         ]
 
         const condensed = pack(
