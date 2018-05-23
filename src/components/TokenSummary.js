@@ -47,7 +47,7 @@ export default class TokenSummary extends React.Component {
                                 <td>Last Price</td>
                                 <td><Round price softZeros fallback="-">{last}</Round></td>
                                 <td>24h Change</td>
-                                <td><Round percent softZeros suffix="%" fallback="-"
+                                <td><Round percent suffix="%" fallback="-"
                                            classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round>
                                 </td>
                             </tr>
