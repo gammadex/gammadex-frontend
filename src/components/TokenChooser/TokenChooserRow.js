@@ -19,7 +19,7 @@ export default class TokenChooserRow extends React.Component {
         return (
             <tr className={"clickable " + selectedClass}>
                 <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.name}</Truncated></td>
-                <td onClick={this.onRowSelect}><Round>{token.baseVolume}</Round></td>
+                <td onClick={this.onRowSelect}><Round fallback="-">{token.baseVolume}</Round></td>
                 <td onClick={this.onRowSelect}>
                     <Round percent suffix="%" fallback="-"
                            classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{token.percentChange}</Round>
