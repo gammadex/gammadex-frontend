@@ -516,7 +516,6 @@ export function sendOrder(order) {
             EtherDeltaSocket.emitOrder(signedOrderObject)
                 .then((result) => {
                     if (result && result.status === 202) {
-                        // TODO hook in global message
                         if (OrderUtil.isMakerBuy(signedOrderObject)) {
                             clearBuyOrder()
                         } else {
@@ -530,5 +529,49 @@ export function sendOrder(order) {
                             GlobalMessageFormatters.getOrderRejected(side, tokenName, error), 'danger')
                     }
                 })
+        })
+}
+
+export function sendOnChainOrder(order) {
+    const {
+        amountGet,
+        amountGive,
+        tokenGet,
+        tokenGive,
+        contractAddr,
+    } = order.orderUnsigned
+
+    const { account, nonce } = AccountStore.getAccountState()
+    const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
+
+    const orderObject = {
+        amountGet,
+        amountGive,
+        tokenGet,
+        tokenGive,
+        expires: order.expires,
+        nonce: Math.random().toString().slice(2)
+    }
+    const side = OrderUtil.isMakerBuy(orderObject) ? "BUY" : "SELL"
+    const tokenName = TokenListApi.getTokenName(OrderUtil.tokenAddress(orderObject))
+
+    EtherDeltaWeb3.promiseOrder(account, nonce, orderObject, gasPriceWei)
+        .once('transactionHash', hash => {
+            AccountActions.nonceUpdated(nonce + 1)
+            GlobalMessageActions.sendGlobalMessage(
+                GlobalMessageFormatters.getOnChainOrderInitiated(side, tokenName, hash))
+        })
+        .on('error', error => {
+            GlobalMessageActions.sendGlobalMessage(
+                GlobalMessageFormatters.getOnChainOrderFailed(side, tokenName, error), 'danger')
+        })
+        .then(receipt => {
+            if (OrderUtil.isMakerBuy(orderObject)) {
+                clearBuyOrder()
+            } else {
+                clearSellOrder()
+            }
+            GlobalMessageActions.sendGlobalMessage(
+                GlobalMessageFormatters.getOnChainOrderComplete(side, tokenName), 'success')
         })
 }

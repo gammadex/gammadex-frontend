@@ -10,7 +10,8 @@
     "depositToken": 250000,
     "withdrawToken": 250000,
     "trade": 250000,
-    "cancelOrder": 250000
+    "cancelOrder": 250000,
+    "order": 250000
   },
   "exchangeFeePercent": 0.003,
   "development": {

@@ -151,6 +151,10 @@ class EtherDeltaWeb3 {
         return this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei)
     }
 
+    promiseOrder(account, nonce, order, gasPriceWei) {
+        return this.accountProvider.promiseOrder(account, nonce, order, gasPriceWei)
+    }
+
     promiseCancelOrder(account, nonce, order, gasPriceWei) {
         return this.accountProvider.promiseCancelOrder(account, nonce, order, gasPriceWei)
     }
@@ -238,6 +242,10 @@ class AccountProvider {
         throw new Error("method not implemented")
     }
 
+    promiseOrder(account, nonce, order, gasPriceWei) {
+        throw new Error("method not implemented")
+    }
+
     promiseCancelOrder(account, nonce, order, gasPriceWei) {
         throw new Error("method not implemented")
     }
@@ -310,6 +318,17 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.s,
             amount)
             .send({from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei})
+    }
+
+    promiseOrder(account, nonce, order, gasPriceWei) {
+        return this.contractEtherDelta.methods.order(
+            order.tokenGet,
+            order.amountGet,
+            order.tokenGive,
+            order.amountGive,
+            order.expires,
+            order.nonce)
+            .send({from: account, gas: Config.getGasLimit('order'), gasPrice: gasPriceWei})
     }
 
     promiseCancelOrder(account, nonce, order, gasPriceWei) {
@@ -435,6 +454,21 @@ class WalletAccountProvider extends AccountProvider {
                 amount).encodeABI(),
             gasPriceWei,
             Config.getGasLimit('trade'))
+    }
+
+    promiseOrder(account, nonce, order, gasPriceWei) {
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
+            this.web3.utils.numberToHex(0),
+            this.contractEtherDelta.methods.order(
+                order.tokenGet,
+                order.amountGet,
+                order.tokenGive,
+                order.amountGive,
+                order.expires,
+                order.nonce
+            ).encodeABI(),
+            gasPriceWei,
+            Config.getGasLimit('order'))
     }
 
     promiseCancelOrder(account, nonce, order, gasPriceWei) {

@@ -82,6 +82,24 @@ export function getOrderRejected(makerSide, unit, error) {
     )
 }
 
+export function getOnChainOrderInitiated(makerSide, unit, txHash) {
+    return (
+        <div>
+            <div>Generated transaction for on-chain Order to {makerSide} {unit}</div>
+            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+        </div>
+    )
+}
+
+export function getOnChainOrderComplete(makerSide, unit) {
+    return `On-chain Order to ${makerSide} ${unit} completed`
+}
+
+export function getOnChainOrderFailed(makerSide, unit, error) {
+    const errorMessage = extractMessage(error)
+    return `On-chain Order to ${makerSide} ${unit} failed ${errorMessage}`
+}
+
 function extractMessage(error) {
     console.log("Transaction error", error)
 
