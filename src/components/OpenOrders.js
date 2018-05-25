@@ -106,7 +106,7 @@ export default class OpenOrders extends React.Component {
         }
 
         return (
-            <span>
+            <div className="card">
                 <div className="card-header">
                     <div className="row hdr-stretch">
                         <div className="col-lg-6">
@@ -127,9 +127,9 @@ export default class OpenOrders extends React.Component {
                         </div>
                     </div>
                 </div>
-                <Box>
+                <div>
                     {content}
-                </Box>
+                </div>
                 <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className}>
                     <ModalBody>{modalText}</ModalBody>
                     <ModalFooter>
@@ -137,7 +137,7 @@ export default class OpenOrders extends React.Component {
                         <Button color="primary" onClick={this.confirmCancel}>Cancel Order</Button>
                     </ModalFooter>
                 </Modal>
-            </span>
+            </div>
         )
     }
 }

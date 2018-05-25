@@ -12,6 +12,7 @@ import TokenErrorMessage from '../components/TokenErrorMessage'
 import * as TokenApi from "../apis/TokenApi"
 import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
 import UnlistedTokens from "../components/UnlistedTokens"
+import Trading from "../components/Trading"
 
 class Exchange extends Component {
     constructor() {
@@ -55,16 +56,15 @@ class Exchange extends Component {
                     <TokenSummary token={token}/>
                     <TokenChooser/>
                     <UnlistedTokens/>
-                    <OrderBox tokenName={token.name}/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
                     <TokenErrorMessage warning={tokenWarning}/>
                     <BrowserWeb3Warning/>
-                    <Charts token={token}/>
-                    <OrderBook token={token}/>
+                    <Trading token={token}/>
                     <OpenOrders/>
                 </div>
                 <div className="pl-0 col-lg-3">
+                    <Charts token={token}/>
                     <AccountDetail token={token}/>
                     <TradeHistory token={token}/>
                 </div>
