@@ -7,7 +7,7 @@ import {BoxSection} from "../CustomComponents/Box"
 
 export default class PlotlyPriceChart extends React.Component {
     state = {
-        ohlcIntervalMins: 60,
+        ohlcIntervalMins: 1440,
         chartElements: {
             ohlc: true,
             volume: true,
@@ -116,9 +116,6 @@ export default class PlotlyPriceChart extends React.Component {
         }
 
         const data = []
-        if (chartElements.volume) {
-            data.push(volumeTrace)
-        }
         if (chartElements.ohlc) {
             data.push(ohlcTrace)
         }
@@ -135,18 +132,13 @@ export default class PlotlyPriceChart extends React.Component {
                 range: dateRange
             },
             yaxis: {
-                title: 'Price',
+               // title: 'Price',
                 autorange: true,
             },
-            yaxis2: {
-                title: 'Volume',
-                overlaying: 'y',
-                side: 'right'
-            },
             margin: {
-                l: 70,
-                r: 70,
-                b: 10,
+                l: 50,
+                r: 20,
+                b: 40,
                 t: 10,
                 pad: 4
             }, font: {
@@ -197,41 +189,7 @@ export default class PlotlyPriceChart extends React.Component {
         return <BoxSection>
             <div className="row">
                 <div className="col-lg-12">
-                    <div className="float-left m-2">
-                        <form className="form-inline">
-                            <div className="form-check mb-2 mr-sm-2">
-                                <input className="form-check-input" type="checkbox" id="ohlc" value="ohlc"
-                                       onChange={this.onChartElementsChange}
-                                       checked={chartElements.ohlc}
-                                />
-                                <label className="form-check-label" htmlFor="ohlc">
-                                    OHLC
-                                </label>
-                            </div>
-
-                            <div className="form-check mb-2 mr-sm-2">
-                                <input className="form-check-input" type="checkbox" id="price" value="price"
-                                       onChange={this.onChartElementsChange}
-                                       checked={chartElements.price}
-                                />
-                                <label className="form-check-label" htmlFor="price">
-                                    Price
-                                </label>
-                            </div>
-
-                            <div className="form-check mb-2 mr-sm-2">
-                                <input className="form-check-input" type="checkbox" id="volume" value="volume"
-                                       onChange={this.onChartElementsChange}
-                                       checked={chartElements.volume}
-                                />
-                                <label className="form-check-label" htmlFor="volume">
-                                    Volume
-                                </label>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="float-right align-middle m-2 ohlc-interval">
+                    <div className="float-right ohlc-interval">
                         <span className="ohlc-interval-description">OHLC interval</span>
 
                         <div className="form-check form-check-inline">
