@@ -129,20 +129,21 @@ export default class PlotlyPriceChart extends React.Component {
             xaxis: {
                 //title: 'Time',
                 //autorange: true,
-                range: dateRange
+                range: dateRange,
+                tickformat: '%b %d',
             },
             yaxis: {
                // title: 'Price',
                 autorange: true,
             },
             margin: {
-                l: 50,
+                l: 40,
                 r: 20,
-                b: 40,
+                b: 0,
                 t: 10,
                 pad: 4
             }, font: {
-                size: 12,
+                size: 10,
                 family: 'Lato, sans-serif',
             }, height: this.props.height
         }
