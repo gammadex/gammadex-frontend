@@ -5,6 +5,7 @@ import {withRouter} from "react-router-dom"
 import TokenListApi from "../apis/TokenListApi"
 import _ from "lodash"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
+import OrderBookStore from "../stores/OrderBookStore"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -13,14 +14,17 @@ class TokenChooser extends React.Component {
         this.state = {
             searchedToken: "",
             selectedToken: null,
-            serverTickers: {}
+            serverTickers: {},
+            currentStats: OrderBookStore.getTradeStats()
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
+        this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
     }
 
     componentWillMount() {
         TokenStore.on("change", this.onTokenStoreChange)
+        OrderBookStore.on("change", this.saveCurrentPrices)
     }
 
     componentDidMount() {
@@ -29,6 +33,7 @@ class TokenChooser extends React.Component {
 
     componentWillUnmount() {
         TokenStore.removeListener("change", this.onTokenStoreChange)
+        OrderBookStore.removeListener("change", this.saveCurrentPrices)
     }
 
     onTokenStoreChange() {
@@ -36,6 +41,12 @@ class TokenChooser extends React.Component {
             selectedToken: TokenStore.getSelectedToken(),
             searchedToken: TokenStore.getSearchToken(),
             serverTickers: TokenStore.getServerTickers(),
+        })
+    }
+
+    saveCurrentPrices() {
+        this.setState({
+            currentStats: OrderBookStore.getTradeStats()
         })
     }
 
@@ -52,18 +63,20 @@ class TokenChooser extends React.Component {
 
     static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
         return _(tokenList).map(token => _.pick(token, ['name', 'address']))
-                           .map(token => _.assign(token, _.pick(serverTickers[token.address.toLowerCase()], ['percentChange', 'baseVolume'])))
-                           .filter(token => !searchedToken || searchedToken.length === 0 || token.name.toLowerCase().includes(searchedToken.toLowerCase()))
-                           .value()
+            .map(token => _.assign(token, _.pick(serverTickers[token.address.toLowerCase()], ['percentChange', 'baseVolume'])))
+            .filter(token => !searchedToken || searchedToken.length === 0 || token.name.toLowerCase().includes(searchedToken.toLowerCase()))
+            .value()
     }
 
     render() {
-        const {searchedToken, selectedToken, serverTickers} = this.state
+        const {searchedToken, selectedToken, serverTickers, currentStats} = this.state
 
         // TODO - TokenListApi has data as state - it should be kept in a Store
         const systemTokens = TokenChooser.getTokensToDisplay(TokenListApi.getSystemTokens(), serverTickers, searchedToken, selectedToken)
 
-        const tokenRows = systemTokens.map(token => {
+        const tokenRows = systemTokens.map(systemToken => {
+            const token = systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
+
             return <TokenChooserRow
                 key={token.address}
                 token={token}
@@ -99,6 +112,13 @@ class TokenChooser extends React.Component {
                 </div>
             </div>
         )
+    }
+
+    copyStats(systemToken, currentStats) {
+        return Object.assign({}, systemToken, {
+            baseVolume: currentStats.ethVolume,
+            percentChange: currentStats.percentChange
+        })
     }
 }
 

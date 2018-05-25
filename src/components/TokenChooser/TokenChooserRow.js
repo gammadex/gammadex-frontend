@@ -8,10 +8,6 @@ export default class TokenChooserRow extends React.Component {
         this.props.onTokenSelect(this.props.token.name, this.props.token.address)
     }
 
-    onRemove = () => {
-        this.props.remove(this.props.token)
-    }
-
     render() {
         const {token, isSelected} = this.props
         const selectedClass = isSelected ? "selected-row" : ""
@@ -24,10 +20,6 @@ export default class TokenChooserRow extends React.Component {
                     <Round percent suffix="%" fallback="-"
                            classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{token.percentChange}</Round>
                 </td>
-
-                <Conditional displayCondition={this.props.editMode}>
-                    <td onClick={this.onRemove}><span className="far fa-trash-alt"/></td>
-                </Conditional>
             </tr>
         )
     }
