@@ -7,6 +7,7 @@ import {Box} from "./CustomComponents/Box"
 import TokenListApi from "../apis/TokenListApi"
 import _ from "lodash"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
+import Conditional from "./CustomComponents/Conditional"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -79,19 +80,20 @@ class TokenChooser extends React.Component {
 
         return (
             <Box title="Unlisted Tokens">
-                <div className="table-responsive">
-                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
-                        <thead>
-                        <tr>
-                            <th>Symbol</th>
-                            <th>Name</th>
-                            <th>Smart Contract</th>
-                            <th/>
-                        </tr>
-                        </thead>
-                        <tbody>{tokenRows}</tbody>
-                    </table>
-                </div>
+                <Conditional displayCondition={tokenRows.length > 0}>
+                    <div className="table-responsive">
+                        <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                            <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th>Smart Contract</th>
+                            </tr>
+                            </thead>
+                            <tbody>{tokenRows}</tbody>
+                        </table>
+                    </div>
+                </Conditional>
 
                 <TokenCreator create={this.onCreateToken}/>
             </Box>
