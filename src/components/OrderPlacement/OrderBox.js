@@ -106,11 +106,13 @@ export default class OrderBox extends React.Component {
                     <div className="hdr-stretch">
                         <strong className="card-title">TRADING</strong>
                     </div>
-                    <Conditional displayCondition={!balanceRetrieved}>
-                        Please unlock a wallet to enable trading
-                    </Conditional>
                 </BoxHeader>
                 <BoxSection>
+                    <Conditional displayCondition={!balanceRetrieved}>
+                        <div className="mb-2">
+                            Please unlock a wallet to enable trading
+                        </div>
+                    </Conditional>
                     <Nav tabs>
                         <NavItem>
                             <NavLink
