@@ -67,7 +67,7 @@ class TokenChooser extends React.Component {
             return <TokenChooserRow
                 key={token.address}
                 token={token}
-                isSelected={selectedToken && token.symbol === selectedToken.name}  // TODO - wouldn't address comparison be better
+                isSelected={selectedToken && token.address === selectedToken.address}
                 onTokenSelect={this.onTokenSelect}/>
         })
 

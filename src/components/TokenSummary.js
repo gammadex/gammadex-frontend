@@ -29,17 +29,16 @@ export default class TokenSummary extends React.Component {
     }
 
     render() {
-        // TODO - handle the case when tokenAddress != token.address and clean up conditionals
         const {token} = this.props
-        const {low, high, tokenVolume, ethVolume, last, percentChange, tokenAddress} = this.state.tradeStats
-
-        const title = token ? `${token.name} / ETH` : ''
-        const contract = token ? <EtherScan type="address" address={token.address} display="truncate"/> : ''
-        let name = ''
-        let longName = ''
-        if (token && tokenAddress === token.address) {
-            longName = token.lName ? token.lName : token.name
-        }
+        const {low, high, tokenVolume, ethVolume, last, percentChange} = this.state.tradeStats
+        const [title, contract, name, longName] = token ? [
+            `${token.name} / ETH`,
+            <EtherScan type="address" address={token.address} display="truncate"/>,
+            token.name,
+            token.lName ? token.lName : token.name
+        ] : [
+            '', '', '', ''
+        ]
 
         return (
             <div className="card">

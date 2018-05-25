@@ -43,7 +43,7 @@ class TokenChooser extends React.Component {
     }
 
     onTokenSelect = (tokenName, tokenAddress) => {
-        const newURL = `/exchange/${tokenName}`
+        const newURL = `/exchange/${tokenAddress}`
         if (newURL !== this.props.history.location.pathname) {
             this.props.history.push(newURL)
         }
@@ -72,7 +72,7 @@ class TokenChooser extends React.Component {
             return <UnlistedTokenRow
                 key={token.address}
                 token={token}
-                isSelected={selectedToken && token.symbol === selectedToken.name} // TODO - wouldn't address comparison be better
+                isSelected={selectedToken && token.address === selectedToken.address}
                 onTokenSelect={this.onTokenSelect}
                 remove={this.removeUserToken}/>
         })

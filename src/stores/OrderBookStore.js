@@ -12,12 +12,7 @@ import datejs from 'datejs'
 class OrderBookStore extends EventEmitter {
     constructor() {
         super()
-        this.bids = []
-        this.offers = []
-        this.trades = []
-        this.tradeStats = {
-            low: null, high: null, token_vol: null, eth_vol: null, last: null, change: null, tokenAddress: null
-        }
+        this.clearState()
     }
 
     getBids() {
@@ -82,6 +77,9 @@ class OrderBookStore extends EventEmitter {
         this.bids = []
         this.offers = []
         this.trades = []
+        this.tradeStats = {
+            low: null, high: null, token_vol: null, eth_vol: null, last: null, change: null, tokenAddress: null
+        }
     }
 
     storeBidsOffersAndTrades(message) {
