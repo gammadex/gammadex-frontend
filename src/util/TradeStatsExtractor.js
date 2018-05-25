@@ -2,7 +2,7 @@ import * as _ from "lodash"
 import BigNumber from 'bignumber.js'
 
 export function extractStats(trades, fromTime) {
-    const tokenAddress = trades ? trades[0].tokenAddr : null
+    const tokenAddress = trades.length ? trades[0].tokenAddr : null
     const fromTimeString = fromTime.toISOString()
 
     const cleanTrades = trades
