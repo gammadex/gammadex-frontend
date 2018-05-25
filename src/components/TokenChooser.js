@@ -2,12 +2,9 @@ import React from "react"
 import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
-import Conditional from "./CustomComponents/Conditional"
-import TokenCreator from "./TokenChooser/TokenCreator"
-import TokenDisplay from "./TokenChooser/TokenDisplay"
-import {BoxHeader} from "./CustomComponents/Box"
-import TokenListApi from "../apis/TokenListApi";
+import TokenListApi from "../apis/TokenListApi"
 import _ from "lodash"
+import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -39,7 +36,6 @@ class TokenChooser extends React.Component {
             selectedToken: TokenStore.getSelectedToken(),
             searchedToken: TokenStore.getSearchToken(),
             serverTickers: TokenStore.getServerTickers(),
-            userDefTokens: TokenStore.getUserTokens()
         })
     }
 
@@ -54,20 +50,6 @@ class TokenChooser extends React.Component {
         }
     }
 
-    onCreateToken = token => {
-        TokenActions.addUserToken(token)
-    }
-
-    removeUserToken = token => {
-        // switch to the default token if the currently selected token is removed
-        if (token.address === this.state.selectedToken.address) {
-            const defToken = TokenListApi.getDefaultToken()
-            this.onTokenSelect(defToken.name, defToken.address)
-        }
-
-        TokenActions.removeUserToken(token)
-    }
-
     static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
         return _(tokenList).map(token => _.pick(token, ['name', 'address']))
                            .map(token => _.assign(token, _.pick(serverTickers[token.address.toLowerCase()], ['percentChange', 'baseVolume'])))
@@ -77,9 +59,17 @@ class TokenChooser extends React.Component {
 
     render() {
         const {searchedToken, selectedToken, serverTickers} = this.state
-        
-        const userTokens = TokenChooser.getTokensToDisplay(TokenListApi.getUserTokens(), serverTickers, searchedToken, selectedToken)
+
+        // TODO - TokenListApi has data as state - it should be kept in a Store
         const systemTokens = TokenChooser.getTokensToDisplay(TokenListApi.getSystemTokens(), serverTickers, searchedToken, selectedToken)
+
+        const tokenRows = systemTokens.map(token => {
+            return <TokenChooserRow
+                key={token.address}
+                token={token}
+                isSelected={selectedToken && token.symbol === selectedToken.name}  // TODO - wouldn't address comparison be better
+                onTokenSelect={this.onTokenSelect}/>
+        })
 
         return (
             <div className="card token-chooser">
@@ -95,19 +85,17 @@ class TokenChooser extends React.Component {
                     </div>
                 </div>
 
-                <TokenDisplay tokenList={systemTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}/>
-
-                <div className="card sub-card">
-                    <BoxHeader>
-                        <div className="hdr-stretch">
-                            <strong className="card-title">Unlisted Tokens</strong>
-                        </div>
-                    </BoxHeader>
-
-                    <TokenDisplay tokenList={userTokens} selectedToken={selectedToken} onTokenSelect={this.onTokenSelect}
-                                    editMode={true} removeToken={this.removeUserToken}/>
-
-                    <TokenCreator create={this.onCreateToken}/>
+                <div className="table-responsive">
+                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                        <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Volume ETH</th>
+                            <th>% Change</th>
+                        </tr>
+                        </thead>
+                        <tbody>{tokenRows}</tbody>
+                    </table>
                 </div>
             </div>
         )

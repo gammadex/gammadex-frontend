@@ -11,6 +11,7 @@ import AccountDetail from '../components/AccountDetail'
 import TokenErrorMessage from '../components/TokenErrorMessage'
 import * as TokenApi from "../apis/TokenApi"
 import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
+import UnlistedTokens from "../components/UnlistedTokens"
 
 class Exchange extends Component {
     constructor() {
@@ -53,6 +54,7 @@ class Exchange extends Component {
                 <div className="col-lg-3">
                     <TokenSummary token={token}/>
                     <TokenChooser/>
+                    <UnlistedTokens/>
                     <OrderBox tokenName={token.name}/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
