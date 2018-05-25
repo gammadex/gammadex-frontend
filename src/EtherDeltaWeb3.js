@@ -102,9 +102,9 @@ class EtherDeltaWeb3 {
             order.expires,
             order.nonce,
             order.user,
-            order.v,
-            order.r,
-            order.s,
+            order.v == null ? 27 : order.v, // on-chain handling
+            order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+            order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
             amount,
             account).call()
     }
@@ -118,9 +118,10 @@ class EtherDeltaWeb3 {
             order.expires,
             order.nonce,
             order.user,
-            order.v,
-            order.r,
-            order.s).call()
+            order.v == null ? 27 : order.v, // on-chain handling
+            order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+            order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+        ).call()
     }
 
     promiseAmountFilled(order) {
@@ -132,9 +133,10 @@ class EtherDeltaWeb3 {
             order.expires,
             order.nonce,
             order.user,
-            order.v,
-            order.r,
-            order.s).call()
+            order.v == null ? 27 : order.v, // on-chain handling
+            order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+            order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+        ).call()
     }
 
     promiseCurrentBlockNumber() {
@@ -313,9 +315,9 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.expires,
             order.nonce,
             order.user,
-            order.v,
-            order.r,
-            order.s,
+            order.v == null ? 27 : order.v, // on-chain handling
+            order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+            order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
             amount)
             .send({from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei})
     }
@@ -339,10 +341,10 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.amountGive,
             order.expires,
             order.nonce,
-            order.v,
-            order.r,
-            order.s)
-            .send({from: account, gas: Config.getGasLimit('cancelOrder'), gasPrice: gasPriceWei})
+            order.v == null ? 27 : order.v, // on-chain handling
+            order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+            order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+        ).send({from: account, gas: Config.getGasLimit('cancelOrder'), gasPrice: gasPriceWei})
     }
 
     promiseSignData(data, account) {
@@ -448,9 +450,9 @@ class WalletAccountProvider extends AccountProvider {
                 order.expires,
                 order.nonce,
                 order.user,
-                order.v,
-                order.r,
-                order.s,
+                order.v == null ? 27 : order.v, // on-chain handling
+                order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+                order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling,
                 amount).encodeABI(),
             gasPriceWei,
             Config.getGasLimit('trade'))
@@ -481,9 +483,10 @@ class WalletAccountProvider extends AccountProvider {
                 order.amountGive,
                 order.expires,
                 order.nonce,
-                order.v,
-                order.r,
-                order.s).encodeABI(),
+                order.v == null ? 27 : order.v, // on-chain handling
+                order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+                order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+            ).encodeABI(),
             gasPriceWei,
             Config.getGasLimit('cancelOrder'))
     }
