@@ -1,5 +1,6 @@
 import React from "react"
 import EmptyTableMessage from "./EmptyTableMessage"
+import PropTypes from 'prop-types'
 
 export default class Conditional extends React.Component {
     render() {
@@ -16,4 +17,9 @@ export default class Conditional extends React.Component {
             }
         }
     }
+}
+
+Conditional.propTypes = {
+    displayCondition: PropTypes.string,
+    fallbackMessage: PropTypes.string,
 }
