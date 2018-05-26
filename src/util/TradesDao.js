@@ -11,16 +11,20 @@ export function saveFailedTrades(accountAddress, failedTrades) {
         }
 
         const parsed = JSON.parse(global.localStorage.failedTrades)
-        parsed[accountAddress] = failedTrades
+        parsed[accountAddress.toLowerCase()] = failedTrades
 
         global.localStorage.failedTrades = JSON.stringify(parsed)
     }
 }
 
 export function loadFailedTrades(accountAddress) {
-    const failedTrades = _.isString(global.localStorage.failedTrades) ? JSON.parse(global.localStorage.failedTrades) : {}
+    if (_.isString(accountAddress)) {
+        const failedTrades = _.isString(global.localStorage.failedTrades) ? JSON.parse(global.localStorage.failedTrades) : {}
 
-    return failedTrades[accountAddress] ? failedTrades[accountAddress] : []
+        return failedTrades[accountAddress.toLowerCase()] ? failedTrades[accountAddress] : []
+    } else {
+        return []
+    }
 }
 
 export function savePendingTrades(accountAddress, pendingTrades) {
@@ -30,14 +34,18 @@ export function savePendingTrades(accountAddress, pendingTrades) {
         }
 
         const parsed = JSON.parse(global.localStorage.pendingTrades)
-        parsed[accountAddress] = pendingTrades
+        parsed[accountAddress.toLowerCase()] = pendingTrades
 
         global.localStorage.pendingTrades = JSON.stringify(parsed)
     }
 }
 
 export function loadPendingTrades(accountAddress) {
-    const pendingTrades = _.isString(global.localStorage.pendingTrades) ? JSON.parse(global.localStorage.pendingTrades) : {}
+    if (_.isString(accountAddress)) {
+        const pendingTrades = _.isString(global.localStorage.pendingTrades) ? JSON.parse(global.localStorage.pendingTrades) : {}
 
-    return pendingTrades[accountAddress] ? pendingTrades[accountAddress] : []
+        return pendingTrades[accountAddress.toLowerCase()] ? pendingTrades[accountAddress] : []
+    } else {
+        return []
+    }
 }

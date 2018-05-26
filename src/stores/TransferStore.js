@@ -90,8 +90,8 @@ class TransferStore extends EventEmitter {
     }
 
     loadFromLocalStorage() {
-        TransfersDao.loadPendingTransfers(this.accountAddress)
-        TransfersDao.loadFailedTransfers(this.accountAddress)
+        this.pendingTransfers = TransfersDao.loadPendingTransfers(this.accountAddress)
+        this.failedTransfers = TransfersDao.loadFailedTransfers(this.accountAddress)
     }
 
     persistToLocalStorage() {

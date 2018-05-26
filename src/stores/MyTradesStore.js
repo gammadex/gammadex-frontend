@@ -94,8 +94,8 @@ class MyTradesStore extends EventEmitter {
     }
 
     loadFromLocalStorage() {
-        TradesDao.loadPendingTrades(this.accountAddress)
-        TradesDao.loadFailedTrades(this.accountAddress)
+        this.pendingTrades = TradesDao.loadPendingTrades(this.accountAddress)
+        this.failedTrades = TradesDao.loadFailedTrades(this.accountAddress)
     }
 
     persistToLocalStorage() {

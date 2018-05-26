@@ -1,6 +1,6 @@
 import * as _ from "lodash"
 
-if (! global.localStorage) {
+if (!global.localStorage) {
     global.localStorage = {} // for tests. TODO - get rid of this.
 }
 
@@ -11,16 +11,20 @@ export function saveFailedTransfers(accountAddress, failedTransfers) {
         }
 
         const parsed = JSON.parse(global.localStorage.failedTransfers)
-        parsed[accountAddress] = failedTransfers
+        parsed[accountAddress.toLowerCase()] = failedTransfers
 
         global.localStorage.failedTransfers = JSON.stringify(parsed)
     }
 }
 
 export function loadFailedTransfers(accountAddress) {
-    const failedTransfers = _.isString(global.localStorage.failedTransfers) ? JSON.parse(global.localStorage.failedTransfers) : {}
+    if (_.isString(accountAddress)) {
+        const failedTransfers = _.isString(global.localStorage.failedTransfers) ? JSON.parse(global.localStorage.failedTransfers) : {}
 
-    return failedTransfers[accountAddress] ? failedTransfers[accountAddress] : []
+        return failedTransfers[accountAddress.toLowerCase()] ? failedTransfers[accountAddress] : []
+    } else {
+        return []
+    }
 }
 
 export function savePendingTransfers(accountAddress, pendingTransfers) {
@@ -30,14 +34,19 @@ export function savePendingTransfers(accountAddress, pendingTransfers) {
         }
 
         const parsed = JSON.parse(global.localStorage.pendingTransfers)
-        parsed[accountAddress] = pendingTransfers
+        parsed[accountAddress.toLowerCase()] = pendingTransfers
 
         global.localStorage.pendingTransfers = JSON.stringify(parsed)
     }
 }
 
 export function loadPendingTransfers(accountAddress) {
-    const pendingTransfers = _.isString(global.localStorage.pendingTransfers) ? JSON.parse(global.localStorage.pendingTransfers) : {}
+    if (_.isString(accountAddress)) {
+        const pendingTransfers = _.isString(global.localStorage.pendingTransfers) ? JSON.parse(global.localStorage.pendingTransfers) : {}
 
-    return pendingTransfers[accountAddress] ? pendingTransfers[accountAddress] : []
+        return pendingTransfers[accountAddress.toLowerCase()] ? pendingTransfers[accountAddress] : []
+
+    } else {
+        return []
+    }
 }
