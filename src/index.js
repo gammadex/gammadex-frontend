@@ -7,7 +7,8 @@ import * as GasApi from "./apis/GasApi"
 import * as AccountApi from "./apis/AccountApi"
 import * as WebSocketActions from "./actions/WebSocketActions"
 import * as MyTradeApi from "./apis/MyTradeApi"
-import * as OpenOrderApi from "./apis/OpenOrderApi"
+
+global.FontAwesomeConfig = { autoReplaceSvg: 'nest' }
 
 ReactDOM.render(<App />, document.getElementById('app'), () => {
     ApplicationBootstrapper.initAccounts().then((accountInitialised) => {
