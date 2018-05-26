@@ -101,3 +101,10 @@ export function transferFailed(txHash) {
         txHash: txHash
     })
 }
+
+export function toggleAccountPopover(accountPopoverOpen) {
+    dispatcher.dispatch({
+        type: ActionNames.TOGGLE_ACCOUNT_POPOVER,
+        accountPopoverOpen
+    })
+}

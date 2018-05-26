@@ -26,6 +26,7 @@ class AccountStore extends EventEmitter {
         this.balanceRetrieved = false
         this.retrievingBalance = false
         this.balanceRetrievalFailed = false
+        this.accountPopoverOpen = false
     }
 
     getAccountState() {
@@ -47,6 +48,7 @@ class AccountStore extends EventEmitter {
             balanceRetrieved: this.balanceRetrieved,
             retrievingBalance: this.retrievingBalance,
             balanceRetrievalFailed: this.balanceRetrievalFailed,
+            accountPopoverOpen: this.accountPopoverOpen
         }
     }
 
@@ -162,6 +164,11 @@ class AccountStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.TOGGLE_ACCOUNT_POPOVER: {
+                this.accountPopoverOpen = action.accountPopoverOpen
+                this.emitChange()
+                break
+            }            
         }
     }
 }

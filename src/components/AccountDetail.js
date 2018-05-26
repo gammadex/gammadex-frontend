@@ -156,20 +156,6 @@ export default class AccountDetail extends React.Component {
         const modalTitle = (modalIsDeposit ? `Deposit ${modalToken} to Exchange` : `Withdraw ${modalToken} from Exchange`)
         const modalActionLabel = (modalIsDeposit ? "Deposit" : "Withdraw")
 
-        const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
-        let accountLink = <span className="text-danger">No account</span>
-        if (accountRetrieved) {
-            accountLink =
-                <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${account}`}>{account}</TruncatedAddress>
-        }
-
-        let nonceTip = ''
-        if (selectedAccountType !== AccountType.METAMASK) {
-            let ntext = `Nonce: ${nonce}`
-            nonceTip = <Tooltip placement="right" isOpen={this.state.tooltipOpen} target="atName"
-                                toggle={this.toggle}>{ntext}</Tooltip>
-        }
-
         const warningMessage = this.getAccountWarningMessage()
         const refreshDisabledClass = (accountRetrieved && ! retrievingBalance) ? "" : "disabled"
 
@@ -206,12 +192,6 @@ export default class AccountDetail extends React.Component {
                         ethTransaction={ethTransaction}
                         tokTransaction={tokTransaction}
                         accountsEnabled={balanceRetrieved}/>
-
-                    <BoxFooter>
-                        Account: {accountLink}
-                        <br/>
-                        <Badge id="atName" color="secondary">{accountTypeName}</Badge> {nonceTip}
-                    </BoxFooter>
                 </div>
 
                 <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
