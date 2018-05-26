@@ -32,7 +32,7 @@ export default class TradeHistory extends React.Component {
         const {token} = this.props
 
         return (
-            <Box title="Market Trade History">
+            <Box title="Market Trades">
                 <Conditional displayCondition={trades && trades.length > 0}
                              fallbackMessage={'There is no trade history for ' + token.name}>
                     <TradeHistoryTable base="ETH" token={token.name} trades={trades}/>
