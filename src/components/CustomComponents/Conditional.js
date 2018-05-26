@@ -20,6 +20,6 @@ export default class Conditional extends React.Component {
 }
 
 Conditional.propTypes = {
-    displayCondition: PropTypes.string,
+    displayCondition: PropTypes.bool,
     fallbackMessage: PropTypes.string,
 }
