@@ -1,89 +1,42 @@
 import React from "react"
-import classnames from 'classnames'
-import { TabContent, Nav, NavItem, NavLink, TabPane } from 'reactstrap'
 import {Box} from "./CustomComponents/Box"
-import TradesViewer from "./TradesViewer"
 import OrderBookStore from "../stores/OrderBookStore"
-import MyTradesStore from "../stores/MyTradesStore"
-import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
-import AccountStore from "../stores/AccountStore"
+import Conditional from "./CustomComponents/Conditional"
+import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
 
 export default class TradeHistory extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            activeTab: "marketTrades",
-            accountRetrieved: AccountStore.isAccountRetrieved(),
-            marketTrades: OrderBookStore.getTrades(),
-            myTrades: MyTradesStore.getAllTrades(this.props.token.address)
+            trades: OrderBookStore.getTrades(),
         }
 
-        this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
-        this.marketTradesChanged = this.marketTradesChanged.bind(this)
-        this.myTradesChanged = this.myTradesChanged.bind(this)
+        this.tradesChanged = this.tradesChanged.bind(this)
     }
 
     componentWillMount() {
-        OrderBookStore.on("change", this.marketTradesChanged)
-        MyTradesStore.on("change", this.myTradesChanged)
-        AccountStore.on("change", this.accountStoreUpdated)
+        OrderBookStore.on("change", this.tradesChanged)
     }
 
     componentWillUnmount() {
-        OrderBookStore.removeListener("change", this.marketTradesChanged)
-        MyTradesStore.removeListener("change", this.myTradesChanged)
-        AccountStore.removeListener("change", this.accountStoreUpdated)
+        OrderBookStore.removeListener("change", this.tradesChanged)
     }
 
-    marketTradesChanged() {
-        this.setState({marketTrades: OrderBookStore.getTrades()})
-    }
-
-    myTradesChanged() {
-        this.setState({myTrades: MyTradesStore.getAllTrades(this.props.token.address)})
-    }
-
-    accountStoreUpdated() {
-        this.setState({
-            accountRetrieved: AccountStore.isAccountRetrieved()
-        })
-    }
-
-    toggleTab = tab => {
-        if (this.state.activeTab !== tab) {
-            this.setState({activeTab: tab})
-        }
+    tradesChanged() {
+        this.setState({trades: OrderBookStore.getTrades()})
     }
 
     render() {
-        const {accountRetrieved, marketTrades, myTrades} = this.state
-
-        let myTradesComp = <EmptyTableMessage>Please unlock a wallet to see your trade history</EmptyTableMessage>
-        if (accountRetrieved) {
-            myTradesComp = <TradesViewer id={1} token={this.props.token} trades={myTrades}/>
-        }
+        const {trades} = this.state
+        const {token} = this.props
 
         return (
-            <Box title="Trade History">
-                <Nav tabs>
-                    <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === 'marketTrades' })}
-                                 onClick={() => { this.toggleTab('marketTrades'); }}>Market Trades</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink className={classnames({ active: this.state.activeTab === 'myTrades' })}
-                                 onClick={() => { this.toggleTab('myTrades'); }}>My Trades</NavLink>
-                    </NavItem>
-                </Nav>
-                <TabContent activeTab={this.state.activeTab}>
-                    <TabPane tabId="marketTrades">
-                        <TradesViewer id={0} token={this.props.token} trades={marketTrades}/>
-                    </TabPane>
-                    <TabPane tabId="myTrades">
-                        {myTradesComp}
-                    </TabPane>
-                </TabContent>
+            <Box title="Market Trade History">
+                <Conditional displayCondition={trades && trades.length > 0}
+                             fallbackMessage={'There is no trade history for ' + token.name}>
+                    <TradeHistoryTable base="ETH" token={token.name} trades={trades}/>
+                </Conditional>
             </Box>
         )
     }
