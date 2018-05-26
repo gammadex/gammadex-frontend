@@ -73,7 +73,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         const {showModal, passwordError} = this.state
         const passwordErrorClass = passwordError ? " is-invalid" : ""
 
-        return <Modal isOpen={showModal} toggle={this.hideModal}>
+        return <Modal isOpen={showModal} toggle={this.hideModal} keyboard>
             <ModalHeader toggle={this.hideModal}>Unlock saved private key</ModalHeader>
             <form onSubmit={this.handleUnlock}>
                 <ModalBody>

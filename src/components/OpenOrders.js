@@ -130,7 +130,7 @@ export default class OpenOrders extends React.Component {
                 <div>
                     {content}
                 </div>
-                <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className}>
+                <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className} keyboard>
                     <ModalBody>{modalText}</ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.abortCancel}>Abort</Button>{' '}

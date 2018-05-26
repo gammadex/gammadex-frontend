@@ -194,7 +194,7 @@ export default class AccountDetail extends React.Component {
                         accountsEnabled={balanceRetrieved}/>
                 </div>
 
-                <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className}>
+                <Modal isOpen={modal} toggle={this.hideModal} className={this.props.className} keyboard>
                     <ModalHeader toggle={this.hideModal}>{modalTitle}</ModalHeader>
                     <ModalBody>
                         <Input type="number" placeholder={modalToken} min={0} value={modalValue}
