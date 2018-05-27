@@ -112,9 +112,6 @@ class OrderBookStore extends EventEmitter {
                 this.offers = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.sells, true)
             }
         }
-
-        global.bids = this.bids
-        global.offers = this.offers
     }
 
     mergeBuysAndSells(message) {

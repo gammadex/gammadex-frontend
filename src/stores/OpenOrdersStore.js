@@ -13,6 +13,7 @@ class OpenOrdersStore extends EventEmitter {
         this.confirmModalOrder = null
         this.gasPriceWei = 0,
         this.showAllTokens = true
+        this.currentBlockNumber = null
     }
 
     getOpenOrdersState() {
@@ -22,7 +23,8 @@ class OpenOrdersStore extends EventEmitter {
             showConfirmModal: this.showConfirmModal,
             confirmModalOrder: this.confirmModalOrder,
             gasPriceWei: this.gasPriceWei,
-            showAllTokens: this.showAllTokens
+            showAllTokens: this.showAllTokens,
+            currentBlockNumber: this.currentBlockNumber
         }
     }
 
@@ -31,7 +33,10 @@ class OpenOrdersStore extends EventEmitter {
     }
 
     updateAllOpenOrders() {
-        const openOrdersOnly = this.openOrders.filter(o => o.state === OrderState.OPEN)
+        const openOrdersOnly = this.openOrders
+            .filter(o => o.state === OrderState.OPEN)
+            .filter(o => this.currentBlockNumber && Number(o.expires) > this.currentBlockNumber)
+
         this.openOrders = _.reverse(_.sortBy(openOrdersOnly, o => o.updated))
     }
 
@@ -69,7 +74,7 @@ class OpenOrdersStore extends EventEmitter {
                 this.gasPriceWei = 0
                 this.emitChange()
                 break
-            }            
+            }
             case ActionNames.ADD_PENDING_ORDER_CANCEL: {
                 this.pendingCancelIds.push(action.id)
                 this.emitChange()
@@ -79,12 +84,18 @@ class OpenOrdersStore extends EventEmitter {
                 this.pendingCancelIds = this.pendingCancelIds.filter(i => i != action.id)
                 this.emitChange()
                 break
-            }            
+            }
             case ActionNames.OPEN_ORDERS_SHOW_ALL_CHANGED: {
                 this.showAllTokens = action.showAll
                 this.emitChange()
                 break
-            }      
+            }
+            case ActionNames.CURRENT_BLOCK_NUMBER_UPDATED: {
+                this.currentBlockNumber = action.currentBlockNumber
+                this.updateAllOpenOrders()
+                this.emitChange()
+                break
+            }
         }
     }
 }
