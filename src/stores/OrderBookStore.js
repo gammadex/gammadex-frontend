@@ -13,6 +13,7 @@ class OrderBookStore extends EventEmitter {
     constructor() {
         super()
         this.clearState()
+        this.currentBlockNumber = null
     }
 
     getBids() {
@@ -69,7 +70,14 @@ class OrderBookStore extends EventEmitter {
                 this.mergeTrades(action.trades)
                 this.emitChange()
                 break
-            }            
+            }
+            case ActionNames.CURRENT_BLOCK_NUMBER_UPDATED: {
+                this.currentBlockNumber = action.currentBlockNumber
+                this.bids = this.bids.filter(bid => this.currentBlockNumber && Number(bid.expires) > this.currentBlockNumber)
+                this.offers = this.offers.filter(offer => this.currentBlockNumber && Number(offer.expires) > this.currentBlockNumber)
+                this.emitChange()
+                break
+            }
         }
     }
 
@@ -104,6 +112,9 @@ class OrderBookStore extends EventEmitter {
                 this.offers = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.sells, true)
             }
         }
+
+        global.bids = this.bids
+        global.offers = this.offers
     }
 
     mergeBuysAndSells(message) {

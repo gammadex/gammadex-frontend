@@ -7,6 +7,7 @@ import * as GasApi from "./apis/GasApi"
 import * as AccountApi from "./apis/AccountApi"
 import * as WebSocketActions from "./actions/WebSocketActions"
 import * as MyTradeApi from "./apis/MyTradeApi"
+import * as BlockApi from "./apis/BlockApi"
 
 global.FontAwesomeConfig = { autoReplaceSvg: 'nest' }
 
@@ -19,5 +20,6 @@ ReactDOM.render(<App />, document.getElementById('app'), () => {
         AccountApi.startEthAndTokBalanceRefreshLoop()
         MyTradeApi.startPendingTradesCheckLoop()
         WebSocketActions.connect()
+        BlockApi.startCurrentBlockNumberCheckLoop()
     })
 })

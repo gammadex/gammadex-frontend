@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
 import WebSocketDetail from '../../components/WebSocketDetail'
 import Config from '../../Config'
-import {Button} from 'reactstrap'
-import * as OpenOrderApi from "../../apis/OpenOrderApi"
+import BlockNumberDetail from "../BlockNumberDetail"
 
 class DevelopmentToolbar extends Component {
 
@@ -14,6 +13,7 @@ class DevelopmentToolbar extends Component {
                 </div>
                 <div className="form-group ml-1">
                     <WebSocketDetail/>
+                    <BlockNumberDetail/>
                 </div>
             </span>
         )
