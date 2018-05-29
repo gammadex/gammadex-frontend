@@ -42,7 +42,7 @@ export function ethDepositAmountWeiChanged(ethDepositAmountWei, ethDepositAmount
 
         } else {
             fundingState = FundingState.ERROR
-            fundingText = "Your wallet has an insufficient ETH balance for this deposit"
+            fundingText = `You cannot deposit more than your wallet ETH balance (${baseWeiToEth(walletBalanceEthWei)})`
         }
     }
 
@@ -85,7 +85,7 @@ export function ethWithdrawalAmountWeiChanged(ethWithdrawalAmountWei, ethWithdra
             fundingState = FundingState.OK
         } else {
             fundingState = FundingState.ERROR
-            fundingText = `Your ETH exchange balance is sufficient for this withdrawal`
+            fundingText = `You cannot withdraw more than your exchange ETH balance (${baseWeiToEth(exchangeBalanceEthWei)})`
         }
     }
 
@@ -126,7 +126,7 @@ export function tokDepositAmountWeiChanged(tokDepositAmountWei, tokDepositAmount
             fundingState = FundingState.OK
         } else {
             fundingState = FundingState.ERROR
-            fundingText = `Your wallet has an insufficient ${tokenName} balance for this deposit`
+            fundingText = `You cannot deposit more than your ${tokenName} wallet balance (${tokWeiToEth(walletBalanceTokWei, TokenStore.getSelectedTokenAddress())})`
         }
     }
 
@@ -167,7 +167,7 @@ export function tokWithdrawalAmountWeiChanged(tokWithdrawalAmountWei, tokWithdra
             fundingState = FundingState.OK
         } else {
             fundingState = FundingState.ERROR
-            fundingText = `Your ${tokenName} exchange balance is insufficient for this withdrawal`
+            fundingText = `You cannot withdraw more than your exchange ${tokenName} balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedTokenAddress())})`
         }
     }
 

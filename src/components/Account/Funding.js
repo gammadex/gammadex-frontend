@@ -11,6 +11,7 @@ import FundingStore from "../../stores/FundingStore"
 import NumericInput from "../OrderPlacement/NumericInput"
 import { priceOf, isTakerSell } from "../../OrderUtil.js"
 import OrderSide from "../../OrderSide"
+import AccountType from "../../AccountType"
 import OrderEntryField from "../../OrderEntryField"
 import * as TradeActions from "../../actions/TradeActions"
 import * as FundingActions from "../../actions/FundingActions"
@@ -161,7 +162,7 @@ export default class Funding extends React.Component {
         const { tokenName } = this.props
         const { tokDepositAmountControlled } = this.state
         if (tokDepositAmountControlled != "" && !safeBigNumber(tokDepositAmountControlled).isZero()) {
-            FundingActions.initiateFundingAction(FundingModalType.TOK_DEPOSIT, `Deposit ${tokDepositAmountControlled} ${tokenName} to exchange? TODO metamask warning...`)
+            FundingActions.initiateFundingAction(FundingModalType.TOK_DEPOSIT, `Deposit ${tokDepositAmountControlled} ${tokenName} to exchange?`)
         }
     }
 
@@ -222,7 +223,8 @@ export default class Funding extends React.Component {
         return {
             tokDepositDisabled: this.disableFundingAction(tokDepositState),
             tokDepositValid: this.fundingActionValid(tokDepositState),
-            tokDepositErrorText: this.fundingActionErrorText(tokDepositState, tokDepositText)
+            tokDepositErrorText: this.fundingActionErrorText(tokDepositState, tokDepositText),
+            tokDepositFeedbackIcon: tokDepositState === FundingState.ERROR ? "fas fa-exclamation-triangle" : null
         }
     }
 
@@ -235,7 +237,8 @@ export default class Funding extends React.Component {
         return {
             ethWithdrawalDisabled: this.disableFundingAction(ethWithdrawalState),
             ethWithdrawalValid: this.fundingActionValid(ethWithdrawalState),
-            ethWithdrawalErrorText: this.fundingActionErrorText(ethWithdrawalState, ethWithdrawalText)
+            ethWithdrawalErrorText: this.fundingActionErrorText(ethWithdrawalState, ethWithdrawalText),
+            ethWithdrawalFeedbackIcon: ethWithdrawalState === FundingState.ERROR ? "fas fa-exclamation-triangle" : null
         }
     }
 
@@ -244,11 +247,12 @@ export default class Funding extends React.Component {
             tokWithdrawalState,
             tokWithdrawalText
         } = this.state
-        
+
         return {
             tokWithdrawalDisabled: this.disableFundingAction(tokWithdrawalState),
             tokWithdrawalValid: this.fundingActionValid(tokWithdrawalState),
-            tokWithdrawalErrorText: this.fundingActionErrorText(tokWithdrawalState, tokWithdrawalText)
+            tokWithdrawalErrorText: this.fundingActionErrorText(tokWithdrawalState, tokWithdrawalText),
+            tokWithdrawalFeedbackIcon: tokWithdrawalState === FundingState.ERROR ? "fas fa-exclamation-triangle" : null
         }
     }
 
@@ -268,6 +272,7 @@ export default class Funding extends React.Component {
         const { tokenName } = this.props
 
         const {
+            accountState,
             currentGasPriceWei,
             ethereumPriceUsd,
             ethDepositAmountControlled,
@@ -278,6 +283,7 @@ export default class Funding extends React.Component {
             modalText
         } = this.state
 
+        const { selectedAccountType } = accountState
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
         const estimatedOperationCost = OperationWeights.DEPOSIT
         const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
@@ -290,9 +296,9 @@ export default class Funding extends React.Component {
             ethDepositFeedbackIcon,
             ethDepositHelpIcon } = this.ethDepositInputProps()
 
-        const { tokDepositDisabled, tokDepositValid, tokDepositErrorText } = this.tokDepositInputProps()
-        const { ethWithdrawalDisabled, ethWithdrawalValid, ethWithdrawalErrorText } = this.ethWithdrawalInputProps()
-        const { tokWithdrawalDisabled, tokWithdrawalValid, tokWithdrawalErrorText } = this.tokWithdrawalInputProps()
+        const { tokDepositDisabled, tokDepositValid, tokDepositErrorText, tokDepositFeedbackIcon } = this.tokDepositInputProps()
+        const { ethWithdrawalDisabled, ethWithdrawalValid, ethWithdrawalErrorText, ethWithdrawalFeedbackIcon } = this.ethWithdrawalInputProps()
+        const { tokWithdrawalDisabled, tokWithdrawalValid, tokWithdrawalErrorText, tokWithdrawalFeedbackIcon } = this.tokWithdrawalInputProps()
 
         let confirmModalName = ""
         switch (modalType) {
@@ -312,6 +318,19 @@ export default class Funding extends React.Component {
                 confirmModalName = ""
         }
 
+        let modalBody = <ModalBody>{modalText}</ModalBody>
+        if (selectedAccountType === AccountType.METAMASK && modalType === FundingModalType.TOK_DEPOSIT) {
+            modalBody =
+                <ModalBody>{modalText}<br />
+                    <br />
+                    <Alert color="warning">
+                        <h4 className="alert-heading">MetaMask detected</h4>
+                        Depositing a Token involves submitting two transactions to the Ethereum network: Transfer Approval (1) followed by Deposit (2).
+                        <hr/>
+                        <strong>Please ensure you confirm transaction 1 before 2 in MetaMask, or the deposit will fail.</strong>
+                    </Alert>
+                </ModalBody>
+        }
         return <BoxSection className={"order-box"}>
             <NumericInput value={ethDepositAmountControlled} unitName={"ETH"}
                 onChange={this.onEthDepositAmountChange} fieldName={"ethDepositAmount"}
@@ -330,6 +349,7 @@ export default class Funding extends React.Component {
                 onMax={this.onMaxTokDepositAmount}
                 onAction={this.onTokDepositAction}
                 actionDisabled={tokDepositDisabled}
+                feedbackIcon={tokDepositFeedbackIcon}
                 actionName={"Deposit"} />
             <hr />
             <NumericInput value={ethWithdrawalAmountControlled} unitName={"ETH"}
@@ -338,6 +358,7 @@ export default class Funding extends React.Component {
                 onMax={this.onMaxEthWithdrawAmount}
                 onAction={this.onEthWithdrawAction}
                 actionDisabled={ethWithdrawalDisabled}
+                feedbackIcon={ethWithdrawalFeedbackIcon}
                 actionName={"Withdraw"} />
             {/* <hr /> */}
 
@@ -347,6 +368,7 @@ export default class Funding extends React.Component {
                 onMax={this.onMaxTokWithdrawAmount}
                 onAction={this.onTokWithdrawAction}
                 actionDisabled={tokWithdrawalDisabled}
+                feedbackIcon={ethDepositFeedbackIcon}
                 actionName={"Withdraw"} />
             <hr />
             <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
@@ -354,7 +376,7 @@ export default class Funding extends React.Component {
             <NumericInput name="" value={(estimatedGasCost * ethereumPriceUsd).toFixed(3)} unitName="USD"
                 fieldName={"fundingGasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
-                <ModalBody>{modalText}</ModalBody>
+                <ModalBody>{modalBody}</ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.abortFundingAction}>Abort</Button>{' '}
                     <Button color="primary" onClick={this.confirmFundingAction}>{confirmModalName}</Button>
