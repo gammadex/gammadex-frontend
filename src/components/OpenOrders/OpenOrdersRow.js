@@ -7,7 +7,6 @@ import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
 import TokenListApi from "../../apis/TokenListApi"
 import * as OpenOrderApi from "../../apis/OpenOrderApi"
-import GasPriceStore from "../../stores/GasPriceStore"
 import { tokenAddress, makerSide, tokenAmountWei } from "../../OrderUtil"
 import { tokWeiToEth, safeBigNumber } from "../../EtherConversion"
 
@@ -15,30 +14,11 @@ export default class OpenOrdersRow extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {
-            currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei()
-        }
-
-        this.onGasStoreChange = this.onGasStoreChange.bind(this)
         this.cancelOrder = this.cancelOrder.bind(this)
     }
 
-    componentDidMount() {
-        GasPriceStore.on("change", this.onGasStoreChange)
-    }
-
-    componentWillUnmount() {
-        GasPriceStore.removeListener("change", this.onGasStoreChange)
-    }
-
-    onGasStoreChange() {
-        this.setState({
-            currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei()
-        })
-    }
-
     cancelOrder() {
-        OpenOrderApi.requestOrderCancel(this.props.openOrder, this.state.currentGasPriceWei)
+        OpenOrderApi.requestOrderCancel(this.props.openOrder, this.props.currentGasPriceWei)
     }
 
     render() {
