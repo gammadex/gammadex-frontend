@@ -66,7 +66,6 @@ class Exchange extends Component {
                 </div>
                 <div className="pl-0 col-lg-3">
                     <Charts token={token}/>
-                    <AccountDetail token={token}/>
                     <PendingTrades/>
                     <TradeHistory token={token}/>
                 </div>

@@ -2,6 +2,12 @@ import React from "react"
 import { FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button } from 'reactstrap'
 
 export default class NumericInput extends React.Component {
+    constructor(props) {
+        super(props)
+        this.formFeedback = this.formFeedback.bind(this)
+        this.formText = this.formText.bind(this)
+    }
+
     static cleanValueToDecimal(value) {
         return value
             .replace(/[^0-9.]/g, () => "") // globally strip everything that isn't a digit or a .
@@ -24,8 +30,43 @@ export default class NumericInput extends React.Component {
         this.props.onMax()
     }
 
+    onAction() {
+        this.props.onAction()
+    }
+
+    formFeedback() {
+        const { errorMessage = null, feedbackIcon = null } = this.props
+        if(feedbackIcon) {
+            return <FormFeedback><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
+        } else {
+            return <FormFeedback>{errorMessage}</FormFeedback>
+        }
+    }
+
+    formText() {
+        const { helpMessage = null, helpIcon = null } = this.props
+        if(helpIcon) {
+            return <FormText color="muted"><i className={helpIcon}></i>&nbsp;&nbsp;{helpMessage}</FormText>
+        } else {
+            return <FormText color="muted">{helpMessage}</FormText>
+        }
+    }
+
     render() {
-        const { name, unitName, fieldName, value, valid = true, errorMessage = null, disabled = false, helpMessage = null, onMax = null, placeholder = "0.00" } = this.props
+        const { 
+            name,
+            unitName,
+            fieldName,
+            value,
+            valid = true,
+            errorMessage = null,
+            disabled = false,
+            helpMessage = null,
+            onMax = null,
+            onAction = null,
+            actionName = null,
+            actionDisabled = false,
+            placeholder = "0.00" } = this.props
         const isInvalid = valid !== null && !valid
 
         let maxButton = null
@@ -33,9 +74,14 @@ export default class NumericInput extends React.Component {
             maxButton = <InputGroupAddon addonType="append"><Button color="link" onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
         }
 
+        let firstCol = <Label for={fieldName} sm={3}>{name}</Label>
+        if (typeof (onAction) === 'function' && actionName) {
+            firstCol = <Col sm={3}><Button color="primary" disabled={actionDisabled} onClick={() => this.onAction()}>{actionName}</Button></Col>
+        }
+
         return (
             <FormGroup row>
-                <Label for={fieldName} sm={3}>{name}</Label>
+                {firstCol}
                 <Col sm={9}>
                     <div className="input-group">
                         <Input id={fieldName}
@@ -48,8 +94,8 @@ export default class NumericInput extends React.Component {
                         <div className="input-group-append">
                             <div className="input-group-text">{unitName}</div>
                         </div>
-                        <FormFeedback>{errorMessage}</FormFeedback>
-                        <FormText color="muted">{helpMessage}</FormText>
+                        {this.formFeedback()}
+                        {this.formText()}
                     </div>
                 </Col>
             </FormGroup>

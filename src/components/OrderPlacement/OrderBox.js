@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import FillOrderBook from './FillOrderBook'
 import MakeOrder from './MakeOrder'
+import Funding from '../Account/Funding'
 import OrderSide from "../../OrderSide"
 import OrderBoxType from "./OrderBoxType"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
@@ -95,10 +96,10 @@ export default class OrderBox extends React.Component {
         const { activeTradeSide, activeOrderSide, balanceRetrieved } = this.state
         const { tokenName } = this.props
 
-        const buyTradeActive = activeTradeSide === OrderBoxType.BUY_TRADE 
-        const sellTradeActive = activeTradeSide === OrderBoxType.SELL_TRADE 
-        const buyOrderActive = activeOrderSide === OrderBoxType.BUY_ORDER 
-        const sellOrderActive = activeOrderSide === OrderBoxType.SELL_ORDER 
+        const buyTradeActive = activeTradeSide === OrderBoxType.BUY_TRADE
+        const sellTradeActive = activeTradeSide === OrderBoxType.SELL_TRADE
+        const buyOrderActive = activeOrderSide === OrderBoxType.BUY_ORDER
+        const sellOrderActive = activeOrderSide === OrderBoxType.SELL_ORDER
 
         return (
             <Box>
@@ -152,6 +153,13 @@ export default class OrderBox extends React.Component {
                                         There are zero fees to make an order in this way.
                                     </PopoverBody>
                                 </Popover>
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                className={classnames({ active: this.state.activeOrderBoxType === OrderBoxType.FUNDING })}
+                                onClick={() => this.toggleOrderBoxType(OrderBoxType.FUNDING)}>
+                                <strong>FUNDING</strong>
                             </NavLink>
                         </NavItem>
                     </Nav>
@@ -227,6 +235,13 @@ export default class OrderBox extends React.Component {
                                 </TabPane>
                             </TabContent>
 
+                        </TabPane>
+                        <TabPane tabId={OrderBoxType.FUNDING}>
+                            <Row>
+                                <Col sm="12">
+                                    <Funding tokenName={tokenName}/>
+                                </Col>
+                            </Row>
                         </TabPane>
                     </TabContent>
                 </BoxSection>
