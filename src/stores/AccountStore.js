@@ -18,10 +18,6 @@ class AccountStore extends EventEmitter {
         this.walletBalanceTokWei = 0
         this.exchangeBalanceEthWei = 0
         this.exchangeBalanceTokWei = 0
-        this.modal = false
-        this.modalValue = ''
-        this.modalIsEth = false
-        this.modalIsDeposit = false
         this.accountSequenceNum = 0 // number of times an account has been set up
         this.balanceRetrieved = false
         this.retrievingBalance = false
@@ -40,10 +36,6 @@ class AccountStore extends EventEmitter {
             walletBalanceTokWei: this.walletBalanceTokWei,
             exchangeBalanceEthWei: this.exchangeBalanceEthWei,
             exchangeBalanceTokWei: this.exchangeBalanceTokWei,
-            modal: this.modal,
-            modalValue: this.modalValue,
-            modalIsEth: this.modalIsEth,
-            modalIsDeposit: this.modalIsDeposit,
             accountSequenceNum: this.accountSequenceNum,
             balanceRetrieved: this.balanceRetrieved,
             retrievingBalance: this.retrievingBalance,
@@ -130,25 +122,6 @@ class AccountStore extends EventEmitter {
                     this.retrievingBalance = false
                     this.balanceRetrievalFailed = true
                 }
-                this.emitChange()
-                break
-            }
-            case ActionNames.DEPOSIT_WITHDRAW: {
-                const { isEth, isDeposit } = action.depositWithdrawProps
-                this.modal = true
-                this.modalValue = ''
-                this.modalIsEth = isEth
-                this.modalIsDeposit = isDeposit
-                this.emitChange()
-                break
-            }
-            case ActionNames.DEPOSIT_WITHDRAW_CANCEL: {
-                this.modal = false
-                this.emitChange()
-                break
-            }
-            case ActionNames.DEPOSIT_WITHDRAW_AMOUNT_UPDATED: {
-                this.modalValue = action.amount
                 this.emitChange()
                 break
             }

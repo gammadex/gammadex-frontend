@@ -60,27 +60,6 @@ export function addPendingTransfer(type, tokenAddress, amount, hash) {
     })
 }
 
-export function depositWithdraw(isEth, isDeposit) {
-    const depositWithdrawProps = {isEth, isDeposit}
-    dispatcher.dispatch({
-        type: ActionNames.DEPOSIT_WITHDRAW,
-        depositWithdrawProps
-    })
-}
-
-export function depositWithdrawCancel() {
-    dispatcher.dispatch({
-        type: ActionNames.DEPOSIT_WITHDRAW_CANCEL
-    })
-}
-
-export function depositWithdrawAmountUpdated(amount) {
-    dispatcher.dispatch({
-        type: ActionNames.DEPOSIT_WITHDRAW_AMOUNT_UPDATED,
-        amount
-    })
-}
-
 export function nonceUpdated(nonce) {
     dispatcher.dispatch({
         type: ActionNames.NONCE_UPDATED,

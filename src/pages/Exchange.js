@@ -7,7 +7,6 @@ import OpenOrders from '../components/OpenOrders'
 import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
 import Charts from '../components/Charts'
-import AccountDetail from '../components/AccountDetail'
 import TokenErrorMessage from '../components/TokenErrorMessage'
 import * as TokenApi from "../apis/TokenApi"
 import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
