@@ -11,6 +11,9 @@ import * as BlockApi from "./apis/BlockApi"
 
 global.FontAwesomeConfig = { autoReplaceSvg: 'nest' }
 
+// we have 12 listeners attached to the AccountStore
+require('events').EventEmitter.defaultMaxListeners = 15
+
 ReactDOM.render(<App />, document.getElementById('app'), () => {
     ApplicationBootstrapper.initAccounts().then((accountInitialised) => {
         WalletApi.startMetaMaskCheckLoop()
