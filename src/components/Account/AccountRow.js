@@ -37,7 +37,7 @@ export default class AccountTableRow extends React.Component {
     }
 
     render() {
-        const { token, walletBalanceWei, exchangeBalanceWei } = this.props
+        const { token, walletBalanceWei, exchangeBalanceWei, clearBalances } = this.props
 
         const walletBalanceEth = weiToEth(walletBalanceWei, token.decimals).toString()
         const exchangeBalanceEth = weiToEth(exchangeBalanceWei, token.decimals).toString()
@@ -47,13 +47,16 @@ export default class AccountTableRow extends React.Component {
             gasIndicator = <i className="fas fa-gas-pump"></i>
         }
 
+        const walletCellValue = token.address != Config.getBaseAddress() && clearBalances ? "-" : <Round price softZeros>{walletBalanceEth}</Round>
+        const exchangeCellValue = token.address != Config.getBaseAddress() && clearBalances ? "-" : <Round price softZeros>{exchangeBalanceEth}</Round>
+
         return (
             <tr>
                 <td>
                     <div><strong>{token.name}</strong></div>
                 </td>
-                <td className="clickable" onClick={this.selectWalletCell} align="right"><Round price softZeros>{walletBalanceEth}</Round>&nbsp;&nbsp;&nbsp;{gasIndicator}</td>
-                <td className="clickable" onClick={this.selectExchangeCell} align="right"><Round price softZeros>{exchangeBalanceEth}</Round></td>
+                <td className="clickable" onClick={this.selectWalletCell} align="right">{walletCellValue}&nbsp;&nbsp;&nbsp;{gasIndicator}</td>
+                <td className="clickable" onClick={this.selectExchangeCell} align="right">{exchangeCellValue}</td>
             </tr>
         )
     }

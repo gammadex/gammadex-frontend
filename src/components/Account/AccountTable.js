@@ -10,7 +10,8 @@ export default class AccountTable extends React.Component {
             walletBalanceEthWei,
             walletBalanceTokWei,
             exchangeBalanceEthWei,
-            exchangeBalanceTokWei
+            exchangeBalanceTokWei,
+            clearBalances
         } = this.props
         return (
             <table className="table table-striped table-bordered table-no-bottom-border">
@@ -23,10 +24,12 @@ export default class AccountTable extends React.Component {
                 </thead>
                 <tbody>
                     <AccountRow token={TokenListApi.find({ name: "ETH" })}
+                        clearBalances={clearBalances}
                         walletBalanceWei={walletBalanceEthWei}
                         exchangeBalanceWei={exchangeBalanceEthWei}
                     />
                     <AccountRow token={token}
+                        clearBalances={clearBalances}
                         walletBalanceWei={walletBalanceTokWei}
                         exchangeBalanceWei={exchangeBalanceTokWei}
                     />

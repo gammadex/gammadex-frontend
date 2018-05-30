@@ -71,9 +71,12 @@ export default class AccountDetail extends React.Component {
             exchangeBalanceTokWei,
             balanceRetrieved,
             retrievingBalance,
-            balanceRetrievalFailed
+            balanceRetrievalFailed,
+            retrievedTokenAddress,
+            tokenAddress
         } = this.state
 
+        const clearBalances = !tokenAddress || !retrievedTokenAddress || tokenAddress != retrievedTokenAddress
         const warningMessage = this.getAccountWarningMessage()
         const refreshDisabledClass = (accountRetrieved && !retrievingBalance) ? "" : "disabled"
 
@@ -102,6 +105,7 @@ export default class AccountDetail extends React.Component {
                     </Conditional>
 
                     <AccountTable
+                        clearBalances={clearBalances}
                         token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
                         walletBalanceTokWei={walletBalanceTokWei}

@@ -22,7 +22,7 @@ export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
 
     EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
         .then(balance => {
-            AccountActions.balanceRetrieved(balance, notify)
+            AccountActions.balanceRetrieved(balance, notify, tokenAddress)
         })
         .catch(error => {
             AccountActions.balanceRetrievalFailed(error, notify)

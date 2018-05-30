@@ -23,6 +23,7 @@ class AccountStore extends EventEmitter {
         this.retrievingBalance = false
         this.balanceRetrievalFailed = false
         this.accountPopoverOpen = false
+        this.retrievedTokenAddress = null
     }
 
     getAccountState() {
@@ -40,7 +41,8 @@ class AccountStore extends EventEmitter {
             balanceRetrieved: this.balanceRetrieved,
             retrievingBalance: this.retrievingBalance,
             balanceRetrievalFailed: this.balanceRetrievalFailed,
-            accountPopoverOpen: this.accountPopoverOpen
+            accountPopoverOpen: this.accountPopoverOpen,
+            retrievedTokenAddress: this.retrievedTokenAddress
         }
     }
 
@@ -106,6 +108,7 @@ class AccountStore extends EventEmitter {
                 this.walletBalanceTokWei = action.balance[1]
                 this.exchangeBalanceEthWei = action.balance[2]
                 this.exchangeBalanceTokWei = action.balance[3]
+                this.retrievedTokenAddress = action.tokenAddress
                 if (action.notify) {
                     this.balanceRetrieved = true
                     this.retrievingBalance = false

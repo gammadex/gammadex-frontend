@@ -29,11 +29,12 @@ export function retrievingBalance() {
     })
 }
 
-export function balanceRetrieved(balance, notify) {
+export function balanceRetrieved(balance, notify, tokenAddress) {
     dispatcher.dispatch({
         type: ActionNames.BALANCE_RETRIEVED,
         balance,
-        notify
+        notify,
+        tokenAddress
     })
 }
 
