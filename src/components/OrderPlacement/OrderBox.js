@@ -94,7 +94,7 @@ export default class OrderBox extends React.Component {
 
     render() {
         const { activeTradeSide, activeOrderSide, balanceRetrieved } = this.state
-        const { tokenName } = this.props
+        const { tokenName, tokenAddress } = this.props
 
         const buyTradeActive = activeTradeSide === OrderBoxType.BUY_TRADE
         const sellTradeActive = activeTradeSide === OrderBoxType.SELL_TRADE
@@ -114,7 +114,7 @@ export default class OrderBox extends React.Component {
                             Please unlock a wallet to enable trading
                         </div>
                     </Conditional>
-                    <Nav tabs>
+                    <Nav tabs fill>
                         <NavItem>
                             <NavLink
                                 className={classnames({ active: this.state.activeOrderBoxType === OrderBoxType.TRADE })}
@@ -165,20 +165,20 @@ export default class OrderBox extends React.Component {
                     </Nav>
                     <TabContent activeTab={this.state.activeOrderBoxType}>
                         <TabPane tabId={OrderBoxType.TRADE}>
-
-                            <Nav tabs>
+                            <hr />
+                            <Nav tabs fill>
                                 <NavItem>
                                     <NavLink
                                         className={classnames({ active: buyTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.BUY_TRADE)}>
-                                        <strong>BUY {tokenName}</strong> &nbsp;
+                                        <strong>BUY {tokenName}</strong>
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
                                         className={classnames({ active: sellTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.SELL_TRADE)}>
-                                        <strong>SELL {tokenName}</strong> &nbsp;
+                                        <strong>SELL {tokenName}</strong>
                             </NavLink>
                                 </NavItem>
                             </Nav>
@@ -186,14 +186,14 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} balanceRetrieved={balanceRetrieved} />
+                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                                 <TabPane tabId={OrderBoxType.SELL_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} balanceRetrieved={balanceRetrieved} />
+                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
@@ -201,20 +201,20 @@ export default class OrderBox extends React.Component {
 
                         </TabPane>
                         <TabPane tabId={OrderBoxType.ORDER}>
-
-                            <Nav tabs>
+                            <hr />
+                            <Nav tabs fill>
                                 <NavItem>
                                     <NavLink
                                         className={classnames({ active: buyOrderActive })}
                                         onClick={() => this.toggleOrderSide(OrderBoxType.BUY_ORDER)}>
-                                        <strong>BUY {tokenName}</strong> &nbsp;
+                                        <strong>BUY {tokenName}</strong>
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
                                         className={classnames({ active: sellOrderActive })}
                                         onClick={() => this.toggleOrderSide(OrderBoxType.SELL_ORDER)}>
-                                        <strong>SELL {tokenName}</strong> &nbsp;
+                                        <strong>SELL {tokenName}</strong>
                             </NavLink>
                                 </NavItem>
                             </Nav>
@@ -222,14 +222,14 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} balanceRetrieved={balanceRetrieved} />
+                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                                 <TabPane tabId={OrderBoxType.SELL_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} balanceRetrieved={balanceRetrieved} />
+                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
@@ -237,9 +237,10 @@ export default class OrderBox extends React.Component {
 
                         </TabPane>
                         <TabPane tabId={OrderBoxType.FUNDING}>
+                            <hr />
                             <Row>
                                 <Col sm="12">
-                                    <Funding tokenName={tokenName}/>
+                                    <Funding tokenName={tokenName} />
                                 </Col>
                             </Row>
                         </TabPane>

@@ -6,7 +6,7 @@ import NumericInput from "./NumericInput.js"
 import OrderSide from "../../OrderSide"
 import OrderPlacementStore from "../../stores/OrderPlacementStore"
 import AccountStore from "../../stores/AccountStore"
-import { safeBigNumber } from "../../EtherConversion";
+import { safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import OrderEntryField from "../../OrderEntryField"
 import ExpiryType from "../../ExpiryType"
@@ -30,7 +30,9 @@ export default class MakeOrder extends React.Component {
             expireAfterBlocks: 0,
             expireAfterHumanReadableString: "",
             orderHash: null,
-            selectedAccountType: null
+            selectedAccountType: null,
+            exchangeBalanceEthWei: 0,
+            exchangeBalanceTokWei: 0
         }
         this.saveOrderPlacementState = this.saveOrderPlacementState.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
@@ -131,8 +133,11 @@ export default class MakeOrder extends React.Component {
     }
 
     saveAccountState() {
+        const { selectedAccountType, exchangeBalanceEthWei, exchangeBalanceTokWei } = AccountStore.getAccountState()
         this.setState({
-            selectedAccountType: AccountStore.getAccountState().selectedAccountType
+            selectedAccountType: selectedAccountType,
+            exchangeBalanceEthWei: exchangeBalanceEthWei,
+            exchangeBalanceTokWei: exchangeBalanceTokWei
         })
     }
 
@@ -154,7 +159,7 @@ export default class MakeOrder extends React.Component {
 
     render() {
         const {
-            type, tokenName, balanceRetrieved
+            type, tokenName, tokenAddress, balanceRetrieved
         } = this.props
 
         const {
@@ -170,8 +175,11 @@ export default class MakeOrder extends React.Component {
             expireAfterBlocks,
             expireAfterHumanReadableString,
             orderHash,
-            selectedAccountType } = this.state
+            selectedAccountType,
+            exchangeBalanceEthWei,
+            exchangeBalanceTokWei } = this.state
 
+        const available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
         const submitDisabled = !orderValid
             || total === ""
             || safeBigNumber(total).isZero()
@@ -205,6 +213,9 @@ export default class MakeOrder extends React.Component {
         const body =
             <BoxSection className={"order-box"}>
 
+                <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
+                    disabled="true" fieldName={type + "ExchangeBalanceMakeOrder"} />
+                <hr />
                 <NumericInput name="Price" value={price} unitName="ETH"
                     onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />
 

@@ -20,7 +20,7 @@ export default class Trading extends React.Component {
             <div className="row">
                 <div className="col-lg-6">
                     <AccountDetail token={token} />
-                    <OrderBox tokenName={token.name} />
+                    <OrderBox tokenName={token.name} tokenAddress={token.address} />
                 </div>
                 <div className="col-lg-6">
                     <OrderBook token={token} />

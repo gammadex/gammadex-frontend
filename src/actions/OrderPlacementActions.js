@@ -233,7 +233,7 @@ export function validateSellOrder(totalEthWei, priceControlled, sellOrderAmountC
     let orderInvalidField = OrderEntryField.AMOUNT
     if (amountWei.isGreaterThan(exchangeBalanceTokWei)) {
         orderValid = false
-        orderInvalidReason = `Amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, tokenAddress)})`
+        orderInvalidReason = `Amount greater than exchange balance (${tokWeiToEth(exchangeBalanceTokWei, tokenAddress)})`
     }
 
     if (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero())) {
@@ -369,7 +369,7 @@ export function validateBuyOrder(totalEthWei, priceControlled, buyOrderAmountCon
     let orderInvalidField = OrderEntryField.AMOUNT
     if (totalEthWei.isGreaterThan(exchangeBalanceEthWei)) {
         orderValid = false
-        orderInvalidReason = `Total amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
+        orderInvalidReason = `Total amount greater than exchange balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
         orderInvalidField = OrderEntryField.TOTAL
     }
     if (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero())) {

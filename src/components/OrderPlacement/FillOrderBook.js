@@ -6,6 +6,7 @@ import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import OrderBookStore from "../../stores/OrderBookStore"
 import TradeStore from "../../stores/TradeStore"
 import GasPriceStore from "../../stores/GasPriceStore"
+import AccountStore from "../../stores/AccountStore"
 import NumericInput from "./NumericInput.js"
 import { priceOf, isTakerSell } from "../../OrderUtil.js"
 import OrderSide from "../../OrderSide"
@@ -15,7 +16,7 @@ import Config from "../../Config"
 import Conditional from "../CustomComponents/Conditional"
 import GasPriceChooser from "../GasPriceChooser"
 import { OperationWeights } from "../../ContractOperations"
-import { gweiToEth, safeBigNumber } from "../../EtherConversion"
+import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
@@ -24,28 +25,34 @@ export default class FillOrderBook extends React.Component {
             orders: [],
             fillOrder: null,
             currentGasPriceWei: 4000000000, // 4 gwei
-            ethereumPriceUsd: 700.0 // TODO, eugh - how should the ui handle no USD price?
+            ethereumPriceUsd: 700.0, // TODO, eugh - how should the ui handle no USD price?
+            exchangeBalanceEthWei: 0,
+            exchangeBalanceTokWei: 0
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
         this.onTradeStoreChange = this.onTradeStoreChange.bind(this)
         this.isTakerBuyComponent = this.isTakerBuyComponent.bind(this)
         this.checkFillOrder = this.checkFillOrder.bind(this)
+        this.saveAccountState = this.saveAccountState.bind(this)
     }
 
     componentDidMount() {
         OrderBookStore.on("change", this.onOrderBookChange)
         TradeStore.on("change", this.onTradeStoreChange)
         GasPriceStore.on("change", this.saveGasPrices)
+        AccountStore.on("change", this.saveAccountState)
         this.onTradeStoreChange()
         this.onOrderBookChange()
         this.saveGasPrices()
+        this.saveAccountState()
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.onOrderBookChange)
         TradeStore.removeListener("change", this.onTradeStoreChange)
         GasPriceStore.removeListener("change", this.saveGasPrices)
+        AccountStore.removeListener("change", this.saveAccountState)
     }
 
     isTakerBuyComponent() {
@@ -60,6 +67,14 @@ export default class FillOrderBook extends React.Component {
             // perhaps revisit this when we move to redux+thunk
         })
         // TODO trigger remove fillOrder action if the current fillOrder is no longer present in the order book (e.g. someone else got it) 
+    }
+
+    saveAccountState() {
+        const { exchangeBalanceEthWei, exchangeBalanceTokWei } = AccountStore.getAccountState()
+        this.setState({
+            exchangeBalanceEthWei: exchangeBalanceEthWei,
+            exchangeBalanceTokWei: exchangeBalanceTokWei
+        })
     }
 
     checkFillOrder() {
@@ -113,14 +128,16 @@ export default class FillOrderBook extends React.Component {
 
     render() {
         const {
-            type, tokenName, balanceRetrieved
+            type, tokenName, tokenAddress, balanceRetrieved
         } = this.props
 
         const {
             orders,
             fillOrder,
             currentGasPriceWei,
-            ethereumPriceUsd
+            ethereumPriceUsd,
+            exchangeBalanceEthWei,
+            exchangeBalanceTokWei
         } = this.state
 
         let body = null
@@ -135,6 +152,8 @@ export default class FillOrderBook extends React.Component {
             // calc = amount * 0.003
             const exchangeCost = safeBigNumber(isTakerSell(fillOrder.order) ? fillOrder.fillAmountControlled : fillOrder.totalEthControlled).times(safeBigNumber(Config.getExchangeFeePercent()))
             const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenName : "ETH"
+
+            const available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
 
             const amountFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountValid : true
             const amountFieldErrorMessage = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountInvalidReason : ""
@@ -152,6 +171,9 @@ export default class FillOrderBook extends React.Component {
             body =
                 <BoxSection className={"order-box"}>
                     {bestExecutionWarning}
+                    <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
+                        disabled="true" fieldName={type + "ExchangeBalanceFillOrder"} />
+                    <hr />
                     <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
                         fieldName={type + "OrderPrice"} disabled="true" />
                     <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenName}
