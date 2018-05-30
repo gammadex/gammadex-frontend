@@ -8,6 +8,11 @@ import FundingState from "../components/Account/FundingState"
 class FundingStore extends EventEmitter {
     constructor() {
         super()
+        this.clearState = this.clearState.bind(this)
+        this.clearState()
+    }
+
+    clearState() {
         this.ethDepositAmountControlled = ""
         this.ethDepositAmountWei = BigNumber(0)
         this.ethDepositState = FundingState.EMPTY
@@ -27,7 +32,6 @@ class FundingStore extends EventEmitter {
         this.modalType = FundingModalType.NO_MODAL
         this.modalText = ""
     }
-
 
     getFundingState() {
         return {
@@ -103,27 +107,15 @@ class FundingStore extends EventEmitter {
                 break
             }   
             case ActionNames.CLEAR_FUNDING_ACTION: {
-                this.modalType = FundingModalType.NO_MODAL
-                this.modalText = ""
-                this.ethDepositAmountControlled = ""
-                this.ethDepositAmountWei = BigNumber(0)
-                this.ethDepositState = FundingState.EMPTY
-                this.ethDepositText = ""
-                this.tokDepositAmountControlled = ""
-                this.tokDepositAmountWei = BigNumber(0)
-                this.tokDepositState = FundingState.EMPTY
-                this.tokDepositText = ""       
-                this.ethWithdrawalAmountControlled = ""
-                this.ethWithdrawalAmountWei = BigNumber(0)
-                this.ethWithdrawalState = FundingState.EMPTY
-                this.ethWithdrawalText = ""
-                this.tokWithdrawalAmountControlled = ""
-                this.tokWithdrawalAmountWei = BigNumber(0)
-                this.tokWithdrawalState = FundingState.EMPTY
-                this.tokWithdrawalText = ""                              
+                this.clearState()                           
                 this.emitChange()
                 break
-            }                                               
+            }     
+            case ActionNames.SELECT_TOKEN: {
+                this.clearState()                           
+                this.emitChange()
+                break
+            }                                                        
         }
     }
 }

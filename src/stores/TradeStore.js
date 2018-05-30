@@ -47,6 +47,12 @@ class TradeStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.SELECT_TOKEN: {
+                this.fillOrderTakerBuy = null
+                this.fillOrderTakerSell = null
+                this.emitChange()
+                break
+            }
             case ActionNames.FILL_ORDER_CHANGED: {
                 if(isTakerBuy(action.updatedFillOrder.order)) {
                     this.fillOrderTakerBuy = action.updatedFillOrder
