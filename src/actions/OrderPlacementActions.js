@@ -235,11 +235,6 @@ export function validateSellOrder(totalEthWei, priceControlled, sellOrderAmountC
         orderValid = false
         orderInvalidReason = `Amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, tokenAddress)})`
     }
-    const bidTotalWei = OrderBookStore.getBidTotal()
-    if (amountWei.isGreaterThan(bidTotalWei)) {
-        orderValid = false
-        orderInvalidReason = `Amount greater than orderbook total bid size (${tokWeiToEth(bidTotalWei, tokenAddress)})`
-    }
 
     if (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero())) {
         orderValid = false
