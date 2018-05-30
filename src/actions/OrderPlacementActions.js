@@ -24,11 +24,12 @@ import ExpiryType from "../ExpiryType"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "./GlobalMessageActions"
 import TokenListApi from "../apis/TokenListApi"
+import React from "react"
 
 /**
  * Calculate a total value when the price changes
  */
-function calcTotal(priceControlled, amountWei, amountControlled, ethControlled) {
+function calcTotal(priceControlled, amountWei, amountControlled) {
     if (amountControlled !== "" && priceControlled !== "") {
         const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
         const totalEthControlled = baseWeiToEth(totalEthWei).toFixed()
@@ -106,9 +107,9 @@ export function clearBuyOrder() {
 }
 
 export function sellOrderPriceChanged(priceControlled) {
-    const { sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled, sellOrderExpiryType, sellOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
-    const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, sellOrderAmountWei, sellOrderAmountControlled, sellOrderTotalEthControlled)
-    const { orderValid, orderInvalidReason, orderInvalidField } = validateSellOrder(sellOrderAmountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
+    const { sellOrderAmountWei, sellOrderAmountControlled, sellOrderExpiryType, sellOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
+    const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, sellOrderAmountWei, sellOrderAmountControlled)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateSellOrder(totalEthWei, priceControlled, sellOrderAmountControlled, totalEthControlled, sellOrderAmountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.SELL, expires(OrderSide.SELL), priceControlled, sellOrderAmountControlled, TokenStore.getSelectedToken().address)
 
@@ -120,6 +121,8 @@ export function sellOrderPriceChanged(priceControlled) {
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        hasPriceWarning,
+        priceWarning,
         unsignedOrder,
         hash
     })
@@ -127,11 +130,10 @@ export function sellOrderPriceChanged(priceControlled) {
 
 export function sellOrderAmountChanged(sellOrderAmountControlled) {
     const sellOrderAmountWei = tokEthToWei(sellOrderAmountControlled, TokenStore.getSelectedToken().address)
-    const { sellOrderPriceControlled, sellOrderTotalEthControlled, sellOrderExpiryType, sellOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
+    const { sellOrderPriceControlled, sellOrderExpiryType, sellOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
 
-    const { totalEthWei, totalEthControlled } = calcTotal(sellOrderPriceControlled, sellOrderAmountWei,
-        sellOrderAmountControlled, sellOrderTotalEthControlled)
-    const { orderValid, orderInvalidReason, orderInvalidField } = validateSellOrder(sellOrderAmountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
+    const { totalEthWei, totalEthControlled } = calcTotal(sellOrderPriceControlled, sellOrderAmountWei, sellOrderAmountControlled)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateSellOrder(totalEthWei, sellOrderPriceControlled, sellOrderAmountControlled, totalEthControlled, sellOrderAmountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.SELL, expires(OrderSide.SELL), sellOrderPriceControlled, sellOrderAmountControlled, TokenStore.getSelectedToken().address)
 
@@ -144,6 +146,8 @@ export function sellOrderAmountChanged(sellOrderAmountControlled) {
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        hasPriceWarning,
+        priceWarning,
         unsignedOrder,
         hash
     })
@@ -158,7 +162,7 @@ export function sellOrderTotalEthChanged(totalEthControlled) {
         priceControlled
     } = calcAmount(OrderPlacementStore.getOrderPlacementState().sellOrderPriceControlled, totalEthControlled)
 
-    const { orderValid, orderInvalidReason, orderInvalidField } = validateSellOrder(amountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateSellOrder(totalEthWei, priceControlled, amountControlled, totalEthControlled, amountWei, sellOrderExpiryType, sellOrderExpireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.SELL, expires(OrderSide.SELL), priceControlled, amountControlled, TokenStore.getSelectedToken().address)
 
@@ -172,6 +176,8 @@ export function sellOrderTotalEthChanged(totalEthControlled) {
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        hasPriceWarning,
+        priceWarning,
         unsignedOrder,
         hash
     })
@@ -194,7 +200,7 @@ export function sellOrderExpireAfterBlocksChanged(expireAfterBlocks) {
 
 export function sellOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfterHumanReadableString) {
     const { sellOrderAmountWei, sellOrderTotalEthWei, sellOrderPriceControlled, sellOrderAmountControlled, sellOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
-    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateSellOrder(sellOrderAmountWei, expiryType, expireAfterBlocks)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateSellOrder(sellOrderTotalEthWei, sellOrderPriceControlled, sellOrderAmountControlled, sellOrderTotalEthControlled, sellOrderAmountWei, expiryType, expireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(
         orderValid,
@@ -212,12 +218,14 @@ export function sellOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfte
         orderValid,
         orderInvalidReason,
         orderInvalidField,
+        hasPriceWarning,
+        priceWarning,
         hash
     })
 }
 
 // TODO this validation needs to be triggered after: 1) here, 2) wallet balance update, 3) order book update
-export function validateSellOrder(amountWei, expiryType, expireAfterBlocks) {
+export function validateSellOrder(totalEthWei, priceControlled, sellOrderAmountControlled, sellOrderTotalEthControlled, amountWei, expiryType, expireAfterBlocks) {
     const tokenAddress = TokenStore.getSelectedToken().address
     const exchangeBalanceTokWei = BigNumber(String(AccountStore.getAccountState().exchangeBalanceTokWei))
     let orderValid = true
@@ -239,13 +247,15 @@ export function validateSellOrder(amountWei, expiryType, expireAfterBlocks) {
         orderInvalidField = OrderEntryField.BLOCKS
     }
 
-    return { orderValid: orderValid, orderInvalidReason: orderInvalidReason, orderInvalidField }
+    const { hasPriceWarning, priceWarning } = fairValueWarnings(OrderSide.SELL, totalEthWei, priceControlled, sellOrderAmountControlled, sellOrderTotalEthControlled)
+
+    return { orderValid: orderValid, orderInvalidReason: orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning }
 }
 
 export function buyOrderPriceChanged(priceControlled) {
-    const { buyOrderAmountWei, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
-    const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, buyOrderAmountWei, buyOrderAmountControlled, buyOrderTotalEthControlled)
-    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderAmountWei, totalEthWei, priceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
+    const { buyOrderAmountWei, buyOrderAmountControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
+    const { totalEthWei, totalEthControlled } = calcTotal(priceControlled, buyOrderAmountWei, buyOrderAmountControlled)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(totalEthWei, priceControlled, buyOrderAmountControlled, totalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.BUY, expires(OrderSide.BUY), priceControlled, buyOrderAmountControlled, TokenStore.getSelectedToken().address)
     dispatcher.dispatch({
@@ -265,11 +275,10 @@ export function buyOrderPriceChanged(priceControlled) {
 
 export function buyOrderAmountChanged(buyOrderAmountControlled) {
     const buyOrderAmountWei = tokEthToWei(buyOrderAmountControlled, TokenStore.getSelectedToken().address)
-    const { buyOrderPriceControlled, buyOrderTotalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
+    const { buyOrderPriceControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks } = OrderPlacementStore.getOrderPlacementState()
 
-    const { totalEthWei, totalEthControlled } = calcTotal(buyOrderPriceControlled, buyOrderAmountWei,
-        buyOrderAmountControlled, buyOrderTotalEthControlled)
-    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderAmountWei, totalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
+    const { totalEthWei, totalEthControlled } = calcTotal(buyOrderPriceControlled, buyOrderAmountWei, buyOrderAmountControlled)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(totalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, totalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.BUY, expires(OrderSide.BUY), buyOrderPriceControlled, buyOrderAmountControlled, TokenStore.getSelectedToken().address)
 
@@ -298,7 +307,7 @@ export function buyOrderTotalEthChanged(totalEthControlled) {
         priceControlled
     } = calcAmount(OrderPlacementStore.getOrderPlacementState().buyOrderPriceControlled, totalEthControlled)
 
-    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(amountWei, totalEthWei, priceControlled, amountControlled, totalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(totalEthWei, priceControlled, amountControlled, totalEthControlled, buyOrderExpiryType, buyOrderExpireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(orderValid, OrderSide.BUY, expires(OrderSide.BUY), priceControlled, amountControlled, TokenStore.getSelectedToken().address)
 
@@ -336,7 +345,7 @@ export function buyOrderExpireAfterBlocksChanged(expireAfterBlocks) {
 
 export function buyOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfterHumanReadableString) {
     const { buyOrderAmountWei, buyOrderTotalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled } = OrderPlacementStore.getOrderPlacementState()
-    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderAmountWei, buyOrderTotalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, expiryType, expireAfterBlocks)
+    const { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning } = validateBuyOrder(buyOrderTotalEthWei, buyOrderPriceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, expiryType, expireAfterBlocks)
 
     const { unsignedOrder, hash } = unsignedOrderOrNull(
         orderValid,
@@ -358,7 +367,7 @@ export function buyOrderExpiryChanged(expiryType, expireAfterBlocks, expireAfter
     })
 }
 
-export function validateBuyOrder(amountWei, totalEthWei, priceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, expiryType, expireAfterBlocks) {
+export function validateBuyOrder(totalEthWei, priceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled, expiryType, expireAfterBlocks) {
     const exchangeBalanceEthWei = BigNumber(String(AccountStore.getAccountState().exchangeBalanceEthWei))
     let orderValid = true
     let orderInvalidReason = ""
@@ -374,24 +383,81 @@ export function validateBuyOrder(amountWei, totalEthWei, priceControlled, buyOrd
         orderInvalidField = OrderEntryField.BLOCKS
     }
 
+    const { hasPriceWarning, priceWarning } = fairValueWarnings(OrderSide.BUY, totalEthWei, priceControlled, buyOrderAmountControlled, buyOrderTotalEthControlled)
+    return { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning }
+}
+
+export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amountControlled, totalEthControlled) {
     let hasPriceWarning = false
     let priceWarning = ""
+    const tokenName = TokenStore.getSelectedToken().name
     if (!totalEthWei.isZero()) {
-        // TODO handle no market trades
-        // TODO check buyOrderTotalEthControlled as the value passed in looks stale
-        const lastTradedPrice = Number(OrderBookStore.getTrades()[0].price)
-        const orderPrice = Number(priceControlled)
-        const change = (orderPrice - lastTradedPrice) / lastTradedPrice
-        if (Math.abs(change) > 0.5) {
+
+        let noMarketTrades = null
+        let priceAwayFromLastTraded = null
+        let noOffers = null
+        let noBids = null
+        let crossedSpread = null
+
+        if(OrderBookStore.getTrades().length === 0) {
             hasPriceWarning = true
+            noMarketTrades = <li>There are no recent trades for {tokenName}</li>
+        } else {
+            const lastTradedPrice = Number(OrderBookStore.getTrades()[0].price)
+            const orderPrice = Number(priceControlled)
+            const change = (orderPrice - lastTradedPrice) / lastTradedPrice
+    
+            if (Math.abs(change) > Config.getAwayFromLastTradeThreshold()) {
+                hasPriceWarning = true
+                priceAwayFromLastTraded = <li>Your order price of {priceControlled} represents a {(change * 100.0).toFixed(0)}% change to the last traded price of {lastTradedPrice.toFixed(8)}</li>
+            }
+        }
+
+        if(OrderBookStore.getOffers().length === 0) {
+            hasPriceWarning = true
+            noOffers = <li>There are no offers to SELL {tokenName} on the order book</li>            
+        } else if (orderSide === OrderSide.BUY) {
+            const bestOffer = safeBigNumber(OrderBookStore.getOffers()[0].price)
+            if(safeBigNumber(priceControlled).isGreaterThan(bestOffer)) {
+                hasPriceWarning = true
+                crossedSpread = <li>Your order price of {priceControlled} is greater than the best offer ({bestOffer.toString()}). This is known as 'crossing the spread'.</li>
+            }
+        }
+
+        if(OrderBookStore.getBids().length === 0) {
+            hasPriceWarning = true
+            noBids = <li>There are no offers to BUY {tokenName} on the order book</li>            
+        } else if (orderSide === OrderSide.SELL) {
+            const bestBid = safeBigNumber(OrderBookStore.getBids()[0].price)
+            if(safeBigNumber(priceControlled).isLessThan(bestBid)) {
+                hasPriceWarning = true
+                crossedSpread = <li>Your order price of {priceControlled} is less than the best bid ({bestBid.toString()}). This is known as 'crossing the spread'.</li>
+            }
+        }
+
+        const side = orderSide === OrderSide.BUY ? "BUY" : "SELL"
+        if(hasPriceWarning) {
             priceWarning =
-                `Your order price of ${priceControlled} represents a ${(change * 100.0).toFixed(1)}% change to the last traded price of ${lastTradedPrice.toFixed(8)}.
-            Dismiss this warning and click BUY if your true intent is to:
-            Give ${buyOrderTotalEthControlled} ETH and get ${buyOrderAmountControlled} ${TokenStore.getSelectedToken().name}.`
+                <div>
+                    <div><i className="fas fa-exclamation-triangle" />&nbsp;&nbsp;Fair value warnings detected, please double-check your order to {side} {tokenName} as:</div>
+                    <br />
+                    <ul>
+                        {noMarketTrades}
+                        {priceAwayFromLastTraded}
+                        {noOffers}
+                        {crossedSpread}
+                        {noBids}
+                    </ul>
+                    <hr />
+                    <div>Dismiss this warning [x] then select [PLACE {side} ORDER] if you intend to:</div>
+                    <br />
+                    <div><strong>{side} {amountControlled} {tokenName} and {orderSide === OrderSide.BUY ? "PAY" : "RECEIVE"} {totalEthControlled} ETH</strong></div>
+                    <div><strong>PRICE: {priceControlled} ETH</strong></div>
+                </div>
         }
     }
 
-    return { orderValid, orderInvalidReason, orderInvalidField, hasPriceWarning, priceWarning }
+    return { hasPriceWarning, priceWarning }
 }
 
 export function buyPriceWarningDismissed() {

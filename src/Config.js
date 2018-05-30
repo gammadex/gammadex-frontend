@@ -32,6 +32,10 @@ class Config {
         return config.smallOrderThreshold
     }
 
+    getAwayFromLastTradeThreshold() {
+        return config.awayFromLastTradeThreshold
+    }
+
     getDefaultPageSize() {
         return 10
     }
