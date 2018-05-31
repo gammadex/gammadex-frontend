@@ -11,11 +11,14 @@ import { tokenAddress, makerSide, tokenAmountWei } from "../OrderUtil"
 import { tokWeiToEth, safeBigNumber } from "../EtherConversion"
 import TokenListApi from "../apis/TokenListApi"
 import OrderSide from "./../OrderSide"
+import Conditional from "./CustomComponents/Conditional"
+import _ from "lodash"
+import Round from "./CustomComponents/Round"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
         super(props)
-        const { 
+        const {
             openOrders,
             pendingCancelIds,
             showConfirmModal,
@@ -48,7 +51,7 @@ export default class OpenOrders extends React.Component {
     }
 
     updateOpenOrdersState() {
-        const { openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei, showAllTokens} = OpenOrdersStore.getOpenOrdersState()
+        const { openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei, showAllTokens } = OpenOrdersStore.getOpenOrdersState()
         this.setState(
             {
                 openOrders: openOrders,
@@ -84,10 +87,14 @@ export default class OpenOrders extends React.Component {
         const { openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder, showAllTokens } = this.state
 
         let filteredOpenOrders = openOrders
-        if(!showAllTokens) {
+        let tokCommited = 0
+        if (!showAllTokens) {
             const currentToken = TokenStore.getSelectedTokenAddress()
             filteredOpenOrders = openOrders.filter(o => tokenAddress(o) === currentToken)
+            tokCommited = _.sum(filteredOpenOrders.filter(o => makerSide(o) === OrderSide.SELL).map(o => Number(o.ethAvailableVolume)))
         }
+
+        const ethCommited = _.sum(filteredOpenOrders.filter(o => makerSide(o) === OrderSide.BUY).map(o => Number(o.ethAvailableVolumeBase)))
 
         let content = <EmptyTableMessage>You have no open orders</EmptyTableMessage>
         if (!accountRetrieved) {
@@ -123,6 +130,14 @@ export default class OpenOrders extends React.Component {
                                         checked={showAllTokens} />
                                     <label className="custom-control-label" htmlFor="openOrdersAllTokens">Show All Tokens</label>
                                 </div>
+                                <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
+                                    <strong className="card-title"><Round>{ethCommited}</Round> ETH</strong>
+                                </div>
+                                <Conditional displayCondition={!showAllTokens}>
+                                    <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
+                                        <strong className="card-title dimmed-heading"><Round>{tokCommited}</Round> {TokenStore.getSelectedToken().name}</strong>
+                                    </div>
+                                </Conditional>
                             </div>
                         </div>
                     </div>
