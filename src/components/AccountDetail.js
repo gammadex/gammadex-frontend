@@ -29,6 +29,7 @@ export default class AccountDetail extends React.Component {
         AccountStore.on("change", this.onAccountChange)
         GasPriceStore.on("change", this.onGasStoreChange)
         TokenStore.on("change", this.onTokenStoreChange)
+        this.onTokenStoreChange()
     }
 
     componentWillUnmount() {
