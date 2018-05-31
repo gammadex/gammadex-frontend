@@ -45,7 +45,7 @@ export default class PendingTrades extends React.Component {
         const {trades, account} = this.state
 
         const pendingAndFailedTrades = trades.filter(t => t.status !== TransactionStatus.COMPLETE)
-        const displayTrades = TradeDisplayUtil.toDisplayableTrades(pendingAndFailedTrades)
+        const displayTrades = TradeDisplayUtil.toDisplayableTrades(pendingAndFailedTrades, account)
 
         return (
             <Box title="My Pending Trades">

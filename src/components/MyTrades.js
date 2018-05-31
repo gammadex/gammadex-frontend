@@ -6,6 +6,7 @@ import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Download from "./CustomComponents/Download"
 import * as TradeDisplayUtil from "../util/TradeDisplayUtil"
 import * as WebSocketActions from "../actions/WebSocketActions"
+import _ from "lodash"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -49,16 +50,29 @@ export default class MyTrades extends React.Component {
 
     filterChanged = (event) => {
         const filter = event.target.value
-        this.setState({filter})
+        this.setState({ filter })
     }
 
     render() {
-        const {trades, filter, account} = this.state
+        const { trades, filter, account } = this.state
 
-        const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades)
-        const csvContent = TradeDisplayUtil.tradesToCsv(displayTrades)
-        const filteredTrades = displayTrades.filter(
-            t => `${t.market}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
+        const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades, account)
+
+        // expand out trades where account is both the maker and the taker
+        const expandedTrades = _.flatMap(displayTrades, t => {
+            if (t.side === "Both") {
+                return [
+                    Object.assign({}, t, {side: t.takerSide, role: "Taker" }),
+                    Object.assign({}, t, {side: t.takerSide === "Buy" ? "Sell" : "Buy", role: "Maker" })
+                ]
+            } else {
+                return [t]
+            }
+        })
+
+        const csvContent = TradeDisplayUtil.tradesToCsv(expandedTrades)
+        const filteredTrades = expandedTrades.filter(
+            t => `${t.market}::${t.role}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
         )
         const disabledClass = account ? "" : "disabled"
 
@@ -66,7 +80,7 @@ export default class MyTrades extends React.Component {
         if (!account) {
             content = <EmptyTableMessage>Please unlock a wallet to see your trade history</EmptyTableMessage>
         } else if (trades && trades.length > 0) {
-            content = <MyTradesTable trades={filteredTrades}/>
+            content = <MyTradesTable trades={filteredTrades} />
         }
 
         return (
@@ -79,12 +93,12 @@ export default class MyTrades extends React.Component {
                         <div className="col-lg-6 red">
                             <div className="float-right form-inline">
                                 <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
-                                       onChange={this.filterChanged}/>
+                                    onChange={this.filterChanged} />
                                 <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv"
-                                          className={"btn btn-primary mr-2 " + disabledClass}><i
-                                    className="fas fa-download"/></Download>
+                                    className={"btn btn-primary mr-2 " + disabledClass}><i
+                                        className="fas fa-download" /></Download>
                                 <button className={"btn btn-primary " + disabledClass} onClick={this.refresh}><i
-                                    className="fas fa-sync"/>
+                                    className="fas fa-sync" />
                                 </button>
                             </div>
                         </div>

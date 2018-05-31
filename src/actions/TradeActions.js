@@ -70,12 +70,23 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                 EtherDeltaWeb3.promiseTrade(account, nonce, order, amountWei, gasPriceWei)
                     .once('transactionHash', hash => {
                         AccountActions.nonceUpdated(nonce + 1)
+                        let buyer = ""
+                        let seller = ""
+                        if(OrderUtil.isTakerBuy(order)) {
+                            buyer = account,
+                            seller = order.user
+                        } else {
+                            buyer = order.user,
+                            seller = account
+                        }
                         MyTradeActions.addMyTrade({
                             environment: Config.getReactEnv(),
                             account: account,
                             txHash: hash,
                             tokenAddr: tokenAddress,
                             side: OrderUtil.takerSide(order),
+                            buyer: buyer,
+                            seller: seller,
                             price: order.price,
                             amount: fillAmountControlled, // amountTok
                             amountBase: totalEthControlled, // totalEth

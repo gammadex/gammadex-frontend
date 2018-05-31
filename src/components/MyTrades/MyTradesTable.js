@@ -5,7 +5,11 @@ export default class MyTradesTable extends React.Component {
     render() {
         const {trades} = this.props
 
-        const rows = trades.map(trade => <MyTradesRow key={trade.txHash} trade={trade}/>)
+        // we rely on the backend to de-dupe myTrades and solely rely on the array index as the unique identifier as a proxy for:
+        // txHash + logIndex + (some dupe id if account is both buyer and seller)
+        const rows = trades.map((trade, i) => {
+            return <MyTradesRow key={`${trade.txHash}_${i}`} trade={trade}/>
+        })
 
         return (
             <div className="table-responsive my-trades-history">
@@ -13,6 +17,7 @@ export default class MyTradesTable extends React.Component {
                     <thead>
                     <tr>
                         <th>Market</th>
+                        <th>Role</th>
                         <th>Type</th>
                         <th>Price</th>
                         <th>Amount</th>
