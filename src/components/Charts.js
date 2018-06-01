@@ -55,9 +55,6 @@ export default class Charts extends React.Component {
         } else if (activeTab === "DepthChart") {
             content = <Resizer><PlotlyDepthChart bids={allBids} offers={allOffers}/></Resizer>
             depthChartActiveClass = "active"
-        } else if (activeTab === "NoChart") {
-            content = ""
-            noChartActiveClass = "active"
         }
 
         return (
@@ -71,10 +68,6 @@ export default class Charts extends React.Component {
                         <li className="nav-item">
                             <button className={"nav-link  btn btn-sm " + depthChartActiveClass}
                                onClick={() => this.selectTab("DepthChart")}>Depth Chart</button>
-                        </li>
-                        <li className="nav-item">
-                            <button className={"nav-link  btn btn-sm " + noChartActiveClass}
-                               onClick={() => this.selectTab("NoChart")}>No Chart</button>
                         </li>
                     </ul>
                 </BoxHeader>

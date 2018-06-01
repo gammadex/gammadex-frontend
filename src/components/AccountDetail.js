@@ -99,7 +99,7 @@ export default class AccountDetail extends React.Component {
                         </div>
                     </div>
 
-                    <Conditional displayCondition={!balanceRetrieved && warningMessage}>
+                    <Conditional displayCondition={!balanceRetrieved && !!warningMessage}>
                         <BoxSection>
                             {warningMessage}
                         </BoxSection>
