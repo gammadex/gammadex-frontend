@@ -49,14 +49,15 @@ export default class AccountTableRow extends React.Component {
 
         const walletCellValue = token.address != Config.getBaseAddress() && clearBalances ? "-" : <Round price softZeros>{walletBalanceEth}</Round>
         const exchangeCellValue = token.address != Config.getBaseAddress() && clearBalances ? "-" : <Round price softZeros>{exchangeBalanceEth}</Round>
+        const fadedClass = this.props.refreshing ? "faded" : ""
 
         return (
             <tr>
                 <td>
                     <div><strong>{token.name}</strong></div>
                 </td>
-                <td className="clickable" onClick={this.selectWalletCell} align="right">{walletCellValue}&nbsp;&nbsp;&nbsp;{gasIndicator}</td>
-                <td className="clickable" onClick={this.selectExchangeCell} align="right">{exchangeCellValue}</td>
+                <td className={"clickable " + fadedClass} onClick={this.selectWalletCell} align="right">{walletCellValue}&nbsp;&nbsp;&nbsp;{gasIndicator}</td>
+                <td className={"clickable " + fadedClass} onClick={this.selectExchangeCell} align="right">{exchangeCellValue}</td>
             </tr>
         )
     }

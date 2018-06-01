@@ -4,15 +4,16 @@ import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
 import AccountTable from '../components/Account/AccountTable'
 import Config from '../Config'
-import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip } from 'reactstrap'
-import { Box, BoxFooter, BoxSection } from "./CustomComponents/Box"
+import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
+import {Box, BoxFooter, BoxSection} from "./CustomComponents/Box"
 
 import * as AccountActions from "../actions/AccountActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
-import { baseEthToWei, tokEthToWei } from "../EtherConversion"
+import {baseEthToWei, tokEthToWei} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 import Conditional from "./CustomComponents/Conditional"
+import RefreshButton from "./CustomComponents/RefreshButton"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -55,7 +56,7 @@ export default class AccountDetail extends React.Component {
     }
 
     refreshBalances = () => {
-        const { account, accountRetrieved, tokenAddress, retrievingBalance } = this.state
+        const {account, accountRetrieved, tokenAddress, retrievingBalance} = this.state
 
         if (accountRetrieved && !retrievingBalance) {
             AccountApi.refreshEthAndTokBalance(account, tokenAddress, true)
@@ -63,7 +64,7 @@ export default class AccountDetail extends React.Component {
     }
 
     render() {
-        const { token } = this.props
+        const {token} = this.props
         const {
             accountRetrieved,
             walletBalanceEthWei,
@@ -79,7 +80,6 @@ export default class AccountDetail extends React.Component {
 
         const clearBalances = !tokenAddress || !retrievedTokenAddress || tokenAddress != retrievedTokenAddress
         const warningMessage = this.getAccountWarningMessage()
-        const refreshDisabledClass = (accountRetrieved && !retrievingBalance) ? "" : "disabled"
 
         return (
             <span>
@@ -91,37 +91,38 @@ export default class AccountDetail extends React.Component {
                             </div>
                             <div className="col-lg-6 red">
                                 <div className="float-right">
-                                    <button className={"btn btn-primary " + refreshDisabledClass}
-                                        onClick={this.refreshBalances}><i
-                                            className="fas fa-sync" /></button>
+                                    <RefreshButton onClick={this.refreshBalances}
+                                                   disabled={!accountRetrieved || retrievingBalance}
+                                                   updating={retrievingBalance}/>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <Conditional displayCondition={!balanceRetrieved}>
+                    <Conditional displayCondition={!balanceRetrieved && warningMessage}>
                         <BoxSection>
                             {warningMessage}
                         </BoxSection>
                     </Conditional>
 
                     <AccountTable
+                        refreshing={retrievingBalance}
                         clearBalances={clearBalances}
                         token={token}
                         walletBalanceEthWei={walletBalanceEthWei}
                         walletBalanceTokWei={walletBalanceTokWei}
                         exchangeBalanceEthWei={exchangeBalanceEthWei}
-                        exchangeBalanceTokWei={exchangeBalanceTokWei} />
+                        exchangeBalanceTokWei={exchangeBalanceTokWei}/>
                 </div>
             </span>
         )
     }
 
     getAccountWarningMessage() {
-        const { retrievingBalance, balanceRetrievalFailed, accountRetrieved } = this.state
+        const {retrievingBalance, balanceRetrievalFailed, accountRetrieved} = this.state
 
         if (retrievingBalance) {
-            return "Checking balance"
+            return null
         } else if (balanceRetrievalFailed) {
             return "There was a problem checking your balance"
         } else if (!accountRetrieved) {
