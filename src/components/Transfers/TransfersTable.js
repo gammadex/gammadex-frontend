@@ -3,9 +3,11 @@ import TransferRow from "./TransferRow"
 
 export default class TransfersTable extends React.Component {
     render() {
-        const {transfers} = this.props
+        const {transfers, refreshInProgress} = this.props
 
-        const rows = transfers.map(transfer => <TransferRow key={transfer.txHash} transfer={transfer}/>)
+        const rows = transfers.map(transfer => <TransferRow key={transfer.txHash}
+                                                            transfer={transfer}
+                                                            refreshInProgress={refreshInProgress}/>)
 
         return (
             <div className="table-responsive deposit-history">

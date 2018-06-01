@@ -6,6 +6,8 @@ import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Download from "./CustomComponents/Download"
 import * as TransferDisplayUtil from "../util/TransferDisplayUtil"
 import * as WebSocketActions from "../actions/WebSocketActions"
+import MyTradesStore from "../stores/MyTradesStore"
+import RefreshButton from "./CustomComponents/RefreshButton"
 
 export default class Transfers extends React.Component {
     constructor(props) {
@@ -15,6 +17,7 @@ export default class Transfers extends React.Component {
             transfers: TransferStore.getAllTransfers().filter(t => t.kind === this.props.type),
             filter: "",
             account: AccountStore.getAccountState().account,
+            refreshInProgress: TransferStore.isRefreshInProgress(),
         }
 
         this.depositHistoryChanged = this.depositHistoryChanged.bind(this)
@@ -34,6 +37,7 @@ export default class Transfers extends React.Component {
     depositHistoryChanged() {
         this.setState({
             transfers: TransferStore.getAllTransfers().filter(t => t.kind === this.props.type),
+            refreshInProgress: TransferStore.isRefreshInProgress(),
         })
     }
 
@@ -44,8 +48,8 @@ export default class Transfers extends React.Component {
     }
 
     refresh = () => {
-        if (this.state.account) {
-            WebSocketActions.getMarket()
+        if (this.state.account && ! this.state.refreshInProgress) {
+            WebSocketActions.getMarket(true)
         }
     }
 
@@ -55,7 +59,7 @@ export default class Transfers extends React.Component {
     }
 
     render() {
-        const {transfers, filter, account} = this.state
+        const {transfers, filter, account, refreshInProgress} = this.state
         const {title, type} = this.props
 
         const displayTransfers = TransferDisplayUtil.toDisplayableTransfers(transfers)
@@ -69,7 +73,7 @@ export default class Transfers extends React.Component {
         if (!account) {
             content = <EmptyTableMessage>Please unlock a wallet to see {type.toLowerCase()} history</EmptyTableMessage>
         } else if (transfers && transfers.length > 0) {
-            content = <TransfersTable transfers={filteredTransfers}/>
+            content = <TransfersTable transfers={filteredTransfers} refreshInProgress={refreshInProgress}/>
         }
 
         return (
@@ -86,9 +90,9 @@ export default class Transfers extends React.Component {
                                 <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv"
                                           className={"btn btn-primary mr-2 " + disabledClass}><i
                                     className="fas fa-download"/></Download>
-                                <button className={"btn btn-primary " + disabledClass} onClick={this.refresh}><i
-                                    className="fas fa-sync"/>
-                                </button>
+                                <RefreshButton onClick={this.refresh}
+                                               updating={refreshInProgress}
+                                               disabled={!account || refreshInProgress}/>
                             </div>
                         </div>
                     </div>

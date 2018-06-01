@@ -13,6 +13,7 @@ class MyTradesStore extends EventEmitter {
         this.clearTrades()
         this.loadFromLocalStorage()
         this.updateAllTrades()
+        this.refreshInProgress = false
     }
 
     getAllTrades(tokenAddress) {
@@ -23,12 +24,19 @@ class MyTradesStore extends EventEmitter {
         return this.allTrades
     }
 
+    isRefreshInProgress() {
+        return this.refreshInProgress
+    }
+
     emitChange() {
         this.emit("change")
     }
 
     handleActions(action) {
         switch (action.type) {
+            case ActionNames.MESSAGE_REQUESTED_MARKET: {
+                this.refreshInProgress = true
+            }
             case ActionNames.MESSAGE_RECEIVED_TRADES: { // received when trades messages is sent from backend
                 if (action.trades) {
                     const incomingTxIds = action.trades.map(t => t.txHash)
@@ -70,6 +78,7 @@ class MyTradesStore extends EventEmitter {
             }
             case ActionNames.MESSAGE_RECEIVED_MARKET: { // received on initial connect
                 if (action.message && !_.isUndefined(action.message.myTrades)) {
+                    this.refreshInProgress = false
                     this.completedTrades = action.message.myTrades
                     this.updateAllTrades()
                     this.emitChange()

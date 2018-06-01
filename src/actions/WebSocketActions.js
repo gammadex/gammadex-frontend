@@ -64,7 +64,7 @@ export function connect() {
                     type: ActionNames.MESSAGE_RECEIVED_MY_ORDERS,
                     message,
                 })
-            },            
+            },
             trades: (trades) => {
                 dispatcher.dispatch({
                     type: ActionNames.MESSAGE_RECEIVED_TRADES,
@@ -86,6 +86,11 @@ export function connect() {
     })
 }
 
-export function getMarket() {
+export function getMarket(notifyRequested = false) {
+    if (notifyRequested) {
+        dispatcher.dispatch({
+            type: ActionNames.MESSAGE_REQUESTED_MARKET,
+        })
+    }
     EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address, AccountStore.getAccountState().account)
 }

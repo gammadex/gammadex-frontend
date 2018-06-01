@@ -13,10 +13,15 @@ class TransferStore extends EventEmitter {
         this.clearTransfers()
         this.loadFromLocalStorage()
         this.updateAllTransfers()
+        this.refreshInProgress = false
     }
 
     getAllTransfers() {
         return this.allTransfers
+    }
+
+    isRefreshInProgress() {
+        return this.refreshInProgress
     }
 
     emitChange() {
@@ -25,6 +30,9 @@ class TransferStore extends EventEmitter {
 
     handleActions(action) {
         switch (action.type) {
+            case ActionNames.MESSAGE_REQUESTED_MARKET: {
+                this.refreshInProgress = true
+            }
             case ActionNames.MESSAGE_RECEIVED_FUNDS: { // received when funds messages is sent from backend
                 if (action.funds) {
                     const incomingTxIds = action.funds.map(t => t.txHash)
@@ -66,6 +74,7 @@ class TransferStore extends EventEmitter {
             }
             case ActionNames.MESSAGE_RECEIVED_MARKET: { // received on initial connect
                 if (action.message && !_.isUndefined(action.message.myFunds)) {
+                    this.refreshInProgress = false
                     this.completedTransfers = action.message.myFunds
                     this.updateAllTransfers()
                     this.emitChange()

@@ -5,10 +5,13 @@ import Etherscan from "../CustomComponents/Etherscan"
 
 export default class TransferRow extends React.Component {
     render() {
+        const {refreshInProgress} = this.props
         const {tokenName, date, amount, txHash, status} = this.props.transfer
 
+        const refreshClass = refreshInProgress ? "faded" : ""
+
         return (
-            <tr key={txHash}>
+            <tr  className={refreshClass}>
                 <td>{tokenName}</td>
                 <td><Round price softZeros>{amount}</Round></td>
                 <td><Date year="true">{date}</Date></td>

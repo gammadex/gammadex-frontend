@@ -7,6 +7,7 @@ import Download from "./CustomComponents/Download"
 import * as TradeDisplayUtil from "../util/TradeDisplayUtil"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import _ from "lodash"
+import RefreshButton from "./CustomComponents/RefreshButton"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -15,6 +16,7 @@ export default class MyTrades extends React.Component {
             trades: MyTradesStore.getAllTrades(),
             filter: "",
             account: AccountStore.getAccountState().account,
+            refreshInProgress: MyTradesStore.isRefreshInProgress(),
         }
         this.updateMyTradesState = this.updateMyTradesState.bind(this)
         this.updateAccount = this.updateAccount.bind(this)
@@ -38,13 +40,14 @@ export default class MyTrades extends React.Component {
 
     updateMyTradesState() {
         this.setState({
-            trades: MyTradesStore.getAllTrades()
+            trades: MyTradesStore.getAllTrades(),
+            refreshInProgress: MyTradesStore.isRefreshInProgress(),
         })
     }
 
     refresh = () => {
-        if (this.state.account) {
-            WebSocketActions.getMarket()
+        if (this.state.account && ! this.state.refreshInProgress) {
+            WebSocketActions.getMarket(true)
         }
     }
 
@@ -54,7 +57,7 @@ export default class MyTrades extends React.Component {
     }
 
     render() {
-        const { trades, filter, account } = this.state
+        const { trades, filter, account, refreshInProgress } = this.state
 
         const displayTrades = TradeDisplayUtil.toDisplayableTrades(trades, account)
 
@@ -80,7 +83,7 @@ export default class MyTrades extends React.Component {
         if (!account) {
             content = <EmptyTableMessage>Please unlock a wallet to see your trade history</EmptyTableMessage>
         } else if (trades && trades.length > 0) {
-            content = <MyTradesTable trades={filteredTrades} />
+            content = <MyTradesTable trades={filteredTrades} refreshInProgress={refreshInProgress} />
         }
 
         return (
@@ -97,9 +100,9 @@ export default class MyTrades extends React.Component {
                                 <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv"
                                     className={"btn btn-primary mr-2 " + disabledClass}><i
                                         className="fas fa-download" /></Download>
-                                <button className={"btn btn-primary " + disabledClass} onClick={this.refresh}><i
-                                    className="fas fa-sync" />
-                                </button>
+                                <RefreshButton onClick={this.refresh}
+                                               updating={refreshInProgress}
+                                               disabled={!account || refreshInProgress}/>
                             </div>
                         </div>
                     </div>

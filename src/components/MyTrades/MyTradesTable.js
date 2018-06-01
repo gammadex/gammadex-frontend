@@ -3,12 +3,12 @@ import MyTradesRow from "./MyTradesRow"
 
 export default class MyTradesTable extends React.Component {
     render() {
-        const {trades} = this.props
+        const {trades, refreshInProgress} = this.props
 
         // we rely on the backend to de-dupe myTrades and solely rely on the array index as the unique identifier as a proxy for:
         // txHash + logIndex + (some dupe id if account is both buyer and seller)
         const rows = trades.map((trade, i) => {
-            return <MyTradesRow key={`${trade.txHash}_${i}`} trade={trade}/>
+            return <MyTradesRow key={`${trade.txHash}_${i}`} trade={trade} refreshInProgress={refreshInProgress}/>
         })
 
         return (
