@@ -21,7 +21,7 @@ export function loadFailedTrades(accountAddress) {
     if (_.isString(accountAddress)) {
         const failedTrades = _.isString(global.localStorage.failedTrades) ? JSON.parse(global.localStorage.failedTrades) : {}
 
-        return failedTrades[accountAddress.toLowerCase()] ? failedTrades[accountAddress] : []
+        return failedTrades[accountAddress.toLowerCase()] ? failedTrades[accountAddress.toLowerCase()] : []
     } else {
         return []
     }
@@ -44,7 +44,7 @@ export function loadPendingTrades(accountAddress) {
     if (_.isString(accountAddress)) {
         const pendingTrades = _.isString(global.localStorage.pendingTrades) ? JSON.parse(global.localStorage.pendingTrades) : {}
 
-        return pendingTrades[accountAddress.toLowerCase()] ? pendingTrades[accountAddress] : []
+        return pendingTrades[accountAddress.toLowerCase()] ? pendingTrades[accountAddress.toLowerCase()] : []
     } else {
         return []
     }

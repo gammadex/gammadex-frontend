@@ -21,7 +21,7 @@ export function loadFailedTransfers(accountAddress) {
     if (_.isString(accountAddress)) {
         const failedTransfers = _.isString(global.localStorage.failedTransfers) ? JSON.parse(global.localStorage.failedTransfers) : {}
 
-        return failedTransfers[accountAddress.toLowerCase()] ? failedTransfers[accountAddress] : []
+        return failedTransfers[accountAddress.toLowerCase()] ? failedTransfers[accountAddress.toLowerCase()] : []
     } else {
         return []
     }
@@ -44,7 +44,7 @@ export function loadPendingTransfers(accountAddress) {
     if (_.isString(accountAddress)) {
         const pendingTransfers = _.isString(global.localStorage.pendingTransfers) ? JSON.parse(global.localStorage.pendingTransfers) : {}
 
-        return pendingTransfers[accountAddress.toLowerCase()] ? pendingTransfers[accountAddress] : []
+        return pendingTransfers[accountAddress.toLowerCase()] ? pendingTransfers[accountAddress.toLowerCase()] : []
 
     } else {
         return []
