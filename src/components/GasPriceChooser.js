@@ -114,7 +114,7 @@ export default class GasPriceChooser extends React.Component {
                     Price: {currentGasPriceGwei}&nbsp;Gwei
                 </button>
 
-                <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom">
+                <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
                     <div className="shadow gas-prices">
                         <PopoverBody>
                             <Box title="Gas Price Per Unit">
