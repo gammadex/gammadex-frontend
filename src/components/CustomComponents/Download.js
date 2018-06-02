@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import PropTypes from "prop-types"
 
 class Download extends Component {
 
@@ -23,6 +24,14 @@ class Download extends Component {
 
         return <a ref={node => this.node = node} download={fileName} className={className}>{this.props.children}</a>
     }
+}
+
+Download.propTypes = {
+    fileName: PropTypes.string,
+    mimeType: PropTypes.string,
+    contents: PropTypes.string,
+    href: PropTypes.string,
+    className: PropTypes.string,
 }
 
 export default Download

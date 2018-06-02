@@ -1,5 +1,6 @@
 import React from "react"
 import {truncate} from "../../util/FormatUtil"
+import PropTypes from "prop-types"
 
 export default class Truncated extends React.Component {
     render() {
@@ -23,4 +24,8 @@ export default class Truncated extends React.Component {
 
         return truncated
     }
+}
+
+Truncated.propTypes = {
+    url: PropTypes.string,
 }

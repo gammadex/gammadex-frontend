@@ -1,6 +1,7 @@
 import React from "react"
 import {formatNumber, stripDecimalsOffLongNumber} from '../../util/FormatUtil'
 import SoftZeros from "./SoftZeros"
+import PropTypes from "prop-types"
 
 export default class Round extends React.Component {
     DEFAULT_DPS = 3
@@ -36,4 +37,13 @@ export default class Round extends React.Component {
 
         return (children.length > 0) ? children[0].toString() : null
     }
+}
+
+Round.propTypes = {
+    fallback: PropTypes.string,
+    suffix: PropTypes.string,
+    price: PropTypes.bool,
+    percent: PropTypes.bool,
+    softZeros: PropTypes.bool,
+    classNameFunc: PropTypes.func,
 }

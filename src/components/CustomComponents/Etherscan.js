@@ -1,6 +1,7 @@
 import React from "react"
 import Config from '../../Config'
 import TruncatedAddress from "./TruncatedAddress"
+import PropTypes from "prop-types"
 
 export default class Etherscan extends React.Component {
     render() {
@@ -47,4 +48,12 @@ export default class Etherscan extends React.Component {
             return 'transaction'
         }
     }
+}
+
+Etherscan.propTypes = {
+    type: PropTypes.string,
+    address: PropTypes.string,
+    href: PropTypes.string,
+    display: PropTypes.string,
+    text: PropTypes.string,
 }

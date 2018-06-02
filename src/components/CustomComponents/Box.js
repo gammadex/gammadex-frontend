@@ -1,4 +1,5 @@
 import React from "react"
+import PropTypes from "prop-types"
 
 export class Box extends React.Component {
     render() {
@@ -10,12 +11,20 @@ export class Box extends React.Component {
     }
 }
 
+Box.propTypes = {
+    title: PropTypes.string,
+}
+
 export class BoxSection extends React.Component {
     render() {
         const extraClasses = this.props.className ? this.props.className : ""
 
         return <div className={"card-body " + extraClasses}>{this.props.children}</div>
     }
+}
+
+BoxSection.propTypes = {
+    className: PropTypes.string,
 }
 
 export class BoxFooter extends React.Component {
@@ -32,3 +41,6 @@ export class BoxHeader extends React.Component {
     }
 }
 
+BoxHeader.propTypes = {
+    noBorder: PropTypes.bool,
+}

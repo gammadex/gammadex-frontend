@@ -1,5 +1,6 @@
 import React from "react"
 import {formatDateForDisplay} from "../../util/DateUtil"
+import PropTypes from "prop-types"
 
 export default class Date extends React.Component {
     render() {
@@ -15,4 +16,10 @@ export default class Date extends React.Component {
 
         return formatDateForDisplay(date, withYear, noSeconds)
     }
+}
+
+Date.propTypes = {
+    date: PropTypes.string,
+    year: PropTypes.bool,
+    noSeconds: PropTypes.bool,
 }
