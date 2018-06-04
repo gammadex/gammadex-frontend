@@ -340,7 +340,8 @@ export default class Funding extends React.Component {
                 actionName={"Deposit"}
                 actionDisabled={ethDepositDisabled}
                 feedbackIcon={ethDepositFeedbackIcon}
-                helpIcon={ethDepositHelpIcon} />
+                helpIcon={ethDepositHelpIcon}
+                submittable={true}/>
             {/* <hr /> */}
 
             <NumericInput value={tokDepositAmountControlled} unitName={tokenName}
@@ -350,7 +351,8 @@ export default class Funding extends React.Component {
                 onAction={this.onTokDepositAction}
                 actionDisabled={tokDepositDisabled}
                 feedbackIcon={tokDepositFeedbackIcon}
-                actionName={"Deposit"} />
+                actionName={"Deposit"}
+                submittable={true}/>
             <hr />
             <NumericInput value={ethWithdrawalAmountControlled} unitName={"ETH"}
                 onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
@@ -359,7 +361,8 @@ export default class Funding extends React.Component {
                 onAction={this.onEthWithdrawAction}
                 actionDisabled={ethWithdrawalDisabled}
                 feedbackIcon={ethWithdrawalFeedbackIcon}
-                actionName={"Withdraw"} />
+                actionName={"Withdraw"}
+                submittable={true}/>
             {/* <hr /> */}
 
             <NumericInput value={tokWithdrawalAmountControlled} unitName={tokenName}
@@ -369,7 +372,8 @@ export default class Funding extends React.Component {
                 onAction={this.onTokWithdrawAction}
                 actionDisabled={tokWithdrawalDisabled}
                 feedbackIcon={ethDepositFeedbackIcon}
-                actionName={"Withdraw"} />
+                actionName={"Withdraw"}
+                submittable={true}/>
             <hr />
             <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
                 fieldName={"fundingGasFeeEth"} disabled="true" />
