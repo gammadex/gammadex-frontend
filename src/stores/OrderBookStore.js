@@ -28,6 +28,10 @@ class OrderBookStore extends EventEmitter {
         return this.offers
     }
 
+    getOffersDescending(){
+        return _.reverse(_.sortBy(this.offers, o => o.price))
+    }
+
     getAllTradesSortedByDateAsc() {
         return _.reverse(this.trades.slice()) // TODO _.reverse seems to sort in place?
     }

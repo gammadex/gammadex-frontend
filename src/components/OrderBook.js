@@ -13,7 +13,7 @@ export default class OrderBook extends React.Component {
 
         this.state = {
             bids: OrderBookStore.getBids(),
-            offers: OrderBookStore.getOffers(),
+            offers: OrderBookStore.getOffersDescending(),
             openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
             pendingCancelIds: OpenOrdersStore.getOpenOrdersState().pendingCancelIds,
             scrolled: false,
@@ -67,7 +67,7 @@ export default class OrderBook extends React.Component {
     saveBidsAndOffers() {
         this.setState((prevState, props) => ({
             bids: OrderBookStore.getBids(),
-            offers: OrderBookStore.getOffers(),
+            offers: OrderBookStore.getOffersDescending(),
         }))
     }
 
