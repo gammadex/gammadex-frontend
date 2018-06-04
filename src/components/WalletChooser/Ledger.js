@@ -134,6 +134,7 @@ class Ledger extends React.Component {
 
             <h5>Choose HD derivation path</h5>
 
+            <form onSubmit={() => this.connectToLedger(0)}>
             <fieldset>
                 <div className="form-inline">
                     <div className="form-group">
@@ -168,14 +169,14 @@ class Ledger extends React.Component {
                         </div>
                     </div>
                 </div>
-
-
             </fieldset>
 
             <div className="form-group">
                 <button href="#" className={"btn btn-primary " + connectButtonDisabledClass}
+                        type="submit"
                         onClick={() => this.connectToLedger(0)}>{accounts.length > 0 ? "Reconnect" : "Connect"}</button>
             </div>
+            </form>
 
             <Conditional displayCondition={accounts.length > 0}>
 
