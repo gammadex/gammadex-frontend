@@ -89,7 +89,7 @@ export default class AccountDetail extends React.Component {
                             <div className="col-lg-6">
                                 <strong className="card-title">Balances</strong>
                             </div>
-                            <div className="col-lg-6 red">
+                            <div className="col-lg-6">
                                 <div className="float-right">
                                     <RefreshButton onClick={this.refreshBalances}
                                                    disabled={!accountRetrieved || retrievingBalance}

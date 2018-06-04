@@ -10,10 +10,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
+
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
     <style>
+        .red {
+            background:red;
+        }
+
         .zeros {
             opacity: 0.3;
         }
@@ -159,8 +163,65 @@
             padding: 6px;
         }
 
+        .orders-col-border {
+            border: 0px solid #dee2e6;
+            border-width:1px 0px;
+            background:#FBFBFB;
+        }
+
+        .orders-colnames {
+            width:100%;
+        }
+
+        .orders-colnames table {
+            margin:0;
+            width:100%;
+        }
+
+        .orders-colnames tbody {
+            margin:0;
+            width:100%;
+        }
+
+        .orders-colnames td {
+            text-align: center;
+            padding:6px;
+            width:33%;
+            border-top:0;
+            border-bottom:0;
+            font-weight:bolder;
+        }
+
+        .orders-colnames td:first-child {
+            width:34%;
+            border:0;
+        }
+
+        .orders-colnames td:last-child {
+            border:0;
+        }
+
         .orders-table {
             max-height:220px;
+            width:100%;
+        }
+
+        .card .orders-table table.table-bordered {
+            width:100%;
+            border:1px solid #dee2e6;
+            border-width: 0px 1px 0px 0px;
+        }
+
+        .orders-table td, .orders-table th {
+            width:33%;
+        }
+
+        .orders-table td:first-child, .orders-table th:first-child{
+            width:34%;
+        }
+
+        .orders-table tr:first-child td {
+            border-top:0;
         }
 
         .card-header ul.nav {
@@ -238,7 +299,7 @@
         .trade-history, .deposit-history, .my-trades-history {
             max-height: 400px;
         }
-        
+
         .hdr-stretch {
             display: flex;
             align-items: center;
@@ -293,7 +354,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
- 
+
         input[type="number"] {
             -moz-appearance: textfield;
         }
