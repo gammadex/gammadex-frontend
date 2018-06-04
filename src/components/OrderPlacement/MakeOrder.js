@@ -13,6 +13,7 @@ import ExpiryType from "../../ExpiryType"
 import Conditional from "../CustomComponents/Conditional"
 import AccountType from "../../AccountType"
 import OrderFactory from "../../OrderFactory"
+import TokenListApi from "../../apis/TokenListApi"
 
 export default class MakeOrder extends React.Component {
     constructor(props) {
@@ -179,7 +180,11 @@ export default class MakeOrder extends React.Component {
             exchangeBalanceEthWei,
             exchangeBalanceTokWei } = this.state
 
-        const available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
+        let available = safeBigNumber(0)
+        if (TokenListApi.tokenExists(tokenAddress)) {
+            available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
+        }
+
         const submitDisabled = !orderValid
             || total === ""
             || safeBigNumber(total).isZero()

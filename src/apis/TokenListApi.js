@@ -53,6 +53,10 @@ class TokenListApi {
         return (token) ? token.name : null
     }
 
+    tokenExists(address) {
+        return this.getTokenName(address) !== null
+    }
+
     getTokenAddress(name) {
         return this.find({name}).address
     }
