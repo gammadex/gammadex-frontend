@@ -83,7 +83,7 @@ export default class Transfers extends React.Component {
                         <div className="col-lg-6">
                             <strong className="card-title">{title}</strong>
                         </div>
-                        <div className="col-lg-6 red">
+                        <div className="col-lg-6">
                             <div className="float-right form-inline">
                                 <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
                                        onChange={this.filterChanged}/>
