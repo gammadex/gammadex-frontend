@@ -23,7 +23,7 @@ export function toDisplayableTrades(trades, account) {
 
 // trade.side is always from the perspective of the taker. The user might be the taker or maker (or both!) for a particular trade
 export function accountSide(trade, account) {
-    if (!trade.buyer || !trade.seller) {
+    if (!trade.buyer || !trade.seller || ! account) {
         return {}
     }
     

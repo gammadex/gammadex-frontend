@@ -1,4 +1,4 @@
-import { EventEmitter } from "events"
+import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import OrderState from "../OrderState"
@@ -11,7 +11,7 @@ class OpenOrdersStore extends EventEmitter {
         this.pendingCancelIds = []
         this.showConfirmModal = false
         this.confirmModalOrder = null
-        this.gasPriceWei = 0,
+        this.gasPriceWei = 0
         this.showAllTokens = true
         this.currentBlockNumber = null
     }
@@ -44,7 +44,7 @@ class OpenOrdersStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.MESSAGE_RECEIVED_MY_ORDERS: {
                 if (action.message) {
-                    const incomingOrders =  [...action.message.buys, ...action.message.sells]
+                    const incomingOrders = [...action.message.buys, ...action.message.sells]
                     const incomingOrderIds = incomingOrders.map(o => o.id)
                     const openOrdersExcludingIncoming = this.openOrders.filter(o => !incomingOrderIds.includes(o.id))
                     this.openOrders = [...openOrdersExcludingIncoming, ...incomingOrders]
@@ -93,6 +93,20 @@ class OpenOrdersStore extends EventEmitter {
             case ActionNames.CURRENT_BLOCK_NUMBER_UPDATED: {
                 this.currentBlockNumber = action.currentBlockNumber
                 this.updateAllOpenOrders()
+                this.emitChange()
+                break
+            }
+            case ActionNames.RETRIEVING_ACCOUNT: {
+                this.openOrders = []
+                this.pendingCancelIds = []
+                this.showConfirmModal = false
+                this.emitChange()
+                break
+            }
+            case ActionNames.WALLET_LOGOUT: {
+                this.openOrders = []
+                this.pendingCancelIds = []
+                this.showConfirmModal = false
                 this.emitChange()
                 break
             }

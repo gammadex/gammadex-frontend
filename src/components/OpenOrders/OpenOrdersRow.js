@@ -45,7 +45,7 @@ export default class OpenOrdersRow extends React.Component {
                 <td><Round price softZeros>{openOrder.price}</Round></td>
                 <td><Round>{tokenAmountEth.toString()}</Round> {tokenName}</td>
                 <td><Round>{ethAmount}</Round></td>
-                <td><Date year="true">{openOrder.date}</Date></td>
+                <td><Date year>{openOrder.date}</Date></td>
                 <td>{status}</td>
                 <td>{cancelOrderButton}</td>
             </tr>
