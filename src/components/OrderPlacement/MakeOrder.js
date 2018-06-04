@@ -142,11 +142,19 @@ export default class MakeOrder extends React.Component {
         })
     }
 
-    onSubmit = () => {
-        if (this.isMakerBuyComponent()) {
-            OrderPlacementActions.executeBuy()
-        } else {
-            OrderPlacementActions.executeSell()
+    onSubmit = event => {
+        console.log("SUBMIIIIIIIIIt")
+
+        if (! this.isSubmitDisabled()) {
+            if (this.isMakerBuyComponent()) {
+                OrderPlacementActions.executeBuy()
+            } else {
+                OrderPlacementActions.executeSell()
+            }
+        }
+
+        if (event) {
+            event.preventDefault()
         }
     }
 
@@ -156,6 +164,25 @@ export default class MakeOrder extends React.Component {
         } else {
             OrderPlacementActions.sellPriceWarningDismissed()
         }
+    }
+
+    isSubmitDisabled = () => {
+        const {balanceRetrieved} = this.props
+
+        const {
+            total,
+            orderValid,
+            expiryType,
+            expireAfterBlocks,
+            orderHasPriceWarning
+        } = this.state
+
+        return !orderValid
+            || orderHasPriceWarning
+            || total === ""
+            || safeBigNumber(total).isZero()
+            || !balanceRetrieved
+            || (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero()))
     }
 
     render() {
@@ -185,12 +212,7 @@ export default class MakeOrder extends React.Component {
             available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
         }
 
-        const submitDisabled = !orderValid
-            || total === ""
-            || safeBigNumber(total).isZero()
-            || !balanceRetrieved
-            || (expiryType === ExpiryType.BLOCKS && (expireAfterBlocks === "" || safeBigNumber(expireAfterBlocks).isZero()))
-
+        const submitDisabled = this.isSubmitDisabled()
         const amountFieldValid = orderValid || orderInvalidField != OrderEntryField.AMOUNT
         const amountFieldErrorMessage = amountFieldValid ? "" : orderInvalidReason
         const totalFieldValid = orderValid || orderInvalidField != OrderEntryField.TOTAL
@@ -215,9 +237,9 @@ export default class MakeOrder extends React.Component {
             prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
         }
 
-        const body =
+        const body = (
             <BoxSection className={"order-box"}>
-
+                <form onSubmit={this.onSubmit}>
                 <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
                     disabled="true" fieldName={type + "ExchangeBalanceMakeOrder"} />
                 <hr />
@@ -278,7 +300,7 @@ export default class MakeOrder extends React.Component {
                 {priceWarningAlert}
                 <FormGroup row className="hdr-stretch-ctr">
                     <Col sm={9}>
-                        <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id="sellButton" disabled={submitDisabled}
+                        <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id="sellButton" disabled={submitDisabled} type="submit"
                             hidden={orderHasPriceWarning && orderValid}
                             onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
                         <Conditional displayCondition={!balanceRetrieved}>
@@ -286,7 +308,9 @@ export default class MakeOrder extends React.Component {
                         </Conditional>
                     </Col>
                 </FormGroup>
+                </form>
             </BoxSection>
+        )
 
         return body
     }
