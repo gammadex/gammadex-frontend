@@ -82,8 +82,6 @@ export default class OrderBook extends React.Component {
         const {token, pageSize} = this.props
         const {bids, offers, openOrders, pendingCancelIds, tableWidth} = this.state
 
-        console.log("Width", tableWidth)
-
         const openOrderIds = openOrders.map(o => o.id)
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
