@@ -50,10 +50,6 @@ class TokenChooser extends React.Component {
         }
     }
 
-    onCreateToken = token => {
-        TokenActions.addUserToken(token)
-    }
-
     removeUserToken = token => {
         // switch to the default token if the currently selected token is removed
         if (token.address === this.state.selectedToken.address) {
@@ -95,7 +91,7 @@ class TokenChooser extends React.Component {
                     </div>
                 </Conditional>
 
-                <TokenCreator create={this.onCreateToken}/>
+                <TokenCreator selectToken={this.onTokenSelect}/>
             </Box>
         )
     }

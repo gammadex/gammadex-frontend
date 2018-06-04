@@ -34,7 +34,14 @@ export default class TokenCreator extends React.Component {
     }
 
     onAddToken = event => {
-        this.props.create(this.state.token)
+        const {token} = this.state
+
+        if (token) {
+            TokenActions.addUserToken(token)
+            this.props.selectToken(token.name, token.address)
+        }
+
+        event.preventDefault()
     }
 
     onAddressChange = event => {
@@ -48,6 +55,7 @@ export default class TokenCreator extends React.Component {
     render() {
         return (
             <div className="order-box">
+                <form>
                 <Conditional displayCondition={this.state.checkingAddress}>
                     <div className="hover">
                         <span className="fas fa-circle-notch fa-spin egspinner"/>
@@ -81,9 +89,10 @@ export default class TokenCreator extends React.Component {
                 </Conditional>
 
                 <div className="row form-group form-inline hdr-stretch-ctr">
-                    <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
+                    <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken} type="submit"
                             disabled={this.state.token.name === "" || this.state.checkError !== ""}>Add</button>
                 </div>
+                </form>
             </div>
         )
     }
