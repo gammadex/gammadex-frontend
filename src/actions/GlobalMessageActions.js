@@ -1,10 +1,11 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
+import * as ErrorMessageUtil from "../util/ErrorMessageUtil"
 
-export function sendGlobalMessage(content, alertType='primary') {
+export function sendGlobalMessage(content, alertType = 'primary') {
     dispatcher.dispatch({
         type: ActionNames.GLOBAL_MESSAGE_SENT,
-        content,
+        content: ErrorMessageUtil.cleanMessage(content),
         alertType,
         time: new Date()
     })
