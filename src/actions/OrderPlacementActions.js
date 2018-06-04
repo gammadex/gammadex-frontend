@@ -582,8 +582,6 @@ export function sendOrder(order) {
                         } else {
                             clearSellOrder()
                         }
-                        GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getOrderAccepted(side, tokenName), 'success')
                     } else if (result) {
                         const error = `status: ${result.status}, message: ${result.message}`
                         GlobalMessageActions.sendGlobalMessage(
