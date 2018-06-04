@@ -5,6 +5,7 @@ import Logout from '../components/Logout'
 import Account from '../components/Account'
 import Routes from '../Routes'
 import GasPriceChooser from "../components/GasPriceChooser"
+import AppStatus from "./AppStatus"
 
 class TopNavigation extends Component {
 
@@ -25,10 +26,10 @@ class TopNavigation extends Component {
                         <div className="form-group mr-1">
                             <GasPriceChooser />
                         </div>
-                        <DevelopmentToolbar />
-                        {/* <div className="form-group ml-1">
-                            <Logout />
-                        </div> */}
+                        <div className="mr-1">
+                            <DevelopmentToolbar/>
+                        </div>
+                        <AppStatus/>
                         <Account/>
                     </form>
                     <ul className="navbar-nav navbar-right">
