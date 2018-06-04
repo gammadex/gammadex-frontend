@@ -5,6 +5,7 @@ import OrdersTable from '../components/OrderBook/OrdersTable'
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import TokenStore from "../stores/TokenStore"
+import Resizer from "./CustomComponents/Resizer"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -34,6 +35,7 @@ export default class OrderBook extends React.Component {
     }
 
     componentDidMount() {
+        window.addEventListener("resize", this.updateTitleWidthsAndScroll)
         this.updateTitleWidthsAndScroll()
     }
 
@@ -49,12 +51,12 @@ export default class OrderBook extends React.Component {
                     this.setState({tableWidth: offersTable.clientWidth})
                 }
             })
-         }
+        }
 
         const offersDiv = document.getElementById("orders-div-offer")
         if (offersDiv) {
             this.setState((prevState) => {
-                if (prevState.bids && prevState.bids.length > 0 && ! prevState.scrolled) {
+                if (prevState.bids && prevState.bids.length > 0 && !prevState.scrolled) {
                     offersDiv.scrollTop = offersDiv.scrollHeight
                     this.setState({scrolled: true})
                 }
