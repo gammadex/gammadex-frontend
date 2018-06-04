@@ -53,8 +53,6 @@ export default class NumericInput extends React.Component {
     }
 
     onSubmit = event => {
-        console.log("SUBMIIIIIIIIIT")
-
         const {
             valid = true,
             disabled = false,

@@ -143,8 +143,6 @@ export default class MakeOrder extends React.Component {
     }
 
     onSubmit = event => {
-        console.log("SUBMIIIIIIIIIt")
-
         if (! this.isSubmitDisabled()) {
             if (this.isMakerBuyComponent()) {
                 OrderPlacementActions.executeBuy()

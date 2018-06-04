@@ -17,6 +17,7 @@ import Conditional from "../CustomComponents/Conditional"
 import GasPriceChooser from "../GasPriceChooser"
 import { OperationWeights } from "../../ContractOperations"
 import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
+import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
@@ -122,8 +123,21 @@ export default class FillOrderBook extends React.Component {
         TradeActions.maxFillOrder(this.state.fillOrder)
     }
 
-    onSubmit = () => {
-        TradeActions.executeFillOrder(this.state.fillOrder)
+    onSubmit = event => {
+        if (! this.isSubmitDisabled()) {
+            TradeActions.executeFillOrder(this.state.fillOrder)
+        }
+
+        if (event) {
+            event.preventDefault()
+        }
+    }
+
+    isSubmitDisabled = () => {
+        const {balanceRetrieved} = this.props
+        const {fillOrder} = this.state
+
+        return !fillOrder.fillAmountValid || !balanceRetrieved
     }
 
     render() {
@@ -166,10 +180,11 @@ export default class FillOrderBook extends React.Component {
                 . The same amount of {tokenName} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
             }
 
-            const submitDisabled = !fillOrder.fillAmountValid || !balanceRetrieved
+            const submitDisabled = this.isSubmitDisabled()
 
             body =
                 <BoxSection className={"order-box"}>
+                    <form onSubmit={this.onSubmit}>
                     {bestExecutionWarning}
                     <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
                         disabled="true" fieldName={type + "ExchangeBalanceFillOrder"} />
@@ -194,13 +209,14 @@ export default class FillOrderBook extends React.Component {
                         fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
                     <FormGroup row className="hdr-stretch-ctr">
                         <Col sm={6}>
-                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled}
+                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
                                 onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
                             <Conditional displayCondition={!balanceRetrieved}>
                                 <FormText color="muted">{`Please unlock a wallet to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
                             </Conditional>
                         </Col>
                     </FormGroup>
+                    </form>
                 </BoxSection>
         } else {
             body =
