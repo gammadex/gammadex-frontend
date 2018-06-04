@@ -64,7 +64,9 @@ export function refreshAccount(accountType, history) {
 export function refreshAccountThenEthAndTokBalance(accountType, history) {
     return refreshAccount(accountType, history)
         .then(address => {
-            refreshEthAndTokBalance(address, TokenStore.getSelectedTokenAddress(), true)
+            if(address) {
+                refreshEthAndTokBalance(address, TokenStore.getSelectedTokenAddress(), true)
+            }
         })
 }
 
