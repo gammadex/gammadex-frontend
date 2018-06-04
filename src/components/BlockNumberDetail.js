@@ -29,7 +29,7 @@ export default class BlockNumberDetail extends React.Component {
         const {currentBlockNumber} = this.state
 
         return (
-            <span className="ml-2 mr-2"><b>Current Block: </b> {currentBlockNumber}</span>
+            <span><strong>Current Block: </strong> {currentBlockNumber}</span>
         )
     }
 }

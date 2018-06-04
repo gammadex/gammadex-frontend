@@ -99,17 +99,6 @@ export default class Account extends React.Component {
                                     <BoxSection>
                                         <div className="row">
                                             <div className="col-lg-12 text-center">
-                                                <Conditional displayCondition={selectedAccountType != AccountType.METAMASK}>
-                                                    <span className="fas fa-check-circle buy-green" />&nbsp;{EthereumNetworks.getMainNetDescription()}
-                                                </Conditional>
-                                                <Conditional displayCondition={selectedAccountType === AccountType.METAMASK && isMainNet === true}>
-                                                    <span className="fas fa-check-circle buy-green" />&nbsp;{netDescription}
-                                                </Conditional>
-                                                <Conditional displayCondition={selectedAccountType === AccountType.METAMASK && isMainNet === false}>
-                                                    <span className="fas fa-exclamation-triangle sell-red" />&nbsp;{netDescription}
-                                                </Conditional>
-                                                <br />
-                                                <br />
                                                 Address (open in Etherscan)
                                                 <br />
                                                 {accountLink}

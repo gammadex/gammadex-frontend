@@ -11,10 +11,6 @@ class DevelopmentToolbar extends Component {
                 <div className="form-group ml-1">
                     <small>You are running this application in <b>{Config.getReactEnv()}</b> mode.</small>
                 </div>
-                <div className="form-group ml-1">
-                    <WebSocketDetail/>
-                    <BlockNumberDetail/>
-                </div>
             </span>
         )
     }

@@ -7,6 +7,10 @@ import AccountStore from "../stores/AccountStore"
 import WebSocketStore from '../stores/WebSocketStore'
 import AppStatusRow from "./AppStatus/AppStatusRow"
 import {States} from "./AppStatus/AppStatusRow"
+import Config from "../Config"
+import BlockNumberDetail from "./BlockNumberDetail"
+import AccountType from "../AccountType";
+import * as EthereumNetworks from "../util/EthereumNetworks"
 
 export default class AppStatus extends React.Component {
     constructor(props) {
@@ -20,11 +24,11 @@ export default class AppStatus extends React.Component {
             },
             web3: {
                 state: States.ERROR,
-                providedWeb3: {},
+                selectedAccountType: null
             },
             network: {
                 state: States.ERROR,
-                selectedAccountType: null
+                netDescription: null
             }
         }
 
@@ -33,6 +37,8 @@ export default class AppStatus extends React.Component {
         this.onAccountStoreChange = this.onAccountStoreChange.bind(this)
         
         this.onSocketConnectionChange()
+        this.onAccountStoreChange()
+        this.onWalletStoreChange()
     }
 
     componentWillMount() {
@@ -71,11 +77,13 @@ export default class AppStatus extends React.Component {
 
     onWalletStoreChange() {
         const web3Info = WalletStore.getProvidedWeb3Info()
-        const nwState = web3Info.netDescription ? States.OK : States.ERROR
+        const selectedAccountType = this.state.web3.selectedAccountType
+        const nwState = (web3Info.netDescription && !selectedAccountType && !web3Info.isMainNet) ? States.ERROR : States.OK
+        const netDescription = (!selectedAccountType || selectedAccountType === AccountType.METAMASK) ? web3Info.netDescription : EthereumNetworks.getMainNetDescription()
         this.setState({
             network: {
                 state: nwState,
-                providedWeb3: web3Info
+                netDescription
             }
         })
     }
@@ -107,9 +115,13 @@ export default class AppStatus extends React.Component {
     getNetworkMessage = () => {
         switch (this.state.network.state) {
         case States.OK:
-            return `${this.state.network.providedWeb3.netDescription}, XXX pending`
+            return this.state.network.netDescription
         case States.ERROR:
-            return `Network not found`
+            if (!this.state.network.netDescription) {
+                return "Network not found"
+            }
+
+            return `${this.state.network.netDescription} used in ${Config.getReactEnv()}`
         }
     }
 
@@ -130,9 +142,13 @@ export default class AppStatus extends React.Component {
                         <PopoverBody>
                             <Box title="Status">
                                 <BoxSection>
-                                    <AppStatusRow title="Websocket" state={this.state.webSocket.state} message={this.getWebsocketMessage()}/>
-                                    <div className="sub-card"><AppStatusRow title="Web3 Provider" state={this.state.web3.state} message={this.getWeb3Message()}/></div>
-                                    <div className="sub-card"><AppStatusRow className="sub-card" title="Network" state={this.state.network.state} message={this.getNetworkMessage()}/></div>
+                                    <AppStatusRow title="GammaDex Websocket" state={this.state.webSocket.state} message={this.getWebsocketMessage()}/>
+                                    <div className="sub-card"><AppStatusRow title="Ethereum Node" state={this.state.web3.state} message={this.getWeb3Message()}/></div>
+                                    <div className="sub-card">
+                                        <AppStatusRow className="sub-card" title="Network" state={this.state.network.state} message={this.getNetworkMessage()}>
+                                            <BlockNumberDetail/>
+                                        </AppStatusRow>
+                                    </div>
                                 </BoxSection>
                             </Box>
                         </PopoverBody>
