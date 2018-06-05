@@ -33,6 +33,7 @@ export default class OrderBook extends React.Component {
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
         OpenOrdersStore.removeListener("change", this.saveOpenOrders)
+        window.removeEventListener("resize", this.updateTitleWidthsAndScroll)
     }
 
     componentDidUpdate(prevProps, prevState) {
