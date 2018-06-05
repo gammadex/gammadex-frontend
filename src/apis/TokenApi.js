@@ -11,7 +11,6 @@ function processToken(token, currentStateToken) {
 
     TokenActions.selectToken(token)
     if (token.name !== currentStateTokenName) {
-        console.log("WOOT")
         WebSocketActions.getMarket()
     }
 }
