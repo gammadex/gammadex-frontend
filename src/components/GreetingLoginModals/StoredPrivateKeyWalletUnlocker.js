@@ -24,7 +24,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.onWalletStoreChange()
     }
 

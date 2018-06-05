@@ -23,7 +23,7 @@ export default class OrderBook extends React.Component {
         this.updateTitleWidthsAndScroll = this.updateTitleWidthsAndScroll.bind(this)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
         OpenOrdersStore.on("change", this.saveOpenOrders)
 

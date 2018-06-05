@@ -13,7 +13,7 @@ export default class BlockNumberDetail extends React.Component {
         this.saveBlockNumber = this.saveBlockNumber.bind(this)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         LifecycleStore.on("change", this.saveBlockNumber)
     }
 

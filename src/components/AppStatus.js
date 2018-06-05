@@ -35,13 +35,9 @@ export default class AppStatus extends React.Component {
         this.onSocketConnectionChange = this.onSocketConnectionChange.bind(this)
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
         this.onAccountStoreChange = this.onAccountStoreChange.bind(this)
-        
-        this.onSocketConnectionChange()
-        this.onAccountStoreChange()
-        this.onWalletStoreChange()
     }
 
-    componentWillMount() {
+    componentDidMount() {
         WebSocketStore.on("change", this.onSocketConnectionChange)
         WalletStore.on("change", this.onWalletStoreChange)
         AccountStore.on("change", this.onAccountStoreChange)
