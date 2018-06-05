@@ -9,7 +9,7 @@ import AppStatusRow from "./AppStatus/AppStatusRow"
 import {States} from "./AppStatus/AppStatusRow"
 import Config from "../Config"
 import BlockNumberDetail from "./BlockNumberDetail"
-import AccountType from "../AccountType";
+import AccountType from "../AccountType"
 import * as EthereumNetworks from "../util/EthereumNetworks"
 
 export default class AppStatus extends React.Component {
@@ -102,7 +102,7 @@ export default class AppStatus extends React.Component {
     getWeb3Message = () => {
         switch (this.state.web3.state) {
         case States.OK:
-            return `Provided by ${this.state.web3.selectedAccountType}`
+            return `Provided by ${this.state.web3.selectedAccountType === AccountType.METAMASK ? this.state.web3.selectedAccountType : "INFURA" }`
         case States.ERROR:
             return `No provider`
         }
@@ -133,7 +133,7 @@ export default class AppStatus extends React.Component {
                     </div>
                 </button>
 
-                <Popover target="appStatus" isOpen={this.state.popoverOpen} placement="bottom">
+                <Popover target="appStatus" isOpen={this.state.popoverOpen} placement="bottom" toggle={this.toggleShowStatus}>
                     <div className="shadow gas-prices">
                         <PopoverBody>
                             <Box title="Status">
