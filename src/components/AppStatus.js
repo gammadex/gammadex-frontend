@@ -129,7 +129,7 @@ export default class AppStatus extends React.Component {
                 <button className="btn" id="appStatus" type="button" onClick={this.toggleShowStatus}>
                     <div>
                         <span className={"fas fa-lg " + overall.class}></span>
-                        <span className="lmargin">Status</span>
+                        <span className="ml-2">Status</span>
                     </div>
                 </button>
 

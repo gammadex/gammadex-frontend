@@ -12,7 +12,7 @@ class TopNavigation extends Component {
         return (
             <header>
                 <nav className="navbar navbar-dark bg-primary  navbar-expand-lg main-nav">
-                    <span class="navbar-brand mb-0 h1">GammaDEX</span>
+                    <span className="navbar-brand mb-0 h1">GammaDEX</span>
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
                             <Link to={Routes.Exchange} className="nav-link">Exchange</Link>

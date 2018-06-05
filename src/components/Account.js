@@ -76,10 +76,8 @@ export default class Account extends React.Component {
         return (
             <div id="accountTop" className="form-group ml-1">
                 <Conditional displayCondition={account != null}>
-                    <img src={account == null ? null : toDataUrl(account)} className="wallet" />
-                </Conditional>
-                <Conditional displayCondition={account != null}>
-                    <input type="button" className="btn" onClick={this.toggerPopover} value={truncatedAccount} />
+                    <button className="btn" onClick={this.toggerPopover} value={truncatedAccount}><img width="16" height="16" src={account == null ? null : toDataUrl(account)} className="mr-2" />{truncatedAccount}</button>
+
                     <Popover placement="bottom" isOpen={accountPopoverOpen} target="accountTop" toggle={this.toggerPopover}>
                         <div className="shadow gas-prices">
                             <PopoverBody>
