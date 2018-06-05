@@ -2,10 +2,8 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import { Box } from "./CustomComponents/Box"
+import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
-import TokenStore from "../stores/TokenStore"
-import Resizer from "./CustomComponents/Resizer"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -20,47 +18,53 @@ export default class OrderBook extends React.Component {
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
         this.saveOpenOrders = this.saveOpenOrders.bind(this)
-        this.updateTitleWidthsAndScroll = this.updateTitleWidthsAndScroll.bind(this)
+        this.updateTitleWidths = this.updateTitleWidths.bind(this)
+        this.scrollOffers = this.scrollOffers.bind(this)
     }
 
     componentDidMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
         OpenOrdersStore.on("change", this.saveOpenOrders)
-        window.addEventListener("resize", this.updateTitleWidthsAndScroll)
-        this.updateTitleWidthsAndScroll()
+        window.addEventListener("resize", this.updateTitleWidths)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
         OpenOrdersStore.removeListener("change", this.saveOpenOrders)
-        window.removeEventListener("resize", this.updateTitleWidthsAndScroll)
+        window.removeEventListener("resize", this.updateTitleWidths)
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // https://developmentarc.gitbooks.io/react-indepth/content/life_cycle/update/postrender_with_componentdidupdate.html
-        if (prevProps.data !== this.props.data) {
-            this.updateTitleWidthsAndScroll()
+        const offersTable = document.getElementById("order-table-offer")
+        if (offersTable) {
+            if (prevState.tableWidth !== offersTable.clientWidth) {
+                this.updateTitleWidths()
+            }
+        }
+
+        const offersDiv = document.getElementById("orders-div-offer")
+        if (offersDiv && prevState.bids && prevState.bids.length > 0 && !prevState.scrolled) {
+            this.scrollOffers()
         }
     }
 
-    updateTitleWidthsAndScroll() {
+    updateTitleWidths() {
         const offersTable = document.getElementById("order-table-offer")
         if (offersTable) {
             this.setState((prevState) => {
                 if (prevState.tableWidth !== offersTable.clientWidth) {
-                    this.setState({ tableWidth: offersTable.clientWidth })
+                    return {tableWidth: offersTable.clientWidth}
                 }
             })
         }
+    }
 
+    scrollOffers() {
         const offersDiv = document.getElementById("orders-div-offer")
         if (offersDiv) {
-            this.setState((prevState) => {
-                if (prevState.bids && prevState.bids.length > 0 && !prevState.scrolled) {
-                    offersDiv.scrollTop = offersDiv.scrollHeight
-                    this.setState({ scrolled: true })
-                }
-            })
+            offersDiv.scrollTop = offersDiv.scrollHeight
+
+            this.setState( {scrolled: true})
         }
     }
 
@@ -79,23 +83,23 @@ export default class OrderBook extends React.Component {
     }
 
     render() {
-        const { token, pageSize } = this.props
-        const { bids, offers, openOrders, pendingCancelIds, tableWidth } = this.state
+        const {token, pageSize} = this.props
+        const {bids, offers, openOrders, pendingCancelIds, tableWidth} = this.state
 
         const openOrderIds = openOrders.map(o => o.id)
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
         if (bids && bids.length > 0) {
             bidsContent = <OrdersTable orderType="bid" orders={bids}
-                openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                rowClass="buy-green" />
+                                       openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
+                                       rowClass="buy-green"/>
         }
 
         let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
         if (offers && offers.length > 0) {
             offersContent = <OrdersTable orderType="offer" orders={offers}
-                openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                rowClass="sell-red" />
+                                         openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
+                                         rowClass="sell-red"/>
         }
 
         return (
@@ -107,14 +111,14 @@ export default class OrderBook extends React.Component {
                     </div>
 
                     <div className="row orders-col-border">
-                        <div className="orders-colnames" style={{ "width": `${tableWidth}px` }}>
+                        <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
                             <table className="table-bordered">
                                 <tbody>
-                                    <tr>
-                                        <td>{token.name}/ETH</td>
-                                        <td>Size ({token.name})</td>
-                                        <td>Total (ETH)</td>
-                                    </tr>
+                                <tr>
+                                    <td>{token.name}/ETH</td>
+                                    <td>Size ({token.name})</td>
+                                    <td>Total (ETH)</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
