@@ -135,20 +135,6 @@ export function fillOrder(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
 
-    if (OrderUtil.isTakerBuy(order) &&
-        TradeStore.getTradeState().fillOrderTakerBuy &&
-        TradeStore.getTradeState().fillOrderTakerBuy.order.id === order.id) {
-        clearFillOrder(OrderSide.BUY)
-        return
-    }
-
-    if (OrderUtil.isTakerSell(order) &&
-        TradeStore.getTradeState().fillOrderTakerSell &&
-        TradeStore.getTradeState().fillOrderTakerSell.order.id === order.id) {
-        clearFillOrder(OrderSide.SELL)
-        return
-    }
-
     const isBestExecution = orderIsBestExecution(order)
     const weiFillAmount = BigNumber(order.availableVolume)
     const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
