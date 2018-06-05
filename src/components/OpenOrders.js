@@ -14,6 +14,7 @@ import OrderSide from "./../OrderSide"
 import Conditional from "./CustomComponents/Conditional"
 import _ from "lodash"
 import Round from "./CustomComponents/Round"
+import MarketResponseSpinner from "./MarketResponseSpinner"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
@@ -117,7 +118,7 @@ export default class OpenOrders extends React.Component {
                 <div className="card-header">
                     <div className="row hdr-stretch">
                         <div className="col-lg-6">
-                            <strong className="card-title">Open Orders</strong>
+                            <strong className="card-title">Open Orders<MarketResponseSpinner/></strong>
                         </div>
                         <div className="col-lg-6">
                             <div className="form-group">

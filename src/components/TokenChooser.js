@@ -6,6 +6,7 @@ import TokenListApi from "../apis/TokenListApi"
 import _ from "lodash"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import OrderBookStore from "../stores/OrderBookStore"
+import MarketResponseSpinner from "./MarketResponseSpinner"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -99,7 +100,7 @@ class TokenChooser extends React.Component {
                 <div className="card-header">
                     <div className="row hdr-stretch">
                         <div className="col-lg-6">
-                            <strong className="card-title">Tokens</strong>
+                            <strong className="card-title">Tokens<MarketResponseSpinner/></strong>
                         </div>
                         <div className="col-lg-6">
                             <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}

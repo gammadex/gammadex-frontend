@@ -2,6 +2,7 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import Round from "./CustomComponents/Round"
 import EtherScan from "../components/CustomComponents/Etherscan"
+import MarketResponseSpinner from "./MarketResponseSpinner"
 
 export default class TokenSummary extends React.Component {
     constructor(props) {
@@ -43,7 +44,7 @@ export default class TokenSummary extends React.Component {
         return (
             <div className="card">
                 <div className="card-header">
-                    <h1 className="main-header">{title}</h1>
+                    <h1 className="main-header">{title}</h1><strong className="card-title"><MarketResponseSpinner/></strong>
                 </div>
 
                 <div className="card-body">

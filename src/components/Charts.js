@@ -5,6 +5,7 @@ import PlotlyDepthChart from './OrderBook/PlotlyDepthChart'
 import Resizer from './CustomComponents/Resizer'
 import Conditional from "./CustomComponents/Conditional"
 import {Box, BoxHeader} from "./CustomComponents/Box"
+import MarketResponseSpinner from "./MarketResponseSpinner"
 
 export default class Charts extends React.Component {
     constructor(props) {
@@ -68,6 +69,9 @@ export default class Charts extends React.Component {
                         <li className="nav-item">
                             <button className={"nav-link  btn btn-sm " + depthChartActiveClass}
                                onClick={() => this.selectTab("DepthChart")}>Depth Chart</button>
+                        </li>
+                        <li>
+                            <MarketResponseSpinner/>
                         </li>
                     </ul>
                 </BoxHeader>

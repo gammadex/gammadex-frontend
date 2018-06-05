@@ -103,7 +103,7 @@ export default class OrderBook extends React.Component {
         }
 
         return (
-            <Box title="Bids and Offers">
+            <Box title="Bids and Offers" marketResponseSpinner>
                 <div className="col-lg-12">
 
                     <div className="row">

@@ -86,7 +86,7 @@ export function connect() {
     })
 }
 
-export function getMarket(notifyRequested = false) {
+export function getMarket(notifyRequested = true) {
     if (notifyRequested) {
         dispatcher.dispatch({
             type: ActionNames.MESSAGE_REQUESTED_MARKET,

@@ -1,10 +1,13 @@
 import React from "react"
 import PropTypes from "prop-types"
+import MarketResponseSpinner from "../MarketResponseSpinner"
 
 export class Box extends React.Component {
     render() {
+        const marketResponseSpinner = this.props.marketResponseSpinner ? <MarketResponseSpinner/> : null
+
         const title = this.props.title ? <div className="card-header">
-            <strong className="card-title">{this.props.title}</strong>
+            <strong className="card-title">{this.props.title}{marketResponseSpinner}</strong>
         </div> : ""
 
         return <div className="card">{title}{this.props.children}</div>
@@ -13,6 +16,7 @@ export class Box extends React.Component {
 
 Box.propTypes = {
     title: PropTypes.string,
+    marketResponseSpinner: PropTypes.bool
 }
 
 export class BoxSection extends React.Component {

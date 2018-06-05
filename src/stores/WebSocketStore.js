@@ -8,6 +8,7 @@ class WebSocketStore extends EventEmitter {
         this.url = null
         this.connecting = false
         this.connected = false
+        this.marketResponseReceived = false
     }
 
     getConnectionState() {
@@ -16,6 +17,10 @@ class WebSocketStore extends EventEmitter {
             connected: this.connected,
             connecting: this.connecting,
         }
+    }
+
+    isMarketResponseReceived() {
+        return this.marketResponseReceived
     }
 
     emitChange() {
@@ -43,6 +48,16 @@ class WebSocketStore extends EventEmitter {
                 this.url = null
                 this.connected = false
                 this.connecting = false
+                this.emitChange()
+                break
+            }
+            case ActionNames.MESSAGE_REQUESTED_MARKET: {
+                this.marketResponseReceived = false
+                this.emitChange()
+                break
+            }
+            case ActionNames.MESSAGE_RECEIVED_MARKET: {
+                this.marketResponseReceived = true
                 this.emitChange()
                 break
             }
