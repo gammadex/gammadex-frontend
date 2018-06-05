@@ -87,6 +87,7 @@ class AccountStore extends EventEmitter {
                 break
             }
             case ActionNames.ACCOUNT_RETRIEVED: {
+                console.log(`ACCOUNT_RETRIEVED address prev ${this.account} nonce prev ${this.nonce}, address new ${action.addressNonce.address} nonce new ${action.addressNonce.nonce}`)
                 this.account = action.addressNonce.address
                 this.nonce = action.addressNonce.nonce
                 this.accountRetrieved = true
@@ -129,7 +130,9 @@ class AccountStore extends EventEmitter {
                 break
             }
             case ActionNames.NONCE_UPDATED: {
+                console.log(`NONCE_UPDATED nonce prev ${this.nonce}, nonce new ${action.nonce}`)
                 if (action.nonce > this.nonce) {
+                    console.log(`NEW NONCE > OLD, SO CHANGED`)
                     this.nonce = action.nonce
                     this.emitChange()
                 }
