@@ -2,7 +2,7 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import {Box} from "./CustomComponents/Box"
+import { Box } from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import TokenStore from "../stores/TokenStore"
 import Resizer from "./CustomComponents/Resizer"
@@ -26,7 +26,8 @@ export default class OrderBook extends React.Component {
     componentDidMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
         OpenOrdersStore.on("change", this.saveOpenOrders)
-
+        window.addEventListener("resize", this.updateTitleWidthsAndScroll)
+        this.updateTitleWidthsAndScroll()
     }
 
     componentWillUnmount() {
@@ -34,13 +35,11 @@ export default class OrderBook extends React.Component {
         OpenOrdersStore.removeListener("change", this.saveOpenOrders)
     }
 
-    componentDidMount() {
-        window.addEventListener("resize", this.updateTitleWidthsAndScroll)
-        this.updateTitleWidthsAndScroll()
-    }
-
-    componentDidUpdate() {
-        this.updateTitleWidthsAndScroll()
+    componentDidUpdate(prevProps, prevState) {
+        // https://developmentarc.gitbooks.io/react-indepth/content/life_cycle/update/postrender_with_componentdidupdate.html
+        if (prevProps.data !== this.props.data) {
+            this.updateTitleWidthsAndScroll()
+        }
     }
 
     updateTitleWidthsAndScroll() {
@@ -48,7 +47,7 @@ export default class OrderBook extends React.Component {
         if (offersTable) {
             this.setState((prevState) => {
                 if (prevState.tableWidth !== offersTable.clientWidth) {
-                    this.setState({tableWidth: offersTable.clientWidth})
+                    this.setState({ tableWidth: offersTable.clientWidth })
                 }
             })
         }
@@ -58,7 +57,7 @@ export default class OrderBook extends React.Component {
             this.setState((prevState) => {
                 if (prevState.bids && prevState.bids.length > 0 && !prevState.scrolled) {
                     offersDiv.scrollTop = offersDiv.scrollHeight
-                    this.setState({scrolled: true})
+                    this.setState({ scrolled: true })
                 }
             })
         }
@@ -79,23 +78,23 @@ export default class OrderBook extends React.Component {
     }
 
     render() {
-        const {token, pageSize} = this.props
-        const {bids, offers, openOrders, pendingCancelIds, tableWidth} = this.state
+        const { token, pageSize } = this.props
+        const { bids, offers, openOrders, pendingCancelIds, tableWidth } = this.state
 
         const openOrderIds = openOrders.map(o => o.id)
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
         if (bids && bids.length > 0) {
             bidsContent = <OrdersTable orderType="bid" orders={bids}
-                                       openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                                       rowClass="buy-green"/>
+                openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
+                rowClass="buy-green" />
         }
 
         let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
         if (offers && offers.length > 0) {
             offersContent = <OrdersTable orderType="offer" orders={offers}
-                                         openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                                         rowClass="sell-red"/>
+                openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
+                rowClass="sell-red" />
         }
 
         return (
@@ -107,14 +106,14 @@ export default class OrderBook extends React.Component {
                     </div>
 
                     <div className="row orders-col-border">
-                        <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
+                        <div className="orders-colnames" style={{ "width": `${tableWidth}px` }}>
                             <table className="table-bordered">
                                 <tbody>
-                                <tr>
-                                    <td>{token.name}/ETH</td>
-                                    <td>Size ({token.name})</td>
-                                    <td>Total (ETH)</td>
-                                </tr>
+                                    <tr>
+                                        <td>{token.name}/ETH</td>
+                                        <td>Size ({token.name})</td>
+                                        <td>Total (ETH)</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
