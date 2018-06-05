@@ -17,7 +17,7 @@
   "exchangeFeePercent": 0.003,
   "development": {
     "ethereumNetworkId": 3,
-    "web3": "https://ropsten.infura.io",
+    "web3": "https://api.myetherapi.com/rop",
     "etherscan": "https://ropsten.etherscan.io",
     "sockets": {
       "default": "http://localhost:4301"
