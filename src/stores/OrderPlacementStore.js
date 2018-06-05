@@ -26,7 +26,7 @@ class OrderPlacementStore extends EventEmitter {
         this.sellOrderTotalEthControlled = ""
         this.sellOrderTotalEthWei = BigNumber(0)
         this.sellOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
-        this.sellOrderExpireAfterBlocks = 10000
+        this.sellOrderExpireAfterBlocks = "10000"
         this.sellOrderExpireHumanReadableString = ""
         this.sellOrderValid = true
         this.sellOrderInvalidReason = ""
@@ -44,7 +44,7 @@ class OrderPlacementStore extends EventEmitter {
         this.buyOrderTotalEthControlled = ""
         this.buyOrderTotalEthWei = BigNumber(0)
         this.buyOrderExpiryType = ExpiryType.GOOD_TILL_CANCEL
-        this.buyOrderExpireAfterBlocks = 10000
+        this.buyOrderExpireAfterBlocks = "10000"
         this.buyOrderExpireHumanReadableString = ""
         this.buyOrderValid = true
         this.buyOrderInvalidReason = ""
