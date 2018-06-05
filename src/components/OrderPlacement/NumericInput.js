@@ -1,5 +1,5 @@
 import React from "react"
-import {FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button} from 'reactstrap'
+import { FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button } from 'reactstrap'
 
 export default class NumericInput extends React.Component {
     constructor(props) {
@@ -21,7 +21,7 @@ export default class NumericInput extends React.Component {
     }
 
     onChangeFilteringInput = (e) => {
-        const {forceInteger = false} = this.props
+        const { forceInteger = false } = this.props
         const cleanValue = forceInteger ? NumericInput.cleanValueToInteger(e.target.value) : NumericInput.cleanValueToDecimal(e.target.value)
         this.props.onChange(cleanValue)
     }
@@ -35,7 +35,7 @@ export default class NumericInput extends React.Component {
     }
 
     formFeedback() {
-        const {errorMessage = null, feedbackIcon = null} = this.props
+        const { errorMessage = null, feedbackIcon = null } = this.props
         if (feedbackIcon) {
             return <FormFeedback><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
         } else {
@@ -44,7 +44,7 @@ export default class NumericInput extends React.Component {
     }
 
     formText() {
-        const {helpMessage = null, helpIcon = null} = this.props
+        const { helpMessage = null, helpIcon = null } = this.props
         if (helpIcon) {
             return <FormText color="muted"><i className={helpIcon}></i>&nbsp;&nbsp;{helpMessage}</FormText>
         } else {
@@ -89,23 +89,24 @@ export default class NumericInput extends React.Component {
         let maxButton = null
         if (typeof (onMax) === 'function') {
             maxButton = <InputGroupAddon addonType="append"><Button color="link"
-                                                                    onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
+                onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
         }
 
         let firstCol = <Label for={fieldName} sm={3}>{name}</Label>
         if (typeof (onAction) === 'function' && actionName) {
             firstCol = <Col sm={3}><Button color="primary" disabled={actionDisabled}
-                                           onClick={() => this.onAction()}>{actionName}</Button></Col>
+                onClick={() => this.onAction()}>{actionName}</Button></Col>
         }
 
         const input = (
             <div className="input-group">
                 <Input id={fieldName}
-                       disabled={disabled}
-                       value={value}
-                       onChange={this.onChangeFilteringInput}
-                       placeholder={placeholder}
-                       invalid={isInvalid}/>
+                    autocomplete="off"
+                    disabled={disabled}
+                    value={value}
+                    onChange={this.onChangeFilteringInput}
+                    placeholder={placeholder}
+                    invalid={isInvalid} />
                 {maxButton}
                 <div className="input-group-append">
                     <div className="input-group-text">{unitName}</div>
