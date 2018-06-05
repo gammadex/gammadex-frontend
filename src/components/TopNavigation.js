@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
 import Logout from '../components/Logout'
 import Account from '../components/Account'
 import Routes from '../Routes'
@@ -24,9 +24,9 @@ class TopNavigation extends Component {
 
                     <form className="form-inline">
                         <div className="form-group mr-1">
-                            <GasPriceChooser />
+                            <AppStatus/>
                         </div>
-                        <AppStatus/>
+                        <GasPriceChooser/>
                         <Account/>
                     </form>
                     <ul className="navbar-nav navbar-right">
