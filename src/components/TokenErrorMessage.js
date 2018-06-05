@@ -6,7 +6,7 @@ export default class TokenErrorMessage extends React.Component {
         const warning = this.props.warning
         
         return (
-            <Conditional displayCondition={warning}>
+            <Conditional displayCondition={!!warning}>
                 <div className="alert alert-warning">
                     <div>
                         <h3>{warning ? warning.title : ""}</h3>
