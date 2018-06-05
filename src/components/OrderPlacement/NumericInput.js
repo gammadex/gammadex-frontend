@@ -101,7 +101,7 @@ export default class NumericInput extends React.Component {
         const input = (
             <div className="input-group">
                 <Input id={fieldName}
-                    autocomplete="off"
+                    autoComplete="off"
                     disabled={disabled}
                     value={value}
                     onChange={this.onChangeFilteringInput}
