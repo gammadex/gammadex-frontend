@@ -23,13 +23,11 @@ class EtherDeltaWebSocket {
         this.emitOrder = this.emitOrder.bind(this)
     }
 
-    getMarket(tokenAddress, userAddress) {
+    getMarket(tokenAddress, userAddress, cachedTokensVersion = null) {
         if (!this.socket) {
             console.warn("Can't request market - not connected")
             return
         }
-
-        console.log(`Requesting market for token: ${tokenAddress}, user: ${userAddress}`)
 
         const message = {}
         if (tokenAddress) {
@@ -38,6 +36,11 @@ class EtherDeltaWebSocket {
         if (userAddress) {
             message['user'] = userAddress
         }
+        if (cachedTokensVersion != null) {
+            message['tokensVersion'] = cachedTokensVersion
+        }
+
+        console.log(`Requesting market for token: ${tokenAddress}, user: ${userAddress}, tokensVersion: ${cachedTokensVersion}`, message)
 
         this.socket.emit('getMarket', message)
     }

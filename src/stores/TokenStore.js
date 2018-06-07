@@ -2,25 +2,44 @@ import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import _ from "lodash"
-import TokenListApi from "../apis/TokenListApi"
+import * as TokenUtil from "../util/TokenUtil"
+import * as CachedTokensDao from "../util/CachedTokensDao"
+import Config from "../Config"
 
 class TokenStore extends EventEmitter {
     constructor() {
         super()
-        this.selectedToken = TokenListApi.getDefaultToken()
+        this.loadTokensFromLocalStorage()
+        this.selectedToken = Config.getEnv().defaultPair.token
         this.searchToken = ""
         this.serverTickers = {}
         this.tokenWarning = null
         this.createToken = {
             address: "",
-            lName: "",
             name: "",
+            symbol: "",
             decimals: "",
-            unlisted: true
+            isListed: false
         }
 
         this.tokenCheckError = ""
         this.checkingAddress = false
+    }
+
+    getListedTokens() {
+        return this.listedTokens
+    }
+
+    getListedTokensVersion() {
+        return this.listedTokensVersion
+    }
+
+    getUserTokens() {
+        return this.userTokens
+    }
+
+    getAllTokens() {
+        return this.allTokens
     }
 
     getSelectedToken() {
@@ -55,24 +74,35 @@ class TokenStore extends EventEmitter {
         return this.tokenCheckError
     }
 
-    getUserTokens() {
-        return TokenListApi.getUserTokens()
+    setWarning(title, message) {
+        this.tokenWarning = {title, message}
     }
 
-    setWarning(title, message) {
-        this.tokenWarning = { title, message }
+    loadTokensFromLocalStorage() {
+        const [listedTokens, listedTokensVersion] = CachedTokensDao.getCachedServerTokensAndVersion()
+        if (listedTokensVersion > -1) {
+            this.listedTokens = listedTokens
+            this.listedTokensVersion = listedTokensVersion
+        } else {
+            this.listedTokens = [Config.getEnv().defaultPair.token, Config.getEnv().defaultPair.base]
+            this.listedTokensVersion = 0
+        }
+
+        this.userTokens = CachedTokensDao.getUserTokens()
+
+        this._updateAllTokens()
     }
 
     reset(address) {
         this.createToken = {
             address: address,
-            lName: "",
             name: "",
+            symbol: "",
             decimals: "",
-            unlisted: true
+            isListed: false
         }
 
-        if (address === "" || TokenListApi.isAddress(address)) {
+        if (address === "" || TokenUtil.isAddress(address)) {
             this.tokenCheckError = ""
         } else {
             this.tokenCheckError = "Invalid address"
@@ -86,35 +116,9 @@ class TokenStore extends EventEmitter {
     selectToken = token => {
         this.selectedToken = token
         this.tokenWarning = null
-        if (this.selectedToken.unlisted) {
-            this.setWarning("Unlisted Token", `Token ${this.selectedToken.name} is not listed on GammaDex -- proceed at your own risk`)
+        if (!this.selectedToken.isListed) {
+            this.setWarning("Unlisted Token", `Token ${this.selectedToken.symbol} is not listed on GammaDex -- proceed at your own risk`)
         }
-    }
-
-    checkAddress = (address, switchIfFound) => {
-        TokenListApi.searchToken(address, false)
-            .then(token => {
-                this.createToken = token
-                if (TokenListApi.find({address: this.createToken.address})) {
-                    this.tokenCheckError = `Token ${this.createToken.name} already registered`
-                } else {
-                    this.tokenCheckError = ""
-                    if (switchIfFound) {
-                        this.selectToken(this.createToken)
-                    }
-                }
-
-                this.checkingAddress = false
-                this.emitChange()
-            })
-            .catch(e => {
-                this.reset(address)
-                this.tokenCheckError = "Invalid address"
-                this.checkingAddress = false
-                this.emitChange()
-            })
-        
-        this.checkingAddress = true
     }
 
     handleActions(action) {
@@ -130,10 +134,23 @@ class TokenStore extends EventEmitter {
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_MARKET: {
-                if (action.message && action.message.returnTicker) {
-                    this.storeServerTickers(action.message.returnTicker)
-                    this.emitChange()
+                if (action.message) {
+                    if (action.message.returnTicker) {
+                        this.storeServerTickers(action.message.returnTicker)
+                    }
+                    if (action.message.tokens) {
+                        CachedTokensDao.saveServerTokensAndVersion(action.message.tokens)
+                        const {list, version} = action.message.tokens
+                        this.listedTokens = list
+                        this.listedTokensVersion = version
+
+                        this._updateAllTokens()
+                    }
+                    if (action.message.returnTicker || action.message.tokens) {
+                        this.emitChange()
+                    }
                 }
+
                 break
             }
             case ActionNames.INVALID_TOKEN: {
@@ -147,18 +164,24 @@ class TokenStore extends EventEmitter {
                 break
             }
             case ActionNames.TOKEN_ADDRESS_LOOKUP: {
-                this.checkAddress(action.address, action.switchIfFound)
+                this.reset(action.address)
+                this.checkingAddress = true
                 this.emitChange()
                 break
             }
             case ActionNames.ADD_USER_TOKEN: {
-                TokenListApi.addUserToken(action.token)
+                this.userTokens.push(action.token)
+                CachedTokensDao.saveUserTokens(this.userTokens)
+                this._updateAllTokens()
                 this.reset("")
                 this.emitChange()
                 break
             }
             case ActionNames.REMOVE_USER_TOKEN: {
-                TokenListApi.removeUserToken(action.token)
+                const {token} = action
+                this.userTokens = _.filter(this.userTokens, ut => ut.address.toLowerCase() !== token.address.toLowerCase())
+                CachedTokensDao.saveUserTokens(this.userTokens)
+                this._updateAllTokens()
                 this.emitChange()
                 break
             }
@@ -167,14 +190,36 @@ class TokenStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.TOKEN_LOOKUP_LOOKUP_COMPLETE: {
+                const {token, error} = action
+                this.createToken = token
+                this.checkingAddress = false
+                this.tokenCheckError = error
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_CHECK_ERROR: {
+                const {address, error} = action
+                this.reset(address)
+                this.checkingAddress = false
+                this.tokenCheckError = error
+                this.emitChange()
+                break
+            }
         }
     }
 
     storeServerTickers(returnTicker) {
-        this.serverTickers =  _.reduce(Object.values(returnTicker), (acc, curr) => {
+        this.serverTickers = _.reduce(Object.values(returnTicker), (acc, curr) => {
             acc[curr.tokenAddr.toLowerCase()] = curr
             return acc
         }, {})
+    }
+
+    _updateAllTokens() {
+        console.log(this.listedTokens, this.userTokens)
+
+        this.allTokens = [...this.listedTokens, ...this.userTokens]
     }
 }
 

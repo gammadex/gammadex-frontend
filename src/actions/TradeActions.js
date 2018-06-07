@@ -20,7 +20,7 @@ import OrderSide from "../OrderSide"
 import OrderBoxType from "../components/OrderPlacement/OrderBoxType"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "./GlobalMessageActions"
-import TokenListApi from "../apis/TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
@@ -58,7 +58,7 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
         // taker is selling, amountWei is in wei units of TOK
         amountWei = weiFillAmount
         amount = tokWeiToEth(amountWei, tokenAddress).toString()
-        tokenName = TokenListApi.getTokenName(tokenAddress)
+        tokenName = TokenRepository.getTokenName(tokenAddress)
     } else {
         // taker is buying, amountWei in is wei units of ETH
         amountWei = weiTotalEth

@@ -2,7 +2,7 @@ import React from "react"
 import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
-import TokenListApi from "../apis/TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 import _ from "lodash"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import OrderBookStore from "../stores/OrderBookStore"
@@ -55,7 +55,7 @@ class TokenChooser extends React.Component {
         TokenActions.searchToken(event.target.value)
     }
 
-    onTokenSelect = (tokenName, tokenAddress) => {
+    onTokenSelect = (tokenName) => {
         const newURL = `/exchange/${tokenName}`
         if (newURL !== this.props.history.location.pathname) {
             this.props.history.push(newURL)
@@ -65,24 +65,23 @@ class TokenChooser extends React.Component {
     selectTokenIfOnlyOne = (event, tokens) => {
         if (tokens && tokens.length === 1) {
             const token = tokens[0]
-            this.onTokenSelect(token.name)
+            this.onTokenSelect(token.symbol)
         }
 
         event.preventDefault()
     }
 
     static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
-        return _(tokenList).map(token => _.pick(token, ['name', 'address']))
+        return _(tokenList).map(token => _.pick(token, ['symbol', 'address']))
             .map(token => _.assign(token, _.pick(serverTickers[token.address.toLowerCase()], ['percentChange', 'baseVolume'])))
-            .filter(token => !searchedToken || searchedToken.length === 0 || token.name.toLowerCase().includes(searchedToken.toLowerCase()))
+            .filter(token => !searchedToken || searchedToken.length === 0 || token.symbol.toLowerCase().includes(searchedToken.toLowerCase()))
             .value()
     }
 
     render() {
         const {searchedToken, selectedToken, serverTickers, currentStats} = this.state
 
-        // TODO - TokenListApi has data as state - it should be kept in a Store
-        const systemTokens = TokenChooser.getTokensToDisplay(TokenListApi.getSystemTokens(), serverTickers, searchedToken, selectedToken)
+        const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(), serverTickers, searchedToken, selectedToken)
 
         const tokenRows = systemTokens.map(systemToken => {
             const token = systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken

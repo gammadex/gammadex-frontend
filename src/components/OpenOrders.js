@@ -9,7 +9,7 @@ import AccountStore from "../stores/AccountStore"
 import * as OpenOrderApi from "../apis/OpenOrderApi"
 import { tokenAddress, makerSide, tokenAmountWei } from "../OrderUtil"
 import { tokWeiToEth, safeBigNumber } from "../EtherConversion"
-import TokenListApi from "../apis/TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 import OrderSide from "./../OrderSide"
 import Conditional from "./CustomComponents/Conditional"
 import _ from "lodash"
@@ -108,7 +108,7 @@ export default class OpenOrders extends React.Component {
         if (showConfirmModal && confirmModalOrder) {
             const side = makerSide(confirmModalOrder) === OrderSide.SELL ? "Sell" : "Buy"
             const tokenAddr = tokenAddress(confirmModalOrder)
-            const tokenName = TokenListApi.getTokenName(tokenAddr)
+            const tokenName = TokenRepository.getTokenName(tokenAddr)
             const tokenAmountEth = tokWeiToEth(tokenAmountWei(confirmModalOrder), tokenAddr)
             modalText = `Cancel ${side} ${tokenAmountEth.decimalPlaces(3)} ${tokenName} with price of ${confirmModalOrder.price} ETH?`
         }
@@ -136,7 +136,7 @@ export default class OpenOrders extends React.Component {
                                 </div>
                                 <Conditional displayCondition={!showAllTokens}>
                                     <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
-                                        <strong className="card-title dimmed-heading"><Round>{tokCommited}</Round> {TokenStore.getSelectedToken().name}</strong>
+                                        <strong className="card-title dimmed-heading"><Round>{tokCommited}</Round> {TokenStore.getSelectedToken().symbol}</strong>
                                     </div>
                                 </Conditional>
                             </div>

@@ -1,5 +1,5 @@
 import TransactionStatus from "../TransactionStatus"
-import TokenListApi from "../apis/TokenListApi";
+import TokenRepository from "./TokenRepository";
 import OrderSide from "../OrderSide"
 
 export function toDisplayableTrades(trades, account) {
@@ -9,8 +9,8 @@ export function toDisplayableTrades(trades, account) {
             side: side,
             role: role,
             takerSide: (t.side.toLowerCase() === OrderSide.SELL.toLowerCase()) ? "Sell" : "Buy",
-            tokenName: TokenListApi.getTokenName(t.tokenAddr),
-            market: TokenListApi.getTokenName(t.tokenAddr) + "/ETH",
+            tokenName: TokenRepository.getTokenName(t.tokenAddr),
+            market: TokenRepository.getTokenName(t.tokenAddr) + "/ETH",
             price: String(t.price),
             amount: String(t.amount),
             amountBase: String(t.amountBase),

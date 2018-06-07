@@ -115,8 +115,8 @@ export default class OrderBook extends React.Component {
                             <table className="table-bordered">
                                 <tbody>
                                 <tr>
-                                    <td>{token.name}/ETH</td>
-                                    <td>Size ({token.name})</td>
+                                    <td>{token.symbol}/ETH</td>
+                                    <td>Size ({token.symbol})</td>
                                     <td>Total (ETH)</td>
                                 </tr>
                                 </tbody>

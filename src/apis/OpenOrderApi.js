@@ -4,7 +4,7 @@ import * as AccountActions from "../actions/AccountActions"
 import Timer from "../util/Timer"
 import OrderState from "../OrderState"
 import OpenOrdersStore from "../stores/OpenOrdersStore"
-import TokenListApi from "./TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 import { tokenAddress } from "../OrderUtil"
@@ -49,7 +49,7 @@ export function showAllTokensChanged(showAll) {
 export function cancelOpenOrder(openOrder, gasPriceWei) {
     const { account, nonce } = AccountStore.getAccountState()
     const tokenAddr = tokenAddress(openOrder)
-    const tokenName = TokenListApi.getTokenName(tokenAddr)
+    const tokenName = TokenRepository.getTokenName(tokenAddr)
 
     addPendingOrderCancel(openOrder.id)
 

@@ -1,7 +1,7 @@
 import React from "react"
 import AccountRow from "../Account/AccountRow"
 import Config from "../../Config"
-import TokenListApi from "../../apis/TokenListApi";
+import TokenRepository from "../../util/TokenRepository";
 
 export default class AccountTable extends React.Component {
     render() {
@@ -14,6 +14,7 @@ export default class AccountTable extends React.Component {
             clearBalances,
             refreshing,
         } = this.props
+
         return (
             <table className="table table-striped table-bordered table-no-bottom-border">
                 <thead>
@@ -24,7 +25,7 @@ export default class AccountTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    <AccountRow token={TokenListApi.find({ name: "ETH" })}
+                    <AccountRow token={TokenRepository.find({ symbol: "ETH" })}
                         clearBalances={clearBalances}
                         walletBalanceWei={walletBalanceEthWei}
                         exchangeBalanceWei={exchangeBalanceEthWei}

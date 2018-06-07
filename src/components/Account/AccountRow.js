@@ -54,7 +54,7 @@ export default class AccountTableRow extends React.Component {
         return (
             <tr>
                 <td>
-                    <div><strong>{token.name}</strong></div>
+                    <div><strong>{token.symbol}</strong></div>
                 </td>
                 <td className={"clickable " + fadedClass} onClick={this.selectWalletCell} align="right">{walletCellValue}&nbsp;&nbsp;&nbsp;{gasIndicator}</td>
                 <td className={"clickable " + fadedClass} onClick={this.selectExchangeCell} align="right">{exchangeCellValue}</td>

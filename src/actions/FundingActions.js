@@ -117,7 +117,7 @@ export function tokDepositAmountWeiChanged(tokDepositAmountWei, tokDepositAmount
     const walletBalanceTokWei = safeBigNumber(AccountStore.getAccountState().walletBalanceTokWei)
     const remainingWalletBalanceWei = walletBalanceTokWei.minus(tokDepositAmountWei)
 
-    const tokenName = TokenStore.getSelectedToken().name
+    const tokenName = TokenStore.getSelectedToken().symbol
 
     let fundingState = FundingState.EMPTY
     let fundingText = ""
@@ -158,7 +158,7 @@ export function tokWithdrawalAmountWeiChanged(tokWithdrawalAmountWei, tokWithdra
     const exchangeBalanceTokWei = safeBigNumber(AccountStore.getAccountState().exchangeBalanceTokWei)
     const remainingExchangeBalanceWei = exchangeBalanceTokWei.minus(tokWithdrawalAmountWei)
 
-    const tokenName = TokenStore.getSelectedToken().name
+    const tokenName = TokenStore.getSelectedToken().symbol
 
     let fundingState = FundingState.EMPTY
     let fundingText = ""

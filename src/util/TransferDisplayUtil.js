@@ -1,12 +1,12 @@
 import TransactionStatus from "../TransactionStatus"
 import {tokWeiToEth} from "../EtherConversion"
-import TokenListApi from "../apis/TokenListApi";
+import TokenRepository from "./TokenRepository";
 import DepositType from "../DepositType"
 
 export function toDisplayableTransfers(transfers) {
     return transfers.map(t => ({
             kind: (t.kind === DepositType.DEPOSIT) ? "Deposit" : "Withdrawal",
-            tokenName: TokenListApi.getTokenName(t.tokenAddr),
+            tokenName: TokenRepository.getTokenName(t.tokenAddr),
             amount: String(tokWeiToEth(t.amount, t.tokenAddr)),
             date: t.date,
             status: getStatusDescription(t.status),

@@ -92,5 +92,5 @@ export function getMarket(notifyRequested = true) {
             type: ActionNames.MESSAGE_REQUESTED_MARKET,
         })
     }
-    EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address, AccountStore.getAccountState().account)
+    EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address, AccountStore.getAccountState().account, TokenStore.getListedTokensVersion())
 }

@@ -4,7 +4,7 @@ import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
 import {Box} from "./CustomComponents/Box"
-import TokenListApi from "../apis/TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 import _ from "lodash"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
@@ -43,8 +43,8 @@ class TokenChooser extends React.Component {
         })
     }
 
-    onTokenSelect = (tokenName, tokenAddress) => {
-        const newURL = `/exchange/${tokenAddress}`
+    onTokenSelect = (tokenNameOrAddress) => {
+        const newURL = `/exchange/${tokenNameOrAddress}`
         if (newURL !== this.props.history.location.pathname) {
             this.props.history.push(newURL)
         }
@@ -53,8 +53,12 @@ class TokenChooser extends React.Component {
     removeUserToken = token => {
         // switch to the default token if the currently selected token is removed
         if (token.address === this.state.selectedToken.address) {
-            const defToken = TokenListApi.getDefaultToken()
-            this.onTokenSelect(defToken.name, defToken.address)
+            const token = TokenRepository.getDefaultToken()
+            if (token.isListed) {
+                this.onTokenSelect(token.name)
+            } else {
+                this.onTokenSelect(token.address)
+            }
         }
 
         TokenActions.removeUserToken(token)
@@ -63,7 +67,7 @@ class TokenChooser extends React.Component {
     render() {
         const {selectedToken} = this.state
 
-        const userTokens = TokenListApi.getUserTokens()
+        const userTokens = TokenRepository.getUserTokens()
 
         const tokenRows = userTokens.map(token => {
             return <UnlistedTokenRow
@@ -71,7 +75,7 @@ class TokenChooser extends React.Component {
                 token={token}
                 isSelected={selectedToken && token.address === selectedToken.address}
                 onTokenSelect={this.onTokenSelect}
-                remove={this.removeUserToken}/>
+                remove={() => this.removeUserToken(token)}/>
         })
 
         return (

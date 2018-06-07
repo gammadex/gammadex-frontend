@@ -13,7 +13,7 @@ import * as LifeCycleActions from "../actions/LifecycleActions"
 import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 import {baseWeiToEth, tokWeiToEth} from "../EtherConversion"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
-import TokenListApi from "./TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 
 export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
     if (notify) {
@@ -130,7 +130,7 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
     // 2) initiate the transfer in the ED smart contract
     if (accountRetrieved) {
         const tokenAmount = tokWeiToEth(amount, tokenAddress).toString()
-        const tokenName = TokenListApi.getTokenName(tokenAddress)
+        const tokenName = TokenRepository.getTokenName(tokenAddress)
         EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
@@ -154,7 +154,7 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
 export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amount, gasPriceWei) {
     if (accountRetrieved) {
         const tokenAmount = tokWeiToEth(amount, tokenAddress).toString()
-        const tokenName = TokenListApi.getTokenName(tokenAddress)
+        const tokenName = TokenRepository.getTokenName(tokenAddress)
         EtherDeltaWeb3.promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
                 AccountActions.nonceUpdated(nonce + 1)

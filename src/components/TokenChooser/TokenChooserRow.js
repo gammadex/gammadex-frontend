@@ -5,7 +5,7 @@ import Conditional from "../CustomComponents/Conditional"
 
 export default class TokenChooserRow extends React.Component {
     onRowSelect = () => {
-        this.props.onTokenSelect(this.props.token.name, this.props.token.address)
+        this.props.onTokenSelect(this.props.token.symbol, this.props.token.address)
     }
 
     render() {
@@ -14,7 +14,7 @@ export default class TokenChooserRow extends React.Component {
 
         return (
             <tr className={"clickable " + selectedClass}>
-                <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.name}</Truncated></td>
+                <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.symbol}</Truncated></td>
                 <td onClick={this.onRowSelect}><Round fallback="-">{token.baseVolume}</Round></td>
                 <td onClick={this.onRowSelect}>
                     <Round percent suffix="%" fallback="-"

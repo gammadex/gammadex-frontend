@@ -7,7 +7,7 @@ import Etherscan from "../CustomComponents/Etherscan"
 
 export default class UnlistedTokenRow extends React.Component {
     onRowSelect = () => {
-        this.props.onTokenSelect(this.props.token.name, this.props.token.address)
+        this.props.onTokenSelect(this.props.token.address)
     }
 
     onRemove = () => {
@@ -20,8 +20,8 @@ export default class UnlistedTokenRow extends React.Component {
 
         return (
             <tr className={"clickable " + selectedClass}>
-                <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.name}</Truncated></td>
-                <td onClick={this.onRowSelect}>{token.lName}</td>
+                <td onClick={this.onRowSelect}><Truncated left="7" right="0">{token.symbol}</Truncated></td>
+                <td onClick={this.onRowSelect}>{token.name}</td>
                 <td onClick={this.onRowSelect}>
                     <Etherscan type="address" address={token.address} display="truncate"/>
                 </td>

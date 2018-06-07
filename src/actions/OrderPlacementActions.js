@@ -23,7 +23,7 @@ import OrderEntryField from "../OrderEntryField"
 import ExpiryType from "../ExpiryType"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "./GlobalMessageActions"
-import TokenListApi from "../apis/TokenListApi"
+import TokenRepository from "../util/TokenRepository"
 import React from "react"
 
 /**
@@ -385,7 +385,7 @@ export function validateBuyOrder(totalEthWei, priceControlled, buyOrderAmountCon
 export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amountControlled, totalEthControlled) {
     let hasPriceWarning = false
     let priceWarning = ""
-    const tokenName = TokenStore.getSelectedToken().name
+    const tokenName = TokenStore.getSelectedToken().symbol
     if (!totalEthWei.isZero()) {
 
         let noMarketTrades = null
@@ -486,7 +486,7 @@ export function executeBuy() {
         price: buyOrderPriceControlled,
         amount: buyOrderAmountControlled,
         tokenAddress: selectedToken.address,
-        tokenName: selectedToken.name,
+        tokenName: selectedToken.symbol,
         orderUnsigned: buyOrderUnsigned,
         orderHash: buyOrderHash
     }
@@ -510,7 +510,7 @@ export function executeSell() {
         price: sellOrderPriceControlled,
         amount: sellOrderAmountControlled,
         tokenAddress: selectedToken.address,
-        tokenName: selectedToken.name,
+        tokenName: selectedToken.symbol,
         orderUnsigned: sellOrderUnsigned,
         orderHash: sellOrderHash
     }
@@ -571,7 +571,7 @@ export function sendOrder(order) {
                 s: sig.s,
             }
             const side = OrderUtil.isMakerBuy(signedOrderObject) ? "BUY" : "SELL"
-            const tokenName = TokenListApi.getTokenName(OrderUtil.tokenAddress(signedOrderObject))
+            const tokenName = TokenRepository.getTokenName(OrderUtil.tokenAddress(signedOrderObject))
             GlobalMessageActions.sendGlobalMessage(
                 GlobalMessageFormatters.getOrderInitiated(side, tokenName))
             EtherDeltaSocket.emitOrder(signedOrderObject)
@@ -612,7 +612,7 @@ export function sendOnChainOrder(order) {
         nonce: Math.random().toString().slice(2)
     }
     const side = OrderUtil.isMakerBuy(orderObject) ? "BUY" : "SELL"
-    const tokenName = TokenListApi.getTokenName(OrderUtil.tokenAddress(orderObject))
+    const tokenName = TokenRepository.getTokenName(OrderUtil.tokenAddress(orderObject))
 
     EtherDeltaWeb3.promiseOrder(account, nonce, orderObject, gasPriceWei)
         .once('transactionHash', hash => {

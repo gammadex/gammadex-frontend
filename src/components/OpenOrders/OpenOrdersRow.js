@@ -5,7 +5,7 @@ import OrderState from "../../OrderState"
 import OrderSide from "../../OrderSide"
 import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
-import TokenListApi from "../../apis/TokenListApi"
+import TokenRepository from "../../util/TokenRepository"
 import * as OpenOrderApi from "../../apis/OpenOrderApi"
 import { tokenAddress, makerSide, tokenAmountWei } from "../../OrderUtil"
 import { tokWeiToEth, safeBigNumber } from "../../EtherConversion"
@@ -24,7 +24,7 @@ export default class OpenOrdersRow extends React.Component {
     render() {
         const { openOrder, isPendingCancel } = this.props
         const tokenAddr = tokenAddress(openOrder)
-        const tokenName = TokenListApi.getTokenName(tokenAddr)
+        const tokenName = TokenRepository.getTokenName(tokenAddr)
         const side = makerSide(openOrder) === OrderSide.SELL ? "Sell" : "Buy"
         const tokenAmountEth = tokWeiToEth(tokenAmountWei(openOrder), tokenAddr)
         const ethAmount = safeBigNumber(openOrder.price).times(tokenAmountEth).toString()

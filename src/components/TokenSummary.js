@@ -33,10 +33,10 @@ export default class TokenSummary extends React.Component {
         const {token} = this.props
         const {low, high, tokenVolume, ethVolume, last, percentChange} = this.state.tradeStats
         const [title, contract, name, longName] = token ? [
-            `${token.name} / ETH`,
+            `${token.symbol} / ETH`,
             <EtherScan type="address" address={token.address} display="truncate"/>,
-            token.name,
-            token.lName ? token.lName : token.name
+            token.symbol,
+            token.name ? token.name : token.symbol
         ] : [
             '', '', '', ''
         ]

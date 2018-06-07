@@ -13,7 +13,7 @@ import ExpiryType from "../../ExpiryType"
 import Conditional from "../CustomComponents/Conditional"
 import AccountType from "../../AccountType"
 import OrderFactory from "../../OrderFactory"
-import TokenListApi from "../../apis/TokenListApi"
+import TokenRepository from "../../util/TokenRepository"
 
 export default class MakeOrder extends React.Component {
     constructor(props) {
@@ -206,7 +206,7 @@ export default class MakeOrder extends React.Component {
             exchangeBalanceTokWei } = this.state
 
         let available = safeBigNumber(0)
-        if (TokenListApi.tokenExists(tokenAddress)) {
+        if (TokenRepository.tokenExists(tokenAddress)) {
             available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
         }
 

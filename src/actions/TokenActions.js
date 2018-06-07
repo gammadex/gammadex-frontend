@@ -22,11 +22,27 @@ export function invalidToken(tokenIdentifier) {
     })
 }
 
-export function tokenLookup(address, switchIfFound) {
+export function tokenAddressLookup(address) {
     dispatcher.dispatch({
         type: ActionNames.TOKEN_ADDRESS_LOOKUP,
         address,
-        switchIfFound
+    })
+}
+
+export function tokenLookupComplete(address, token, error) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_LOOKUP_LOOKUP_COMPLETE,
+        address,
+        token,
+        error
+    })
+}
+
+export function tokenCheckError(address, error) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_CHECK_ERROR,
+        address,
+        error,
     })
 }
 
