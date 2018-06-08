@@ -84,7 +84,7 @@ class TokenStore extends EventEmitter {
             this.listedTokens = listedTokens
             this.listedTokensVersion = listedTokensVersion
         } else {
-            this.listedTokens = [Config.getEnv().defaultPair.token, Config.getEnv().defaultPair.base]
+            this.listedTokens = [Config.getEnv().defaultPair.token]
             this.listedTokensVersion = 0
         }
 

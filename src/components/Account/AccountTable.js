@@ -25,7 +25,7 @@ export default class AccountTable extends React.Component {
                     </tr>
                 </thead>
                 <tbody>
-                    <AccountRow token={TokenRepository.find({ symbol: "ETH" })}
+                    <AccountRow token={TokenRepository.getBaseToken()}
                         clearBalances={clearBalances}
                         walletBalanceWei={walletBalanceEthWei}
                         exchangeBalanceWei={exchangeBalanceEthWei}

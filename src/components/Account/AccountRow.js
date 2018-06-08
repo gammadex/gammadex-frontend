@@ -4,7 +4,7 @@ import * as AccountActions from "../../actions/AccountActions"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import * as FundingActions from "../../actions/FundingActions"
 import Round from "../../components/CustomComponents/Round"
-import { weiToEth } from "../../EtherConversion"
+import { tokWeiToEth } from "../../EtherConversion"
 import Config from "../../Config"
 import OrderBoxType from "../OrderPlacement/OrderBoxType"
 
@@ -39,8 +39,8 @@ export default class AccountTableRow extends React.Component {
     render() {
         const { token, walletBalanceWei, exchangeBalanceWei, clearBalances } = this.props
 
-        const walletBalanceEth = weiToEth(walletBalanceWei, token.decimals).toString()
-        const exchangeBalanceEth = weiToEth(exchangeBalanceWei, token.decimals).toString()
+        const walletBalanceEth = tokWeiToEth(walletBalanceWei, token.address).toString()
+        const exchangeBalanceEth = tokWeiToEth(exchangeBalanceWei, token.address).toString()
 
         let gasIndicator = null
         if (token.address === Config.getBaseAddress()) {

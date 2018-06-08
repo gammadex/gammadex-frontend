@@ -8,6 +8,10 @@ class TokenRepository {
         return Config.getEnv().defaultPair.token
     }
 
+    getBaseToken() { // ETH - not included in tokens list
+        return Config.getEnv().defaultPair.base
+    }
+
     getSystemTokens() {
         return TokenStore.getListedTokens()
     }
@@ -30,7 +34,11 @@ class TokenRepository {
     }
 
     getTokenDecimalsByAddress(address) {
-        return this.find(t => t.address.toLowerCase() === address.toLowerCase()).decimals
+        if (address === "0x0000000000000000000000000000000000000000") {
+            return 18
+        } else {
+            return this.find(t => t.address.toLowerCase() === address.toLowerCase()).decimals
+        }
     }
 
     getTokenBySymbolOrAddress(symbolOrAddress) {
