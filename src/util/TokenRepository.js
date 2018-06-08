@@ -34,7 +34,7 @@ class TokenRepository {
     }
 
     getTokenBySymbolOrAddress(symbolOrAddress) {
-        return this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.name, symbolOrAddress))
+        return this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.symbol, symbolOrAddress))
     }
 }
 
