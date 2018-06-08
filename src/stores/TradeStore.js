@@ -4,22 +4,20 @@ import ActionNames from "../actions/ActionNames"
 import { isTakerBuy } from "../OrderUtil"
 import OrderSide from "../OrderSide"
 import OrderEntryField from "../OrderEntryField"
-import { isNull } from "util";
-import { isNullOrUndefined } from "util";
 
 class TradeStore extends EventEmitter {
     constructor() {
         super()
-        this.fillAmountInvalidReason = ""
-        this.fillAmountInvalidField = OrderEntryField.AMOUNT
         this.fillOrderTakerBuy = null,
-        this.fillOrderTakerSell = null
+        this.fillOrderTakerSell = null,
+        this.confirmTradeModal = false
     }
 
     getTradeState() {
         return {
             fillOrderTakerBuy: this.fillOrderTakerBuy,
-            fillOrderTakerSell: this.fillOrderTakerSell
+            fillOrderTakerSell: this.fillOrderTakerSell,
+            confirmTradeModal: this.confirmTradeModal
         }
     }
 
@@ -61,7 +59,17 @@ class TradeStore extends EventEmitter {
                 }
                 this.emitChange()
                 break
-            }         
+            }    
+            case ActionNames.CONFIRM_FILL_ORDER: {
+                this.confirmTradeModal = true
+                this.emitChange()
+                break
+            }       
+            case ActionNames.HIDE_FILL_ORDER_MODAL: {
+                this.confirmTradeModal = false
+                this.emitChange()
+                break
+            }                               
         }
     }
 }

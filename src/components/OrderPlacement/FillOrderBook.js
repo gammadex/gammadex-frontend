@@ -1,6 +1,6 @@
 import React from "react"
 import _ from "lodash"
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, FormText } from 'reactstrap'
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, FormText, Modal, ModalBody, ModalFooter } from 'reactstrap'
 import { Box, BoxSection, BoxHeader } from "../CustomComponents/Box"
 import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import OrderBookStore from "../../stores/OrderBookStore"
@@ -18,6 +18,7 @@ import GasPriceChooser from "../GasPriceChooser"
 import { OperationWeights } from "../../ContractOperations"
 import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
+import AccountType from "../../AccountType"
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
@@ -28,7 +29,9 @@ export default class FillOrderBook extends React.Component {
             currentGasPriceWei: 4000000000, // 4 gwei
             ethereumPriceUsd: 700.0, // TODO, eugh - how should the ui handle no USD price?
             exchangeBalanceEthWei: 0,
-            exchangeBalanceTokWei: 0
+            exchangeBalanceTokWei: 0,
+            selectedAccountType: null,
+            confirmTradeModal: false
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
@@ -36,6 +39,7 @@ export default class FillOrderBook extends React.Component {
         this.isTakerBuyComponent = this.isTakerBuyComponent.bind(this)
         this.checkFillOrder = this.checkFillOrder.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
+        this.onConfirm = this.onConfirm.bind(this)
     }
 
     componentDidMount() {
@@ -71,10 +75,11 @@ export default class FillOrderBook extends React.Component {
     }
 
     saveAccountState() {
-        const { exchangeBalanceEthWei, exchangeBalanceTokWei } = AccountStore.getAccountState()
+        const { exchangeBalanceEthWei, exchangeBalanceTokWei, selectedAccountType } = AccountStore.getAccountState()
         this.setState({
             exchangeBalanceEthWei: exchangeBalanceEthWei,
-            exchangeBalanceTokWei: exchangeBalanceTokWei
+            exchangeBalanceTokWei: exchangeBalanceTokWei,
+            selectedAccountType: selectedAccountType
         })
     }
 
@@ -89,11 +94,13 @@ export default class FillOrderBook extends React.Component {
         const tradeState = TradeStore.getTradeState()
         if (this.isTakerBuyComponent()) {
             this.setState({
-                fillOrder: tradeState.fillOrderTakerBuy
+                fillOrder: tradeState.fillOrderTakerBuy,
+                confirmTradeModal: tradeState.confirmTradeModal
             })
         } else {
             this.setState({
-                fillOrder: tradeState.fillOrderTakerSell
+                fillOrder: tradeState.fillOrderTakerSell,
+                confirmTradeModal: tradeState.confirmTradeModal
             })
         }
     }
@@ -124,8 +131,13 @@ export default class FillOrderBook extends React.Component {
     }
 
     onSubmit = event => {
-        if (! this.isSubmitDisabled()) {
-            TradeActions.executeFillOrder(this.state.fillOrder)
+        if (!this.isSubmitDisabled()) {
+            const { fillOrder, selectedAccountType } = this.state
+            if (selectedAccountType === AccountType.METAMASK || selectedAccountType === AccountType.LEDGER) {
+                TradeActions.executeFillOrder(fillOrder)
+            } else {
+                TradeActions.confirmFillOrder()
+            }
         }
 
         if (event) {
@@ -133,9 +145,20 @@ export default class FillOrderBook extends React.Component {
         }
     }
 
+    onAbort = event => {
+        TradeActions.hideFillOrderModal()
+    }
+
+    onConfirm = event => {
+        TradeActions.hideFillOrderModal()
+        if (!this.isSubmitDisabled()) {
+            TradeActions.executeFillOrder(this.state.fillOrder)
+        }
+    }
+
     isSubmitDisabled = () => {
-        const {balanceRetrieved} = this.props
-        const {fillOrder} = this.state
+        const { balanceRetrieved } = this.props
+        const { fillOrder } = this.state
 
         return !fillOrder.fillAmountValid || !balanceRetrieved
     }
@@ -151,7 +174,8 @@ export default class FillOrderBook extends React.Component {
             currentGasPriceWei,
             ethereumPriceUsd,
             exchangeBalanceEthWei,
-            exchangeBalanceTokWei
+            exchangeBalanceTokWei,
+            confirmTradeModal
         } = this.state
 
         let body = null
@@ -185,38 +209,45 @@ export default class FillOrderBook extends React.Component {
             body =
                 <BoxSection className={"order-box"}>
                     <form onSubmit={this.onSubmit}>
-                    {bestExecutionWarning}
-                    <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
-                        disabled="true" fieldName={type + "ExchangeBalanceFillOrder"} />
-                    <hr />
-                    <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
-                        fieldName={type + "OrderPrice"} disabled="true" />
-                    <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenName}
-                        onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
-                        valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
-                        onMax={this.onMaxAmount} />
-                    <NumericInput name="Total" value={fillOrder.totalEthControlled.toFixed(3)} unitName="ETH"
-                        fieldName={type + "OrderTotal"}
-                        valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
-                        disabled="true" />
-                    <hr />
-                    <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
-                        fieldName={type + "GasFeeEth"} disabled="true" />
-                    <NumericInput name="" value={(estimatedGasCost * ethereumPriceUsd).toFixed(3)} unitName="USD"
-                        fieldName={type + "GasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
-                    <hr />
-                    <NumericInput name="0.3% Exchange Fee" value={exchangeCost.toFixed(8)} unitName={exchangeCostUnits}
-                        fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
-                    <FormGroup row className="hdr-stretch-ctr">
-                        <Col sm={6}>
-                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
-                                onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
-                            <Conditional displayCondition={!balanceRetrieved}>
-                                <FormText color="muted">{`Please unlock a wallet to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
-                            </Conditional>
-                        </Col>
-                    </FormGroup>
+                        {bestExecutionWarning}
+                        <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
+                            disabled="true" fieldName={type + "ExchangeBalanceFillOrder"} />
+                        <hr />
+                        <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
+                            fieldName={type + "OrderPrice"} disabled="true" />
+                        <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenName}
+                            onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
+                            valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
+                            onMax={this.onMaxAmount} />
+                        <NumericInput name="Total" value={fillOrder.totalEthControlled.toFixed(3)} unitName="ETH"
+                            fieldName={type + "OrderTotal"}
+                            valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
+                            disabled="true" />
+                        <hr />
+                        <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
+                            fieldName={type + "GasFeeEth"} disabled="true" />
+                        <NumericInput name="" value={(estimatedGasCost * ethereumPriceUsd).toFixed(3)} unitName="USD"
+                            fieldName={type + "GasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
+                        <hr />
+                        <NumericInput name="0.3% Exchange Fee" value={exchangeCost.toFixed(8)} unitName={exchangeCostUnits}
+                            fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
+                        <FormGroup row className="hdr-stretch-ctr">
+                            <Col sm={6}>
+                                <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
+                                    onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
+                                <Conditional displayCondition={!balanceRetrieved}>
+                                    <FormText color="muted">{`Please unlock a wallet to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
+                                </Conditional>
+                            </Col>
+                        </FormGroup>
                     </form>
+                    <Modal isOpen={confirmTradeModal} toggle={this.abortFundingAction} className={this.props.className} keyboard>
+                        <ModalBody>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${fillOrder.fillAmountControlled} ${tokenName}?`}</ModalBody>
+                        <ModalFooter>
+                            <Button color="secondary" onClick={this.onAbort}>Abort</Button>{' '}
+                            <Button color="primary" onClick={this.onConfirm}>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${tokenName}`}</Button>
+                        </ModalFooter>
+                    </Modal>
                 </BoxSection>
         } else {
             body =

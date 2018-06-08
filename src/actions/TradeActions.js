@@ -72,12 +72,12 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                         AccountActions.nonceUpdated(nonce + 1)
                         let buyer = ""
                         let seller = ""
-                        if(OrderUtil.isTakerBuy(order)) {
+                        if (OrderUtil.isTakerBuy(order)) {
                             buyer = account,
-                            seller = order.user
+                                seller = order.user
                         } else {
                             buyer = order.user,
-                            seller = account
+                                seller = account
                         }
                         MyTradeActions.addMyTrade({
                             environment: Config.getReactEnv(),
@@ -232,5 +232,17 @@ export function clearFillOrder(takerSide) {
     dispatcher.dispatch({
         type: ActionNames.CLEAR_FILL_ORDER,
         takerSide
+    })
+}
+
+export function confirmFillOrder() {
+    dispatcher.dispatch({
+        type: ActionNames.CONFIRM_FILL_ORDER
+    })
+}
+
+export function hideFillOrderModal() {
+    dispatcher.dispatch({
+        type: ActionNames.HIDE_FILL_ORDER_MODAL
     })
 }
