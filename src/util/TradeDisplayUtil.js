@@ -1,22 +1,34 @@
 import TransactionStatus from "../TransactionStatus"
-import TokenRepository from "./TokenRepository";
+import TokenRepository from "./TokenRepository"
 import OrderSide from "../OrderSide"
+import TradeRole from "../TradeRole"
+import { baseWeiToEth, safeBigNumber } from "../EtherConversion"
+import Config from "../Config"
 
 export function toDisplayableTrades(trades, account) {
     return trades.map(t => {
         const { side, role } = accountSide(t, account)
+        const tokenName = TokenRepository.getTokenName(t.tokenAddr)
+        const takerGasFee = String(baseWeiToEth(t.gasPrice).times(safeBigNumber(t.gasUsed)))
+        const takerExchangeFee = String(safeBigNumber(t.side.toLowerCase() === OrderSide.SELL.toLowerCase() ? t.amount : t.amountBase).times(safeBigNumber(Config.getExchangeFeePercent())))
+        const takerExchangeFeeUnit = t.side.toLowerCase() === OrderSide.SELL.toLowerCase() ? tokenName : 'ETH'
         return {
             side: side,
             role: role,
             takerSide: (t.side.toLowerCase() === OrderSide.SELL.toLowerCase()) ? "Sell" : "Buy",
-            tokenName: TokenRepository.getTokenName(t.tokenAddr),
+            tokenName: tokenName,
             market: TokenRepository.getTokenName(t.tokenAddr) + "/ETH",
             price: String(t.price),
             amount: String(t.amount),
             amountBase: String(t.amountBase),
             date: t.date,
             status: getStatusDescription(t.status),
-            txHash: t.txHash
+            txHash: t.txHash,
+            takerExchangeFee: takerExchangeFee,
+            exchangeFee: role === TradeRole.TAKER ? takerExchangeFee : null,
+            takerExchangeFeeUnit: takerExchangeFeeUnit,
+            takerGasFee: takerGasFee,
+            gasFee: role === TradeRole.TAKER ? takerGasFee : null
         }
     })
 }
@@ -32,17 +44,17 @@ export function accountSide(trade, account) {
     }
 
     if (trade.side.toLowerCase() === OrderSide.BUY.toLowerCase()) {
-        return trade.buyer.toLowerCase() === account.toLowerCase() ? { side: "Buy", role: "Taker" }
-            : { side: "Sell", role: "Maker" }
+        return trade.buyer.toLowerCase() === account.toLowerCase() ? { side: "Buy", role: TradeRole.TAKER }
+            : { side: "Sell", role: TradeRole.MAKER }
     } else {
-        return trade.buyer.toLowerCase() === account.toLowerCase() ? { side: "Buy", role: "Maker" }
-            : { side: "Sell", role: "Taker" }
+        return trade.buyer.toLowerCase() === account.toLowerCase() ? { side: "Buy", role: TradeRole.MAKER }
+            : { side: "Sell", role: TradeRole.TAKER }
     }
 }
 
 export function tradesToCsv(displayableTrades) {
-    const header = "Market,Role,Type,Price,Amount,Total (ETH),Date,Status,Transaction ID"
-    const content = (displayableTrades || []).map(t => [t.market, t.role, t.side, t.price, t.amount, t.amountBase, t.date, t.status, t.txHash].join(","))
+    const header = "Market,Role,Type,Price,Amount,Total (ETH),Exchange Fee,Exchange Fee Unit,Gas Fee (ETH),Date,Status,Transaction ID"
+    const content = (displayableTrades || []).map(t => [t.market, t.role, t.side, t.price, t.amount, t.amountBase, t.exchangeFee ? t.exchangeFee : '', t.exchangeFee ? t.takerExchangeFeeUnit : '', t.gasFee ? t.gasFee : '', t.date, t.status, t.txHash].join(","))
 
     return [header, ...content].join("\r\n")
 }

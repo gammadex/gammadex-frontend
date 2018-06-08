@@ -22,6 +22,8 @@ export default class MyTradesTable extends React.Component {
                         <th>Price</th>
                         <th>Amount</th>
                         <th>Total (ETH)</th>
+                        <th>Exchange Fee</th>
+                        <th>Gas Fee (ETH)</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th></th>

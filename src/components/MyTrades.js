@@ -8,6 +8,7 @@ import * as TradeDisplayUtil from "../util/TradeDisplayUtil"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import _ from "lodash"
 import RefreshButton from "./CustomComponents/RefreshButton"
+import TradeRole from "../TradeRole"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -65,8 +66,13 @@ export default class MyTrades extends React.Component {
         const expandedTrades = _.flatMap(displayTrades, t => {
             if (t.side === "Both") {
                 return [
-                    Object.assign({}, t, {side: t.takerSide, role: "Taker" }),
-                    Object.assign({}, t, {side: t.takerSide === "Buy" ? "Sell" : "Buy", role: "Maker" })
+                    Object.assign({}, t, {
+                        side: t.takerSide,
+                        role: TradeRole.TAKER,
+                        exchangeFee: t.takerExchangeFee,
+                        gasFee: t.takerGasFee
+                    }),
+                    Object.assign({}, t, {side: t.takerSide === "Buy" ? "Sell" : "Buy", role: TradeRole.MAKER })
                 ]
             } else {
                 return [t]
@@ -75,7 +81,7 @@ export default class MyTrades extends React.Component {
 
         const csvContent = TradeDisplayUtil.tradesToCsv(expandedTrades)
         const filteredTrades = expandedTrades.filter(
-            t => `${t.market}::${t.role}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
+            t => `${t.market}::${t.role}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.exchangeFee}::${t.gasFee}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
         )
         const disabledClass = account ? "" : "disabled"
 

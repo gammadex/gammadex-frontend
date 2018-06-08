@@ -6,10 +6,9 @@ import Etherscan from "../CustomComponents/Etherscan"
 export default class MyTradesRow extends React.Component {
     render() {
         const {refreshInProgress} = this.props
-        const { market, role, side, price, tokenName, amount, amountBase, date, txHash, status } = this.props.trade
+        const { market, role, side, price, tokenName, amount, amountBase, date, txHash, status, exchangeFee, takerExchangeFeeUnit, gasFee } = this.props.trade
 
         const refreshClass = refreshInProgress ? "faded" : ""
-
         return (
             <tr className={refreshClass}>
                 <td>{market}</td>
@@ -18,6 +17,8 @@ export default class MyTradesRow extends React.Component {
                 <td><Round price softZeros>{price}</Round></td>
                 <td><Round>{amount}</Round> {tokenName}</td>
                 <td>{amountBase}</td>
+                <td><Round price softZeros fallback="-">{exchangeFee}</Round>{exchangeFee ? ` ${takerExchangeFeeUnit}` : ''}</td>
+                <td><Round price softZeros fallback="-">{gasFee}</Round></td>
                 <td><Date year>{date}</Date></td>
                 <td>{status}</td>
                 <td><Etherscan type="tx" address={txHash} display="icon"/></td>
