@@ -22,6 +22,7 @@
     "sockets": {
       "default": "http://localhost:4301"
     },
+    "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
     "defaultPair": {
       "token":      {
         "symbol": "TST",
