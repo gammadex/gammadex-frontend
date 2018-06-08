@@ -21,8 +21,12 @@ class TokenRepository {
     }
 
     getTokenName(address) {
-        const token = this.find(t => t.address.toLowerCase() === address.toLowerCase())
-        return (token) ? token.symbol : null
+        if (address === "0x0000000000000000000000000000000000000000") {
+            return 'ETH'
+        } else {
+            const token = this.find(t => t.address.toLowerCase() === address.toLowerCase())
+            return (token) ? token.symbol : null
+        }
     }
 
     tokenExists(address) {
