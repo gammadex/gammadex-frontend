@@ -8,10 +8,6 @@ class TokenRepository {
         return Config.getEnv().defaultPair.token
     }
 
-    getBaseToken() { // ETH - not included in tokens list
-        return Config.getEnv().defaultPair.base
-    }
-
     getSystemTokens() {
         return TokenStore.getListedTokens()
     }

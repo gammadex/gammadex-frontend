@@ -23,6 +23,7 @@ import { gweiToEth, safeBigNumber } from "../../EtherConversion"
 import FundingModalType from "./FundingModalType"
 import FundingState from "./FundingState"
 import { findBin } from "plotly.js/src/lib";
+import Round from "../CustomComponents/Round"
 
 export default class Funding extends React.Component {
     constructor(props) {
@@ -269,7 +270,7 @@ export default class Funding extends React.Component {
     }
 
     render() {
-        const { tokenName } = this.props
+        const { tokenName, walletBalanceEth, exchangeBalanceEth, walletBalanceTok, exchangeBalanceTok } = this.props
 
         const {
             accountState,
@@ -287,6 +288,9 @@ export default class Funding extends React.Component {
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
         const estimatedOperationCost = OperationWeights.DEPOSIT
         const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
+
+        const standardGasInfo = `${estimatedGasCost.toFixed(8)} Est. Gas Fee (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
+        const depositTokenGasInfo = `${(estimatedGasCost * 2).toFixed(8)} Est. Gas Fee (${((estimatedGasCost * 2) * ethereumPriceUsd).toFixed(3)} USD)`
 
         const {
             ethDepositDisabled,
@@ -326,59 +330,94 @@ export default class Funding extends React.Component {
                     <Alert color="warning">
                         <h4 className="alert-heading">MetaMask detected</h4>
                         Depositing a Token involves submitting two transactions to the Ethereum network: Transfer Approval (1) followed by Deposit (2).
-                        <hr/>
+                        <hr />
                         <strong>Please ensure you confirm transaction 1 before 2 in MetaMask, or the deposit will fail.</strong>
                     </Alert>
                 </ModalBody>
         }
         return <BoxSection className={"order-box"}>
-            <NumericInput value={ethDepositAmountControlled} unitName={"ETH"}
+
+            <table className="table table-borderless">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th className="txt-right balances-heading"><small>Wallet</small></th>
+                        <th className="txt-right balances-heading"><small>Exchange</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ETH</strong></td>
+                        <td className="txt-right clickable" onClick={() => FundingActions.ethDepositMaxAmount()}><Round price softZeros fallback="-">{walletBalanceEth}</Round></td>
+                        <td className="txt-right clickable" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round price softZeros fallback="-">{exchangeBalanceEth}</Round></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+            <NumericInput value={ethDepositAmountControlled}
                 onChange={this.onEthDepositAmountChange} fieldName={"ethDepositAmount"}
                 valid={ethDepositValid} errorMessage={ethDepositErrorText} helpMessage={ethDepositHelpText}
                 onMax={this.onMaxEthDepositAmount}
                 onAction={this.onEthDepositAction}
-                actionName={"Deposit"}
+                actionName={"Deposit ETH"}
                 actionDisabled={ethDepositDisabled}
                 feedbackIcon={ethDepositFeedbackIcon}
                 helpIcon={ethDepositHelpIcon}
-                submittable={true}/>
-            {/* <hr /> */}
+                submittable={true}
+                gasFeeInfo={standardGasInfo} />
 
-            <NumericInput value={tokDepositAmountControlled} unitName={tokenName}
-                onChange={this.onTokDepositAmountChange} fieldName={"tokDepositAmount"}
-                valid={tokDepositValid} errorMessage={tokDepositErrorText}
-                onMax={this.onMaxTokDepositAmount}
-                onAction={this.onTokDepositAction}
-                actionDisabled={tokDepositDisabled}
-                feedbackIcon={tokDepositFeedbackIcon}
-                actionName={"Deposit"}
-                submittable={true}/>
-            <hr />
-            <NumericInput value={ethWithdrawalAmountControlled} unitName={"ETH"}
+            <NumericInput value={ethWithdrawalAmountControlled}
                 onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
                 valid={ethWithdrawalValid} errorMessage={ethWithdrawalErrorText}
                 onMax={this.onMaxEthWithdrawAmount}
                 onAction={this.onEthWithdrawAction}
                 actionDisabled={ethWithdrawalDisabled}
                 feedbackIcon={ethWithdrawalFeedbackIcon}
-                actionName={"Withdraw"}
-                submittable={true}/>
-            {/* <hr /> */}
+                actionName={"Withdraw ETH"}
+                submittable={true}
+                gasFeeInfo={standardGasInfo} />
+            <hr />
 
-            <NumericInput value={tokWithdrawalAmountControlled} unitName={tokenName}
+            <table className="table table-borderless">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th className="txt-right clr-grey"><small>Wallet</small></th>
+                        <th className="txt-right clr-grey"><small>Exchange</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>{tokenName}</strong></td>
+                        <td className="txt-right clickable" onClick={() => FundingActions.tokDepositMaxAmount()}><Round price softZeros fallback="-">{walletBalanceTok}</Round></td>
+                        <td className="txt-right clickable" onClick={() => FundingActions.tokWithdrawMaxAmount()}><Round price softZeros fallback="-">{exchangeBalanceTok}</Round></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <br />
+            <NumericInput value={tokDepositAmountControlled}
+                onChange={this.onTokDepositAmountChange} fieldName={"tokDepositAmount"}
+                valid={tokDepositValid} errorMessage={tokDepositErrorText}
+                onMax={this.onMaxTokDepositAmount}
+                onAction={this.onTokDepositAction}
+                actionDisabled={tokDepositDisabled}
+                feedbackIcon={tokDepositFeedbackIcon}
+                actionName={"Deposit " + tokenName}
+                submittable={true}
+                gasFeeInfo={depositTokenGasInfo} />
+
+            <NumericInput value={tokWithdrawalAmountControlled}
                 onChange={this.onTokWithdrawAmountChange} fieldName={"tokWithdrawAmount"}
                 valid={tokWithdrawalValid} errorMessage={tokWithdrawalErrorText}
                 onMax={this.onMaxTokWithdrawAmount}
                 onAction={this.onTokWithdrawAction}
                 actionDisabled={tokWithdrawalDisabled}
                 feedbackIcon={ethDepositFeedbackIcon}
-                actionName={"Withdraw"}
-                submittable={true}/>
-            <hr />
-            <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
-                fieldName={"fundingGasFeeEth"} disabled="true" />
-            <NumericInput name="" value={(estimatedGasCost * ethereumPriceUsd).toFixed(3)} unitName="USD"
-                fieldName={"fundingGasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
+                actionName={"Withdraw " + tokenName}
+                submittable={true}
+                gasFeeInfo={standardGasInfo} />
+
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                 <ModalBody>{modalBody}</ModalBody>
                 <ModalFooter>

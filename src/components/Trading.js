@@ -6,7 +6,6 @@ import { Box } from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import OrderBox from "./OrderPlacement/OrderBox"
 import OrderBook from "./OrderBook"
-import AccountDetail from '../components/AccountDetail'
 
 export default class Trading extends React.Component {
     constructor(props) {
@@ -19,7 +18,6 @@ export default class Trading extends React.Component {
         return (
             <div className="row">
                 <div className="col-lg-6">
-                    <AccountDetail token={token} />
                     <OrderBox tokenName={token.symbol} tokenAddress={token.address} />
                 </div>
                 <div className="col-lg-6">

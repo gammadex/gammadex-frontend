@@ -2,18 +2,22 @@ import React from "react"
 import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
-import AccountTable from '../components/Account/AccountTable'
+import Funding from '../components/Account/Funding'
+
 import Config from '../Config'
-import {Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip} from 'reactstrap'
-import {Box, BoxFooter, BoxSection} from "./CustomComponents/Box"
+import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip } from 'reactstrap'
+import { Box, BoxFooter, BoxSection } from "./CustomComponents/Box"
 
 import * as AccountActions from "../actions/AccountActions"
+import * as OrderPlacementActions from "../actions/OrderPlacementActions"
+import * as FundingActions from "../actions/FundingActions"
 import AccountType from "../AccountType"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
-import {baseEthToWei, tokEthToWei} from "../EtherConversion"
+import { baseEthToWei, tokEthToWei, baseWeiToEth, tokWeiToEth } from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 import Conditional from "./CustomComponents/Conditional"
 import RefreshButton from "./CustomComponents/RefreshButton"
+import Round from "./CustomComponents/Round"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -56,7 +60,7 @@ export default class AccountDetail extends React.Component {
     }
 
     refreshBalances = () => {
-        const {account, accountRetrieved, tokenAddress, retrievingBalance} = this.state
+        const { account, accountRetrieved, tokenAddress, retrievingBalance } = this.state
 
         if (accountRetrieved && !retrievingBalance) {
             AccountApi.refreshEthAndTokBalance(account, tokenAddress, true)
@@ -64,7 +68,7 @@ export default class AccountDetail extends React.Component {
     }
 
     render() {
-        const {token} = this.props
+        const { token } = this.props
         const {
             accountRetrieved,
             walletBalanceEthWei,
@@ -81,6 +85,17 @@ export default class AccountDetail extends React.Component {
         const clearBalances = !tokenAddress || !retrievedTokenAddress || tokenAddress != retrievedTokenAddress
         const warningMessage = this.getAccountWarningMessage()
 
+        let walletBalanceEth = null
+        let exchangeBalanceEth = null
+        let walletBalanceTok = null
+        let exchangeBalanceTok = null
+        if (!clearBalances) {
+            walletBalanceEth = baseWeiToEth(walletBalanceEthWei).toString()
+            exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei).toString()
+            walletBalanceTok = tokWeiToEth(walletBalanceTokWei, tokenAddress).toString()
+            exchangeBalanceTok = tokWeiToEth(exchangeBalanceTokWei, tokenAddress).toString()
+        }
+
         return (
             <span>
                 <div className="card">
@@ -92,8 +107,8 @@ export default class AccountDetail extends React.Component {
                             <div className="col-lg-6">
                                 <div className="float-right">
                                     <RefreshButton onClick={this.refreshBalances}
-                                                   disabled={!accountRetrieved || retrievingBalance}
-                                                   updating={retrievingBalance}/>
+                                        disabled={!accountRetrieved || retrievingBalance}
+                                        updating={retrievingBalance} />
                                 </div>
                             </div>
                         </div>
@@ -105,21 +120,18 @@ export default class AccountDetail extends React.Component {
                         </BoxSection>
                     </Conditional>
 
-                    <AccountTable
-                        refreshing={retrievingBalance}
-                        clearBalances={clearBalances}
-                        token={token}
-                        walletBalanceEthWei={walletBalanceEthWei}
-                        walletBalanceTokWei={walletBalanceTokWei}
-                        exchangeBalanceEthWei={exchangeBalanceEthWei}
-                        exchangeBalanceTokWei={exchangeBalanceTokWei}/>
+                    <Funding tokenName={token.symbol}
+                        walletBalanceEth={walletBalanceEth}
+                        exchangeBalanceEth={exchangeBalanceEth}
+                        walletBalanceTok={walletBalanceTok}
+                        exchangeBalanceTok={exchangeBalanceTok} />
                 </div>
             </span>
         )
     }
 
     getAccountWarningMessage() {
-        const {retrievingBalance, balanceRetrievalFailed, accountRetrieved} = this.state
+        const { retrievingBalance, balanceRetrievalFailed, accountRetrieved } = this.state
 
         if (retrievingBalance) {
             return null

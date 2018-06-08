@@ -13,6 +13,7 @@ import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
 import UnlistedTokens from "../components/UnlistedTokens"
 import Trading from "../components/Trading"
 import PendingTrades from "../components/PendingTrades"
+import AccountDetail from '../components/AccountDetail'
 
 class Exchange extends Component {
     constructor() {
@@ -65,6 +66,7 @@ class Exchange extends Component {
                 </div>
                 <div className="pl-0 col-lg-3">
                     <Charts token={token}/>
+                    <AccountDetail token={token} />
                     <PendingTrades/>
                     <TradeHistory token={token}/>
                 </div>

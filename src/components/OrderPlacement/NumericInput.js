@@ -1,11 +1,13 @@
 import React from "react"
 import { FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button } from 'reactstrap'
+import Conditional from "../CustomComponents/Conditional"
 
 export default class NumericInput extends React.Component {
     constructor(props) {
         super(props)
         this.formFeedback = this.formFeedback.bind(this)
         this.formText = this.formText.bind(this)
+        this.gasFeeFormText = this.gasFeeFormText.bind(this)
     }
 
     static cleanValueToDecimal(value) {
@@ -52,6 +54,11 @@ export default class NumericInput extends React.Component {
         }
     }
 
+    gasFeeFormText() {
+        const { actionDisabled, gasFeeInfo } = this.props
+        return <FormText color="muted">{actionDisabled ? null : gasFeeInfo}</FormText>
+    }
+
     onSubmit = event => {
         const {
             valid = true,
@@ -74,9 +81,7 @@ export default class NumericInput extends React.Component {
             fieldName,
             value,
             valid = true,
-            errorMessage = null,
             disabled = false,
-            helpMessage = null,
             onMax = null,
             onAction = null,
             actionName = null,
@@ -85,17 +90,10 @@ export default class NumericInput extends React.Component {
             submittable = false
         } = this.props
         const isInvalid = valid !== null && !valid
-
         let maxButton = null
         if (typeof (onMax) === 'function') {
             maxButton = <InputGroupAddon addonType="append"><Button color="link"
                 onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
-        }
-
-        let firstCol = <Label for={fieldName} sm={3}>{name}</Label>
-        if (typeof (onAction) === 'function' && actionName) {
-            firstCol = <Col sm={3}><Button color="primary" disabled={actionDisabled}
-                onClick={() => this.onAction()}>{actionName}</Button></Col>
         }
 
         const input = (
@@ -108,9 +106,11 @@ export default class NumericInput extends React.Component {
                     placeholder={placeholder}
                     invalid={isInvalid} />
                 {maxButton}
-                <div className="input-group-append">
-                    <div className="input-group-text">{unitName}</div>
-                </div>
+                <Conditional displayCondition={unitName != null}>
+                    <div className="input-group-append">
+                        <div className="input-group-text">{unitName}</div>
+                    </div>
+                </Conditional>
                 {this.formFeedback()}
                 {this.formText()}
             </div>
@@ -118,12 +118,29 @@ export default class NumericInput extends React.Component {
 
         const content = submittable ? <form onSubmit={this.onSubmit}>{input}</form> : input
 
+        let label = <Label for={fieldName} sm={3}>{name}</Label>
+        if (name == null) {
+            label = <Label for={fieldName} sm={0}></Label>
+        }
+
+        let actionButton = null
+        let inputWidth = 9
+        if (typeof (onAction) === 'function' && actionName) {
+            actionButton = <Col className="funding-action" sm={4}>
+                <Button color="primary" className="btn-block" disabled={actionDisabled}
+                    onClick={() => this.onAction()}>{actionName}
+                </Button>
+                {this.gasFeeFormText()}
+            </Col>
+            inputWidth = 8
+        }
         return (
             <FormGroup row>
-                {firstCol}
-                <Col sm={9}>
+                {label}
+                <Col sm={inputWidth}>
                     {content}
                 </Col>
+                {actionButton}
             </FormGroup>
         )
     }
