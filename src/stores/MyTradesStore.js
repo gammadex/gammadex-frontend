@@ -124,7 +124,7 @@ class MyTradesStore extends EventEmitter {
         const pending = this.pendingTrades.map(t => Object.assign(t, {status: TransactionStatus.PENDING}))
         const failed = this.failedTrades.map(t => Object.assign(t, {status: TransactionStatus.FAILED}))
 
-        this.allTrades = _.reverse(_.sortBy([...completed, ...pending, ...failed], d => d.timestamp))
+        this.allTrades = _.reverse(_.sortBy([...completed, ...pending, ...failed], d => d.date))
     }
 }
 

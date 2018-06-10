@@ -120,7 +120,7 @@ class TransferStore extends EventEmitter {
         const pending = this.pendingTransfers.map(t => Object.assign(t, {status: TransactionStatus.PENDING}))
         const failed = this.failedTransfers.map(t => Object.assign(t, {status: TransactionStatus.FAILED}))
 
-        this.allTransfers = _.reverse(_.sortBy([...completed, ...pending, ...failed], d => d.timestamp))
+        this.allTransfers = _.reverse(_.sortBy([...completed, ...pending, ...failed], d => d.date))
     }
 }
 
