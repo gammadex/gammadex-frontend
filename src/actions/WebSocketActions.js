@@ -4,6 +4,7 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import ActionNames from "./ActionNames"
 import Config from "../Config"
+import OrderFillNotifier from "../OrderFillNotifier"
 
 export function connect() {
     const url = Config.getSocket()
@@ -70,6 +71,7 @@ export function connect() {
                     type: ActionNames.MESSAGE_RECEIVED_TRADES,
                     trades,
                 })
+                OrderFillNotifier.notifyMaker(trades, AccountStore.getAccountState().account)
             },
             funds: (funds) => {
                 dispatcher.dispatch({

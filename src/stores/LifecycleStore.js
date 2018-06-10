@@ -7,6 +7,7 @@ class LifecycleStore extends EventEmitter {
         super()
         this.web3Initialised = false
         this.currentBlockNumber = null
+        this.startupDate = new Date()
     }
 
     isWeb3Initialised() {
@@ -15,6 +16,10 @@ class LifecycleStore extends EventEmitter {
 
     getCurrentBlockNumber() {
         return this.currentBlockNumber
+    }
+
+    getStartupDate() {
+        return this.startupDate
     }
 
     emitChange() {

@@ -82,6 +82,13 @@ export function getOrderRejected(makerSide, unit, error) {
     )
 }
 
+export function getOrderFilled(makerSide, amount, unit) {
+    return (<div>
+        <div>{unit} Order Filled</div>
+        <div>You {makerSide} {amount} {unit}</div>
+    </div>)
+}
+
 export function getOnChainOrderInitiated(makerSide, unit, txHash) {
     return (
         <div>
