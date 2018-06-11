@@ -26,7 +26,7 @@ var _hwAppEth = require("@ledgerhq/hw-app-eth")
 
 var _hwAppEth2 = _interopRequireDefault(_hwAppEth)
 
-var _hookedWallet = require("web3-provider-engine/subproviders/hooked-wallet")
+var _hookedWallet = require("web3-provider-engine/dist/es5/subproviders/hooked-wallet")
 
 var _hookedWallet2 = _interopRequireDefault(_hookedWallet)
 

@@ -1,8 +1,8 @@
 import * as Web3 from 'web3'
 import createLedgerSubprovider from "../hacks/LedgerWeb3SubProvider"
 import TransportU2F from "@ledgerhq/hw-transport-u2f"
-import ProviderEngine from "web3-provider-engine"
-import RpcSubprovider from "web3-provider-engine/subproviders/rpc"
+import ProviderEngine from "web3-provider-engine/dist/es5/index"
+import RpcSubprovider from "web3-provider-engine/dist/es5/subproviders/rpc"
 
 export function getLedgerWeb3(deriviationPath, web3Url, networkId) {
     const engine = new ProviderEngine()
