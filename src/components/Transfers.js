@@ -65,7 +65,7 @@ export default class Transfers extends React.Component {
         const displayTransfers = TransferDisplayUtil.toDisplayableTransfers(transfers)
         const csvContent = TransferDisplayUtil.transfersToCsv(displayTransfers)
         const filteredTransfers = displayTransfers.filter(
-            t => `${t.tokenName}::${t.amount}::${t.date}::${t.status}::${t.txHash}`.includes(filter)
+            t => `${t.tokenName}::${t.amount}::${t.date}::${t.status}::${t.txHash}`.toLowerCase().includes(filter.toLowerCase())
         )
         const disabledClass = account ? "" : "disabled"
 

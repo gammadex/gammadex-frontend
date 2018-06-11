@@ -5,6 +5,7 @@ import OrderState from "../../OrderState"
 import OrderSide from "../../OrderSide"
 import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
+import TokenLink from "../CustomComponents/TokenLink"
 import TokenRepository from "../../util/TokenRepository"
 import * as OpenOrderApi from "../../apis/OpenOrderApi"
 import { tokenAddress, makerSide, tokenAmountWei } from "../../OrderUtil"
@@ -40,7 +41,7 @@ export default class OpenOrdersRow extends React.Component {
             
         return (
             <tr>
-                <td>{`${tokenName}/ETH`}</td>
+                <td><TokenLink tokenAddress={tokenAddr} pair/></td>
                 <td>{side}</td>
                 <td><Round price softZeros>{openOrder.price}</Round></td>
                 <td><Round>{tokenAmountEth.toString()}</Round> {tokenName}</td>

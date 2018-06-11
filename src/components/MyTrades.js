@@ -81,7 +81,7 @@ export default class MyTrades extends React.Component {
 
         const csvContent = TradeDisplayUtil.tradesToCsv(expandedTrades)
         const filteredTrades = expandedTrades.filter(
-            t => `${t.market}::${t.role}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.exchangeFee}::${t.gasFee}::${t.date}::${t.txHash}::${t.status}`.includes(filter)
+            t => `${t.tokenName ? t.tokenName : t.tokenAddress}::${t.role}::${t.side}::${t.price}::${t.tokenName}::${t.amount}::${t.amountBase}::${t.exchangeFee}::${t.gasFee}::${t.date}::${t.txHash}::${t.status}`.toLowerCase().includes(filter.toLowerCase())
         )
         const disabledClass = account ? "" : "disabled"
 

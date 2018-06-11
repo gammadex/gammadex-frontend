@@ -1,17 +1,18 @@
 import React from "react"
 import Date from "../CustomComponents/Date"
 import Round from "../../components/CustomComponents/Round"
+import TokenLink from "../../components/CustomComponents/TokenLink"
 import Etherscan from "../CustomComponents/Etherscan"
 
 export default class MyTradesRow extends React.Component {
     render() {
         const {refreshInProgress} = this.props
-        const { market, role, side, price, tokenName, amount, amountBase, date, txHash, status, exchangeFee, takerExchangeFeeUnit, gasFee } = this.props.trade
+        const { tokenAddress, role, side, price, tokenName, amount, amountBase, date, txHash, status, exchangeFee, takerExchangeFeeUnit, gasFee } = this.props.trade
 
         const refreshClass = refreshInProgress ? "faded" : ""
         return (
             <tr className={refreshClass}>
-                <td>{market}</td>
+                <td><TokenLink tokenAddress={tokenAddress} pair/></td>
                 <td>{role}</td>
                 <td>{side}</td>
                 <td><Round price softZeros>{price}</Round></td>

@@ -2,6 +2,7 @@ import React from "react"
 import Date from "../CustomComponents/Date"
 import Round from "../../components/CustomComponents/Round"
 import Etherscan from "../CustomComponents/Etherscan"
+import TokenLink from "../CustomComponents/TokenLink"
 
 export default class TransferRow extends React.Component {
     render() {
@@ -12,7 +13,7 @@ export default class TransferRow extends React.Component {
 
         return (
             <tr  className={refreshClass}>
-                <td>{tokenName}</td>
+                <td><TokenLink tokenName={tokenName}/></td>
                 <td><Round price softZeros>{amount}</Round></td>
                 <td><Date year={true}>{date}</Date></td>
                 <td><span>{status}</span></td>

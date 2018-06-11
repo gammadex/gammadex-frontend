@@ -17,7 +17,7 @@ export function toDisplayableTrades(trades, account) {
             role: role,
             takerSide: (t.side.toLowerCase() === OrderSide.SELL.toLowerCase()) ? "Sell" : "Buy",
             tokenName: tokenName,
-            market: TokenRepository.getTokenName(t.tokenAddr) + "/ETH",
+            tokenAddress: t.tokenAddr,
             price: String(t.price),
             amount: String(t.amount),
             amountBase: String(t.amountBase),
@@ -54,7 +54,7 @@ export function accountSide(trade, account) {
 
 export function tradesToCsv(displayableTrades) {
     const header = "Market,Role,Type,Price,Amount,Total (ETH),Exchange Fee,Exchange Fee Unit,Gas Fee (ETH),Date,Status,Transaction ID"
-    const content = (displayableTrades || []).map(t => [t.market, t.role, t.side, t.price, t.amount, t.amountBase, t.exchangeFee ? t.exchangeFee : '', t.exchangeFee ? t.takerExchangeFeeUnit : '', t.gasFee ? t.gasFee : '', t.date, t.status, t.txHash].join(","))
+    const content = (displayableTrades || []).map(t => [t.tokenName ? t.tokenName : t.tokenAddress, t.role, t.side, t.price, t.amount, t.amountBase, t.exchangeFee ? t.exchangeFee : '', t.exchangeFee ? t.takerExchangeFeeUnit : '', t.gasFee ? t.gasFee : '', t.date, t.status, t.txHash].join(","))
 
     return [header, ...content].join("\r\n")
 }
