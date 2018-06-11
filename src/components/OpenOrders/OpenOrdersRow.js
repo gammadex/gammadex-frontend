@@ -29,8 +29,8 @@ export default class OpenOrdersRow extends React.Component {
         const tokenAmountEth = tokWeiToEth(tokenAmountWei(openOrder), tokenAddr)
         const ethAmount = safeBigNumber(openOrder.price).times(tokenAmountEth).toString()
         let status = "Unfilled"
-        if (!safeBigNumber(openOrder.amountFilled).isZero()) {
-            status = "Partial Fill"
+        if (!safeBigNumber(openOrder.amountFilled).isZero() && !safeBigNumber(openOrder.amountGet).isZero()) {
+            status = `${safeBigNumber(openOrder.amountFilled).div(safeBigNumber(openOrder.amountGet)).times(100).toFixed(1)}% Filled`
         }
 
         const cancelOrderButton =

@@ -37,7 +37,7 @@ class OpenOrdersStore extends EventEmitter {
             .filter(o => o.state === OrderState.OPEN)
             .filter(o => this.currentBlockNumber && Number(o.expires) > this.currentBlockNumber)
 
-        this.openOrders = _.reverse(_.sortBy(openOrdersOnly, o => o.updated))
+        this.openOrders = _.reverse(_.sortBy(_.sortBy(openOrdersOnly, o => o.id), o => o.updated))
     }
 
     handleActions(action) {
