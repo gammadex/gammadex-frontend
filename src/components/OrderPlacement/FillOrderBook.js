@@ -26,8 +26,8 @@ export default class FillOrderBook extends React.Component {
         this.state = {
             orders: [],
             fillOrder: null,
-            currentGasPriceWei: 4000000000, // 4 gwei
-            ethereumPriceUsd: 700.0, // TODO, eugh - how should the ui handle no USD price?
+            currentGasPriceWei: null,
+            ethereumPriceUsd: null,
             exchangeBalanceEthWei: 0,
             exchangeBalanceTokWei: 0,
             selectedAccountType: null,
@@ -180,9 +180,19 @@ export default class FillOrderBook extends React.Component {
 
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
-            const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
-            const estimatedOperationCost = OperationCosts.TAKE_ORDER
-            const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
+            let estGas = ""
+            let usdFee = ""
+
+            if(currentGasPriceWei != null) {
+                const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
+                const estimatedOperationCost = OperationCosts.TAKE_ORDER
+                const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
+                estGas = estimatedGasCost.toFixed(8)
+                if(ethereumPriceUsd != null) {
+                    usdFee = (estimatedGasCost * ethereumPriceUsd).toFixed(3)
+                }
+            }
+
             // https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/SMART_CONTRACT.md
             // fees:
             // amount in amountGet terms
@@ -224,9 +234,9 @@ export default class FillOrderBook extends React.Component {
                             valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
                             disabled="true" />
                         <hr />
-                        <NumericInput name="Est. Gas Fee" value={estimatedGasCost.toFixed(8)} unitName="ETH"
+                        <NumericInput name="Est. Gas Fee" value={estGas} placeholder={''} unitName="ETH"
                             fieldName={type + "GasFeeEth"} disabled="true" />
-                        <NumericInput name="" value={(estimatedGasCost * ethereumPriceUsd).toFixed(3)} unitName="USD"
+                        <NumericInput name="" value={usdFee} placeholder={''} unitName="USD"
                             fieldName={type + "GasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
                         <hr />
                         <NumericInput name="0.3% Exchange Fee" value={exchangeCost.toFixed(8)} unitName={exchangeCostUnits}

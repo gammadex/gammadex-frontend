@@ -30,8 +30,8 @@ export default class Funding extends React.Component {
         super(props)
         this.state = {
             accountState: {},
-            currentGasPriceWei: 4000000000, // 4 gwei
-            ethereumPriceUsd: 700.0,// TODO, eugh - how should the ui handle no USD price?
+            currentGasPriceWei: null,
+            ethereumPriceUsd: null,
             ethDepositAmountControlled: "",
             ethDepositState: FundingState.EMPTY,
             ethDepositText: "",
@@ -269,9 +269,18 @@ export default class Funding extends React.Component {
         return (fundingState === FundingState.WARNING || fundingState === FundingState.ERROR) ? actionText : ""
     }
 
-    gasCostInfo(operationCost, currentGasPriceGwei, ethereumPriceUsd) {
-        const estimatedGasCost = gweiToEth(operationCost * currentGasPriceGwei)
-        return `${estimatedGasCost.toFixed(8)} Est. Gas Fee (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
+    gasCostInfo(operationCost, currentGasPriceWei, ethereumPriceUsd) {
+        if(currentGasPriceWei == null) {
+            return ""
+        } else {
+            const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
+            const estimatedGasCost = gweiToEth(operationCost * currentGasPriceGwei)
+            let usdFee = ""
+            if(ethereumPriceUsd != null) {
+                usdFee = ` (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
+            }
+            return `${estimatedGasCost.toFixed(8)} Est. Gas Fee${usdFee}`
+        }
     }
 
     render() {
@@ -290,8 +299,7 @@ export default class Funding extends React.Component {
         } = this.state
 
         const { selectedAccountType } = accountState
-        const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
-
+        
         const {
             ethDepositDisabled,
             ethDepositValid,
@@ -364,7 +372,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={ethDepositFeedbackIcon}
                 helpIcon={ethDepositHelpIcon}
                 submittable={true}
-                gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_ETH, currentGasPriceGwei, ethereumPriceUsd)} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_ETH, currentGasPriceWei, ethereumPriceUsd)} />
 
             <NumericInput value={ethWithdrawalAmountControlled}
                 onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
@@ -375,7 +383,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={ethWithdrawalFeedbackIcon}
                 actionName={"Withdraw ETH"}
                 submittable={true}
-                gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_ETH, currentGasPriceGwei, ethereumPriceUsd)} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_ETH, currentGasPriceWei, ethereumPriceUsd)} />
             <hr />
 
             <table className="table table-borderless">
@@ -405,7 +413,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={tokDepositFeedbackIcon}
                 actionName={"Deposit " + tokenName}
                 submittable={true}
-                gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_TOK, currentGasPriceGwei, ethereumPriceUsd)} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_TOK, currentGasPriceWei, ethereumPriceUsd)} />
 
             <NumericInput value={tokWithdrawalAmountControlled}
                 onChange={this.onTokWithdrawAmountChange} fieldName={"tokWithdrawAmount"}
@@ -416,7 +424,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={ethDepositFeedbackIcon}
                 actionName={"Withdraw " + tokenName}
                 submittable={true}
-                gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_TOK, currentGasPriceGwei, ethereumPriceUsd)} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_TOK, currentGasPriceWei, ethereumPriceUsd)} />
 
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                 <ModalBody>{modalBody}</ModalBody>
