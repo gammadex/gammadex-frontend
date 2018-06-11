@@ -7,7 +7,7 @@ import {Box, BoxSection} from "./CustomComponents/Box"
 import {Popover, PopoverBody} from 'reactstrap'
 import {gweiToWei, weiToGwei, gweiToEth} from "../EtherConversion"
 import * as _ from "lodash"
-import {OperationWeights} from "../ContractOperations"
+import {OperationCosts} from "../ContractOperations"
 import WalletStore from "../stores/WalletStore"
 import AccountStore from "../stores/AccountStore"
 
@@ -101,10 +101,11 @@ export default class GasPriceChooser extends React.Component {
     render() {
         const {popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei} = this.state
 
+        console.log(currentGasPriceWei + ' ' + ethereumPriceUsd)
         const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
 
-        const gasCostsEth = _.mapValues(OperationWeights, gwei => gweiToEth(gwei * currentGasPriceGwei).toFixed(6))
+        const gasCostsEth = _.mapValues(OperationCosts, gwei => gweiToEth(gwei * currentGasPriceGwei).toFixed(6))
         const gasCostsUsd = _.mapValues(gasCostsEth, e => (e * ethereumPriceUsd).toFixed(2))
         const timeDescription = this.getTimeDescription()
 
@@ -164,24 +165,34 @@ export default class GasPriceChooser extends React.Component {
                                                 <td>${gasCostsUsd.TAKE_ORDER}</td>
                                             </tr>
                                             <tr>
-                                                <td>Deposit</td>
-                                                <td>{gasCostsEth.DEPOSIT}</td>
-                                                <td>${gasCostsUsd.DEPOSIT}</td>
+                                                <td>Cancel Order</td>
+                                                <td>{gasCostsEth.CANCEL_ORDER}</td>
+                                                <td>${gasCostsUsd.CANCEL_ORDER}</td>
+                                            </tr>                                            
+                                            <tr>
+                                                <td>Deposit ETH</td>
+                                                <td>{gasCostsEth.DEPOSIT_ETH}</td>
+                                                <td>${gasCostsUsd.DEPOSIT_ETH}</td>
                                             </tr>
                                             <tr>
-                                                <td>Withdraw</td>
-                                                <td>{gasCostsEth.WITHDRAW}</td>
-                                                <td>${gasCostsUsd.WITHDRAW}</td>
+                                                <td>Deposit Token</td>
+                                                <td>{gasCostsEth.DEPOSIT_TOK}</td>
+                                                <td>${gasCostsUsd.DEPOSIT_TOK}</td>
+                                            </tr> 
+                                            <tr>
+                                                <td>Withdraw ETH</td>
+                                                <td>{gasCostsEth.WITHDRAW_ETH}</td>
+                                                <td>${gasCostsUsd.WITHDRAW_ETH}</td>
                                             </tr>
+                                            <tr>
+                                                <td>Withdraw Token</td>
+                                                <td>{gasCostsEth.WITHDRAW_TOK}</td>
+                                                <td>${gasCostsUsd.WITHDRAW_TOK}</td>
+                                            </tr>                                            
                                             </tbody>
                                         </table>
-                                    </div>
-                                </BoxSection>
-                                <BoxSection>
-                                    <div className="row">
-                                        <div className="col-lg-12 text-center">
-                                            <button className="btn" onClick={this.toggleGasPrice}>Close</button>
-                                        </div>
+                                        <hr/>
+                                        <strong>The above costs are a rough guideline only</strong>. Actual gas cost can vary depending on a number of factors, including the token being operated on.
                                     </div>
                                 </BoxSection>
                             </Box>

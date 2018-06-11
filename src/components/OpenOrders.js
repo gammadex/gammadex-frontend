@@ -2,19 +2,22 @@ import React from "react"
 import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip, FormGroup, Label, Col } from 'reactstrap'
 import OpenOrdersStore from "../stores/OpenOrdersStore"
 import TokenStore from "../stores/TokenStore"
+import GasPriceStore from "../stores/GasPriceStore"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
 import { Box, BoxSection, BoxHeader } from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import AccountStore from "../stores/AccountStore"
 import * as OpenOrderApi from "../apis/OpenOrderApi"
 import { tokenAddress, makerSide, tokenAmountWei } from "../OrderUtil"
-import { tokWeiToEth, safeBigNumber } from "../EtherConversion"
+import { tokWeiToEth, safeBigNumber, gweiToEth } from "../EtherConversion"
 import TokenRepository from "../util/TokenRepository"
 import OrderSide from "./../OrderSide"
 import Conditional from "./CustomComponents/Conditional"
 import _ from "lodash"
 import Round from "./CustomComponents/Round"
 import MarketResponseSpinner from "./MarketResponseSpinner"
+import GasPriceChooser from "./GasPriceChooser"
+import { OperationCosts } from "../ContractOperations"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
@@ -33,22 +36,28 @@ export default class OpenOrders extends React.Component {
             showConfirmModal: false,
             confirmModalOrder: null,
             gasPriceWei: gasPriceWei,
-            showAllTokens: showAllTokens
+            showAllTokens: showAllTokens,
+            currentGasPriceWei: null,
+            ethereumPriceUsd: null
         }
         this.updateOpenOrdersState = this.updateOpenOrdersState.bind(this)
         this.accountStoreUpdated = this.accountStoreUpdated.bind(this)
         this.confirmCancel = this.confirmCancel.bind(this)
         this.abortCancel = this.abortCancel.bind(this)
+        this.saveGasPrices = this.saveGasPrices.bind(this)
     }
 
     componentWillMount() {
         OpenOrdersStore.on("change", this.updateOpenOrdersState)
         AccountStore.on("change", this.accountStoreUpdated)
+        GasPriceStore.on("change", this.saveGasPrices)
+        this.saveGasPrices()
     }
 
     componentWillUnmount() {
         OpenOrdersStore.removeListener("change", this.updateOpenOrdersState)
         AccountStore.removeListener("change", this.accountStoreUpdated)
+        GasPriceStore.removeListener("change", this.saveGasPrices)
     }
 
     updateOpenOrdersState() {
@@ -70,6 +79,14 @@ export default class OpenOrders extends React.Component {
         })
     }
 
+    saveGasPrices() {
+        const { currentGasPriceWei, ethereumPriceUsd } = this.state
+        this.setState({
+            currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei() == null ? currentGasPriceWei : GasPriceStore.getCurrentGasPriceWei(),
+            ethereumPriceUsd: GasPriceStore.getEthereumPriceUsd() == null ? ethereumPriceUsd : GasPriceStore.getEthereumPriceUsd()
+        })
+    }
+
     confirmCancel() {
         const { confirmModalOrder, gasPriceWei } = this.state
         OpenOrderApi.hideCancelOrderModal()
@@ -85,7 +102,7 @@ export default class OpenOrders extends React.Component {
     }
 
     render() {
-        const { openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder, showAllTokens } = this.state
+        const { openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder, showAllTokens, currentGasPriceWei, ethereumPriceUsd } = this.state
 
         let filteredOpenOrders = openOrders
         let tokCommited = 0
@@ -111,6 +128,18 @@ export default class OpenOrders extends React.Component {
             const tokenName = TokenRepository.getTokenName(tokenAddr)
             const tokenAmountEth = tokWeiToEth(tokenAmountWei(confirmModalOrder), tokenAddr)
             modalText = `Cancel ${side} ${tokenAmountEth.decimalPlaces(3)} ${tokenName} with price of ${confirmModalOrder.price} ETH?`
+        }
+
+        
+        let modalFeeText = ""
+        if(currentGasPriceWei != null) {
+            const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
+            const estimatedGasCost = gweiToEth(OperationCosts.CANCEL_ORDER * currentGasPriceGwei)
+            let usdFee = ""
+            if(ethereumPriceUsd != null) {
+                usdFee = ` (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
+            }
+            modalFeeText = `${estimatedGasCost.toFixed(8)} Est. Gas Fee${usdFee}`
         }
 
         return (
@@ -147,7 +176,7 @@ export default class OpenOrders extends React.Component {
                     {content}
                 </div>
                 <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className} keyboard>
-                    <ModalBody>{modalText}</ModalBody>
+                    <ModalBody>{modalText}<br/><small className='text-muted'>{modalFeeText}</small></ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.abortCancel}>Abort</Button>{' '}
                         <Button color="primary" onClick={this.confirmCancel}>Cancel Order</Button>

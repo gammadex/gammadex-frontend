@@ -21,7 +21,7 @@ class TokenRepository {
     }
 
     getTokenName(address) {
-        if (address === "0x0000000000000000000000000000000000000000") {
+        if (address === Config.getBaseAddress()) {
             return 'ETH'
         } else {
             const token = this.find(t => t.address.toLowerCase() === address.toLowerCase())
@@ -34,7 +34,7 @@ class TokenRepository {
     }
 
     getTokenDecimalsByAddress(address) {
-        if (address === "0x0000000000000000000000000000000000000000") {
+        if (address === Config.getBaseAddress()) {
             return 18
         } else {
             return this.find(t => t.address.toLowerCase() === address.toLowerCase()).decimals

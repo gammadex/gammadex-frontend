@@ -15,7 +15,7 @@ import * as TradeActions from "../../actions/TradeActions"
 import Config from "../../Config"
 import Conditional from "../CustomComponents/Conditional"
 import GasPriceChooser from "../GasPriceChooser"
-import { OperationWeights } from "../../ContractOperations"
+import { OperationCosts } from "../../ContractOperations"
 import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import AccountType from "../../AccountType"
@@ -181,7 +181,7 @@ export default class FillOrderBook extends React.Component {
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
             const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
-            const estimatedOperationCost = OperationWeights.TAKE_ORDER
+            const estimatedOperationCost = OperationCosts.TAKE_ORDER
             const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
             // https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/SMART_CONTRACT.md
             // fees:

@@ -1,5 +1,8 @@
-export const OperationWeights = {
-    TAKE_ORDER: 130000,
-    WITHDRAW: 30000,
-    DEPOSIT: 30000
+export const OperationCosts = {
+    TAKE_ORDER: 100000,
+    CANCEL_ORDER: 50000,
+    WITHDRAW_ETH: 40000,
+    WITHDRAW_TOK: 50000,
+    DEPOSIT_ETH: 30000,
+    DEPOSIT_TOK: 90000
 }

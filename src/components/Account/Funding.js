@@ -18,7 +18,7 @@ import * as FundingActions from "../../actions/FundingActions"
 import Config from "../../Config"
 import Conditional from "../CustomComponents/Conditional"
 import GasPriceChooser from "../GasPriceChooser"
-import { OperationWeights } from "../../ContractOperations"
+import { OperationCosts } from "../../ContractOperations"
 import { gweiToEth, safeBigNumber } from "../../EtherConversion"
 import FundingModalType from "./FundingModalType"
 import FundingState from "./FundingState"
@@ -269,6 +269,11 @@ export default class Funding extends React.Component {
         return (fundingState === FundingState.WARNING || fundingState === FundingState.ERROR) ? actionText : ""
     }
 
+    gasCostInfo(operationCost, currentGasPriceGwei, ethereumPriceUsd) {
+        const estimatedGasCost = gweiToEth(operationCost * currentGasPriceGwei)
+        return `${estimatedGasCost.toFixed(8)} Est. Gas Fee (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
+    }
+
     render() {
         const { tokenName, walletBalanceEth, exchangeBalanceEth, walletBalanceTok, exchangeBalanceTok } = this.props
 
@@ -286,11 +291,6 @@ export default class Funding extends React.Component {
 
         const { selectedAccountType } = accountState
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
-        const estimatedOperationCost = OperationWeights.DEPOSIT
-        const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
-
-        const standardGasInfo = `${estimatedGasCost.toFixed(8)} Est. Gas Fee (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
-        const depositTokenGasInfo = `${(estimatedGasCost * 2).toFixed(8)} Est. Gas Fee (${((estimatedGasCost * 2) * ethereumPriceUsd).toFixed(3)} USD)`
 
         const {
             ethDepositDisabled,
@@ -364,7 +364,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={ethDepositFeedbackIcon}
                 helpIcon={ethDepositHelpIcon}
                 submittable={true}
-                gasFeeInfo={standardGasInfo} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_ETH, currentGasPriceGwei, ethereumPriceUsd)} />
 
             <NumericInput value={ethWithdrawalAmountControlled}
                 onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
@@ -375,7 +375,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={ethWithdrawalFeedbackIcon}
                 actionName={"Withdraw ETH"}
                 submittable={true}
-                gasFeeInfo={standardGasInfo} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_ETH, currentGasPriceGwei, ethereumPriceUsd)} />
             <hr />
 
             <table className="table table-borderless">
@@ -405,7 +405,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={tokDepositFeedbackIcon}
                 actionName={"Deposit " + tokenName}
                 submittable={true}
-                gasFeeInfo={depositTokenGasInfo} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_TOK, currentGasPriceGwei, ethereumPriceUsd)} />
 
             <NumericInput value={tokWithdrawalAmountControlled}
                 onChange={this.onTokWithdrawAmountChange} fieldName={"tokWithdrawAmount"}
@@ -416,7 +416,7 @@ export default class Funding extends React.Component {
                 feedbackIcon={ethDepositFeedbackIcon}
                 actionName={"Withdraw " + tokenName}
                 submittable={true}
-                gasFeeInfo={standardGasInfo} />
+                gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_TOK, currentGasPriceGwei, ethereumPriceUsd)} />
 
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                 <ModalBody>{modalBody}</ModalBody>
