@@ -101,6 +101,28 @@ export function changeUsePrivateKeyEncryption(isUseEncryption) {
     })
 }
 
+export function accountCreated(account, keyStore, keyStoreFileName) {
+    dispatcher.dispatch({
+        type: ActionNames.ACCOUNT_CREATED,
+        account,
+        keyStore,
+        keyStoreFileName
+    })
+}
+
+export function newAccountShowPrivateKeyUpdated(newAccountShowPrivateKey) {
+    dispatcher.dispatch({
+        type: ActionNames.NEW_ACCOUNT_SHOW_PRIVATE_KEY_UPDATED,
+        newAccountShowPrivateKey
+    })
+}
+
+export function resetNewAccountWorkflow() {
+    dispatcher.dispatch({
+        type: ActionNames.RESET_NEW_ACCOUNT_WORKFLOW,
+    })
+}
+
 export function keyStorePasswordError(error) {
     dispatcher.dispatch({
         type: ActionNames.WALLET_KEYSTORE_PASSWORD_ERROR,

@@ -177,6 +177,13 @@ class EtherDeltaWeb3 {
         return this.web3.utils.hexToNumber(hex)
     }
 
+    createNewAccount = () => {
+        return this.web3.eth.accounts.create()
+    }
+
+    encryptToKeyStore = (privateKey, password) => {
+        return this.web3.eth.accounts.encrypt(privateKey, password)
+    }
     /**
      * Returns a Promise which will return an array of name, symbol and decimals.
      *

@@ -33,6 +33,9 @@ class TopNavigation extends Component {
                         <li className="nav-item">
                             <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
                         </li>
+                        <li className="nav-item">
+                            <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
+                        </li>
                     </ul>
                 </nav>
             </header>

@@ -21,6 +21,10 @@ class WalletStore extends EventEmitter {
         this.keyStoreFile = null
         this.keyStoreFileName = null
         this.keyStorePassword = null
+        this.newAccount = null
+        this.newAccountKeyStore = null
+        this.newAccountKeyStoreFileName = null
+        this.newAccountShowPrivateKey = false
         this.rememberKeyStoreFile = false
         this.rememberPrivateKey = true
         this.unlocked = false
@@ -161,6 +165,22 @@ class WalletStore extends EventEmitter {
         this.ledger = Object.assign({}, this.LEDGER_DEFAULTS)
     }
 
+    getNewAccount() {
+        return this.newAccount
+    }
+
+    getNewAccountKeyStore() {
+        return this.newAccountKeyStore
+    }
+
+    getNewAccountKeyStoreFileName() {
+        return this.newAccountKeyStoreFileName
+    }
+
+    getNewAccountShowPrivateKey() {
+        return this.newAccountShowPrivateKey
+    }
+
     handleActions(action) {
         switch (action.type) {
             case ActionNames.WALLET_TYPE_SELECTED: {
@@ -210,6 +230,26 @@ class WalletStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.ACCOUNT_CREATED: {
+                this.newAccount = action.account
+                this.newAccountKeyStore = action.keyStore
+                this.newAccountKeyStoreFileName = action.keyStoreFileName
+                this.emitChange()
+                break
+            }    
+            case ActionNames.NEW_ACCOUNT_SHOW_PRIVATE_KEY_UPDATED: {
+                this.newAccountShowPrivateKey = action.newAccountShowPrivateKey
+                this.emitChange()
+                break
+            }     
+            case ActionNames.RESET_NEW_ACCOUNT_WORKFLOW: {
+                this.newAccount = null
+                this.newAccountKeyStore = null
+                this.newAccountKeyStoreFileName = null
+                this.newAccountShowPrivateKey = false
+                this.emitChange()
+                break
+            }                                    
             case ActionNames.ACCOUNT_RETRIEVED: {
                 this.completedAccount = action.addressNonce.address
                 this.displayUnlockKeyStoreModal = false
