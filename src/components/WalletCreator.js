@@ -74,7 +74,7 @@ class WalletCreator extends Component {
     getCreateWalletDisabled() {
         const { password, confirmPassword, minPasswordLength } = this.state
         const bothPasswordsValid = password.length >= minPasswordLength && password === confirmPassword
-        return bothPasswordsValid ? "" : "disabled"
+        return bothPasswordsValid
     }
 
     createNewWallet = (event) => {
@@ -114,6 +114,7 @@ class WalletCreator extends Component {
         } = this.state
 
         const createWalletDisabled = this.getCreateWalletDisabled()
+        const createWalletDisabledClass = createWalletDisabled ? "" : "disabled"
         const privateKey = newAccount == null ? "" : newAccount.privateKey
         return (
             <Box title="Create New Wallet">
@@ -134,7 +135,7 @@ class WalletCreator extends Component {
                                         onPasswordChange={this.handlePrivateKeyPasswordChange}
                                         onConfirmPasswordChange={this.handleConfirmPrivateKeyPasswordChange} />
                                     <div className="form-group">
-                                        <input className={"btn btn-primary " + createWalletDisabled} type="submit" value="Create New Wallet" />
+                                        <input className={"btn btn-primary " + createWalletDisabledClass} disabled={!createWalletDisabled} type="submit" value="Create New Wallet" />
                                     </div>
                                 </form>
                             </div>
