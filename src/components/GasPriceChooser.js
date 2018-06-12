@@ -101,7 +101,6 @@ export default class GasPriceChooser extends React.Component {
     render() {
         const {popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei} = this.state
 
-        console.log(currentGasPriceWei + ' ' + ethereumPriceUsd)
         const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
 
