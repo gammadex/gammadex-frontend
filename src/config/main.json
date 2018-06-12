@@ -73,7 +73,7 @@
     "web3": "https://mainnet.infura.io",
     "etherscan": "https://etherscan.io",
     "sockets": {
-      "default": "http://localhost:4300"
+      "default": "https://integration.server/api"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "defaultPair": {
