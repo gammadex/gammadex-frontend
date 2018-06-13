@@ -25,6 +25,7 @@ import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "./GlobalMessageActions"
 import TokenRepository from "../util/TokenRepository"
 import React from "react"
+import lifecycleStore from "../stores/LifecycleStore"
 
 /**
  * Calculate a total value when the price changes
@@ -478,11 +479,10 @@ export function executeBuy() {
         buyOrderExpireAfterBlocks,
         buyOrderUnsigned,
         buyOrderHash } = OrderPlacementStore.getOrderPlacementState()
-    const expires = buyOrderExpiryType === ExpiryType.GOOD_TILL_CANCEL ? Config.getBlocksGoodTillCancel() : buyOrderExpireAfterBlocks
     const selectedToken = TokenStore.getSelectedToken()
     const order = {
         makerSide: OrderSide.BUY,
-        expires: expires,
+        expires: buyOrderUnsigned.expires,
         price: buyOrderPriceControlled,
         amount: buyOrderAmountControlled,
         tokenAddress: selectedToken.address,
@@ -502,11 +502,10 @@ export function executeSell() {
         sellOrderExpireAfterBlocks,
         sellOrderUnsigned,
         sellOrderHash } = OrderPlacementStore.getOrderPlacementState()
-    const expires = sellOrderExpiryType === ExpiryType.GOOD_TILL_CANCEL ? Config.getBlocksGoodTillCancel() : sellOrderExpireAfterBlocks
     const selectedToken = TokenStore.getSelectedToken()
     const order = {
         makerSide: OrderSide.SELL,
-        expires: expires,
+        expires: sellOrderUnsigned.expires,
         price: sellOrderPriceControlled,
         amount: sellOrderAmountControlled,
         tokenAddress: selectedToken.address,
@@ -528,8 +527,10 @@ export function expires(makerSide) {
 }
 
 // NOTE: nonce is randomly generated so this is not referentially transparent
-export function unsignedOrderOrNull(orderValid, makerSide, expires, price, amount, tokenAddress) {
-    if (orderValid && price != "" && amount != "" && expires != "" && expires > 0) {
+export function unsignedOrderOrNull(orderValid, makerSide, expireAfterBlocks, price, amount, tokenAddress) {
+    const currentBlockNumber = lifecycleStore.getCurrentBlockNumber()
+    if (orderValid && price != "" && amount != "" && currentBlockNumber && expireAfterBlocks != "" && expireAfterBlocks > 0) {
+        const expires = safeBigNumber(currentBlockNumber).plus(safeBigNumber(expireAfterBlocks))
         const unsignedOrder = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
         const {
             tokenGet,
