@@ -4,14 +4,19 @@ import TokenRepository from "./TokenRepository";
 import DepositType from "../DepositType"
 
 export function toDisplayableTransfers(transfers) {
-    return transfers.map(t => ({
-            kind: (t.kind === DepositType.DEPOSIT) ? "Deposit" : "Withdrawal",
-            tokenName: TokenRepository.getTokenName(t.tokenAddr),
-            amount: String(tokWeiToEth(t.amount, t.tokenAddr)),
-            date: t.date,
-            status: getStatusDescription(t.status),
-            txHash: t.txHash
-        })
+    return transfers.map(t => {
+            const amount = TokenRepository.tokenExists(t.tokenAddr) ? tokWeiToEth(t.amount, t.tokenAddr) : ''
+
+            return {
+                kind: (t.kind === DepositType.DEPOSIT) ? "Deposit" : "Withdrawal",
+                tokenName: TokenRepository.getTokenName(t.tokenAddr),
+                tokenAddress: t.tokenAddr,
+                amount: String(amount),
+                date: t.date,
+                status: getStatusDescription(t.status),
+                txHash: t.txHash
+            }
+        }
     )
 }
 

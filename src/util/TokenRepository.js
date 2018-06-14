@@ -2,6 +2,7 @@ import _ from "lodash"
 import {addressesLooselyMatch, symbolsLooselyMatch} from './KeyUtil'
 import TokenStore from "../stores/TokenStore"
 import Config from "../Config"
+import {truncateAddress} from "./FormatUtil"
 
 class TokenRepository {
     getDefaultToken() {
@@ -20,13 +21,24 @@ class TokenRepository {
         return _.find(TokenStore.getAllTokens(), criteria)
     }
 
-    getTokenName(address) {
+    getTokenByAddress(address) {
         if (address === Config.getBaseAddress()) {
-            return 'ETH'
+            return Config.getEnv().defaultPair.base
         } else {
-            const token = this.find(t => t.address.toLowerCase() === address.toLowerCase())
-            return (token) ? token.symbol : null
+            return this.find(t => t.address.toLowerCase() === address.toLowerCase())
         }
+    }
+
+    getTokenName(address) {
+        const token = this.getTokenByAddress(address)
+
+        return token ?  token.symbol : null
+    }
+
+    getTokenIdentifier(address) {
+        const token = this.getTokenByAddress(address)
+
+        return token ?  token.symbol : truncateAddress(address)
     }
 
     tokenExists(address) {
@@ -34,10 +46,12 @@ class TokenRepository {
     }
 
     getTokenDecimalsByAddress(address) {
-        if (address === Config.getBaseAddress()) {
-            return 18
+        const token = this.getTokenByAddress(address)
+
+        if (token) {
+            return token.decimals
         } else {
-            return this.find(t => t.address.toLowerCase() === address.toLowerCase()).decimals
+            throw new Error(`No decimals found for token ${address}`)
         }
     }
 

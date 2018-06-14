@@ -39,7 +39,7 @@ class TokenStore extends EventEmitter {
     }
 
     getAllTokens() {
-        return this.allTokens
+        return this.allTokens.slice()
     }
 
     getSelectedToken() {
@@ -217,8 +217,6 @@ class TokenStore extends EventEmitter {
     }
 
     _updateAllTokens() {
-        console.log(this.listedTokens, this.userTokens)
-
         this.allTokens = [...this.listedTokens, ...this.userTokens]
     }
 }

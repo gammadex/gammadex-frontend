@@ -7,13 +7,13 @@ import TokenLink from "../CustomComponents/TokenLink"
 export default class TransferRow extends React.Component {
     render() {
         const {refreshInProgress} = this.props
-        const {tokenName, date, amount, txHash, status} = this.props.transfer
+        const {tokenName, tokenAddress, date, amount, txHash, status} = this.props.transfer
 
         const refreshClass = refreshInProgress ? "faded" : ""
 
         return (
             <tr  className={refreshClass}>
-                <td><TokenLink tokenName={tokenName}/></td>
+                <td><TokenLink tokenName={tokenName} tokenAddress={tokenAddress}/></td>
                 <td><Round price softZeros>{amount}</Round></td>
                 <td><Date year={true}>{date}</Date></td>
                 <td><span>{status}</span></td>

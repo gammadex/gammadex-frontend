@@ -5,6 +5,7 @@ import EtherDeltaWeb3 from "./EtherDeltaWeb3"
 import * as AccountApi from "./apis/AccountApi"
 import AccountType from "./AccountType"
 import {withRouter} from "react-router-dom"
+import * as WalletDao from "./util/WalletDao"
 
 class DebugAccount extends Component {
     constructor() {
@@ -31,6 +32,7 @@ class DebugAccount extends Component {
         if (valid) {
             EtherDeltaWeb3.initForPrivateKey(account, "")
             AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, this.props.history)
+            WalletDao.saveDebugWallet(account)
             this.props.history.push("/")
         }
     }

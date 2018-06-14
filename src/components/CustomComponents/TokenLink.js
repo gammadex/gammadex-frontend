@@ -3,12 +3,14 @@ import PropTypes from "prop-types"
 import TokenRepository from "../../util/TokenRepository"
 import TruncatedAddress from "./TruncatedAddress"
 import {withRouter} from "react-router-dom"
+import {truncateAddress} from "../../util/FormatUtil"
 
 class TokenLink extends React.Component {
     constructor(props) {
         super(props)
         this.onTokenSelect = this.onTokenSelect.bind(this)
-        this.tokenName = this.props.tokenName ? this.props.tokenName : TokenRepository.getTokenName(this.props.tokenAddress)
+
+        this.tokenIdentifier = this.tokenName ? this.tokenName : TokenRepository.getTokenIdentifier(this.props.tokenAddress)
     }
 
     onTokenSelect() {
@@ -19,20 +21,16 @@ class TokenLink extends React.Component {
     }
 
     render() {
-        if(this.tokenName && this.tokenName === 'ETH') {
+        if (this.tokenIdentifier === 'ETH') {
             return <span>ETH</span>
         }
-        const { pair = false } = this.props
-        if(this.tokenName) {
-            return <span className='clickable' onClick={this.onTokenSelect}>{this.tokenName}{pair ? '/ETH' : ''}</span>
-        } else {
-            return <span className='clickable' onClick={this.onTokenSelect}><TruncatedAddress>{this.props.tokenAddress}</TruncatedAddress>{pair ? '/ETH' : ''}</span>
-        }
+
+        return <span className='clickable' onClick={this.onTokenSelect}>{this.tokenIdentifier}{this.props.pair ? '/ETH' : ''}</span>
     }
 }
 
 TokenLink.propTypes = {
-    tokenAddress: PropTypes.string,
+    tokenAddress: PropTypes.string.isRequired,
     tokenName: PropTypes.string,
     pair: PropTypes.bool
 }

@@ -2,6 +2,7 @@ import React from "react"
 import {formatNumber, stripDecimalsOffLongNumber} from '../../util/FormatUtil'
 import SoftZeros from "./SoftZeros"
 import PropTypes from "prop-types"
+import _ from "lodash"
 
 export default class Round extends React.Component {
     DEFAULT_DPS = 3
@@ -11,6 +12,10 @@ export default class Round extends React.Component {
 
     render() {
         const originalNumber = this.getNumberToRound()
+        if (! _.isUndefined(this.props.passThrough) && originalNumber === this.props.passThrough) {
+            return originalNumber
+        }
+
         if (!originalNumber) {
             if (this.props.fallback) {
                 return this.props.fallback
@@ -46,4 +51,5 @@ Round.propTypes = {
     percent: PropTypes.bool,
     softZeros: PropTypes.bool,
     classNameFunc: PropTypes.func,
+    passThrough: PropTypes.any
 }

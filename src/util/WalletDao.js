@@ -44,6 +44,17 @@ export function saveMetamaskWallet() {
     localStorage.wallet = JSON.stringify(wallet)
 }
 
+export function saveDebugWallet(address) {
+    const wallet = {
+        type: AccountType.DEBUG,
+        data: {
+            address,
+        }
+    }
+
+    localStorage.wallet = JSON.stringify(wallet)
+}
+
 export function readWallet() {
     return localStorage.wallet ? JSON.parse(localStorage.wallet) : null
 }

@@ -3,4 +3,5 @@ export default {
     PRIVATE_KEY: "PRIVATE_KEY",
     METAMASK: "METAMASK",
     LEDGER: "LEDGER",
+    DEBUG: "DEBUG"
 }

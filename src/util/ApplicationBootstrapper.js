@@ -16,6 +16,10 @@ export function initAccounts() {
     } else if (typeof web3 !== "undefined" && WalletDao.isWalletSaved(AccountType.METAMASK)) { // If web3 is defined - it has been injected by the browser (Mist/MetaMask)
         EtherDeltaWeb3.initForMetaMask()
         return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK)
+    } else if (WalletDao.isWalletSaved(AccountType.DEBUG)) {
+        const address = WalletDao.readWallet().data.address
+        EtherDeltaWeb3.initForPrivateKey(address, "")
+        return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY)
     } else {
         LifeCycleActions.web3Initialised()
         EtherDeltaWeb3.initForAnonymous()
