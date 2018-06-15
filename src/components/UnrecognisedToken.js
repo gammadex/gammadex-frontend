@@ -1,17 +1,14 @@
 import React from "react"
 import Conditional from "./CustomComponents/Conditional"
 import TokenStore from "../stores/TokenStore"
-import Etherscan from "./CustomComponents/Etherscan"
 import * as TokenActions from "../actions/TokenActions"
 import TokenRepository from "../util/TokenRepository"
-import _ from "lodash"
 
 export default class UnrecognisedToken extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            unrecognisedTokenIdentifier: TokenStore.getUnrecognisedTokenIdentifier(),
             unrecognisedToken: TokenStore.getUnrecognisedToken(),
             checkingUnrecognisedAddress: TokenStore.isCheckingUnrecognisedAddress(),
             unrecognisedTokenCheckError: TokenStore.getUnrecognisedTokenCheckError(),
@@ -31,7 +28,6 @@ export default class UnrecognisedToken extends React.Component {
 
     onTokenStoreChange() {
         this.setState({
-            unrecognisedTokenIdentifier: TokenStore.getUnrecognisedTokenIdentifier(),
             unrecognisedToken: TokenStore.getUnrecognisedToken(),
             checkingUnrecognisedAddress: TokenStore.isCheckingUnrecognisedAddress(),
             unrecognisedTokenCheckError: TokenStore.getUnrecognisedTokenCheckError(),
@@ -48,7 +44,6 @@ export default class UnrecognisedToken extends React.Component {
 
     render() {
         const {
-            unrecognisedTokenIdentifier,
             unrecognisedToken,
             checkingUnrecognisedAddress,
             unrecognisedTokenCheckError,
@@ -58,24 +53,15 @@ export default class UnrecognisedToken extends React.Component {
         const tokenDescription = this.getTokenDescription(unrecognisedToken)
         const selectedTokenSymbol = selectedToken ? selectedToken.symbol : null
 
-        const displayUnrecognised = unrecognisedTokenIdentifier || (selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address))
+        const displayUnrecognised = selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address)
         const displayUnlisted = !displayUnrecognised && selectedToken && !selectedToken.isListed
-
-        console.log(
-            {
-                unrecognisedTokenIdentifier,
-                selectedToken,
-                listed: selectedToken && TokenRepository.isListedOrUserToken(selectedToken.address),
-                all: TokenStore.getAllTokens(),
-            }
-        )
 
         return (
             <span>
                 <Conditional
                     displayCondition={displayUnlisted}>
                     <div className="alert alert-warning">
-                            <i className="fas fa-exclamation-triangle mr-1"></i>
+                            <i className="fas fa-exclamation-triangle mr-1"/>
                         {selectedTokenSymbol} is not listed on GammaDEX. You can still trade it but please exercise caution.
                     </div>
                 </Conditional>
@@ -113,12 +99,6 @@ export default class UnrecognisedToken extends React.Component {
                                     </div>
                                 </Conditional>
                             </div>
-                        </div>
-
-                        <div>
-                            <hr/>
-                            Please check that the token address is correct: <Etherscan type="address"
-                                                                                       address={unrecognisedTokenIdentifier}/>
                         </div>
                     </div>
                 </Conditional>

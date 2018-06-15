@@ -23,7 +23,6 @@ class TokenStore extends EventEmitter {
 
         this.unlistedTokenCheckError = ""
         this.checkingUnlistedAddress = false
-        this.unrecognisedTokenIdentifier = null
         this.unrecognisedToken = null
         this.checkingUnrecognisedAddress = false
         this.unrecognisedTokenCheckError = null
@@ -75,10 +74,6 @@ class TokenStore extends EventEmitter {
 
     getUnlistedTokenCheckError() {
         return this.unlistedTokenCheckError
-    }
-
-    getUnrecognisedTokenIdentifier() {
-        return this.unrecognisedTokenIdentifier
     }
 
     getUnrecognisedToken() {
@@ -139,12 +134,6 @@ class TokenStore extends EventEmitter {
             case ActionNames.SELECT_TOKEN: {
                 const {token} = action
                 this.selectedToken = token
-                this.unrecognisedTokenIdentifier = null
-                if (this.isListedOrUserToken(token.address)) {
-                    //this.unrecognisedToken =  null
-                } else {
-                    //this.unrecognisedToken =  token
-                }
                 this.emitChange()
                 break
             }
