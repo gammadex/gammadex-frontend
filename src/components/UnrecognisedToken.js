@@ -54,7 +54,7 @@ export default class UnrecognisedToken extends React.Component {
         const selectedTokenSymbol = selectedToken ? selectedToken.symbol : null
 
         const displayUnrecognised = selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address)
-        const displayUnlisted = !displayUnrecognised && selectedToken && !selectedToken.isListed
+        const displayUnlisted = !displayUnrecognised && selectedToken && !TokenRepository.isListedToken(selectedToken.address)
 
         return (
             <span>
