@@ -56,8 +56,7 @@ class TokenChooser extends React.Component {
         TokenActions.removeUserToken(token)
 
         if (selectedToken && token.address.toLowerCase() === selectedToken.address.toLowerCase()) {
-            TokenActions.selectToken(Object.assign({}, selectedToken, {isUnrecognised: true}))
-            TokenApi.unrecognisedTokenLookup(token.address)
+            TokenActions.unrecognisedTokenLookupComplete(token.address, token, null)
         }
     }
 

@@ -27,7 +27,6 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
         if (foundToken) {
             processToken(foundToken, currentStateToken)
         } else {
-            TokenActions.unrecognisedToken(currUrlToken)
             unrecognisedTokenLookup(currUrlToken)
         }
     }

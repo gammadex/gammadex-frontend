@@ -15,14 +15,6 @@ export function searchToken(search) {
     })
 }
 
-export function unrecognisedToken(tokenIdentifier, token = null) {
-    dispatcher.dispatch({
-        type: ActionNames.UNRECOGNISED_TOKEN,
-        tokenIdentifier,
-        token
-    })
-}
-
 export function unlistedTokenAddressLookup(address) {
     dispatcher.dispatch({
         type: ActionNames.UNLISTED_TOKEN_ADDRESS_LOOKUP,

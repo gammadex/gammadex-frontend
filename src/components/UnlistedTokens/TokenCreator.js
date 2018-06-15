@@ -28,10 +28,11 @@ export default class TokenCreator extends React.Component {
     }
 
     onTokenStoreChange() {
-        const token = TokenStore.getCreateToken()
-        const ica = TokenStore.isCheckingUnlistedAddress()
-        const error = TokenStore.getUnlistedTokenCheckError()
-        this.setState({token: token, checkingAddress: ica, checkError: error})
+        this.setState({
+            token: TokenStore.getCreateToken(),
+            checkingAddress: TokenStore.isCheckingUnlistedAddress(),
+            checkError: TokenStore.getUnlistedTokenCheckError()
+        })
     }
 
     onAddToken = event => {

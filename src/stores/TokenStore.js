@@ -205,15 +205,7 @@ class TokenStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-            case ActionNames.UNRECOGNISED_TOKEN: {
-                this.unrecognisedTokenIdentifier = action.tokenIdentifier
-                this.unrecognisedToken = action.token // may be null
-                this.selectedToken = null
-                this.emitChange()
-                break
-            }
             case ActionNames.UNRECOGNISED_TOKEN_ADDRESS_LOOKUP: {
-                this.reset(action.address)
                 this.unrecognisedToken = null
                 this.checkingUnrecognisedAddress = true
                 this.unrecognisedTokenCheckError = null
