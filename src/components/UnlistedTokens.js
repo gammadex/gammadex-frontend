@@ -5,9 +5,9 @@ import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
 import {Box} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
-import _ from "lodash"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
+import * as TokenApi from "../apis/TokenApi"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -43,25 +43,22 @@ class TokenChooser extends React.Component {
         })
     }
 
-    onTokenSelect = (tokenNameOrAddress) => {
-        const newURL = `/exchange/${tokenNameOrAddress}`
+    onTokenSelect = (tokenAddress) => {
+        const newURL = `/exchange/${tokenAddress}`
         if (newURL !== this.props.history.location.pathname) {
             this.props.history.push(newURL)
         }
     }
 
     removeUserToken = token => {
-        // switch to the default token if the currently selected token is removed
-        if (token.address === this.state.selectedToken.address) {
-            const token = TokenRepository.getDefaultToken()
-            if (token.isListed) {
-                this.onTokenSelect(token.name)
-            } else {
-                this.onTokenSelect(token.address)
-            }
-        }
+        const {selectedToken} = this.state
 
         TokenActions.removeUserToken(token)
+
+        if (selectedToken && token.address.toLowerCase() === selectedToken.address.toLowerCase()) {
+            TokenActions.selectToken(Object.assign({}, selectedToken, {isUnrecognised: true}))
+            TokenApi.unrecognisedTokenLookup(token.address)
+        }
     }
 
     render() {

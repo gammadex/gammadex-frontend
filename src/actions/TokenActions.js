@@ -15,34 +15,33 @@ export function searchToken(search) {
     })
 }
 
-export function invalidToken(tokenIdentifier) {
+export function unrecognisedToken(tokenIdentifier, token = null) {
     dispatcher.dispatch({
-        type: ActionNames.INVALID_TOKEN,
-        tokenIdentifier
+        type: ActionNames.UNRECOGNISED_TOKEN,
+        tokenIdentifier,
+        token
     })
 }
 
-export function tokenAddressLookup(address) {
+export function unlistedTokenAddressLookup(address) {
     dispatcher.dispatch({
-        type: ActionNames.TOKEN_ADDRESS_LOOKUP,
+        type: ActionNames.UNLISTED_TOKEN_ADDRESS_LOOKUP,
         address,
     })
 }
 
-export function tokenLookupComplete(address, token, error) {
+export function unlistedTokenLookupComplete(address, token) {
     dispatcher.dispatch({
-        type: ActionNames.TOKEN_LOOKUP_LOOKUP_COMPLETE,
+        type: ActionNames.UNLISTED_TOKEN_LOOKUP_LOOKUP_COMPLETE,
         address,
-        token,
-        error
+        token
     })
 }
 
-export function tokenCheckError(address, error) {
+export function unlistedTokenCheckError(address) {
     dispatcher.dispatch({
-        type: ActionNames.TOKEN_CHECK_ERROR,
+        type: ActionNames.UNLISTED_TOKEN_CHECK_ERROR,
         address,
-        error,
     })
 }
 
@@ -64,5 +63,29 @@ export function resetCreate(address) {
     dispatcher.dispatch({
         type: ActionNames.RESET_CREATE_TOKEN,
         address
+    })
+}
+
+export function unrecognisedTokenAddressLookup(address) {
+    dispatcher.dispatch({
+        type: ActionNames.UNRECOGNISED_TOKEN_ADDRESS_LOOKUP,
+        address,
+    })
+}
+
+export function unrecognisedTokenLookupComplete(address, token, error) {
+    dispatcher.dispatch({
+        type: ActionNames.UNRECOGNISED_TOKEN_LOOKUP_LOOKUP_COMPLETE,
+        address,
+        token,
+        error
+    })
+}
+
+export function unrecognisedTokenCheckError(address, error) {
+    dispatcher.dispatch({
+        type: ActionNames.UNRECOGNISED_TOKEN_CHECK_ERROR,
+        address,
+        error,
     })
 }

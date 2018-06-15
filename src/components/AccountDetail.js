@@ -8,6 +8,7 @@ import { baseEthToWei, tokEthToWei, baseWeiToEth, tokWeiToEth } from "../EtherCo
 import * as AccountApi from "../apis/AccountApi"
 import Conditional from "./CustomComponents/Conditional"
 import RefreshButton from "./CustomComponents/RefreshButton"
+import TokenRepository from "../util/TokenRepository"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -81,7 +82,7 @@ export default class AccountDetail extends React.Component {
         let exchangeBalanceEth = null
         let walletBalanceTok = null
         let exchangeBalanceTok = null
-        if (tokenAddress && retrievedTokenAddress && tokenAddress === retrievedTokenAddress) {
+        if (tokenAddress && retrievedTokenAddress && tokenAddress === retrievedTokenAddress && TokenRepository.tokenExists(tokenAddress)) {
             walletBalanceEth = baseWeiToEth(walletBalanceEthWei).toString()
             exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei).toString()
             walletBalanceTok = tokWeiToEth(walletBalanceTokWei, tokenAddress).toString()

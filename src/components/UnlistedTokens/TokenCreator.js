@@ -12,8 +12,8 @@ export default class TokenCreator extends React.Component {
         TokenActions.resetCreate("")
         this.state = {
             token: TokenStore.getCreateToken(),
-            checkingAddress: TokenStore.isCheckingAddress(),
-            checkError: TokenStore.getTokenCheckError()
+            checkingAddress: TokenStore.isCheckingUnlistedAddress(),
+            checkError: TokenStore.getUnlistedTokenCheckError()
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -29,8 +29,8 @@ export default class TokenCreator extends React.Component {
 
     onTokenStoreChange() {
         const token = TokenStore.getCreateToken()
-        const ica = TokenStore.isCheckingAddress()
-        const error = TokenStore.getTokenCheckError()
+        const ica = TokenStore.isCheckingUnlistedAddress()
+        const error = TokenStore.getUnlistedTokenCheckError()
         this.setState({token: token, checkingAddress: ica, checkError: error})
     }
 
@@ -49,7 +49,7 @@ export default class TokenCreator extends React.Component {
         const address = event.target.value
         TokenActions.resetCreate(address)
         if (TokenUtil.isAddress(address)) {
-            TokenApi.tokenLookup(address)
+            TokenApi.unlistedTokenLookup(address)
         }
     }
 

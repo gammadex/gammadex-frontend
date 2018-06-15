@@ -13,8 +13,7 @@ class TokenStore extends EventEmitter {
         this.selectedToken = Config.getEnv().defaultPair.token
         this.searchToken = ""
         this.serverTickers = {}
-        this.tokenWarning = null
-        this.createToken = {
+        this.createUnlistedToken = {
             address: "",
             name: "",
             symbol: "",
@@ -22,8 +21,12 @@ class TokenStore extends EventEmitter {
             isListed: false
         }
 
-        this.tokenCheckError = ""
-        this.checkingAddress = false
+        this.unlistedTokenCheckError = ""
+        this.checkingUnlistedAddress = false
+        this.unrecognisedTokenIdentifier = null
+        this.unrecognisedToken = null
+        this.checkingUnrecognisedAddress = false
+        this.unrecognisedTokenCheckError = null
     }
 
     getListedTokens() {
@@ -62,24 +65,37 @@ class TokenStore extends EventEmitter {
         return this.serverTickers
     }
 
-    getTokenWarning() {
-        return this.tokenWarning
-    }
-
     getCreateToken() {
-        return this.createToken
+        return this.createUnlistedToken
     }
 
-    isCheckingAddress() {
-        return this.checkingAddress
+    isCheckingUnlistedAddress() {
+        return this.checkingUnlistedAddress
     }
 
-    getTokenCheckError() {
-        return this.tokenCheckError
+    getUnlistedTokenCheckError() {
+        return this.unlistedTokenCheckError
     }
 
-    setWarning(title, message) {
-        this.tokenWarning = {title, message}
+    getUnrecognisedTokenIdentifier() {
+        return this.unrecognisedTokenIdentifier
+    }
+
+    getUnrecognisedToken() {
+        return this.unrecognisedToken
+    }
+
+    isCheckingUnrecognisedAddress() {
+        return this.checkingUnrecognisedAddress
+    }
+
+    getUnrecognisedTokenCheckError() {
+        return this.unrecognisedTokenCheckError
+    }
+
+    isListedOrUserToken(address) {
+        return _.some(this.getListedTokens(), t => t.address.toLowerCase() === address.toLowerCase())
+            || _.some(this.getUserTokens(), t => t.address.toLowerCase() === address.toLowerCase())
     }
 
     loadTokensFromLocalStorage() {
@@ -98,7 +114,7 @@ class TokenStore extends EventEmitter {
     }
 
     reset(address) {
-        this.createToken = {
+        this.createUnlistedToken = {
             address: address,
             name: "",
             symbol: "",
@@ -107,9 +123,9 @@ class TokenStore extends EventEmitter {
         }
 
         if (address === "" || TokenUtil.isAddress(address)) {
-            this.tokenCheckError = ""
+            this.unlistedTokenCheckError = ""
         } else {
-            this.tokenCheckError = "Invalid address"
+            this.unlistedTokenCheckError = "Invalid address"
         }
     }
 
@@ -117,18 +133,18 @@ class TokenStore extends EventEmitter {
         this.emit("change")
     }
 
-    selectToken = token => {
-        this.selectedToken = token
-        this.tokenWarning = null
-        if (!this.selectedToken.isListed) {
-            this.setWarning("Unlisted Token", `${this.selectedToken.symbol} is not listed on GammaDex. Please be careful trading this token.`)
-        }
-    }
 
     handleActions(action) {
         switch (action.type) {
             case ActionNames.SELECT_TOKEN: {
-                this.selectToken(action.token)
+                const {token} = action
+                this.selectedToken = token
+                this.unrecognisedTokenIdentifier = null
+                if (this.isListedOrUserToken(token.address)) {
+                    //this.unrecognisedToken =  null
+                } else {
+                    //this.unrecognisedToken =  token
+                }
                 this.emitChange()
                 break
             }
@@ -157,20 +173,9 @@ class TokenStore extends EventEmitter {
 
                 break
             }
-            case ActionNames.INVALID_TOKEN: {
-                if (action.tokenIdentifier) {
-                    this.setWarning("No Matching Token", `Token ${action.tokenIdentifier} is not recognised as an address or symbol`)
-                } else {
-                    this.tokenWarning = null
-                }
-                this.selectedToken = null
-
-                this.emitChange()
-                break
-            }
-            case ActionNames.TOKEN_ADDRESS_LOOKUP: {
+            case ActionNames.UNLISTED_TOKEN_ADDRESS_LOOKUP: {
                 this.reset(action.address)
-                this.checkingAddress = true
+                this.checkingUnlistedAddress = true
                 this.emitChange()
                 break
             }
@@ -195,19 +200,51 @@ class TokenStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-            case ActionNames.TOKEN_LOOKUP_LOOKUP_COMPLETE: {
+            case ActionNames.UNLISTED_TOKEN_LOOKUP_LOOKUP_COMPLETE: {
                 const {token, error} = action
-                this.createToken = token
-                this.checkingAddress = false
-                this.tokenCheckError = error
+                this.createUnlistedToken = token
+                this.checkingUnlistedAddress = false
+                this.unlistedTokenCheckError = error
                 this.emitChange()
                 break
             }
-            case ActionNames.TOKEN_CHECK_ERROR: {
+            case ActionNames.UNLISTED_TOKEN_CHECK_ERROR: {
                 const {address, error} = action
                 this.reset(address)
-                this.checkingAddress = false
-                this.tokenCheckError = error
+                this.checkingUnlistedAddress = false
+                this.unlistedTokenCheckError = error
+                this.emitChange()
+                break
+            }
+            case ActionNames.UNRECOGNISED_TOKEN: {
+                this.unrecognisedTokenIdentifier = action.tokenIdentifier
+                this.unrecognisedToken = action.token // may be null
+                this.selectedToken = null
+                this.emitChange()
+                break
+            }
+            case ActionNames.UNRECOGNISED_TOKEN_ADDRESS_LOOKUP: {
+                this.reset(action.address)
+                this.unrecognisedToken = null
+                this.checkingUnrecognisedAddress = true
+                this.unrecognisedTokenCheckError = null
+                this.emitChange()
+                break
+            }
+            case ActionNames.UNRECOGNISED_TOKEN_LOOKUP_LOOKUP_COMPLETE: {
+                const {token, error} = action
+                this.unrecognisedToken = token
+                this.checkingUnrecognisedAddress = false
+                this.unrecognisedTokenCheckError = error
+
+                this.emitChange()
+                break
+            }
+            case ActionNames.UNRECOGNISED_TOKEN_CHECK_ERROR: {
+                const {error} = action
+                this.unrecognisedToken = null
+                this.checkingUnrecognisedAddress = false
+                this.unrecognisedTokenCheckError = error
                 this.emitChange()
                 break
             }
@@ -223,6 +260,9 @@ class TokenStore extends EventEmitter {
 
     _updateAllTokens() {
         this.allTokens = [...this.listedTokens, ...this.userTokens]
+        if (this.unrecognisedToken && ! _.some(this.allTokens , t => t.address.toLowerCase() === this.unrecognisedToken.address.toLowerCase())) {
+            this.allTokens.push(this.unrecognisedToken)
+        }
     }
 }
 

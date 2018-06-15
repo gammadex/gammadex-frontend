@@ -14,13 +14,13 @@ import UnlistedTokens from "../components/UnlistedTokens"
 import Trading from "../components/Trading"
 import PendingTrades from "../components/PendingTrades"
 import AccountDetail from '../components/AccountDetail'
+import UnrecognisedToken from "../components/UnrecognisedToken"
 
 class Exchange extends Component {
     constructor() {
         super()
         this.state = {
             token: null,
-            tokenWarning: null,
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -44,12 +44,11 @@ class Exchange extends Component {
     onTokenStoreChange() {
         this.setState((prevState, props) => ({
             token: TokenStore.getSelectedToken(),
-            tokenWarning: TokenStore.getTokenWarning(),
         }))
     }
 
     render() {
-        const {token, tokenWarning} = this.state
+        const {token} = this.state
 
         return <div>
             <div className="row">
@@ -59,7 +58,7 @@ class Exchange extends Component {
                     <UnlistedTokens/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
-                    <TokenErrorMessage warning={tokenWarning}/>
+                    <UnrecognisedToken />
                     <BrowserWeb3Warning/>
                     <Trading token={token}/>
                     <OpenOrders/>

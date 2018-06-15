@@ -191,7 +191,7 @@ class EtherDeltaWeb3 {
     }
 
     /**
-     * Returns a Promise which will return an array of name, symbol and decimals.
+     * Returns a Promise which will return a Token object with name, symbol, decimals, address fields
      *
      * @param {string} address token address
      */
@@ -213,7 +213,12 @@ class EtherDeltaWeb3 {
                         const tAddr = truncate(address, {left: 7, right: 5})
                         return [tAddr, tAddr, 18]
                     })
-            })
+            }).then(res => ({
+                address: address,
+                name: res[0],
+                symbol: res[1],
+                decimals: res[2]
+            }))
     }
 }
 

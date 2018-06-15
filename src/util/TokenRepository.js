@@ -32,17 +32,21 @@ class TokenRepository {
     getTokenName(address) {
         const token = this.getTokenByAddress(address)
 
-        return token ?  token.symbol : null
+        return token ? token.symbol : null
     }
 
     getTokenIdentifier(address) {
         const token = this.getTokenByAddress(address)
 
-        return token ?  token.symbol : truncateAddress(address)
+        return token ? token.symbol : truncateAddress(address)
     }
 
     tokenExists(address) {
         return this.getTokenName(address) !== null
+    }
+
+    isListedOrUserToken(address) {
+        return TokenStore.isListedOrUserToken(address)
     }
 
     getTokenDecimalsByAddress(address) {
@@ -55,18 +59,14 @@ class TokenRepository {
         }
     }
 
-    getTokenBySymbolOrAddress(symbolOrAddress, listedOnly=false) {
+    getTokenBySymbolOrAddress(symbolOrAddress, listedOnly = false) {
         return this.find(tk => {
             const addressMatch = addressesLooselyMatch(tk.address, symbolOrAddress)
             const symbolMatch = symbolsLooselyMatch(tk.symbol, symbolOrAddress)
-            const listingTypeMatch = tk.isListed || ! listedOnly
+            const listingTypeMatch = tk.isListed || !listedOnly
 
             return (addressMatch || symbolMatch) && listingTypeMatch
         })
-    }
-
-    getTokenByAddress(address) {
-        return this.find(tk => addressesLooselyMatch(tk.address, address))
     }
 }
 

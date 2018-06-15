@@ -82,7 +82,7 @@ class OrderBookStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-            case ActionNames.INVALID_TOKEN: {
+            case ActionNames.UNRECOGNISED_TOKEN: {
                 this.clearState()
                 this.emitChange()
                 break
