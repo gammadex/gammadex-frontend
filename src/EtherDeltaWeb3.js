@@ -4,7 +4,7 @@ import Config from './Config'
 import * as Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
 import OrderFactory from './OrderFactory'
-import { truncate } from './util/FormatUtil';
+import {truncate} from './util/FormatUtil';
 
 let web3 = window.web3
 
@@ -56,11 +56,16 @@ class EtherDeltaWeb3 {
     }
 
     refreshEthAndTokBalance(account, tokenAddress) {
+        const ethWalletLookup = account ? this.web3.eth.getBalance(account) : Promise.resolve(null)
+        const tokWalletLookup = account && tokenAddress ? this.promiseTokenBalance(account, tokenAddress) : Promise.resolve(null)
+        const ethContractLookup = account ? this.contractEtherDelta.methods.balanceOf(Config.getBaseAddress(), account).call() : Promise.resolve(null)
+        const tokContractLookup = account && tokenAddress ?this.contractEtherDelta.methods.balanceOf(tokenAddress, account).call() : Promise.resolve(null)
+
         return Promise.all([
-            this.web3.eth.getBalance(account),
-            this.promiseTokenBalance(account, tokenAddress),
-            this.contractEtherDelta.methods.balanceOf(Config.getBaseAddress(), account).call(),
-            this.contractEtherDelta.methods.balanceOf(tokenAddress, account).call()
+            ethWalletLookup,
+            tokWalletLookup,
+            ethContractLookup,
+            tokContractLookup
         ])
     }
 
@@ -184,6 +189,7 @@ class EtherDeltaWeb3 {
     encryptToKeyStore = (privateKey, password) => {
         return this.web3.eth.accounts.encrypt(privateKey, password)
     }
+
     /**
      * Returns a Promise which will return an array of name, symbol and decimals.
      *
@@ -200,13 +206,13 @@ class EtherDeltaWeb3 {
         return this.contractToken.methods.totalSupply().call()
             .then(supply => {
                 return Promise.all([this.contractToken.methods.name().call(),
-                                    this.contractToken.methods.symbol().call(),
-                                    this.contractToken.methods.decimals().call(),
-                                    Promise.resolve(supply)])
-                              .catch(err => {
-                                  const tAddr = truncate(address, {left: 7, right: 5})
-                                  return [tAddr, tAddr, 18]
-                              })
+                    this.contractToken.methods.symbol().call(),
+                    this.contractToken.methods.decimals().call(),
+                    Promise.resolve(supply)])
+                    .catch(err => {
+                        const tAddr = truncate(address, {left: 7, right: 5})
+                        return [tAddr, tAddr, 18]
+                    })
             })
     }
 }

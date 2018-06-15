@@ -30,12 +30,13 @@ export default class TradeHistory extends React.Component {
     render() {
         const {trades} = this.state
         const {token} = this.props
+        const tokenSymbol = token ? token.symbol : null
 
         return (
             <Box title="Market Trades" marketResponseSpinner>
                 <Conditional displayCondition={trades && trades.length > 0}
-                             fallbackMessage={'There is no trade history for ' + token.symbol}>
-                    <TradeHistoryTable base="ETH" token={token.symbol} trades={trades}/>
+                             fallbackMessage={'There is no trade history for ' + tokenSymbol}>
+                    <TradeHistoryTable base="ETH" token={tokenSymbol} trades={trades}/>
                 </Conditional>
             </Box>
         )

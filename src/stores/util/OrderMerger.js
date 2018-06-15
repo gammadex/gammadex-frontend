@@ -48,6 +48,6 @@ function isDelete(order) {
 
 function filterForTokenAddress(orders, tokenAddress) {
     return _.filter(orders, (order) => {
-        return tokenAddress.toLowerCase() === order.tokenGive.toLowerCase() || tokenAddress.toLowerCase() === order.tokenGet.toLowerCase()
+        return tokenAddress && (tokenAddress.toLowerCase() === order.tokenGive.toLowerCase() || tokenAddress.toLowerCase() === order.tokenGet.toLowerCase())
     })
 }

@@ -3,21 +3,11 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
 import Funding from '../components/Account/Funding'
-
-import Config from '../Config'
-import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip } from 'reactstrap'
 import { Box, BoxFooter, BoxSection } from "./CustomComponents/Box"
-
-import * as AccountActions from "../actions/AccountActions"
-import * as OrderPlacementActions from "../actions/OrderPlacementActions"
-import * as FundingActions from "../actions/FundingActions"
-import AccountType from "../AccountType"
-import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
 import { baseEthToWei, tokEthToWei, baseWeiToEth, tokWeiToEth } from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 import Conditional from "./CustomComponents/Conditional"
 import RefreshButton from "./CustomComponents/RefreshButton"
-import Round from "./CustomComponents/Round"
 
 export default class AccountDetail extends React.Component {
     constructor(props) {
@@ -27,7 +17,8 @@ export default class AccountDetail extends React.Component {
         this.onAccountChange = this.onAccountChange.bind(this)
         this.onGasStoreChange = this.onGasStoreChange.bind(this)
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
-        this.tokenAddress = TokenStore.getSelectedToken().address
+        this.tokenAddress = TokenStore.getSelectedTokenAddress()
+        this.tokenSymbol = TokenStore.getSelectedTokenSymbol()
     }
 
     componentDidMount() {
@@ -54,15 +45,16 @@ export default class AccountDetail extends React.Component {
     }
 
     onTokenStoreChange() {
-        this.setState((prevState, props) => ({
-            tokenAddress: TokenStore.getSelectedToken().address,
-        }))
+        this.setState({
+            tokenAddress: TokenStore.getSelectedTokenAddress(),
+            tokenSymbol: TokenStore.getSelectedTokenSymbol()
+        })
     }
 
     refreshBalances = () => {
         const { account, accountRetrieved, tokenAddress, retrievingBalance } = this.state
 
-        if (accountRetrieved && !retrievingBalance) {
+        if (tokenAddress && accountRetrieved && !retrievingBalance) {
             AccountApi.refreshEthAndTokBalance(account, tokenAddress, true)
         }
     }
@@ -79,17 +71,17 @@ export default class AccountDetail extends React.Component {
             retrievingBalance,
             balanceRetrievalFailed,
             retrievedTokenAddress,
-            tokenAddress
+            tokenAddress,
+            tokenSymbol,
         } = this.state
 
-        const clearBalances = !tokenAddress || !retrievedTokenAddress || tokenAddress != retrievedTokenAddress
         const warningMessage = this.getAccountWarningMessage()
 
         let walletBalanceEth = null
         let exchangeBalanceEth = null
         let walletBalanceTok = null
         let exchangeBalanceTok = null
-        if (!clearBalances) {
+        if (tokenAddress && retrievedTokenAddress && tokenAddress === retrievedTokenAddress) {
             walletBalanceEth = baseWeiToEth(walletBalanceEthWei).toString()
             exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei).toString()
             walletBalanceTok = tokWeiToEth(walletBalanceTokWei, tokenAddress).toString()
@@ -120,7 +112,7 @@ export default class AccountDetail extends React.Component {
                         </BoxSection>
                     </Conditional>
 
-                    <Funding tokenName={token.symbol}
+                    <Funding tokenName={tokenSymbol}
                         walletBalanceEth={walletBalanceEth}
                         exchangeBalanceEth={exchangeBalanceEth}
                         walletBalanceTok={walletBalanceTok}

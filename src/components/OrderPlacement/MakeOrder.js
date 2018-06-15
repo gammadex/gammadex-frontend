@@ -185,7 +185,7 @@ export default class MakeOrder extends React.Component {
 
     render() {
         const {
-            type, tokenName, tokenAddress, balanceRetrieved
+            type, tokenSymbol, tokenAddress, balanceRetrieved
         } = this.props
 
         const {
@@ -238,13 +238,13 @@ export default class MakeOrder extends React.Component {
         const body = (
             <BoxSection className={"order-box"}>
                 <form onSubmit={this.onSubmit}>
-                <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
+                <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenSymbol}
                     disabled="true" fieldName={type + "ExchangeBalanceMakeOrder"} />
                 <hr />
                 <NumericInput name="Price" value={price} unitName="ETH"
                     onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />
 
-                <NumericInput name="Amount" value={amount} unitName={tokenName}
+                <NumericInput name="Amount" value={amount} unitName={tokenSymbol}
                     onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
                     valid={amountFieldValid} errorMessage={amountFieldErrorMessage} />
 

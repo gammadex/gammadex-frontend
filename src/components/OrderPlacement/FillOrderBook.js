@@ -165,7 +165,7 @@ export default class FillOrderBook extends React.Component {
 
     render() {
         const {
-            type, tokenName, tokenAddress, balanceRetrieved
+            type, tokenSymbol, tokenAddress, balanceRetrieved
         } = this.props
 
         const {
@@ -199,7 +199,7 @@ export default class FillOrderBook extends React.Component {
             // token in tokenGet terms 
             // calc = amount * 0.003
             const exchangeCost = safeBigNumber(isTakerSell(fillOrder.order) ? fillOrder.fillAmountControlled : fillOrder.totalEthControlled).times(safeBigNumber(Config.getExchangeFeePercent()))
-            const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenName : "ETH"
+            const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenSymbol : "ETH"
 
             const available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
 
@@ -211,7 +211,7 @@ export default class FillOrderBook extends React.Component {
             let bestExecutionWarning = null
             if (!fillOrder.isBestExecution) {
                 bestExecutionWarning = <Alert color="warning">You have not selected the best order in the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book
-                . The same amount of {tokenName} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
+                . The same amount of {tokenSymbol} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
             }
 
             const submitDisabled = this.isSubmitDisabled()
@@ -220,12 +220,12 @@ export default class FillOrderBook extends React.Component {
                 <BoxSection className={"order-box"}>
                     <form onSubmit={this.onSubmit}>
                         {bestExecutionWarning}
-                        <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenName}
+                        <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenSymbol}
                             disabled="true" fieldName={type + "ExchangeBalanceFillOrder"} />
                         <hr />
                         <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
                             fieldName={type + "OrderPrice"} disabled="true" />
-                        <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenName}
+                        <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenSymbol}
                             onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
                             valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
                             onMax={this.onMaxAmount} />
@@ -252,10 +252,10 @@ export default class FillOrderBook extends React.Component {
                         </FormGroup>
                     </form>
                     <Modal isOpen={confirmTradeModal} toggle={this.abortFundingAction} className={this.props.className} keyboard>
-                        <ModalBody>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${fillOrder.fillAmountControlled} ${tokenName}?`}</ModalBody>
+                        <ModalBody>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${fillOrder.fillAmountControlled} ${tokenSymbol}?`}</ModalBody>
                         <ModalFooter>
                             <Button color="secondary" onClick={this.onAbort}>Abort</Button>{' '}
-                            <Button color="primary" onClick={this.onConfirm}>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${tokenName}`}</Button>
+                            <Button color="primary" onClick={this.onConfirm}>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${tokenSymbol}`}</Button>
                         </ModalFooter>
                     </Modal>
                 </BoxSection>

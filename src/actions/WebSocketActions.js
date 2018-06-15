@@ -89,10 +89,15 @@ export function connect() {
 }
 
 export function getMarket(notifyRequested = true) {
-    if (notifyRequested) {
-        dispatcher.dispatch({
-            type: ActionNames.MESSAGE_REQUESTED_MARKET,
-        })
+    const tokenAddress = TokenStore.getSelectedTokenAddress()
+    const account = AccountStore.getAccount()
+
+    if (tokenAddress || account) {
+        if (notifyRequested) {
+            dispatcher.dispatch({
+                type: ActionNames.MESSAGE_REQUESTED_MARKET,
+            })
+        }
+        EtherDeltaWebSocket.getMarket(tokenAddress, account, TokenStore.getListedTokensVersion())
     }
-    EtherDeltaWebSocket.getMarket(TokenStore.getSelectedToken().address, AccountStore.getAccountState().account, TokenStore.getListedTokensVersion())
 }

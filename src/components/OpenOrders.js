@@ -1,15 +1,27 @@
 import React from "react"
-import { Badge, Button, Input, Modal, ModalHeader, ModalBody, ModalFooter, Tooltip, FormGroup, Label, Col } from 'reactstrap'
+import {
+    Badge,
+    Button,
+    Input,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Tooltip,
+    FormGroup,
+    Label,
+    Col
+} from 'reactstrap'
 import OpenOrdersStore from "../stores/OpenOrdersStore"
 import TokenStore from "../stores/TokenStore"
 import GasPriceStore from "../stores/GasPriceStore"
 import OpenOrdersTable from "./OpenOrders/OpenOrdersTable"
-import { Box, BoxSection, BoxHeader } from "./CustomComponents/Box"
+import {Box, BoxSection, BoxHeader} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import AccountStore from "../stores/AccountStore"
 import * as OpenOrderApi from "../apis/OpenOrderApi"
-import { tokenAddress, makerSide, tokenAmountWei } from "../OrderUtil"
-import { tokWeiToEth, safeBigNumber, gweiToEth } from "../EtherConversion"
+import {tokenAddress, makerSide, tokenAmountWei} from "../OrderUtil"
+import {tokWeiToEth, safeBigNumber, gweiToEth} from "../EtherConversion"
 import TokenRepository from "../util/TokenRepository"
 import OrderSide from "./../OrderSide"
 import Conditional from "./CustomComponents/Conditional"
@@ -17,7 +29,7 @@ import _ from "lodash"
 import Round from "./CustomComponents/Round"
 import MarketResponseSpinner from "./MarketResponseSpinner"
 import GasPriceChooser from "./GasPriceChooser"
-import { OperationCosts } from "../ContractOperations"
+import {OperationCosts} from "../ContractOperations"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
@@ -28,7 +40,8 @@ export default class OpenOrders extends React.Component {
             showConfirmModal,
             confirmModalOrder,
             gasPriceWei,
-            showAllTokens } = OpenOrdersStore.getOpenOrdersState()
+            showAllTokens
+        } = OpenOrdersStore.getOpenOrdersState()
         this.state = {
             openOrders: openOrders,
             pendingCancelIds: pendingCancelIds,
@@ -45,12 +58,14 @@ export default class OpenOrders extends React.Component {
         this.confirmCancel = this.confirmCancel.bind(this)
         this.abortCancel = this.abortCancel.bind(this)
         this.saveGasPrices = this.saveGasPrices.bind(this)
+        this.tokenStoreUpdated = this.tokenStoreUpdated.bind(this)
     }
 
     componentWillMount() {
         OpenOrdersStore.on("change", this.updateOpenOrdersState)
         AccountStore.on("change", this.accountStoreUpdated)
         GasPriceStore.on("change", this.saveGasPrices)
+        TokenStore.on("change", this.tokenStoreUpdated)
         this.saveGasPrices()
     }
 
@@ -58,10 +73,11 @@ export default class OpenOrders extends React.Component {
         OpenOrdersStore.removeListener("change", this.updateOpenOrdersState)
         AccountStore.removeListener("change", this.accountStoreUpdated)
         GasPriceStore.removeListener("change", this.saveGasPrices)
+        TokenStore.removeListener("change", this.tokenStoreUpdated)
     }
 
     updateOpenOrdersState() {
-        const { openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei, showAllTokens } = OpenOrdersStore.getOpenOrdersState()
+        const {openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei, showAllTokens} = OpenOrdersStore.getOpenOrdersState()
         this.setState(
             {
                 openOrders: openOrders,
@@ -79,8 +95,15 @@ export default class OpenOrders extends React.Component {
         })
     }
 
+    tokenStoreUpdated() {
+        this.setState({
+            currentTokenSymbol: TokenStore.getSelectedTokenSymbol(),
+            currentTokenAddress: TokenStore.getSelectedTokenAddress()
+        })
+    }
+
     saveGasPrices() {
-        const { currentGasPriceWei, ethereumPriceUsd } = this.state
+        const {currentGasPriceWei, ethereumPriceUsd} = this.state
         this.setState({
             currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei() == null ? currentGasPriceWei : GasPriceStore.getCurrentGasPriceWei(),
             ethereumPriceUsd: GasPriceStore.getEthereumPriceUsd() == null ? ethereumPriceUsd : GasPriceStore.getEthereumPriceUsd()
@@ -88,7 +111,7 @@ export default class OpenOrders extends React.Component {
     }
 
     confirmCancel() {
-        const { confirmModalOrder, gasPriceWei } = this.state
+        const {confirmModalOrder, gasPriceWei} = this.state
         OpenOrderApi.hideCancelOrderModal()
         OpenOrderApi.cancelOpenOrder(confirmModalOrder, gasPriceWei)
     }
@@ -102,13 +125,15 @@ export default class OpenOrders extends React.Component {
     }
 
     render() {
-        const { openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder, showAllTokens, currentGasPriceWei, ethereumPriceUsd } = this.state
+        const {
+            openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder,
+            showAllTokens, currentGasPriceWei, ethereumPriceUsd, currentTokenSymbol, currentTokenAddress
+        } = this.state
 
         let filteredOpenOrders = openOrders
         let tokCommited = 0
         if (!showAllTokens) {
-            const currentToken = TokenStore.getSelectedTokenAddress()
-            filteredOpenOrders = openOrders.filter(o => tokenAddress(o) === currentToken)
+            filteredOpenOrders = openOrders.filter(o => tokenAddress(o) === currentTokenAddress)
             tokCommited = _.sum(filteredOpenOrders.filter(o => makerSide(o) === OrderSide.SELL).map(o => Number(o.ethAvailableVolume)))
         }
 
@@ -118,7 +143,7 @@ export default class OpenOrders extends React.Component {
         if (!accountRetrieved) {
             content = <EmptyTableMessage>Please unlock a wallet to see your open orders</EmptyTableMessage>
         } else if (filteredOpenOrders && filteredOpenOrders.length > 0) {
-            content = <OpenOrdersTable openOrders={filteredOpenOrders} pendingCancelIds={pendingCancelIds} />
+            content = <OpenOrdersTable openOrders={filteredOpenOrders} pendingCancelIds={pendingCancelIds}/>
         }
 
         let modalText = ""
@@ -130,13 +155,13 @@ export default class OpenOrders extends React.Component {
             modalText = `Cancel ${side} ${tokenAmountEth.decimalPlaces(3)} ${tokenName} with price of ${confirmModalOrder.price} ETH?`
         }
 
-        
+
         let modalFeeText = ""
-        if(currentGasPriceWei != null) {
+        if (currentGasPriceWei != null) {
             const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
             const estimatedGasCost = gweiToEth(OperationCosts.CANCEL_ORDER * currentGasPriceGwei)
             let usdFee = ""
-            if(ethereumPriceUsd != null) {
+            if (ethereumPriceUsd != null) {
                 usdFee = ` (${(estimatedGasCost * ethereumPriceUsd).toFixed(3)} USD)`
             }
             modalFeeText = `${estimatedGasCost.toFixed(8)} Est. Gas Fee${usdFee}`
@@ -153,19 +178,22 @@ export default class OpenOrders extends React.Component {
                             <div className="form-group">
                                 <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
                                     <input type="checkbox"
-                                        className="custom-control-input"
-                                        id="openOrdersAllTokens"
-                                        onChange={this.handleShowAll}
-                                        value="true"
-                                        checked={showAllTokens} />
-                                    <label className="custom-control-label" htmlFor="openOrdersAllTokens">Show All Tokens</label>
+                                           className="custom-control-input"
+                                           id="openOrdersAllTokens"
+                                           onChange={this.handleShowAll}
+                                           value="true"
+                                           checked={showAllTokens}/>
+                                    <label className="custom-control-label" htmlFor="openOrdersAllTokens">Show All
+                                        Tokens</label>
                                 </div>
                                 <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
                                     <strong className="card-title"><Round>{ethCommited}</Round> ETH</strong>
                                 </div>
                                 <Conditional displayCondition={!showAllTokens}>
                                     <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
-                                        <strong className="card-title dimmed-heading"><Round>{tokCommited}</Round> {TokenStore.getSelectedToken().symbol}</strong>
+                                        <strong
+                                            className="card-title dimmed-heading"><Round>{tokCommited}</Round> {currentTokenSymbol}
+                                        </strong>
                                     </div>
                                 </Conditional>
                             </div>
@@ -176,7 +204,9 @@ export default class OpenOrders extends React.Component {
                     {content}
                 </div>
                 <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className} keyboard>
-                    <ModalBody>{modalText}<br/><small className='text-muted'>{modalFeeText}</small></ModalBody>
+                    <ModalBody>{modalText}<br/>
+                        <small className='text-muted'>{modalFeeText}</small>
+                    </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={this.abortCancel}>Abort</Button>{' '}
                         <Button color="primary" onClick={this.confirmCancel}>Cancel Order</Button>

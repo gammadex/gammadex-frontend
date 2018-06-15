@@ -33,6 +33,6 @@ export function sortByTimeAndIdRemovingDuplicates(trades) {
 
 function filterByTokenAddress(trades, tokenAddress) {
     return _.filter(trades, trade => {
-        return tokenAddress.toLowerCase() === trade.tokenAddr.toLowerCase()
+        return tokenAddress && (tokenAddress.toLowerCase() === trade.tokenAddr.toLowerCase())
     })
 }

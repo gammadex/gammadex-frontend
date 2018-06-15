@@ -46,6 +46,10 @@ class TokenStore extends EventEmitter {
         return this.selectedToken
     }
 
+    getSelectedTokenSymbol() {
+        return this.selectedToken ? this.selectedToken.symbol : null
+    }
+
     getSelectedTokenAddress() {
         return this.selectedToken ? this.selectedToken.address : null
     }
@@ -159,6 +163,7 @@ class TokenStore extends EventEmitter {
                 } else {
                     this.tokenWarning = null
                 }
+                this.selectedToken = null
 
                 this.emitChange()
                 break

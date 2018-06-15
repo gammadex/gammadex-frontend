@@ -46,12 +46,13 @@ export default class Charts extends React.Component {
     render() {
         const {activeTab, allTrades, allBids, allOffers} = this.state
         const {token} = this.props
+        const tokenSymbol = token ? token.symbol : null
 
         let content = null
         let priceChartActiveClass = "", depthChartActiveClass = "", noChartActiveClass = ""
 
         if (activeTab === "PriceChart") {
-            content = <Resizer><PlotlyPriceChart trades={allTrades} token={token.symbol}/></Resizer>
+            content = <Resizer><PlotlyPriceChart trades={allTrades} token={tokenSymbol}/></Resizer>
             priceChartActiveClass = "active"
         } else if (activeTab === "DepthChart") {
             content = <Resizer><PlotlyDepthChart bids={allBids} offers={allOffers}/></Resizer>

@@ -4,6 +4,7 @@ import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
+import Conditional from "./CustomComponents/Conditional"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -64,39 +65,40 @@ export default class OrderBook extends React.Component {
         if (offersDiv) {
             offersDiv.scrollTop = offersDiv.scrollHeight
 
-            this.setState( {scrolled: true})
+            this.setState({scrolled: true})
         }
     }
 
     saveBidsAndOffers() {
-        this.setState((prevState, props) => ({
+        this.setState({
             bids: OrderBookStore.getBids(),
             offers: OrderBookStore.getOffersDescending(),
-        }))
+        })
     }
 
     saveOpenOrders() {
-        this.setState((prevState, props) => ({
+        this.setState({
             openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
             pendingCancelIds: OpenOrdersStore.getOpenOrdersState().pendingCancelIds
-        }))
+        })
     }
 
     render() {
-        const {token, pageSize} = this.props
+        const {token} = this.props
         const {bids, offers, openOrders, pendingCancelIds, tableWidth} = this.state
+        const tokenSymbol = token ? token.symbol : null
 
         const openOrderIds = openOrders.map(o => o.id)
 
         let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
-        if (bids && bids.length > 0) {
+        if (token && bids && bids.length > 0) {
             bidsContent = <OrdersTable orderType="bid" orders={bids}
                                        openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
                                        rowClass="buy-green"/>
         }
 
         let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
-        if (offers && offers.length > 0) {
+        if (token && offers && offers.length > 0) {
             offersContent = <OrdersTable orderType="offer" orders={offers}
                                          openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
                                          rowClass="sell-red"/>
@@ -104,30 +106,34 @@ export default class OrderBook extends React.Component {
 
         return (
             <Box title="Bids and Offers" marketResponseSpinner>
-                <div className="col-lg-12">
+                <Conditional displayCondition={!token}>
+                    <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
+                </Conditional>
+                <Conditional displayCondition={!!token}>
+                    <div className="col-lg-12">
+                        <div className="row">
+                            {offersContent}
+                        </div>
 
-                    <div className="row">
-                        {offersContent}
-                    </div>
+                        <div className="row orders-col-border">
+                            <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
+                                <table className="table-bordered">
+                                    <tbody>
+                                    <tr>
+                                        <td>{tokenSymbol}/ETH</td>
+                                        <td>Size ({tokenSymbol})</td>
+                                        <td>Total (ETH)</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                    <div className="row orders-col-border">
-                        <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
-                            <table className="table-bordered">
-                                <tbody>
-                                <tr>
-                                    <td>{token.symbol}/ETH</td>
-                                    <td>Size ({token.symbol})</td>
-                                    <td>Total (ETH)</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div className="row">
+                            {bidsContent}
                         </div>
                     </div>
-
-                    <div className="row">
-                        {bidsContent}
-                    </div>
-                </div>
+                </Conditional>
             </Box>
         )
     }

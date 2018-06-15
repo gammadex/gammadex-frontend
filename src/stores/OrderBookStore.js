@@ -82,6 +82,11 @@ class OrderBookStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.INVALID_TOKEN: {
+                this.clearState()
+                this.emitChange()
+                break
+            }
         }
     }
 
@@ -120,20 +125,20 @@ class OrderBookStore extends EventEmitter {
 
     mergeBuysAndSells(message) {
         if (message) {
-            const token = TokenStore.getSelectedToken() // TODO - is it acceptable that this has to know about TokenStore?
+            const tokenAddress = TokenStore.getSelectedTokenAddress() // TODO - is it acceptable that this has to know about TokenStore?
 
             if (message.buys) {
-                this.bids = OrderMerger.mergeOrders(this.bids, message.buys, token.address, false)
+                this.bids = OrderMerger.mergeOrders(this.bids, message.buys, tokenAddress, false)
             }
             if (message.sells) {
-                this.offers = OrderMerger.mergeOrders(this.offers, message.sells, token.address, true)
+                this.offers = OrderMerger.mergeOrders(this.offers, message.sells, tokenAddress, true)
             }
         }
     }
 
     mergeTrades(message) {
         if (message) {
-            this.trades = TradesMerger.mergeAndSortTrades(this.trades, message, TokenStore.getSelectedToken().address)
+            this.trades = TradesMerger.mergeAndSortTrades(this.trades, message, TokenStore.getSelectedTokenAddress())
             this.tradeStats = TradeStatsExtractor.extractStats(this.trades, new Date().addDays(-1))
         }
     }

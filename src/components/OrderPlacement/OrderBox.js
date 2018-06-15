@@ -93,7 +93,10 @@ export default class OrderBox extends React.Component {
 
     render() {
         const { activeTradeSide, activeOrderSide, balanceRetrieved } = this.state
-        const { tokenName, tokenAddress } = this.props
+        const { token} = this.props
+
+        const tokenSymbol = token ? token.symbol : null
+        const tokenAddress = token ? token.address : null
 
         const buyTradeActive = activeTradeSide === OrderBoxType.BUY_TRADE
         const sellTradeActive = activeTradeSide === OrderBoxType.SELL_TRADE
@@ -108,6 +111,7 @@ export default class OrderBox extends React.Component {
                     </div>
                 </BoxHeader>
                 <BoxSection>
+
                     <Conditional displayCondition={!balanceRetrieved}>
                         <div className="mb-2">
                             Please unlock a wallet to enable trading
@@ -155,6 +159,7 @@ export default class OrderBox extends React.Component {
                             </NavLink>
                         </NavItem>
                     </Nav>
+                    <Conditional displayCondition={!!token}>
                     <TabContent activeTab={this.state.activeOrderBoxType}>
                         <TabPane tabId={OrderBoxType.TRADE}>
                             <hr />
@@ -163,14 +168,14 @@ export default class OrderBox extends React.Component {
                                     <NavLink
                                         className={classnames({ active: buyTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.BUY_TRADE)}>
-                                        <strong>BUY {tokenName}</strong>
+                                        <strong>BUY {tokenSymbol}</strong>
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
                                         className={classnames({ active: sellTradeActive })}
                                         onClick={() => this.toggleTradeSide(OrderBoxType.SELL_TRADE)}>
-                                        <strong>SELL {tokenName}</strong>
+                                        <strong>SELL {tokenSymbol}</strong>
                             </NavLink>
                                 </NavItem>
                             </Nav>
@@ -178,19 +183,18 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.BUY} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
+                                            <FillOrderBook type={OrderSide.BUY} tokenSymbol={tokenSymbol} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                                 <TabPane tabId={OrderBoxType.SELL_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.SELL} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
+                                            <FillOrderBook type={OrderSide.SELL} tokenSymbol={tokenSymbol} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                             </TabContent>
-
                         </TabPane>
                         <TabPane tabId={OrderBoxType.ORDER}>
                             <hr />
@@ -199,14 +203,14 @@ export default class OrderBox extends React.Component {
                                     <NavLink
                                         className={classnames({ active: buyOrderActive })}
                                         onClick={() => this.toggleOrderSide(OrderBoxType.BUY_ORDER)}>
-                                        <strong>BUY {tokenName}</strong>
+                                        <strong>BUY {tokenSymbol}</strong>
                             </NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
                                         className={classnames({ active: sellOrderActive })}
                                         onClick={() => this.toggleOrderSide(OrderBoxType.SELL_ORDER)}>
-                                        <strong>SELL {tokenName}</strong>
+                                        <strong>SELL {tokenSymbol}</strong>
                             </NavLink>
                                 </NavItem>
                             </Nav>
@@ -214,21 +218,21 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.BUY} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
+                                            <MakeOrder type={OrderSide.BUY} tokenSymbol={tokenSymbol} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                                 <TabPane tabId={OrderBoxType.SELL_ORDER}>
                                     <Row>
                                         <Col sm="12">
-                                            <MakeOrder type={OrderSide.SELL} tokenName={tokenName} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
+                                            <MakeOrder type={OrderSide.SELL} tokenSymbol={tokenSymbol} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
                             </TabContent>
-
                         </TabPane>
                     </TabContent>
+                    </Conditional>
                 </BoxSection>
             </Box>
         )
