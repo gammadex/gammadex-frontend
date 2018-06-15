@@ -17,8 +17,8 @@ class TokenRepository {
         return TokenStore.getUserTokens()
     }
 
-    find(criteria) {
-        return _.find(TokenStore.getAllTokens(), criteria)
+    find(predicate) {
+        return _.find(TokenStore.getAllTokens(), predicate)
     }
 
     getTokenByAddress(address) {
@@ -55,8 +55,18 @@ class TokenRepository {
         }
     }
 
-    getTokenBySymbolOrAddress(symbolOrAddress) {
-        return this.find(tk => addressesLooselyMatch(tk.address, symbolOrAddress) || symbolsLooselyMatch(tk.symbol, symbolOrAddress))
+    getTokenBySymbolOrAddress(symbolOrAddress, listedOnly=false) {
+        return this.find(tk => {
+            const addressMatch = addressesLooselyMatch(tk.address, symbolOrAddress)
+            const symbolMatch = symbolsLooselyMatch(tk.symbol, symbolOrAddress)
+            const listingTypeMatch = tk.isListed || ! listedOnly
+
+            return (addressMatch || symbolMatch) && listingTypeMatch
+        })
+    }
+
+    getTokenByAddress(address) {
+        return this.find(tk => addressesLooselyMatch(tk.address, address))
     }
 }
 

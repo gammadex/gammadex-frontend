@@ -121,7 +121,7 @@ class TokenStore extends EventEmitter {
         this.selectedToken = token
         this.tokenWarning = null
         if (!this.selectedToken.isListed) {
-            this.setWarning("Unlisted Token", `Token ${this.selectedToken.symbol} is not listed on GammaDex -- proceed at your own risk`)
+            this.setWarning("Unlisted Token", `${this.selectedToken.symbol} is not listed on GammaDex. Please be careful trading this token.`)
         }
     }
 
