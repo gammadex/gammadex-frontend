@@ -54,6 +54,10 @@ class TokenRepository {
         return _.some(this.getSystemTokens(), t => t.address.toLowerCase() === address.toLowerCase())
     }
 
+    isUserToken(address) {
+        return _.some(this.getUserTokens(), t => t.address.toLowerCase() === address.toLowerCase())
+    }
+
     getTokenDecimalsByAddress(address) {
         const token = this.getTokenByAddress(address)
 

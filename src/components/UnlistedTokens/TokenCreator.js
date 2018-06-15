@@ -4,6 +4,7 @@ import TokenStore from "../../stores/TokenStore"
 import Conditional from "../CustomComponents/Conditional"
 import * as TokenApi from "../../apis/TokenApi"
 import * as TokenUtil from "../../util/TokenUtil"
+import TokenRepository from "../../util/TokenRepository"
 
 export default class TokenCreator extends React.Component {
     constructor() {
@@ -49,8 +50,18 @@ export default class TokenCreator extends React.Component {
     onAddressChange = event => {
         const address = event.target.value
         TokenActions.resetCreate(address)
-        if (TokenUtil.isAddress(address)) {
-            TokenApi.unlistedTokenLookup(address)
+        if (TokenRepository.isListedToken(address)) {
+            this.setState({
+                checkError: "This is an existing listed token"
+            })
+        } else if (TokenRepository.isUserToken(address)) {
+            this.setState({
+                checkError: "This token is already in your list"
+            })
+        } else {
+            if (TokenUtil.isAddress(address)) {
+                TokenApi.unlistedTokenLookup(address)
+            }
         }
     }
 
