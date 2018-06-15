@@ -23,6 +23,7 @@ export default class TradeHistoryTable extends React.Component {
                             <th>Size ({token})</th>
                             <th>Total ({base})</th>
                             <th>Date</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>

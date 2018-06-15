@@ -7,17 +7,6 @@ import Date from "../CustomComponents/Date"
 export default class TradeHistoryRow extends React.Component {
     constructor(props) {
         super(props)
-
-        this.toggle = this.toggle.bind(this)
-        this.state = {
-            popoverOpen: false
-        }
-    }
-
-    toggle() {
-        this.setState({
-            popoverOpen: !this.state.popoverOpen
-        })
     }
 
     render() {
@@ -28,23 +17,13 @@ export default class TradeHistoryRow extends React.Component {
 
         return (
             <tr>
-                <td onClick={this.toggle} className={"clickable " + cssClass}>
-                    <span id={popId}></span>
-
-                    <Popover placement="top" isOpen={this.state.popoverOpen} target={popId} toggle={this.toggle}>
-                        <PopoverHeader>{trade.side} of <Round>{trade.amount}</Round> {token}</PopoverHeader>
-                        <PopoverBody>
-                            <div><strong>Transaction: </strong> <Etherscan type="tx" address={trade.txHash} display="truncate"/></div>
-                        </PopoverBody>
-                    </Popover>
-
-                    <Round price softZeros>{trade.price}</Round>
-                </td>
+                <td><Round price softZeros>{trade.price}</Round></td>
                 <td onClick={this.toggle} className="clickable"><Round>{String(trade.amount)}</Round></td>
                 <td onClick={this.toggle} className="clickable"><Round>{String(trade.amountBase)}</Round></td>
                 <td onClick={this.toggle} className="clickable">
                     <small><Date noSeconds>{trade.date}</Date><br/></small>
                 </td>
+                <td><Etherscan type="tx" address={trade.txHash} display="icon"/></td>
             </tr>
         )
     }
