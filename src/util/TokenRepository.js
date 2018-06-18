@@ -18,31 +18,23 @@ class TokenRepository {
     }
 
     find(predicate) {
-        return _.find(TokenStore.getAllTokens(), predicate)
+        return TokenStore.find(predicate)
     }
 
     getTokenByAddress(address) {
-        if (address === Config.getBaseAddress()) {
-            return Config.getEnv().defaultPair.base
-        } else {
-            return this.find(t => t.address.toLowerCase() === address.toLowerCase())
-        }
+        return TokenStore.getTokenByAddress(address)
     }
 
     getTokenName(address) {
-        const token = this.getTokenByAddress(address)
-
-        return token ? token.symbol : null
+        return TokenStore.getTokenName(address)
     }
 
     getTokenIdentifier(address) {
-        const token = this.getTokenByAddress(address)
-
-        return token ? token.symbol : truncateAddress(address)
+        return TokenStore.getTokenIdentifier(address)
     }
 
     tokenExists(address) {
-        return this.getTokenName(address) !== null
+        return TokenStore.tokenExists(address)
     }
 
     isListedOrUserToken(address) {

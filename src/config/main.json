@@ -40,7 +40,7 @@
   },
   "production": {
     "ethereumNetworkId": 1,
-    "web3": "https://mainnet.infura.io",
+    "web3": "http://parity.integration.server",
     "etherscan": "https://etherscan.io",
     "sockets": {
       "etherdelta1": "https://socket01.etherdelta.com",

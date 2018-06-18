@@ -5,6 +5,7 @@ import _ from "lodash"
 import * as TokenUtil from "../util/TokenUtil"
 import * as CachedTokensDao from "../util/CachedTokensDao"
 import Config from "../Config"
+import {truncateAddress} from "../util/FormatUtil"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -91,6 +92,34 @@ class TokenStore extends EventEmitter {
     isListedOrUserToken(address) {
         return _.some(this.getListedTokens(), t => t.address.toLowerCase() === address.toLowerCase())
             || _.some(this.getUserTokens(), t => t.address.toLowerCase() === address.toLowerCase())
+    }
+
+    getTokenByAddress(address) {
+        if (address === Config.getBaseAddress()) {
+            return Config.getEnv().defaultPair.base
+        } else {
+            return this.find(t => t.address.toLowerCase() === address.toLowerCase())
+        }
+    }
+
+    getTokenName(address) {
+        const token = this.getTokenByAddress(address)
+
+        return token ? token.symbol : null
+    }
+
+    getTokenIdentifier(address) {
+        const token = this.getTokenByAddress(address)
+
+        return token ? token.symbol : truncateAddress(address)
+    }
+
+    tokenExists(address) {
+        return this.getTokenName(address) !== null
+    }
+
+    find(predicate) {
+        return _.find(this.getAllTokens(), predicate)
     }
 
     loadTokensFromLocalStorage() {

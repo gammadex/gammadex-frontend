@@ -23,12 +23,13 @@ export default class OpenOrdersRow extends React.Component {
     }
 
     render() {
-        const { openOrder, isPendingCancel } = this.props
+        const { openOrder, isPendingCancel, tokenExists } = this.props
         const tokenAddr = tokenAddress(openOrder)
         const tokenName = TokenRepository.getTokenName(tokenAddr)
         const side = makerSide(openOrder) === OrderSide.SELL ? "Sell" : "Buy"
-        const tokenAmountEth = tokWeiToEth(tokenAmountWei(openOrder), tokenAddr)
-        const ethAmount = safeBigNumber(openOrder.price).times(tokenAmountEth).toString()
+
+        const [tokenAmountEth, ethAmount] = this.getTokenAndEthAmounts(tokenExists, openOrder, tokenAddr)
+
         let status = "Unfilled"
         if (!safeBigNumber(openOrder.amountFilled).isZero() && !safeBigNumber(openOrder.amountGet).isZero()) {
             status = `${safeBigNumber(openOrder.amountFilled).div(safeBigNumber(openOrder.amountGet)).times(100).toFixed(1)}% Filled`
@@ -44,12 +45,23 @@ export default class OpenOrdersRow extends React.Component {
                 <td><TokenLink tokenAddress={tokenAddr} pair/></td>
                 <td>{side}</td>
                 <td><Round price softZeros>{openOrder.price}</Round></td>
-                <td><Round>{tokenAmountEth.toString()}</Round> {tokenName}</td>
+                <td><Round>{tokenAmountEth}</Round> {tokenName}</td>
                 <td><Round>{ethAmount}</Round></td>
                 <td><Date year>{openOrder.updated}</Date></td>
                 <td>{status}</td>
                 <td>{cancelOrderButton}</td>
             </tr>
         )
+    }
+
+    getTokenAndEthAmounts(tokenExists, openOrder, tokenAddr) {
+        if (tokenExists) {
+            const tokenAmountEth = tokWeiToEth(tokenAmountWei(openOrder), tokenAddr)
+            const ethAmount = safeBigNumber(openOrder.price).times(tokenAmountEth).toString()
+
+            return [String(tokenAmountEth), String(ethAmount)]
+        }
+
+        return [null, null]
     }
 }
