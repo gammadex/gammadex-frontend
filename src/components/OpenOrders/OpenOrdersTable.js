@@ -48,8 +48,6 @@ export default class OpenOrdersTable extends React.Component {
     render() {
         const {currentGasPriceWei, tokensExist} = this.state
 
-        console.log("tokenExists", tokensExist)
-
         const {openOrders, pendingCancelIds} = this.props
         const rows = openOrders.map(o =>
             <OpenOrdersRow key={o.id} openOrder={o} isPendingCancel={pendingCancelIds.includes(o.id)}

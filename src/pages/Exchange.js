@@ -1,13 +1,10 @@
 import React, {Component} from 'react'
 import TokenChooser from '../components/TokenChooser'
-import OrderBook from '../components/OrderBook'
-import OrderBox from '../components/OrderPlacement/OrderBox'
 import TokenSummary from '../components/TokenSummary'
 import OpenOrders from '../components/OpenOrders'
 import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
 import Charts from '../components/Charts'
-import TokenErrorMessage from '../components/TokenErrorMessage'
 import * as TokenApi from "../apis/TokenApi"
 import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
 import UnlistedTokens from "../components/UnlistedTokens"
@@ -15,6 +12,7 @@ import Trading from "../components/Trading"
 import PendingTrades from "../components/PendingTrades"
 import AccountDetail from '../components/AccountDetail'
 import UnrecognisedToken from "../components/UnrecognisedToken"
+import {withRouter} from "react-router-dom"
 
 class Exchange extends Component {
     constructor() {
@@ -74,4 +72,4 @@ class Exchange extends Component {
     }
 }
 
-export default Exchange
+export default withRouter(Exchange)

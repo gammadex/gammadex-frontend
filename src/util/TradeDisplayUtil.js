@@ -8,7 +8,7 @@ import Config from "../Config"
 export function toDisplayableTrades(trades, account) {
     return trades.map(t => {
         const {side, role} = accountSide(t, account)
-        const tokenName = TokenRepository.getTokenName(t.tokenAddr)
+        const tokenName = TokenRepository.getTokenIdentifier(t.tokenAddr)
         const {takerGasFee, takerExchangeFee} = calculateFees(t)
         const takerExchangeFeeUnit = t.side.toLowerCase() === OrderSide.SELL.toLowerCase() ? tokenName : 'ETH'
         return {

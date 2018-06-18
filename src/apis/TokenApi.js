@@ -8,17 +8,13 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
         return (props && props.match && props.match.params && props.match.params[0]) ? props.match.params[0] : null
     }
 
-    function processToken(token, currentStateToken) {
-        const currentStateTokenName = currentStateToken ? currentStateToken.symbol : null
-
-        TokenActions.selectToken(token)
-        if (token.symbol !== currentStateTokenName) {
-            WebSocketActions.getMarket()
-        }
-    }
-
     const prevUrlToken = getUrlTokenFromProps(prevProps)
-    const currUrlToken = getUrlTokenFromProps(currProps)
+    let currUrlToken = getUrlTokenFromProps(currProps)
+
+    if (!currUrlToken) {
+        currProps.history.push(`/exchange/${TokenRepository.getDefaultToken().symbol}`)
+        currUrlToken = TokenRepository.getDefaultToken().symbol
+    }
 
     if (currUrlToken && currUrlToken != prevUrlToken) {
         const listedToken = TokenRepository.getTokenBySymbolOrAddress(currUrlToken, true)
@@ -32,6 +28,15 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
     }
 }
 
+function processToken(token, currentStateToken) {
+    const currentStateTokenName = currentStateToken ? currentStateToken.symbol : null
+
+    TokenActions.selectToken(token)
+    if (token.symbol !== currentStateTokenName) {
+        WebSocketActions.getMarket()
+    }
+}
+
 export function unrecognisedTokenLookup(address) {
     TokenActions.unrecognisedTokenAddressLookup(address)
 
@@ -40,6 +45,7 @@ export function unrecognisedTokenLookup(address) {
         .then(token => {
             TokenActions.unrecognisedTokenLookupComplete(address, token)
             TokenActions.selectToken(token)
+            WebSocketActions.getMarket()
         })
         .catch(e => {
             TokenActions.unrecognisedTokenCheckError(address, e)

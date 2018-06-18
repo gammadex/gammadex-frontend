@@ -11,7 +11,7 @@ class TokenStore extends EventEmitter {
     constructor() {
         super()
         this.loadTokensFromLocalStorage()
-        this.selectedToken = Config.getEnv().defaultPair.token
+        this.selectedToken = null
         this.searchToken = ""
         this.serverTickers = {}
         this.createUnlistedToken = {
