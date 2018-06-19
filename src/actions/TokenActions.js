@@ -30,10 +30,11 @@ export function unlistedTokenLookupComplete(address, token) {
     })
 }
 
-export function unlistedTokenCheckError(address) {
+export function unlistedTokenCheckError(address, error) {
     dispatcher.dispatch({
         type: ActionNames.UNLISTED_TOKEN_CHECK_ERROR,
         address,
+        error
     })
 }
 

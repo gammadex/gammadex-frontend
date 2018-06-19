@@ -5,7 +5,6 @@ import _ from "lodash"
 import * as CachedTokensDao from "../util/CachedTokensDao"
 import Config from "../Config"
 import {truncateAddress} from "../util/FormatUtil"
-import * as TokenUtil from "../util/TokenUtil"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -150,12 +149,7 @@ class TokenStore extends EventEmitter {
             isListed: false
         }
 
-        // TODO - get this logic out of here
-        if (address === "" || TokenUtil.isAddress(address)) {
-            this.unlistedTokenCheckError = ""
-        } else {
-            this.unlistedTokenCheckError = "Invalid address"
-        }
+        this.unlistedTokenCheckError = null
     }
 
     emitChange() {
@@ -287,7 +281,7 @@ class TokenStore extends EventEmitter {
 
     _updateAllTokens() {
         this.allTokens = [...this.listedTokens, ...this.userTokens]
-        if (this.unrecognisedToken && ! _.some(this.allTokens , t => t.address.toLowerCase() === this.unrecognisedToken.address.toLowerCase())) {
+        if (this.unrecognisedToken && !_.some(this.allTokens, t => t.address.toLowerCase() === this.unrecognisedToken.address.toLowerCase())) {
             this.allTokens.push(this.unrecognisedToken)
         }
     }

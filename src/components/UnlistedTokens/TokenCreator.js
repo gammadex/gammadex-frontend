@@ -49,19 +49,24 @@ export default class TokenCreator extends React.Component {
 
     onAddressChange = event => {
         const address = event.target.value
-        TokenActions.resetCreate(address)
-        if (TokenRepository.isListedToken(address)) {
-            this.setState({
-                checkError: "This is an existing listed token"
-            })
-        } else if (TokenRepository.isUserToken(address)) {
-            this.setState({
-                checkError: "This token is already in your list"
-            })
-        } else {
-            if (TokenUtil.isAddress(address)) {
+
+        if (address) {
+            let error = null
+            if (TokenRepository.isListedToken(address)) {
+                error = "This is an existing listed token"
+            } else if (TokenRepository.isUserToken(address)) {
+                error = "This token is already in your list"
+            } else if (!TokenUtil.isAddress(address)) {
+                error = "Invalid address"
+            }
+
+            if (error) {
+                TokenActions.unlistedTokenCheckError(address, error)
+            } else {
                 TokenApi.unlistedTokenLookup(address)
             }
+        } else {
+            TokenActions.resetCreate(address)
         }
     }
 

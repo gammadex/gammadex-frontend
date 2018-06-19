@@ -7,7 +7,6 @@ import {Box} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
-import * as TokenApi from "../apis/TokenApi"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -58,6 +57,8 @@ class TokenChooser extends React.Component {
         if (selectedToken && token.address.toLowerCase() === selectedToken.address.toLowerCase()) {
             TokenActions.unrecognisedTokenLookupComplete(token.address, token, null)
         }
+
+        TokenActions.resetCreate("")
     }
 
     render() {
