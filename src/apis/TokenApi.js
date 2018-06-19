@@ -43,6 +43,7 @@ function processToken(token, currentStateToken) {
 }
 
 export function unrecognisedTokenLookup(address) {
+    TokenActions.selectToken(null)
     TokenActions.unrecognisedTokenAddressLookup(address)
 
     EtherDeltaWeb3.promiseGetTokenDetails(address)
@@ -67,6 +68,6 @@ export function unlistedTokenLookup(address) {
             TokenActions.unlistedTokenLookupComplete(address, token, error)
         })
         .catch(e => {
-            TokenActions.unlistedTokenCheckError(address, "Token not found")
+            TokenActions.unlistedTokenCheckError(address, "Token not valid")
         })
 }

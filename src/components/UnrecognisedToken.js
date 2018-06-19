@@ -3,6 +3,7 @@ import Conditional from "./CustomComponents/Conditional"
 import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import TokenRepository from "../util/TokenRepository"
+import Etherscan from "./CustomComponents/Etherscan"
 
 export default class UnrecognisedToken extends React.Component {
     constructor(props) {
@@ -53,7 +54,7 @@ export default class UnrecognisedToken extends React.Component {
         const tokenDescription = this.getTokenDescription(unrecognisedToken)
         const selectedTokenSymbol = selectedToken ? selectedToken.symbol : null
 
-        const displayUnrecognised = checkingUnrecognisedAddress || (selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address))
+        const displayUnrecognised = unrecognisedTokenCheckError || checkingUnrecognisedAddress || (selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address))
         const displayUnlisted = !displayUnrecognised && selectedToken && !TokenRepository.isListedToken(selectedToken.address)
 
         return (
@@ -92,10 +93,13 @@ export default class UnrecognisedToken extends React.Component {
 
                                 <Conditional displayCondition={!!unrecognisedTokenCheckError}>
                                     <div>
-                                    There was a problem checking the token
+                                    There was a problem with the token address
                                     </div>
-                                    <div>
-                                        {String(unrecognisedTokenCheckError)}
+                                                                        <div className="mt-2">
+                                    This could mean that the token address is invalid or it is not a tradable token
+                                    </div>
+                                    <div className="mt-2">
+                                        <i>{String(unrecognisedTokenCheckError)}</i>
                                     </div>
                                 </Conditional>
                             </div>
@@ -108,7 +112,11 @@ export default class UnrecognisedToken extends React.Component {
 
     getTokenDescription(token) {
         if (token) {
-            return `${token.symbol} - ${token.name}`
+            if (token.symbol === token.name) {
+                return token.symbol
+            } else {
+                return `${token.symbol} - ${token.name}`
+            }
         } else {
             return ''
         }

@@ -59,7 +59,7 @@ class EtherDeltaWeb3 {
         const ethWalletLookup = account ? this.web3.eth.getBalance(account) : Promise.resolve(null)
         const tokWalletLookup = account && tokenAddress ? this.promiseTokenBalance(account, tokenAddress) : Promise.resolve(null)
         const ethContractLookup = account ? this.contractEtherDelta.methods.balanceOf(Config.getBaseAddress(), account).call() : Promise.resolve(null)
-        const tokContractLookup = account && tokenAddress ?this.contractEtherDelta.methods.balanceOf(tokenAddress, account).call() : Promise.resolve(null)
+        const tokContractLookup = account && tokenAddress ? this.contractEtherDelta.methods.balanceOf(tokenAddress, account).call() : Promise.resolve(null)
 
         return Promise.all([
             ethWalletLookup,
@@ -190,7 +190,7 @@ class EtherDeltaWeb3 {
         return this.web3.eth.accounts.encrypt(privateKey, password)
     }
 
-    isAddress(address, validateChecksum=false) {
+    isAddress(address, validateChecksum = false) {
         const check = validateChecksum ? String(address).toLowerCase() : address
 
         return web3.util.isAddress(check)
@@ -211,21 +211,35 @@ class EtherDeltaWeb3 {
 
         return this.contractToken.methods.totalSupply().call()
             .then(supply => {
-                return Promise.all([this.contractToken.methods.name().call(),
-                    this.contractToken.methods.symbol().call(),
+                return Promise.all([
+                    wrapError(() => this.contractToken.methods.name().call()),
+                    wrapError(() => this.contractToken.methods.symbol().call()),
                     this.contractToken.methods.decimals().call(),
                     Promise.resolve(supply)])
-                    .catch(err => {
-                        const tAddr = truncate(address, {left: 7, right: 5})
-                        return [tAddr, tAddr, 18]
-                    })
-            }).then(res => ({
-                address: address,
-                name: res[0],
-                symbol: res[1],
-                decimals: res[2]
-            }))
+            }).then(res => {
+                return {
+                    address: address,
+                    name: res[0].result || truncate(address, {left: 7, right: 5}),
+                    symbol: res[1].result || truncate(address, {left: 7, right: 5}),
+                    decimals: res[2]
+                }
+            })
     }
+}
+
+function wrapError(promise) {
+    return promise()
+        .then(res => {
+            return ({
+                result: res,
+                error: null
+            })
+        }).catch(error => {
+            return {
+                result: null,
+                error: error
+            }
+        })
 }
 
 class AccountProvider {
