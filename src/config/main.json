@@ -28,7 +28,8 @@
         "symbol": "TST",
         "name": "Test Standard Token",
         "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180",
-        "decimals": 18
+        "decimals": 18,
+        "isListed": true
       },
       "base": {
         "address":"0x0000000000000000000000000000000000000000",
@@ -58,7 +59,8 @@
         "symbol": "VEN",
         "name": "VeChain Token",
         "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
-        "decimals": 18
+        "decimals": 18,
+        "isListed": true
       },
       "base": {
         "address":"0x0000000000000000000000000000000000000000",
@@ -81,7 +83,8 @@
         "symbol": "VEN",
         "name": "VeChain Token",
         "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
-        "decimals": 18
+        "decimals": 18,
+        "isListed": true
       },
       "base": {
         "address":"0x0000000000000000000000000000000000000000",
