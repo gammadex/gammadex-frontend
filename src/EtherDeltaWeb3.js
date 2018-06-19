@@ -203,7 +203,7 @@ class EtherDeltaWeb3 {
      */
     promiseGetTokenDetails(address) {
         try {
-            this.contractToken.options.address = address
+            this.contractToken.options.address = address.toLowerCase()
         }
         catch (error) {
             return Promise.reject(error)
