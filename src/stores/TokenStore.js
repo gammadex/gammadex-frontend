@@ -2,10 +2,10 @@ import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import _ from "lodash"
-import * as TokenUtil from "../util/TokenUtil"
 import * as CachedTokensDao from "../util/CachedTokensDao"
 import Config from "../Config"
 import {truncateAddress} from "../util/FormatUtil"
+import * as TokenUtil from "../util/TokenUtil"
 
 class TokenStore extends EventEmitter {
     constructor() {
@@ -81,12 +81,16 @@ class TokenStore extends EventEmitter {
         return this.unrecognisedToken
     }
 
-    isCheckingUnrecognisedAddress() {
+    getCheckingUnrecognisedAddress() {
         return this.checkingUnrecognisedAddress
     }
 
     getUnrecognisedTokenCheckError() {
         return this.unrecognisedTokenCheckError
+    }
+
+    getInvalidTokenIdentifierInUrl() {
+        return this.invalidTokenIdentifierInUrl
     }
 
     isListedOrUserToken(address) {
@@ -146,6 +150,7 @@ class TokenStore extends EventEmitter {
             isListed: false
         }
 
+        // TODO - get this logic out of here
         if (address === "" || TokenUtil.isAddress(address)) {
             this.unlistedTokenCheckError = ""
         } else {
@@ -163,6 +168,7 @@ class TokenStore extends EventEmitter {
             case ActionNames.SELECT_TOKEN: {
                 const {token} = action
                 this.selectedToken = token
+                this.invalidTokenIdentifierInUrl = null
                 this.emitChange()
                 break
             }
@@ -235,16 +241,18 @@ class TokenStore extends EventEmitter {
                 break
             }
             case ActionNames.UNRECOGNISED_TOKEN_ADDRESS_LOOKUP: {
+                const {address} = action
                 this.unrecognisedToken = null
-                this.checkingUnrecognisedAddress = true
+                this.checkingUnrecognisedAddress = address
                 this.unrecognisedTokenCheckError = null
+                this.invalidTokenIdentifierInUrl = null
                 this.emitChange()
                 break
             }
             case ActionNames.UNRECOGNISED_TOKEN_LOOKUP_LOOKUP_COMPLETE: {
                 const {token, error} = action
                 this.unrecognisedToken = token
-                this.checkingUnrecognisedAddress = false
+                this.checkingUnrecognisedAddress = null
                 this.unrecognisedTokenCheckError = error
 
                 this.emitChange()
@@ -253,8 +261,17 @@ class TokenStore extends EventEmitter {
             case ActionNames.UNRECOGNISED_TOKEN_CHECK_ERROR: {
                 const {error} = action
                 this.unrecognisedToken = null
-                this.checkingUnrecognisedAddress = false
+                this.checkingUnrecognisedAddress = null
                 this.unrecognisedTokenCheckError = error
+                this.emitChange()
+                break
+            }
+            case ActionNames.INVALID_TOKEN_IDENTIFIER_IN_URL: {
+                const {tokenIdentifier} = action
+                this.selectedToken = null
+                this.unrecognisedToken = null
+                this.checkingUnrecognisedAddress = null
+                this.invalidTokenIdentifierInUrl = tokenIdentifier
                 this.emitChange()
                 break
             }

@@ -190,6 +190,12 @@ class EtherDeltaWeb3 {
         return this.web3.eth.accounts.encrypt(privateKey, password)
     }
 
+    isAddress(address, validateChecksum=false) {
+        const check = validateChecksum ? String(address).toLowerCase() : address
+
+        return web3.util.isAddress(check)
+    }
+
     /**
      * Returns a Promise which will return a Token object with name, symbol, decimals, address fields
      *

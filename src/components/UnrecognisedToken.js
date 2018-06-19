@@ -10,7 +10,7 @@ export default class UnrecognisedToken extends React.Component {
 
         this.state = {
             unrecognisedToken: TokenStore.getUnrecognisedToken(),
-            checkingUnrecognisedAddress: TokenStore.isCheckingUnrecognisedAddress(),
+            checkingUnrecognisedAddress: TokenStore.getCheckingUnrecognisedAddress(),
             unrecognisedTokenCheckError: TokenStore.getUnrecognisedTokenCheckError(),
             selectedToken: TokenStore.getSelectedToken(),
         }
@@ -29,7 +29,7 @@ export default class UnrecognisedToken extends React.Component {
     onTokenStoreChange() {
         this.setState({
             unrecognisedToken: TokenStore.getUnrecognisedToken(),
-            checkingUnrecognisedAddress: TokenStore.isCheckingUnrecognisedAddress(),
+            checkingUnrecognisedAddress: TokenStore.getCheckingUnrecognisedAddress(),
             unrecognisedTokenCheckError: TokenStore.getUnrecognisedTokenCheckError(),
             selectedToken: TokenStore.getSelectedToken(),
         })
@@ -53,7 +53,7 @@ export default class UnrecognisedToken extends React.Component {
         const tokenDescription = this.getTokenDescription(unrecognisedToken)
         const selectedTokenSymbol = selectedToken ? selectedToken.symbol : null
 
-        const displayUnrecognised = selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address)
+        const displayUnrecognised = checkingUnrecognisedAddress || (selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address))
         const displayUnlisted = !displayUnrecognised && selectedToken && !TokenRepository.isListedToken(selectedToken.address)
 
         return (

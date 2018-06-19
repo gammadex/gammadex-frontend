@@ -2,6 +2,7 @@ import * as TokenActions from "../actions/TokenActions"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import TokenRepository from "../util/TokenRepository"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import * as TokenUtil from "../util/TokenUtil"
 
 export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
     function getUrlTokenFromProps(props) {
@@ -23,7 +24,11 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
         if (foundToken) {
             processToken(foundToken, currentStateToken)
         } else {
-            unrecognisedTokenLookup(currUrlToken)
+            if (TokenUtil.isAddress(currUrlToken)) {
+                unrecognisedTokenLookup(currUrlToken)
+            } else {
+                TokenActions.invalidTokenIdentifierInUrl(currUrlToken)
+            }
         }
     }
 }

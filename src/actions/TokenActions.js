@@ -81,3 +81,10 @@ export function unrecognisedTokenCheckError(address, error) {
         error,
     })
 }
+
+export function invalidTokenIdentifierInUrl(tokenIdentifier) {
+    dispatcher.dispatch({
+        type: ActionNames.INVALID_TOKEN_IDENTIFIER_IN_URL,
+        tokenIdentifier,
+    })
+}

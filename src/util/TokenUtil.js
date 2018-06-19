@@ -1,3 +1,3 @@
-export function isAddress(addressMaybe) {
-    return addressMaybe.startsWith("0x")
+export function isAddress(address) {
+    return /^0x[0-9a-fA-F]{40}$/.test(address)
 }

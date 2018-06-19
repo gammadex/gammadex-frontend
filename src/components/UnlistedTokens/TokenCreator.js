@@ -3,8 +3,8 @@ import * as TokenActions from "../../actions/TokenActions"
 import TokenStore from "../../stores/TokenStore"
 import Conditional from "../CustomComponents/Conditional"
 import * as TokenApi from "../../apis/TokenApi"
-import * as TokenUtil from "../../util/TokenUtil"
 import TokenRepository from "../../util/TokenRepository"
+import * as TokenUtil from "../../util/TokenUtil"
 
 export default class TokenCreator extends React.Component {
     constructor() {
