@@ -36,6 +36,11 @@
     "prod_i": "REACT_APP_ENV=production HTTPS=false react-scripts start",
     "build": "react-scripts build",
     "test": "REACT_APP_ENV=development react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "pretest": "eslint --ignore-path .gitignore ."
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-plugin-react": "^7.9.1"
   }
 }
