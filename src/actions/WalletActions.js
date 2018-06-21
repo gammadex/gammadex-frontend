@@ -208,3 +208,10 @@ export function changeCustomDerivationPath(derivationPath) {
         derivationPath,
     })
 }
+
+export function metamaskNetworkWarningSent(messageId) {
+    dispatcher.dispatch({
+        type: ActionNames.METAMASK_NETWORK_WARNING_SENT,
+        messageId
+    })
+}
