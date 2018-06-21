@@ -37,7 +37,7 @@
     "build": "react-scripts build",
     "test": "REACT_APP_ENV=development react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "pretest": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "devDependencies": {
     "eslint": "^4.19.1",
