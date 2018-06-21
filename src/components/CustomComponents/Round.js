@@ -25,7 +25,7 @@ export default class Round extends React.Component {
         }
 
         const suffix = this.props.suffix ? this.props.suffix : ''
-        const dps = this.props.price ? this.PRICE_DPS : this.props.percent ? this.PERCENT_DPS : this.DEFAULT_DPS
+        const dps = this.props.price ? this.PRICE_DPS : this.props.percent ? this.PERCENT_DPS : this.props.decimals ? this.props.decimals : this.DEFAULT_DPS
         const number = formatNumber(originalNumber, dps)
         const cleanNumber = stripDecimalsOffLongNumber(number, this.MAX_LENGTH_ALLOW_0_IN_DP)
         const className =  this.props.classNameFunc ?  this.props.classNameFunc(number, cleanNumber) : ''
@@ -51,5 +51,6 @@ Round.propTypes = {
     percent: PropTypes.bool,
     softZeros: PropTypes.bool,
     classNameFunc: PropTypes.func,
-    passThrough: PropTypes.any
+    passThrough: PropTypes.any,
+    decimals: PropTypes.number,
 }

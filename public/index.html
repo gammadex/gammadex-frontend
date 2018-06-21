@@ -2,14 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/regular.js" integrity="sha384-IJ3h7bJ6KqiB70L7/+fc44fl+nKF5eOFkgM9l/zZii9xs7W2aJrwIlyHZiowN+Du" crossorigin="anonymous"></script>
-    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+            integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ"
+            crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/regular.js"
+            integrity="sha384-IJ3h7bJ6KqiB70L7/+fc44fl+nKF5eOFkgM9l/zZii9xs7W2aJrwIlyHZiowN+Du"
+            crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+            integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY"
+            crossorigin="anonymous"></script>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
@@ -27,24 +40,24 @@
         }
 
         .gas-price-value {
-            font-size:130%;
+            font-size: 130%;
         }
 
         .shadow {
-            box-shadow: 3px 6px 24px 0px rgba(0,0,0,0.75);
+            box-shadow: 3px 6px 24px 0px rgba(0, 0, 0, 0.75);
         }
 
         .gas-prices .popover-body {
-            padding:0;
+            padding: 0;
         }
 
         .ohlc-interval {
-            display:flex;
-            align-items:center;
+            display: flex;
+            align-items: center;
         }
 
         .ohlc-interval-description {
-            margin-right:10px;
+            margin-right: 10px;
         }
 
         .clickable {
@@ -160,7 +173,13 @@
         }
 
         .main-nav {
+            padding-top: 0px;
+            padding-bottom: 0px;
             margin-bottom: 10px;
+        }
+
+        .main-nav-right {
+            justify-content: flex-end
         }
 
         body, html {
@@ -174,140 +193,152 @@
 
         .orders-col-border {
             border: 0px solid #dee2e6;
-            border-width:1px 0px;
-            background:#FBFBFB;
+            border-width: 1px 0px;
+            background: #FBFBFB;
         }
 
         .funding-action {
             margin-left: 0;
-            padding-left:0;
+            padding-left: 0;
         }
 
         .orders-colnames {
-            width:100%;
+            width: 100%;
         }
 
         .orders-colnames table {
-            margin:0;
-            width:100%;
+            margin: 0;
+            width: 100%;
         }
 
         .orders-colnames tbody {
-            margin:0;
-            width:100%;
+            margin: 0;
+            width: 100%;
         }
 
         .orders-colnames td {
             text-align: center;
-            padding:6px;
-            width:33%;
-            border-top:0;
-            border-bottom:0;
-            font-weight:bolder;
+            padding: 6px;
+            width: 33%;
+            border-top: 0;
+            border-bottom: 0;
+            font-weight: bolder;
         }
 
         .orders-colnames td:first-child {
-            width:34%;
-            border:0;
+            width: 34%;
+            border: 0;
         }
 
         .orders-colnames td:last-child {
-            border:0;
+            border: 0;
         }
 
         .orders-table {
-            max-height:220px;
-            width:100%;
+            max-height: 220px;
+            width: 100%;
         }
 
         .card .orders-table table.table-bordered {
-            width:100%;
-            border:1px solid #dee2e6;
+            width: 100%;
+            border: 1px solid #dee2e6;
             border-width: 0px 1px 0px 0px;
         }
 
         .orders-table td, .orders-table th {
-            width:33%;
+            width: 33%;
         }
 
-        .orders-table td:first-child, .orders-table th:first-child{
-            width:34%;
+        .orders-table td:first-child, .orders-table th:first-child {
+            width: 34%;
         }
 
         .orders-table tr:first-child td {
-            border-top:0;
+            border-top: 0;
         }
 
         .card-header ul.nav {
-            padding-left:10px;
+            padding-left: 10px;
         }
 
         .order-box {
-            padding:13px;
+            padding: 13px;
         }
 
         .order-box .form-group {
-            margin-bottom:9px;
+            margin-bottom: 9px;
         }
 
         .order-box .form-group:last-of-type {
-            margin-bottom:0;
+            margin-bottom: 0;
         }
 
         .order-box label {
-            padding-right:0;
+            padding-right: 0;
         }
 
         .nav-link.btn {
-            margin-right:10px;
+            margin-right: 10px;
         }
 
         h1.main-header {
-            margin-bottom:0;
-            float:left;
+            margin-bottom: 0;
+            float: left;
         }
 
         .card-title {
-            float:left;
+            float: left;
         }
 
-        .token-stats-table tr:first-child td {
-            border-top:0;
-            padding-top:0;
+        .gammadex-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom:15px;
+            padding-left:10px;
+            align-items: center;
         }
 
-        .token-stats-table tr:last-child td {
-            border-bottom:0;
-            padding-bottom:0;
+        .gammadex-header-left {
+            display: flex;
+            align-items: center;
         }
 
-        .token-stats-table tr td:nth-child(odd) {
+        .token-summary {
+            display: flex;
+            align-items: center;
+        }
+
+        .token-title {
+            font-size: 200%;
+         }
+
+        .token-stats {
+            margin-left:20px;
+        }
+
+        .token-stat-name {
+            font-size:75%;
+        }
+
+        .token-stat-value {
+            font-size: 110%;
             font-weight:bold;
-            padding-right:0;
-        }
-
-        .token-stats-table tr td:first-child {
-            padding-left:0;
-        }
- 
-        .token-stats-table tr td:last-child {
-            padding-right:0;
         }
 
         .row .col-lg-6:first-child {
-            padding-right:7px;
+            padding-right: 7px;
         }
 
         .row .col-lg-6:last-child {
-            padding-left:8px;
+            padding-left: 8px;
         }
 
         .empty-message {
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:50px;
-            color:#555555;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            color: #555555;
         }
 
         .popover-header {
@@ -387,11 +418,6 @@
             cursor: default
         }
 
-        .navbar .navbar-brand {
-            padding-top: 0px;
-            padding-left: 5px;
-            padding-right: 5px;
-        }
         .global-messages {
             position: fixed;
             width: calc(50% - 20px);
@@ -401,16 +427,16 @@
         }
 
         .global-message {
-            margin-top:5px;
-            margin-bottom:5px;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         .splash-screen {
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-size:40px;
-            height:50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            height: 50px;
         }
 
     </style>

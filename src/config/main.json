@@ -24,7 +24,7 @@
     },
     "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
     "defaultPair": {
-      "token":      {
+      "token": {
         "symbol": "TST",
         "name": "Test Standard Token",
         "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180",
@@ -32,10 +32,10 @@
         "isListed": true
       },
       "base": {
-        "address":"0x0000000000000000000000000000000000000000",
-        "symbol":"ETH",
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
         "name": "Ethereum",
-        "decimals":18
+        "decimals": 18
       }
     }
   },
@@ -63,10 +63,10 @@
         "isListed": true
       },
       "base": {
-        "address":"0x0000000000000000000000000000000000000000",
-        "symbol":"ETH",
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
         "name": "Ethereum",
-        "decimals":18
+        "decimals": 18
       }
     }
   },
@@ -87,10 +87,34 @@
         "isListed": true
       },
       "base": {
-        "address":"0x0000000000000000000000000000000000000000",
-        "symbol":"ETH",
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
         "name": "Ethereum",
-        "decimals":18
+        "decimals": 18
+      }
+    }
+  },
+  "local-integration": {
+    "ethereumNetworkId": 1,
+    "web3": "https://mainnet.infura.io",
+    "etherscan": "https://etherscan.io",
+    "sockets": {
+      "default": "http://localhost:4300"
+    },
+    "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+    "defaultPair": {
+      "token": {
+        "symbol": "VEN",
+        "name": "VeChain Token",
+        "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
+        "decimals": 18,
+        "isListed": true
+      },
+      "base": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "decimals": 18
       }
     }
   }

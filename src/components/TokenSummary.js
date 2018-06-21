@@ -3,8 +3,10 @@ import OrderBookStore from '../stores/OrderBookStore'
 import Round from "./CustomComponents/Round"
 import EtherScan from "../components/CustomComponents/Etherscan"
 import MarketResponseSpinner from "./MarketResponseSpinner"
+import {withRouter} from "react-router-dom"
+import Conditional from "./CustomComponents/Conditional"
 
-export default class TokenSummary extends React.Component {
+class TokenSummary extends React.Component {
     constructor(props) {
         super(props)
 
@@ -30,10 +32,13 @@ export default class TokenSummary extends React.Component {
     }
 
     render() {
+        const path = this.props.location ? this.props.location.pathname : ''
+        const inExchange = path.includes('/exchange/')
+
         const {token} = this.props
         const {low, high, tokenVolume, ethVolume, last, percentChange} = this.state.tradeStats
         const [title, contract, name, longName] = token ? [
-            `${token.symbol} / ETH`,
+            `${token.symbol}/ETH`,
             <EtherScan type="address" address={token.address} display="truncate"/>,
             token.symbol,
             token.name ? token.name : token.symbol
@@ -42,43 +47,35 @@ export default class TokenSummary extends React.Component {
         ]
 
         return (
-            <div className="card">
-                <div className="card-header">
-                    <h1 className="main-header">{title}</h1><strong className="card-title"><MarketResponseSpinner/></strong>
-                </div>
+            <Conditional displayCondition={inExchange}>
+                <div className="token-summary">
+                    <div className="token-title">
+                        {title}
+                    </div>
 
-                <div className="card-body">
-                    <table className="table table-sm token-stats-table">
-                        <tbody>
-                        <tr>
-                            <td>Last Price</td>
-                            <td><Round price softZeros fallback="-">{last}</Round></td>
-                            <td>24h Change</td>
-                            <td><Round percent suffix="%" fallback="-"
-                                       classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>24h High</td>
-                            <td><Round price softZeros fallback="-">{high}</Round></td>
-                            <td>24h Low</td>
-                            <td><Round price softZeros fallback="-">{low}</Round></td>
-                        </tr>
-                        <tr>
-                            <td>24h Vol ETH</td>
-                            <td><Round fallback="-">{ethVolume}</Round></td>
-                            <td>24h Vol {name}</td>
-                            <td><Round fallback="-">{tokenVolume}</Round></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    <div className="token-stats">
+                        <div className="token-stat-name">24h Volume</div>
+                        <div className="token-stat-value"><Round fallback="0" softZeros decimals={5}>{ethVolume}</Round> ETH (<Round fallback="0" softZeros decimals={5}>{tokenVolume}</Round> {name})</div>
+                    </div>
 
-                <div className="card-footer">
-                    <strong>{longName}</strong> contract: {contract}
+                    <div className="token-stats">
+                        <div className="token-stat-name">24h High</div>
+                        <div className="token-stat-value"><Round price softZeros fallback="0">{high}</Round></div>
+                    </div>
+
+                    <div className="token-stats">
+                        <div className="token-stat-name">24h Low</div>
+                        <div className="token-stat-value"><Round price softZeros fallback="0">{low}</Round></div>
+                    </div>
+
+                    <div className="token-stats">
+                        <div className="token-stat-name">24h Price Change</div>
+                        <div className="token-stat-value"><Round percent suffix="%" fallback="0" classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round></div>
+                    </div>
                 </div>
-            </div>
+            </Conditional>
         )
     }
 }
 
+export default withRouter(TokenSummary)

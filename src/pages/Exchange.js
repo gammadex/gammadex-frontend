@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import TokenChooser from '../components/TokenChooser'
-import TokenSummary from '../components/TokenSummary'
 import OpenOrders from '../components/OpenOrders'
 import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
@@ -52,7 +51,7 @@ class Exchange extends Component {
         return <div>
             <div className="row">
                 <div className="col-lg-3">
-                    <TokenSummary token={token}/>
+                    <AccountDetail token={token} />
                     <TokenChooser/>
                     <UnlistedTokens/>
                 </div>
@@ -65,7 +64,6 @@ class Exchange extends Component {
                 </div>
                 <div className="pl-0 col-lg-3">
                     <Charts token={token}/>
-                    <AccountDetail token={token} />
                     <PendingTrades/>
                     <TradeHistory token={token}/>
                 </div>
