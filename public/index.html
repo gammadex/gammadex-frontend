@@ -159,14 +159,6 @@
             border: 0;
         }
 
-        .token-chooser.card {
-            min-height: 250px;
-        }
-
-        .token-chooser .table-responsive {
-            max-height: 250px;
-        }
-
         .main-nav {
             padding-top: 0px;
             padding-bottom: 0px;
@@ -478,7 +470,39 @@
             height:100%;
         }
 
-        /* end history page layout */
+        /* exchange page layout */
+
+        .exchange-left-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .balances-component {
+            flex-grow: 0;
+        }
+
+        .token-chooser-component {
+            flex-grow: 1;
+            min-height:250px;
+        }
+
+        .unlisted-tokens-component {
+            min-height:250px;
+            flex-grow: 0;
+        }
+
+        .exchange-right-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-component {
+            flex-grow: 0;
+        }
+
+        .market-trades-component {
+            flex-grow: 1;
+        }
 
         /* end layout bits and pieces */
 

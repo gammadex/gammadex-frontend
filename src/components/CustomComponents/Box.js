@@ -5,18 +5,20 @@ import MarketResponseSpinner from "../MarketResponseSpinner"
 export class Box extends React.Component {
     render() {
         const marketResponseSpinner = this.props.marketResponseSpinner ? <MarketResponseSpinner/> : null
+        const extraClassName = this.props.className || ''
 
         const title = this.props.title ? <div className="card-header">
             <strong className="card-title">{this.props.title}{marketResponseSpinner}</strong>
         </div> : ""
 
-        return <div className="card">{title}{this.props.children}</div>
+        return <div className={"card " + extraClassName}>{title}{this.props.children}</div>
     }
 }
 
 Box.propTypes = {
     title: PropTypes.string,
-    marketResponseSpinner: PropTypes.bool
+    marketResponseSpinner: PropTypes.bool,
+    className: PropTypes.string,
 }
 
 export class BoxSection extends React.Component {

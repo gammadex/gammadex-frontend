@@ -76,7 +76,7 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <Box title="Unlisted Tokens">
+            <Box title="Unlisted Tokens" className="unlisted-tokens-component">
                 <Conditional displayCondition={tokenRows.length > 0}>
                     <div className="table-responsive">
                         <table className="table table-striped table-bordered table-hover table-no-bottom-border">

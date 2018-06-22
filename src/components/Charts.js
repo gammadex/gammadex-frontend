@@ -60,7 +60,7 @@ export default class Charts extends React.Component {
         }
 
         return (
-            <Box>
+            <Box className="chart-component">
                 <BoxHeader noBorder={allTrades.length === 0 || noChartActiveClass === "active"}>
                     <ul className="nav nav-pills card-header-pills">
                         <li className="nav-item">

@@ -94,7 +94,7 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <div className="card token-chooser">
+            <div className="card token-chooser-component">
                 <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
                 <div className="card-header">
                     <div className="row hdr-stretch">

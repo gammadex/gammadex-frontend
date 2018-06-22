@@ -47,26 +47,26 @@ class Exchange extends Component {
     render() {
         const {token} = this.state
 
-        return <div>
+        return (
             <div className="row">
-                <div className="col-lg-3">
-                    <AccountDetail token={token} />
+                <div className="col-lg-3 exchange-left-col">
+                    <AccountDetail token={token}/>
                     <TokenChooser/>
                     <UnlistedTokens/>
                 </div>
                 <div className="pl-0 col-lg-6 ">
-                    <UnrecognisedToken />
+                    <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                     <Trading token={token}/>
                     <OpenOrders/>
-                </div>
-                <div className="pl-0 col-lg-3">
-                    <Charts token={token}/>
                     <PendingTrades/>
+                </div>
+                <div className="pl-0 col-lg-3 exchange-right-col">
+                    <Charts token={token}/>
                     <TradeHistory token={token}/>
                 </div>
             </div>
-        </div>
+        )
     }
 }
 
