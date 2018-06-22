@@ -48,7 +48,7 @@ export default class Transfers extends React.Component {
     }
 
     refresh = () => {
-        if (this.state.account && ! this.state.refreshInProgress) {
+        if (this.state.account && !this.state.refreshInProgress) {
             WebSocketActions.getMarket(true)
         }
     }
@@ -77,28 +77,30 @@ export default class Transfers extends React.Component {
         }
 
         return (
-            <div className="card history-table">
-                <div className="card-header">
-                    <div className="row hdr-stretch">
-                        <div className="col-lg-6">
-                            <strong className="card-title">{title}</strong>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="float-right form-inline">
-                                <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
-                                       onChange={this.filterChanged}/>
-                                <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv"
-                                          className={"btn btn-primary mr-2 " + disabledClass}><i
-                                    className="fas fa-download"/></Download>
-                                <RefreshButton onClick={this.refresh}
-                                               updating={refreshInProgress}
-                                               disabled={!account || refreshInProgress}/>
+            <div className="history-component">
+                <div className="card">
+                    <div className="card-header">
+                        <div className="row hdr-stretch">
+                            <div className="col-lg-6">
+                                <strong className="card-title">{title}</strong>
+                            </div>
+                            <div className="col-lg-6">
+                                <div className="float-right form-inline">
+                                    <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
+                                           onChange={this.filterChanged}/>
+                                    <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv"
+                                              className={"btn btn-primary btn-sm mr-2 " + disabledClass}><i
+                                        className="fas fa-download"/></Download>
+                                    <RefreshButton onClick={this.refresh}
+                                                   updating={refreshInProgress}
+                                                   disabled={!account || refreshInProgress}/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {content}
+                    {content}
+                </div>
             </div>
         )
     }

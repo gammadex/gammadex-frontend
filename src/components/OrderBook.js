@@ -110,12 +110,12 @@ export default class OrderBook extends React.Component {
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
                 </Conditional>
                 <Conditional displayCondition={!!token}>
-                    <div className="col-lg-12">
-                        <div className="row">
+                    <div className="col-lg-12 bids-and-offers">
+                        <div className="row bids-and-offers-offers">
                             {offersContent}
                         </div>
 
-                        <div className="row orders-col-border">
+                        <div className="row orders-col-border bids-and-offers-spacer">
                             <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
                                 <table className="table-bordered">
                                     <tbody>
@@ -129,7 +129,7 @@ export default class OrderBook extends React.Component {
                             </div>
                         </div>
 
-                        <div className="row">
+                        <div className="row bids-and-offers-bids">
                             {bidsContent}
                         </div>
                     </div>

@@ -6,7 +6,7 @@ class History extends Component {
     render() {
         return (
             <div>
-                <div className="row">
+                <div className="row history-row">
                     <div className="col-lg-6 pr-2">
                         <Transfers type="Deposit" title="Deposit History"/>
                     </div>
@@ -14,7 +14,7 @@ class History extends Component {
                         <Transfers type="Withdraw" title="Withdraw History"/>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row history-row">
                     <div className="col-lg-12">
                         <MyTrades/>
                     </div>

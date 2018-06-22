@@ -3,8 +3,8 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
 import Funding from '../components/Account/Funding'
-import { Box, BoxFooter, BoxSection } from "./CustomComponents/Box"
-import { baseEthToWei, tokEthToWei, baseWeiToEth, tokWeiToEth } from "../EtherConversion"
+import {Box, BoxFooter, BoxSection} from "./CustomComponents/Box"
+import {baseEthToWei, tokEthToWei, baseWeiToEth, tokWeiToEth} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 import Conditional from "./CustomComponents/Conditional"
 import RefreshButton from "./CustomComponents/RefreshButton"
@@ -53,7 +53,7 @@ export default class AccountDetail extends React.Component {
     }
 
     refreshBalances = () => {
-        const { account, accountRetrieved, tokenAddress, retrievingBalance } = this.state
+        const {account, accountRetrieved, tokenAddress, retrievingBalance} = this.state
 
         if (tokenAddress && accountRetrieved && !retrievingBalance) {
             AccountApi.refreshEthAndTokBalance(account, tokenAddress, true)
@@ -61,7 +61,7 @@ export default class AccountDetail extends React.Component {
     }
 
     render() {
-        const { token } = this.props
+        const {token} = this.props
         const {
             accountRetrieved,
             walletBalanceEthWei,
@@ -90,35 +90,33 @@ export default class AccountDetail extends React.Component {
         }
 
         return (
-            <span>
-                <div className="card">
-                    <div className="card-header">
-                        <div className="row hdr-stretch">
-                            <div className="col-lg-6">
-                                <strong className="card-title">Balances</strong>
-                            </div>
-                            <div className="col-lg-6">
-                                <div className="float-right">
-                                    <RefreshButton onClick={this.refreshBalances}
-                                        disabled={!accountRetrieved || retrievingBalance}
-                                        updating={retrievingBalance} />
-                                </div>
+            <div className="card balances-component">
+                <div className="card-header with-button">
+                    <div className="row hdr-stretch">
+                        <div className="col-lg-6">
+                            <strong className="card-title">Balances</strong>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="float-right">
+                                <RefreshButton onClick={this.refreshBalances}
+                                               disabled={!accountRetrieved || retrievingBalance}
+                                               updating={retrievingBalance}/>
                             </div>
                         </div>
                     </div>
-
-                    <Funding tokenName={tokenSymbol}
-                        walletBalanceEth={walletBalanceEth}
-                        exchangeBalanceEth={exchangeBalanceEth}
-                        walletBalanceTok={walletBalanceTok}
-                        exchangeBalanceTok={exchangeBalanceTok} />
                 </div>
-            </span>
+
+                <Funding tokenName={tokenSymbol}
+                         walletBalanceEth={walletBalanceEth}
+                         exchangeBalanceEth={exchangeBalanceEth}
+                         walletBalanceTok={walletBalanceTok}
+                         exchangeBalanceTok={exchangeBalanceTok}/>
+            </div>
         )
     }
 
     getAccountWarningMessage() {
-        const { retrievingBalance, balanceRetrievalFailed, accountRetrieved } = this.state
+        const {retrievingBalance, balanceRetrievalFailed, accountRetrieved} = this.state
 
         if (retrievingBalance) {
             return null

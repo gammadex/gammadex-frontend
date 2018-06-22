@@ -8,7 +8,7 @@ export default class RefreshButton extends React.Component {
         const spinningClass = (!_.isUndefined(this.props.updating) && this.props.updating) ? "fa-spin" : ""
 
         return (
-            <button className={"btn btn-primary " + disabledClass} onClick={this.props.onClick}><i
+            <button className={"btn btn-primary btn-sm " + disabledClass} onClick={this.props.onClick}><i
                 className={"fas fa-sync " + spinningClass}/></button>
         )
     }

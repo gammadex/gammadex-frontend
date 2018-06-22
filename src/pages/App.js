@@ -41,7 +41,7 @@ class App extends Component {
     render() {
         let contents = <SplashScreen/>
         if (this.state.web3Initialised) {
-            contents = <div className="container-fluid">
+            contents = <div className="container-fluid route-content">
                 <Route path="/" exact component={Exchange}/>
                 <Route path={Routes.Exchange + "*"} exact component={Exchange}/>
                 <Route path={Routes.Wallets} exact component={Wallets}/>
@@ -53,7 +53,7 @@ class App extends Component {
 
         return (
             <HashRouter hashType="hashbang">
-                <div>
+                <div className="page-content">
                     <TopNavigation/>
                     {contents}
                     <GreetingLoginModals/>
