@@ -167,11 +167,6 @@
             max-height: 250px;
         }
 
-        .history-table.card {
-            min-height: 400px;
-            max-height: 400px;
-        }
-
         .main-nav {
             padding-top: 0px;
             padding-bottom: 0px;
@@ -290,39 +285,21 @@
             float: left;
         }
 
-        .gammadex-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom:15px;
-            padding-left:10px;
-            align-items: center;
-        }
-
-        .gammadex-header-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .token-summary {
-            display: flex;
-            align-items: center;
-        }
-
         .token-title {
             font-size: 200%;
-         }
+        }
 
         .token-stats {
-            margin-left:20px;
+            margin-left: 20px;
         }
 
         .token-stat-name {
-            font-size:75%;
+            font-size: 75%;
         }
 
         .token-stat-value {
             font-size: 110%;
-            font-weight:bold;
+            font-weight: bold;
         }
 
         .row .col-lg-6:first-child {
@@ -344,10 +321,6 @@
         .popover-header {
             font-weight: bold;
             text-transform: uppercase;
-        }
-
-        .trade-history, .deposit-history, .my-trades-history {
-            max-height: 400px;
         }
 
         .hdr-stretch {
@@ -439,8 +412,78 @@
             height: 50px;
         }
 
+        /* temporary */
+
+        .highlight1 {
+            background: salmon;
+        }
+
+        .highlight2 {
+            background: lightpink;
+        }
+
+        .highlight3 {
+            background: lightblue;
+        }
+
+        .highlight4 {
+            background: lightgreen;
+        }
+
+        /* layout bits and pieces */
+
+        #app {
+            height: 100vh;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+            box-sizing: border-box;
+            padding-left: 10px;
+        }
+
+        header > div {
+            display: flex;
+            align-items: center;
+        }
+
+        .page-content {
+            height: 100vh;
+        }
+
+        .route-content {
+            height: calc(100% - 50px);
+            padding-top:15px;
+        }
+
+        .route-content > div {
+            height: 100%;
+        }
+
+        /* history page layout */
+
+        .history-row {
+            height:50%;
+        }
+
+        .history-component {
+            padding-bottom: 15px;
+            height:100%;
+        }
+
+        .history-component .card {
+            height:100%;
+        }
+
+        /* end history page layout */
+
+        /* end layout bits and pieces */
+
     </style>
-    <title>EtherGamma Prototype</title>
+    <title>GammaDEX</title>
 </head>
 
 <body>

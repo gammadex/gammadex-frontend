@@ -36,45 +36,43 @@ class TopNavigation extends Component {
         const {token} = this.state
 
         return (
-            <header>
-                <div className="bg-primary text-light gammadex-header">
-                    <div className="gammadex-header-left">
-                        <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
+            <header className="bg-primary text-light">
+                <div>
+                    <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
+
+                    <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                        <ul className="navbar-nav mr-auto">
+                            <li className="nav-item">
+                                <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to={Routes.History} className="nav-link">History</Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <TokenSummary token={token}/>
+
+                <div>
+                    <form className="form-inline">
+                        <div className="form-group mr-1">
+                            <AppStatus/>
+                        </div>
+                        <GasPriceChooser/>
+                        <Account/>
 
                         <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
-                            <ul className="navbar-nav mr-auto">
+                            <ul className="navbar-nav">
                                 <li className="nav-item">
-                                    <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
+                                    <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to={Routes.History} className="nav-link">History</Link>
+                                    <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
                                 </li>
                             </ul>
                         </nav>
-                    </div>
-
-                    <TokenSummary token={token}/>
-
-                    <div>
-                        <form className="form-inline">
-                            <div className="form-group mr-1">
-                                <AppStatus/>
-                            </div>
-                            <GasPriceChooser/>
-                            <Account/>
-
-                            <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
-                                <ul className="navbar-nav">
-                                    <li className="nav-item">
-                                        <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </header>
         )
