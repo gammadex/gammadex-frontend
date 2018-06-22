@@ -3,7 +3,7 @@ import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
-import {Box} from "./CustomComponents/Box"
+import {Box, BoxSection} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
@@ -76,23 +76,25 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <Box title="Unlisted Tokens" className="unlisted-tokens-component">
-                <Conditional displayCondition={tokenRows.length > 0}>
-                    <div className="table-responsive">
-                        <table className="table table-striped table-bordered table-hover table-no-bottom-border">
-                            <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Name</th>
-                                <th>Smart Contract</th>
-                            </tr>
-                            </thead>
-                            <tbody>{tokenRows}</tbody>
-                        </table>
-                    </div>
-                </Conditional>
+            <Box title="Unlisted Tokens" className="unlisted-tokens-component last-card">
+                <BoxSection>
+                    <Conditional displayCondition={tokenRows.length > 0}>
+                        <div className="table-responsive">
+                            <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                                <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Name</th>
+                                    <th>Smart Contract</th>
+                                </tr>
+                                </thead>
+                                <tbody>{tokenRows}</tbody>
+                            </table>
+                        </div>
+                    </Conditional>
 
-                <TokenCreator selectToken={this.onTokenSelect}/>
+                    <TokenCreator selectToken={this.onTokenSelect}/>
+                </BoxSection>
             </Box>
         )
     }

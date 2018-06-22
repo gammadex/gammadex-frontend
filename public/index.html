@@ -27,6 +27,11 @@
     <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 
     <style>
+        :root {
+            --main-padding: 6px;
+            --half-main-padding: 3px;
+        }
+
         .zeros {
             opacity: 0.3;
         }
@@ -85,7 +90,11 @@
         }
 
         .balances-heading {
-            color: grey
+            padding-top: 0 ! important;
+        }
+
+        .balances-separator {
+            margin: 6px 0 6px 0;
         }
 
         .text-muted {
@@ -97,7 +106,7 @@
         }
 
         .card {
-            margin-bottom: 10px;
+            margin-bottom: var(--main-padding);
         }
 
         .card table {
@@ -140,11 +149,11 @@
         }
 
         .card-header.with-button {
-            padding:6px;
+            padding: 6px;
         }
 
         .card-header-button {
-            padding:3px 6px 3px 6px;
+            padding: 3px 6px 3px 6px;
         }
 
         .card-footer {
@@ -165,16 +174,6 @@
         .table-borderless td,
         .table-borderless th {
             border: 0;
-        }
-
-        .main-nav {
-            padding-top: 0px;
-            padding-bottom: 0px;
-            margin-bottom: 10px;
-        }
-
-        .main-nav-right {
-            justify-content: flex-end
         }
 
         body, html {
@@ -257,11 +256,11 @@
         }
 
         .order-box {
-            padding: 13px;
+            padding: 6px;
         }
 
         .order-box .form-group {
-            margin-bottom: 9px;
+            margin-bottom: 6px;
         }
 
         .order-box .form-group:last-of-type {
@@ -300,14 +299,6 @@
         .token-stat-value {
             font-size: 110%;
             font-weight: bold;
-        }
-
-        .row .col-lg-6:first-child {
-            padding-right: 7px;
-        }
-
-        .row .col-lg-6:last-child {
-            padding-left: 8px;
         }
 
         .empty-message {
@@ -456,11 +447,27 @@
 
         .route-content {
             height: calc(100% - 50px);
-            padding-top: 15px;
+            padding: var(--main-padding) 15px;
         }
 
         .route-content > div {
             height: 100%;
+        }
+
+        .card.last-card {
+            margin-bottom: 0px;
+        }
+
+        .main-col {
+            padding: 0px var(--main-padding);
+        }
+
+        .middle-left-col {
+            padding: 0px var(--half-main-padding) 0 15px;
+        }
+
+        .middle-right-col {
+            padding: 0px 15px 0 var(--half-main-padding);
         }
 
         /* history page layout */
@@ -470,12 +477,25 @@
         }
 
         .history-component {
-            padding-bottom: 15px;
             height: 100%;
         }
 
         .history-component .card {
             height: 100%;
+        }
+
+        .deposit-history-container {
+            padding-left: var(--main-padding);
+            padding-right: var(--half-main-padding);
+        }
+
+        .withdraw-history-container {
+            padding-left: var(--half-main-padding);
+            padding-right: var(--main-padding);
+        }
+
+        .trade-history-container {
+            padding:var(--main-padding) var(--main-padding) 0 var(--main-padding);
         }
 
         /* exchange page layout */
@@ -502,6 +522,7 @@
         .exchange-right-col {
             display: flex;
             flex-direction: column;
+            padding-right: var(--main-padding);
         }
 
         .chart-component {
@@ -518,7 +539,7 @@
         }
 
         .trading-and-orderbook-component {
-            padding-bottom: 15px;
+            padding-bottom: var(--main-padding);
             flex-grow: 1;
             min-width: 75%; /* TODO - remove once open orders and pending trades are combined */
         }

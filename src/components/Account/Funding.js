@@ -333,8 +333,7 @@ export default class Funding extends React.Component {
         let modalBody = <ModalBody>{modalText}</ModalBody>
         if (selectedAccountType === AccountType.METAMASK && modalType === FundingModalType.TOK_DEPOSIT) {
             modalBody =
-                <ModalBody>{modalText}<br />
-                    <br />
+                <ModalBody>{modalText}
                     <Alert color="warning">
                         <h4 className="alert-heading">MetaMask detected</h4>
                         Depositing a Token involves submitting two transactions to the Ethereum network: Transfer Approval (1) followed by Deposit (2).
@@ -348,7 +347,7 @@ export default class Funding extends React.Component {
             <table className="table table-borderless">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th className="txt-right balances-heading"></th>
                         <th className="txt-right balances-heading"><small>Wallet</small></th>
                         <th className="txt-right balances-heading"><small>Exchange</small></th>
                     </tr>
@@ -361,7 +360,6 @@ export default class Funding extends React.Component {
                     </tr>
                 </tbody>
             </table>
-            <br />
             <NumericInput value={ethDepositAmountControlled}
                 onChange={this.onEthDepositAmountChange} fieldName={"ethDepositAmount"}
                 valid={ethDepositValid} errorMessage={ethDepositErrorText} helpMessage={ethDepositHelpText}
@@ -384,14 +382,14 @@ export default class Funding extends React.Component {
                 actionName={"Withdraw ETH"}
                 submittable={true}
                 gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_ETH, currentGasPriceWei, ethereumPriceUsd)} />
-            <hr />
+            <hr className="balances-separator" />
 
             <table className="table table-borderless">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th className="txt-right clr-grey"><small>Wallet</small></th>
-                        <th className="txt-right clr-grey"><small>Exchange</small></th>
+                        <th className="txt-right balances-heading"></th>
+                        <th className="txt-right balances-heading"><small>Wallet</small></th>
+                        <th className="txt-right balances-heading"><small>Exchange</small></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -403,7 +401,6 @@ export default class Funding extends React.Component {
                 </tbody>
             </table>
 
-            <br />
             <NumericInput value={tokDepositAmountControlled}
                 onChange={this.onTokDepositAmountChange} fieldName={"tokDepositAmount"}
                 valid={tokDepositValid} errorMessage={tokDepositErrorText}
