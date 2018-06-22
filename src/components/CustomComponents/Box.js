@@ -42,11 +42,14 @@ export class BoxFooter extends React.Component {
 export class BoxHeader extends React.Component {
     render() {
         const borderClass = this.props.noBorder ? "border-bottom-0" : ""
+        const extraClassName = this.props.className || ''
 
-        return <div className={"card-header " + borderClass}>{this.props.children}</div>
+        return <div className={"card-header " + borderClass + " " + extraClassName}>{this.props.children}</div>
     }
 }
 
 BoxHeader.propTypes = {
     noBorder: PropTypes.bool,
+    className: PropTypes.string,
 }
+

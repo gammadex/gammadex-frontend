@@ -61,14 +61,14 @@ export default class Charts extends React.Component {
 
         return (
             <Box className="chart-component">
-                <BoxHeader noBorder={allTrades.length === 0 || noChartActiveClass === "active"}>
+                <BoxHeader noBorder={allTrades.length === 0 || noChartActiveClass === "active"} className="with-button">
                     <ul className="nav nav-pills card-header-pills">
                         <li className="nav-item">
-                            <button className={"nav-link btn btn-sm " + priceChartActiveClass}
+                            <button className={"nav-link btn btn-sm card-header-button " + priceChartActiveClass}
                                onClick={() => this.selectTab("PriceChart")}>Price Chart</button>
                         </li>
                         <li className="nav-item">
-                            <button className={"nav-link  btn btn-sm " + depthChartActiveClass}
+                            <button className={"nav-link  btn btn-sm card-header-button " + depthChartActiveClass}
                                onClick={() => this.selectTab("DepthChart")}>Depth Chart</button>
                         </li>
                         <li>

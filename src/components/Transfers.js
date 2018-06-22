@@ -89,7 +89,7 @@ export default class Transfers extends React.Component {
                                     <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
                                            onChange={this.filterChanged}/>
                                     <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv"
-                                              className={"btn btn-primary mr-2 " + disabledClass}><i
+                                              className={"btn btn-primary btn-sm mr-2 " + disabledClass}><i
                                         className="fas fa-download"/></Download>
                                     <RefreshButton onClick={this.refresh}
                                                    updating={refreshInProgress}
