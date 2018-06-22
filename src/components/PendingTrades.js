@@ -50,7 +50,7 @@ export default class PendingTrades extends React.Component {
         return (
             <Box title="My Pending Trades">
                 <Conditional displayCondition={!!account}
-                             fallbackMessage="Please unlock a wallet to see your trade history">
+                             fallbackMessage="Please unlock a wallet to see your pending trades">
                     <Conditional displayCondition={displayTrades && displayTrades.length > 0}
                                  fallbackMessage="You have no pending trades">
                         <PendingTradesTable trades={displayTrades}/>

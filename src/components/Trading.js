@@ -16,7 +16,7 @@ export default class Trading extends React.Component {
         const { token } = this.props
 
         return (
-            <div className="row">
+            <div className="row trading-and-orderbook-component">
                 <div className="col-lg-6">
                     <OrderBox token={token} />
                 </div>

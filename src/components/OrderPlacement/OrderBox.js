@@ -111,12 +111,6 @@ export default class OrderBox extends React.Component {
                     </div>
                 </BoxHeader>
                 <BoxSection>
-
-                    <Conditional displayCondition={!balanceRetrieved}>
-                        <div className="mb-2">
-                            Please unlock a wallet to enable trading
-                        </div>
-                    </Conditional>
                     <Nav tabs fill>
                         <NavItem>
                             <NavLink

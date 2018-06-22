@@ -448,7 +448,7 @@
 
         .route-content {
             height: calc(100% - 50px);
-            padding-top:15px;
+            padding-top: 15px;
         }
 
         .route-content > div {
@@ -458,16 +458,16 @@
         /* history page layout */
 
         .history-row {
-            height:50%;
+            height: 50%;
         }
 
         .history-component {
             padding-bottom: 15px;
-            height:100%;
+            height: 100%;
         }
 
         .history-component .card {
-            height:100%;
+            height: 100%;
         }
 
         /* exchange page layout */
@@ -483,11 +483,11 @@
 
         .token-chooser-component {
             flex-grow: 1;
-            min-height:250px;
+            min-height: 250px;
         }
 
         .unlisted-tokens-component {
-            min-height:250px;
+            min-height: 250px;
             flex-grow: 0;
         }
 
@@ -502,6 +502,35 @@
 
         .market-trades-component {
             flex-grow: 1;
+        }
+
+        .exchange-middle-col {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .trading-and-orderbook-component {
+            padding-bottom: 15px;
+            flex-grow: 1;
+            min-width: 75%; /* TODO - remove once open orders and pending trades are combined */
+        }
+
+        .trading-and-orderbook-component .card {
+            height: 100%;
+        }
+
+        .bids-and-offers {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bids-and-offers-spacer {
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+
+        .bids-and-offers-bids, .bids-and-offers-offers {
+            height: calc(50% - 20px);
         }
 
         /* end layout bits and pieces */
