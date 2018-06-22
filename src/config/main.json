@@ -15,6 +15,24 @@
     "order": 250000
   },
   "exchangeFeePercent": 0.003,
+  "test": {
+    "web3": "http://localhost:19546",
+    "defaultPair": {
+      "token": {
+        "symbol": "TST",
+        "name": "Test Standard Token",
+        "address": "0x722dd3F80BAC40c951b51BdD28Dd19d435762180",
+        "decimals": 18,
+        "isListed": true
+      },
+      "base": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "decimals": 18
+      }
+    }
+  },
   "development": {
     "ethereumNetworkId": 3,
     "web3": "https://ropsten.infura.io",

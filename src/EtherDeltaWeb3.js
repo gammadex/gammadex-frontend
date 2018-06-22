@@ -1,7 +1,7 @@
 import abiEtherDelta from './config/etherdelta.json'
 import abiToken from './config/token.json'
 import Config from './Config'
-import * as Web3 from 'web3'
+import Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
 import OrderFactory from './OrderFactory'
 import {truncate} from './util/FormatUtil';
@@ -19,9 +19,13 @@ class EtherDeltaWeb3 {
     initForMetaMask = () => {
         // Use Mist/MetaMask's provider
         // TODO check whether current metamask is locked
-        this.web3 = new Web3(web3.currentProvider)
-        this.accountProvider = new MetaMaskAccountProvider(this.web3)
+        this.initForMetaMaskWeb3(new Web3(web3.currentProvider))
+    }
 
+    // used by test 
+    initForMetaMaskWeb3 = (paramWeb3) => {
+        this.web3 = paramWeb3
+        this.accountProvider = new MetaMaskAccountProvider(paramWeb3)
         this.initContract()
     }
 

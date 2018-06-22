@@ -35,7 +35,7 @@
     "dev_i": "REACT_APP_ENV=development HTTPS=false react-scripts start",
     "prod_i": "REACT_APP_ENV=production HTTPS=false react-scripts start",
     "build": "react-scripts build",
-    "test": "REACT_APP_ENV=development react-scripts test --env=jsdom",
+    "test": "REACT_APP_ENV=test react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "eslint --ignore-path .gitignore ."
   },

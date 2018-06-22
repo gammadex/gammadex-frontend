@@ -14,7 +14,25 @@ To use wallet address (read-only) without private key:
 
 https://localhost:3000/#!/debug/ 
 
-## Running Tests
+## Testing
+
+**The EtherDeltaWeb3 test requires a local ganache blockchain to be running.**
+
+### Ganache
+
+Globally install:
+
+```
+npm install -g ganache-cli
+```
+
+In a new terminal start ganache, which also creates a test wallet populated with 1000 ETH (this exact wallet is used by the tests)
+
+```
+ganache-cli --account="0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef,1000000000000000000000" --port=19546
+```
+
+### Running Tests
 
 ```
 npm run test
