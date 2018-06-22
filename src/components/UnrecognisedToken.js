@@ -61,14 +61,14 @@ export default class UnrecognisedToken extends React.Component {
             <span>
                 <Conditional
                     displayCondition={displayUnlisted}>
-                    <div className="alert alert-warning">
+                    <div className="alert alert-warning main-warning">
                             <i className="fas fa-exclamation-triangle mr-1"/>
                         {selectedTokenSymbol} is not listed on GammaDEX. You can still trade it but please exercise caution.
                     </div>
                 </Conditional>
 
                 <Conditional displayCondition={displayUnrecognised}>
-                    <div className="alert alert-warning token-warning">
+                    <div className="alert alert-warning main-warning">
                         <div className="row">
                             <div className="col-lg-6">
                                 <div>

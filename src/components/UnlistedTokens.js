@@ -77,22 +77,22 @@ class TokenChooser extends React.Component {
 
         return (
             <Box title="Unlisted Tokens" className="unlisted-tokens-component last-card">
-                <BoxSection>
-                    <Conditional displayCondition={tokenRows.length > 0}>
-                        <div className="table-responsive">
-                            <table className="table table-striped table-bordered table-hover table-no-bottom-border">
-                                <thead>
-                                <tr>
-                                    <th>Symbol</th>
-                                    <th>Name</th>
-                                    <th>Smart Contract</th>
-                                </tr>
-                                </thead>
-                                <tbody>{tokenRows}</tbody>
-                            </table>
-                        </div>
-                    </Conditional>
+                <Conditional displayCondition={tokenRows.length > 0}>
+                    <div className="table-responsive">
+                        <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                            <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th>Smart Contract</th>
+                            </tr>
+                            </thead>
+                            <tbody>{tokenRows}</tbody>
+                        </table>
+                    </div>
+                </Conditional>
 
+                <BoxSection>
                     <TokenCreator selectToken={this.onTokenSelect}/>
                 </BoxSection>
             </Box>
