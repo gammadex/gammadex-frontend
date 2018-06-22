@@ -1,9 +1,5 @@
 import * as _ from "lodash"
 
-if (!global.localStorage) {
-    global.localStorage = {} // for tests. TODO - get rid of this.
-}
-
 export function saveFailedTransfers(accountAddress, failedTransfers) {
     if (_.isString(accountAddress) && _.isArray(failedTransfers)) {
         if (_.isUndefined(global.localStorage.failedTransfers)) {
