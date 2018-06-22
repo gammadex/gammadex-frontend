@@ -5,7 +5,6 @@ import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
 import Charts from '../components/Charts'
 import * as TokenApi from "../apis/TokenApi"
-import BrowserWeb3Warning from "../components/BrowserWeb3Warning"
 import UnlistedTokens from "../components/UnlistedTokens"
 import Trading from "../components/Trading"
 import PendingTrades from "../components/PendingTrades"
@@ -58,7 +57,6 @@ class Exchange extends Component {
                 <div className="pl-0 col-lg-6 ">
                     <UnrecognisedToken />
                     <InvalidUrlTokenWarning/>
-                    <BrowserWeb3Warning/>
                     <Trading token={token}/>
                     <OpenOrders/>
                 </div>

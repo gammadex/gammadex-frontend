@@ -112,3 +112,17 @@ function extractMessage(error) {
 
     return (error && error.message) ? `- ${error.message.substring(0, 1024)}` : ''
 }
+
+export function metamaskNetworkWarning(netDescription, mainNetDescription) {
+    return (
+        <span>
+            <div>
+                <h3><i className="fas fa-exclamation-triangle"/> MetaMask is connected to the {netDescription}
+                </h3>
+            </div>
+            <div>
+            If you wish to use MetaMask as your wallet, please connect to the {mainNetDescription}
+            </div>
+        </span>
+    )
+}

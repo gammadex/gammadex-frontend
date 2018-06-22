@@ -7,6 +7,8 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountApi from "./AccountApi"
 import AccountType from "../AccountType"
 import _ from "lodash"
+import * as GlobalMessageActions from "../actions/GlobalMessageActions"
+import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 
 /**
  * Poll for MetaMask login / logout - nasty but current best practice
@@ -38,6 +40,7 @@ export function updateWalletStoreProvidedWeb3Details() {
             }
 
             if (isMainNet) {
+                closeMetamaskWarningMessageIfPresent()
                 window.web3.eth.getAccounts((e, accounts) => {
                     if (accounts.length > 0) {
                         if (!WalletStore.isProvidedWeb3AccountAvailable()) {
@@ -59,8 +62,33 @@ export function updateWalletStoreProvidedWeb3Details() {
             } else {
                 if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {
                     WalletActions.updateProvidedWeb3AccountAvailable(null)
+
+                    warnIfMetaMaskOnWrongNetwork()
                 }
             }
         })
+    }
+}
+
+function warnIfMetaMaskOnWrongNetwork() {
+    if (! WalletStore.isMetamastNetworkWarningSentMessageId()) {
+        const account = AccountStore.getAccount()
+        const providedWeb3 = WalletStore.getProvidedWeb3Info()
+        const {isMainNet, netDescription} = providedWeb3
+        const mainNetDescription = EthereumNetworks.getMainNetDescription()
+
+        if (netDescription && !isMainNet && !account) {
+            const message = GlobalMessageFormatters.metamaskNetworkWarning(netDescription, mainNetDescription)
+            const messageId = GlobalMessageActions.sendGlobalMessage(message, "danger")
+            WalletActions.metamaskNetworkWarningSent(messageId)
+        }
+    }
+}
+
+function closeMetamaskWarningMessageIfPresent() {
+    const messageId = WalletStore.isMetamastNetworkWarningSentMessageId()
+
+    if (! messageId) {
+        GlobalMessageActions.closeGlobalMessage(messageId)
     }
 }

@@ -107,12 +107,6 @@ export default class AccountDetail extends React.Component {
                         </div>
                     </div>
 
-                    <Conditional displayCondition={!balanceRetrieved && !!warningMessage}>
-                        <BoxSection>
-                            {warningMessage}
-                        </BoxSection>
-                    </Conditional>
-
                     <Funding tokenName={tokenSymbol}
                         walletBalanceEth={walletBalanceEth}
                         exchangeBalanceEth={exchangeBalanceEth}

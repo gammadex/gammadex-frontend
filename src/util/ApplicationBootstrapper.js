@@ -5,8 +5,6 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountApi from "../apis/AccountApi"
 import * as LifeCycleActions from "../actions/LifecycleActions"
 
-// TODO - this hacky poo will go away when app wallet / account / web3 bootstrapping gets cleaned up
-
 export function initAccounts() {
     const {address, privateKey} = getUnsecuredPrivateKeyAccount()
 

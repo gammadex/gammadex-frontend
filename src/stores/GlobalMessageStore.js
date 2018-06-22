@@ -6,7 +6,6 @@ import _ from "lodash"
 class GlobalMessageStore extends EventEmitter {
     constructor() {
         super()
-        this.messageIdCounter = 0
         this.messages = []
     }
 
@@ -22,7 +21,6 @@ class GlobalMessageStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.GLOBAL_MESSAGE_SENT: {
                 const {type, ...message} = action
-                message.id = this.messageIdCounter++
                 this.messages.push(message)
                 this.emitChange()
                 break
