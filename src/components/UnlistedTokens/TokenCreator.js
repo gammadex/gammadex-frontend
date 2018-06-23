@@ -72,7 +72,7 @@ export default class TokenCreator extends React.Component {
 
     render() {
         return (
-            <div className="order-box">
+            <div>
                 <form>
                     <Conditional displayCondition={this.state.checkingAddress}>
                         <div className="hover">

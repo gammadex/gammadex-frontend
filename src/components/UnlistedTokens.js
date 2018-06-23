@@ -3,7 +3,7 @@ import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
-import {Box} from "./CustomComponents/Box"
+import {Box, BoxSection} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
@@ -76,7 +76,7 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <Box title="Unlisted Tokens" className="unlisted-tokens-component">
+            <Box title="Unlisted Tokens" className="unlisted-tokens-component last-card">
                 <Conditional displayCondition={tokenRows.length > 0}>
                     <div className="table-responsive">
                         <table className="table table-striped table-bordered table-hover table-no-bottom-border">
@@ -92,7 +92,9 @@ class TokenChooser extends React.Component {
                     </div>
                 </Conditional>
 
-                <TokenCreator selectToken={this.onTokenSelect}/>
+                <BoxSection>
+                    <TokenCreator selectToken={this.onTokenSelect}/>
+                </BoxSection>
             </Box>
         )
     }

@@ -49,19 +49,19 @@ class Exchange extends Component {
 
         return (
             <div className="row">
-                <div className="col-lg-3 exchange-left-col">
+                <div className="col-lg-3 exchange-left-col main-col">
                     <AccountDetail token={token}/>
                     <TokenChooser/>
                     <UnlistedTokens/>
                 </div>
-                <div className="pl-0 col-lg-6 exchange-middle-col">
+                <div className="pl-0 col-lg-6 exchange-middle-col main-col">
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                     <Trading token={token}/>
                     <OpenOrders/>
                     <PendingTrades/>
                 </div>
-                <div className="pl-0 col-lg-3 exchange-right-col">
+                <div className="pl-0 col-lg-3 exchange-right-col main-col">
                     <Charts token={token}/>
                     <TradeHistory token={token}/>
                 </div>
