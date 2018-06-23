@@ -40,18 +40,16 @@ function testContract(userAddress) {
     describe('promiseDepositEther', () => {
         test('should increase exchange ETH balance', () => {
             const weiTwoEther = web3.utils.toWei('2', 'ether')
-            return web3.eth.getBalance(userAddress).then(balanceBeforeDeposit => {
-                return EtherDeltaWeb3.promiseDepositEther(userAddress, walletCount, weiTwoEther, weiGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call()
-                            .then(balance => expect(balance).toEqual(weiTwoEther))
-                    })
-            })
+            return EtherDeltaWeb3.promiseDepositEther(userAddress, nonce, weiTwoEther, weiGasPrice)
+                .then(() => {
+                    return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call()
+                        .then(balance => expect(balance).toEqual(weiTwoEther))
+                })
         })
         test('should decrease wallet ETH balance (accounting for gas fee)', () => {
             const weiTwoEther = web3.utils.toWei('2', 'ether')
             return web3.eth.getBalance(userAddress).then(balanceBeforeDeposit => {
-                return EtherDeltaWeb3.promiseDepositEther(userAddress, walletCount, weiTwoEther, weiGasPrice)
+                return EtherDeltaWeb3.promiseDepositEther(userAddress, nonce, weiTwoEther, weiGasPrice)
                     .then((receipt) => {
                         return web3.eth.getBalance(userAddress).then(balanceAfterDeposit => {
                             // End ETH Balance = Start ETH Balance - Deposit Amount - Tx Cost
@@ -65,18 +63,64 @@ function testContract(userAddress) {
 
         test('should use the gas settings provided by the user and app', () => {
             const weiTwoEther = web3.utils.toWei('2', 'ether')
+            return EtherDeltaWeb3.promiseDepositEther(userAddress, nonce, weiTwoEther, weiGasPrice)
+                .then(receipt => {
+                    return web3.eth.getTransaction(receipt.transactionHash)
+                        .then(tx => {
+                            expect(tx.gasPrice).toEqual(weiGasPrice)
+                            expect(tx.value).toEqual(weiTwoEther)
+                            expect(tx.gas).toEqual(Config.getGasLimit('deposit'))
+                        })
+                })
+        })
+
+        test('ETH value sent with transaction should equal the deposit amount', () => {
+            const weiTwoEther = web3.utils.toWei('2', 'ether')
+            return EtherDeltaWeb3.promiseDepositEther(userAddress, nonce, weiTwoEther, weiGasPrice)
+                .then(receipt => {
+                    return web3.eth.getTransaction(receipt.transactionHash)
+                        .then(tx => {
+                            expect(tx.value).toEqual(weiTwoEther)
+                        })
+                })
+        })
+    })
+
+    describe('promiseWithdrawEther', () => {
+        test('should decrease exchange ETH balance', () => {
+            const weiOneEther = web3.utils.toWei('1', 'ether')
+            return EtherDeltaWeb3.promiseWithdrawEther(userAddress, nonce, weiOneEther, weiGasPrice)
+                .then(() => {
+                    return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call()
+                        .then(balance => expect(balance).toEqual(web3.utils.toWei('7', 'ether')))
+                })
+        })
+        test('should increase wallet ETH balance (accounting for gas fee)', () => {
+            const weiOneEther = web3.utils.toWei('1', 'ether')
             return web3.eth.getBalance(userAddress).then(balanceBeforeDeposit => {
-                return EtherDeltaWeb3.promiseDepositEther(userAddress, walletCount, weiTwoEther, weiGasPrice)
-                    .then(receipt => {
-                        return web3.eth.getTransaction(receipt.transactionHash)
-                            .then(tx => {
-                                expect(tx.gasPrice).toEqual(weiGasPrice)
-                                expect(tx.value).toEqual(weiTwoEther)
-                                expect(tx.gas).toEqual(Config.getGasLimit('deposit'))
-                            })
+                return EtherDeltaWeb3.promiseWithdrawEther(userAddress, nonce, weiOneEther, weiGasPrice)
+                    .then((receipt) => {
+                        return web3.eth.getBalance(userAddress).then(balanceAfterDeposit => {
+                            // End ETH Balance = Start ETH Balance - Deposit Amount - Tx Cost
+                            // Tx Cost = Gas Price * Gas Used
+                            expect(balanceAfterDeposit).toEqual(BigNumber(balanceBeforeDeposit)
+                                .plus(BigNumber(weiOneEther)).minus(BigNumber(receipt.gasUsed).times(weiGasPrice)).toFixed())
+                        })
                     })
             })
-        })     
+        })
+
+        test('should use the gas settings provided by the user and app', () => {
+            const weiOneEther = web3.utils.toWei('1', 'ether')
+            return EtherDeltaWeb3.promiseWithdrawEther(userAddress, nonce, weiOneEther, weiGasPrice)
+                .then(receipt => {
+                    return web3.eth.getTransaction(receipt.transactionHash)
+                        .then(tx => {
+                            expect(tx.gasPrice).toEqual(weiGasPrice)
+                            expect(tx.gas).toEqual(Config.getGasLimit('withdraw'))
+                        })
+                })
+        })
     })
 }
 
@@ -89,7 +133,7 @@ describe('WalletAccountProvider', () => {
     beforeEach(() => {
         return web3.eth.getTransactionCount(pkAccount.address)
             .then(count => {
-                global.walletCount = count
+                global.nonce = count
             })
     })
 
@@ -98,13 +142,13 @@ describe('WalletAccountProvider', () => {
             .then(res => {
                 const { address, nonce } = res
                 expect(address.toLowerCase()).toEqual(pkAccount.address.toLowerCase())
-                expect(nonce).toEqual(walletCount)
+                expect(nonce).toEqual(nonce)
             })
     })
 
     test('promiseRefreshNonce should return nonce', () => {
         return EtherDeltaWeb3.promiseRefreshNonce()
-            .then(nonce => expect(nonce).toEqual(walletCount))
+            .then(nonce => expect(nonce).toEqual(nonce))
     })
 
     testContract(pkAccount.address)
@@ -114,6 +158,7 @@ describe('MetaMaskAccountProvider', () => {
 
     beforeAll(() => {
         EtherDeltaWeb3.initForMetaMaskWeb3(web3)
+        global.nonce = 0
     })
 
     // MetaMask handles the nonce internally so we do not need to track it

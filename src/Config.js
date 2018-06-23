@@ -66,6 +66,9 @@ class Config {
     }
 
     getGasLimit(action) {
+        if(this.getEnv().gasLimit) {
+            return this.getEnv().gasLimit[action]
+        }
         return config.gasLimit[action]
     }
 

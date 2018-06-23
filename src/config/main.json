@@ -16,6 +16,16 @@
   },
   "exchangeFeePercent": 0.003,
   "test": {
+    "gasLimit": {
+      "deposit": 250001,
+      "withdraw": 250002,
+      "approveTokenDeposit": 250003,
+      "depositToken": 250004,
+      "withdrawToken": 250005,
+      "trade": 250006,
+      "cancelOrder": 250007,
+      "order": 250008
+    },
     "web3": "http://localhost:19546",
     "defaultPair": {
       "token": {
