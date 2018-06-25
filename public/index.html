@@ -89,12 +89,24 @@
             color: #119911;
         }
 
+        .xxx {
+            margin-bottom:10px;
+        }
+
         .balances-heading {
             padding-top: 0 ! important;
+            padding-bottom: 4px ! important;
+            font-weight:normal;
+            font-size: 80%;
+        }
+
+        .balances-amount {
+            padding-top:0;
+            padding-bottom:4px!important;
         }
 
         .balances-separator {
-            margin: 6px 0 6px 0;
+            margin: 3px 0 3px 0;
         }
 
         .text-muted {
@@ -136,7 +148,7 @@
         }
 
         .card-body {
-            padding: 8px;
+            padding: 6px;
         }
 
         .card-body .pagination {
@@ -174,6 +186,14 @@
         .table-borderless td,
         .table-borderless th {
             border: 0;
+        }
+
+        .balances-component .card-body > div.form-group {
+            margin-bottom:6px !important;
+        }
+
+        .balances-component .card-body > div.form-group:last-child {
+            margin-bottom:0px !important;
         }
 
         body, html {
@@ -511,11 +531,12 @@
 
         .balances-component {
             flex-grow: 0;
+            flex-shrink: 0;
         }
 
         .token-chooser-component {
             flex-grow: 1;
-            min-height: 250px;
+            flex-shrink: 1;
         }
 
         .unlisted-tokens-component {

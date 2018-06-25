@@ -342,24 +342,23 @@ export default class Funding extends React.Component {
                     </Alert>
                 </ModalBody>
         }
-        return <BoxSection className={"order-box"}>
+        return <BoxSection>
 
             <table className="table table-borderless">
-                <thead>
-                    <tr>
-                        <th className="txt-right balances-heading"></th>
-                        <th className="txt-right balances-heading"><small>Wallet</small></th>
-                        <th className="txt-right balances-heading"><small>Exchange</small></th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr>
-                        <td><strong>ETH</strong></td>
-                        <td className="txt-right clickable" onClick={() => FundingActions.ethDepositMaxAmount()}><Round price softZeros fallback="-">{walletBalanceEth}</Round></td>
-                        <td className="txt-right clickable" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round price softZeros fallback="-">{exchangeBalanceEth}</Round></td>
+                        <td className="balances-amount"><strong>ETH</strong></td>
+                        <td className="txt-right clickable balances-amount" onClick={() => FundingActions.ethDepositMaxAmount()}><Round price softZeros fallback="-">{walletBalanceEth}</Round></td>
+                        <td className="txt-right clickable balances-amount" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round price softZeros fallback="-">{exchangeBalanceEth}</Round></td>
+                    </tr>
+                    <tr>
+                        <td className="txt-right balances-heading"></td>
+                        <td className="txt-right balances-heading">Wallet</td>
+                        <td className="txt-right balances-heading">Exchange</td>
                     </tr>
                 </tbody>
             </table>
+
             <NumericInput value={ethDepositAmountControlled}
                 onChange={this.onEthDepositAmountChange} fieldName={"ethDepositAmount"}
                 valid={ethDepositValid} errorMessage={ethDepositErrorText} helpMessage={ethDepositHelpText}
@@ -385,18 +384,16 @@ export default class Funding extends React.Component {
             <hr className="balances-separator" />
 
             <table className="table table-borderless">
-                <thead>
-                    <tr>
-                        <th className="txt-right balances-heading"></th>
-                        <th className="txt-right balances-heading"><small>Wallet</small></th>
-                        <th className="txt-right balances-heading"><small>Exchange</small></th>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr>
-                        <td><strong>{tokenName}</strong></td>
-                        <td className="txt-right clickable" onClick={() => FundingActions.tokDepositMaxAmount()}><Round price softZeros fallback="-">{walletBalanceTok}</Round></td>
-                        <td className="txt-right clickable" onClick={() => FundingActions.tokWithdrawMaxAmount()}><Round price softZeros fallback="-">{exchangeBalanceTok}</Round></td>
+                        <td className="balances-amount"><strong>{tokenName}</strong></td>
+                        <td className="txt-right clickable balances-amount" onClick={() => FundingActions.tokDepositMaxAmount()}><Round price softZeros fallback="-">{walletBalanceTok}</Round></td>
+                        <td className="txt-right clickable balances-amount" onClick={() => FundingActions.tokWithdrawMaxAmount()}><Round price softZeros fallback="-">{exchangeBalanceTok}</Round></td>
+                    </tr>
+                    <tr>
+                        <td className="txt-right balances-heading"></td>
+                        <td className="txt-right balances-heading">Wallet</td>
+                        <td className="txt-right balances-heading">Exchange</td>
                     </tr>
                 </tbody>
             </table>

@@ -120,7 +120,7 @@ export default class NumericInput extends React.Component {
 
         let label = <Label for={fieldName} sm={3}>{name}</Label>
         if (name == null) {
-            label = <Label for={fieldName} sm={0}></Label>
+            label = null //<Label for={fieldName} sm={0}></Label>
         }
 
         let actionButton = null
