@@ -11,7 +11,7 @@ import TransactionStatus from "../TransactionStatus"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import * as LifeCycleActions from "../actions/LifecycleActions"
 import * as GlobalMessageActions from "../actions/GlobalMessageActions"
-import {baseWeiToEth, tokWeiToEth} from "../EtherConversion"
+import { baseWeiToEth, tokWeiToEth } from "../EtherConversion"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import TokenRepository from "../util/TokenRepository"
 
@@ -64,7 +64,7 @@ export function refreshAccount(accountType, history) {
 export function refreshAccountThenEthAndTokBalance(accountType, history) {
     return refreshAccount(accountType, history)
         .then(address => {
-            if(address) {
+            if (address) {
                 refreshEthAndTokBalance(address, TokenStore.getSelectedTokenAddress(), true)
             }
         })
@@ -131,22 +131,33 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
     if (accountRetrieved) {
         const tokenAmount = tokWeiToEth(amount, tokenAddress).toString()
         const tokenName = TokenRepository.getTokenName(tokenAddress)
-        EtherDeltaWeb3.promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei)
+        EtherDeltaWeb3.promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei)
             .once('transactionHash', hash => {
-                AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
-                AccountActions.addPendingTransfer(DepositType.DEPOSIT, tokenAddress,
-                    amount, hash)
+                AccountActions.nonceUpdated(nonce + 1)
                 GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferInitiated(tokenAmount, 'deposit', tokenName, hash))
+                    GlobalMessageFormatters.getApprovalInitiated(tokenAmount, 'deposit', tokenName, hash))
+
+                EtherDeltaWeb3.promiseDepositToken(account, nonce + 1, tokenAddress, amount, gasPriceWei)
+                    .once('transactionHash', hash => {
+                        AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
+                        AccountActions.addPendingTransfer(DepositType.DEPOSIT, tokenAddress,
+                            amount, hash)
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTokenTransferInitiated(tokenAmount, 'deposit', tokenName, hash))
+                    })
+                    .on('error', error => {
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTransferFailed(tokenAmount, 'deposit', tokenName, error), "danger")
+                    })
+                    .then(() => {
+                        refreshEthAndTokBalance(account, tokenAddress, false)
+                        GlobalMessageActions.sendGlobalMessage(
+                            GlobalMessageFormatters.getTransferComplete(tokenAmount, 'deposit', tokenName), "success")
+                    })
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferFailed(tokenAmount, 'deposit', tokenName, error), "danger")
-            })
-            .then(receipt => {
-                refreshEthAndTokBalance(account, tokenAddress, false)
-                GlobalMessageActions.sendGlobalMessage(
-                    GlobalMessageFormatters.getTransferComplete(tokenAmount, 'deposit', tokenName), "success")
+                    GlobalMessageFormatters.getApprovalFailed(tokenAmount, 'deposit', tokenName, error), "danger")
             })
     }
 }

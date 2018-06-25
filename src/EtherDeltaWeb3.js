@@ -4,7 +4,7 @@ import Config from './Config'
 import Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
 import OrderFactory from './OrderFactory'
-import {truncate} from './util/FormatUtil';
+import { truncate } from './util/FormatUtil'
 
 let web3 = window.web3
 
@@ -91,10 +91,6 @@ class EtherDeltaWeb3 {
     }
 
     promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) {
-        this.promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei)
-            .on('error', error => {
-                console.log(`failed to approve token deposit: ${error.message}`)
-            })
         return this.accountProvider.promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei)
     }
 
@@ -179,7 +175,7 @@ class EtherDeltaWeb3 {
     }
 
     sha3 = (msg) => {
-        return this.web3.utils.sha3(`0x${msg.toString('hex')}`, {encoding: 'hex'})
+        return this.web3.utils.sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' })
     }
 
     hexToNumber = (hex) => {
@@ -223,8 +219,8 @@ class EtherDeltaWeb3 {
             }).then(res => {
                 return {
                     address: address,
-                    name: res[0].result || truncate(address, {left: 7, right: 5}),
-                    symbol: res[1].result || truncate(address, {left: 7, right: 5}),
+                    name: res[0].result || truncate(address, { left: 7, right: 5 }),
+                    symbol: res[1].result || truncate(address, { left: 7, right: 5 }),
                     decimals: res[2]
                 }
             })
@@ -311,7 +307,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             .then(accounts => {
                 if (accounts.length > 0) {
                     // MetaMask tracks the nonce itself
-                    return {address: accounts[this.accountIndex], nonce: 0}
+                    return { address: accounts[this.accountIndex], nonce: 0 }
                 } else {
                     throw new Error("no addresses found")
                 }
@@ -324,28 +320,28 @@ class MetaMaskAccountProvider extends AccountProvider {
 
     promiseDepositEther(account, nonce, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.deposit()
-            .send({from: account, gas: Config.getGasLimit('deposit'), gasPrice: gasPriceWei, value: amount})
+            .send({ from: account, gas: Config.getGasLimit('deposit'), gasPrice: gasPriceWei, value: amount })
     }
 
     promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.withdraw(amount)
-            .send({from: account, gas: Config.getGasLimit('withdraw'), gasPrice: gasPriceWei})
+            .send({ from: account, gas: Config.getGasLimit('withdraw'), gasPrice: gasPriceWei })
     }
 
     promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
         this.contractToken.options.address = tokenAddress
         return this.contractToken.methods.approve(Config.getEtherDeltaAddress(), amount)
-            .send({from: account, gas: Config.getGasLimit('approveTokenDeposit'), gasPrice: gasPriceWei})
+            .send({ from: account, gas: Config.getGasLimit('approveTokenDeposit'), gasPrice: gasPriceWei })
     }
 
     promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.depositToken(tokenAddress, amount)
-            .send({from: account, gas: Config.getGasLimit('depositToken'), gasPrice: gasPriceWei})
+            .send({ from: account, gas: Config.getGasLimit('depositToken'), gasPrice: gasPriceWei })
     }
 
     promiseWithdrawToken(account, nonce, tokenAddress, amount, gasPriceWei) {
         return this.contractEtherDelta.methods.withdrawToken(tokenAddress, amount)
-            .send({from: account, gas: Config.getGasLimit('withdrawToken'), gasPrice: gasPriceWei})
+            .send({ from: account, gas: Config.getGasLimit('withdrawToken'), gasPrice: gasPriceWei })
     }
 
     promiseTrade(account, nonce, order, amount, gasPriceWei) {
@@ -361,7 +357,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
             order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
             amount)
-            .send({from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei})
+            .send({ from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei })
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {
@@ -372,7 +368,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.amountGive,
             order.expires,
             order.nonce)
-            .send({from: account, gas: Config.getGasLimit('order'), gasPrice: gasPriceWei})
+            .send({ from: account, gas: Config.getGasLimit('order'), gasPrice: gasPriceWei })
     }
 
     promiseCancelOrder(account, nonce, order, gasPriceWei) {
@@ -386,7 +382,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.v == null ? 27 : order.v, // on-chain handling
             order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
             order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
-        ).send({from: account, gas: Config.getGasLimit('cancelOrder'), gasPrice: gasPriceWei})
+        ).send({ from: account, gas: Config.getGasLimit('cancelOrder'), gasPrice: gasPriceWei })
     }
 
     promiseSignData(data, account) {
@@ -417,7 +413,7 @@ class WalletAccountProvider extends AccountProvider {
     refreshAccount() {
         return this.web3.eth.getTransactionCount(this.walletAddress)
             .then(nonce => {
-                return {address: this.walletAddress, nonce: nonce}
+                return { address: this.walletAddress, nonce: nonce }
             })
     }
 
@@ -466,7 +462,7 @@ class WalletAccountProvider extends AccountProvider {
     }
 
     promiseDepositToken(account, nonce, tokenAddress, amount, gasPriceWei) {
-        return this.promiseSendRawTransaction(nonce + 1, Config.getEtherDeltaAddress(),
+        return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.depositToken(tokenAddress, amount).encodeABI(),
             gasPriceWei,

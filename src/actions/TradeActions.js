@@ -73,11 +73,11 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                         let buyer = ""
                         let seller = ""
                         if (OrderUtil.isTakerBuy(order)) {
-                            buyer = account,
-                                seller = order.user
+                            buyer = account
+                            seller = order.user
                         } else {
-                            buyer = order.user,
-                                seller = account
+                            buyer = order.user
+                            seller = account
                         }
                         MyTradeActions.addMyTrade({
                             environment: Config.getReactEnv(),

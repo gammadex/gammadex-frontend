@@ -2,10 +2,35 @@ import React from "react"
 import Etherscan from "../components/CustomComponents/Etherscan"
 import _ from "lodash"
 
+export function getApprovalInitiated(amount, type, unit, txHash) {
+    return (
+        <div>
+            <div>Generated transaction 1 of 2: Token Approval for {type} of {amount} {unit}</div>
+            <div><strong>If using MetaMask please ensure you check and approve the second transaction to complete the token deposit.</strong></div>
+            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+        </div>
+    )
+}
+
+export function getApprovalFailed(amount, type, unit, error) {
+    const ucType = _.capitalize(type)
+    const errorMessage = extractMessage(error)
+    return `Transaction 1 of 2 ${ucType} of ${amount} ${unit} failed ${errorMessage}`
+}
+
 export function getTransferInitiated(amount, type, unit, txHash) {
     return (
         <div>
             <div>Generated transaction for {type} of {amount} {unit}</div>
+            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+        </div>
+    )
+}
+
+export function getTokenTransferInitiated(amount, type, unit, txHash) {
+    return (
+        <div>
+            <div>Generated transaction 2 of 2: Token Transfer for {type} of {amount} {unit}</div>
             <div><Etherscan type="tx" address={txHash.toString()}/></div>
         </div>
     )
