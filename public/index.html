@@ -89,10 +89,6 @@
             color: #119911;
         }
 
-        .xxx {
-            margin-bottom:10px;
-        }
-
         .balances-heading {
             padding-top: 0 ! important;
             padding-bottom: 4px ! important;
@@ -139,7 +135,7 @@
 
         .card .table-no-bottom-border tr:last-child td,
         .card .table-no-bottom-border tr:last-child th {
-            border-bottom: 0;
+            /*border-bottom: 0;*/
         }
 
         .card .table tr th {
@@ -334,6 +330,7 @@
             text-transform: uppercase;
         }
 
+        /* TODO - is hdr-stretch needed? */
         .hdr-stretch {
             display: flex;
             align-items: center;
@@ -552,11 +549,13 @@
             flex-shrink: 1;
             overflow-y: auto;
             overflow-x: hidden;
+            min-height:100px;
         }
 
         .unlisted-tokens-component {
             min-height: 250px;
             flex-grow: 0;
+            max-height:33%;
         }
 
         .exchange-right-col {
@@ -569,6 +568,7 @@
 
         .chart-component {
             flex-grow: 0;
+            flex-basis: 30%;
         }
 
         .market-trades-component {

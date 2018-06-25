@@ -80,41 +80,32 @@ export default class TokenCreator extends React.Component {
                         </div>
                     </Conditional>
 
-                    <div className="row form-group">
-                        <label className="col-sm-3 col-form-label" htmlFor="address">Address</label>
-                        <div className="col-sm-9">
-                            <input className={"form-control" + (this.state.checkError ? " is-invalid" : "")}
-                                   id="address" placeholder="0x12345..."
-                                   onChange={this.onAddressChange} value={this.state.token.address}/>
-                            <div className="invalid-feedback">{this.state.checkError}</div>
+                    <div className="form-group">
+                        <label className="col-form-label" htmlFor="address">Address of token to add</label>
+                        <div className="" style={{"display":"flex"}}>
+                            <div className="mr-2" style={{"flex-grow": 1, "width":"100%"}}>
+                                <input className={"form-control" + (this.state.checkError ? " is-invalid" : "")}
+                                       id="address" placeholder="0x12345..."
+                                       onChange={this.onAddressChange} value={this.state.token.address}/>
+
+                                <div className="invalid-feedback">{this.state.checkError}</div>
+                            </div>
+                            <div style={{"flex-grow": 0}}>
+                                <button className="btn btn-primary form-control" onClick={this.onAddToken}
+                                        type="submit"
+                                        disabled={this.state.token.symbol === "" || this.state.checkError}>Add Token
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <Conditional displayCondition={this.state.token.symbol !== ""}>
-                        <div className="row hdr-stretch-ctr alert alert-success">
-                            <table className="col-sm-8">
-                                <tbody>
-                                <tr>
-                                    <td><strong>Name</strong></td>
-                                    <td colSpan="3">{this.state.token.name}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Symbol</strong></td>
-                                    <td>{this.state.token.symbol}</td>
-                                    <td><strong>Decimals</strong></td>
-                                    <td>{this.state.token.decimals}</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div>
+                            <div className="alert alert-success">
+                                Token is valid: <b>{this.state.token.symbol} - {this.state.token.name}</b>
+                            </div>
                         </div>
                     </Conditional>
-
-                    <div className="row form-group form-inline hdr-stretch-ctr">
-                        <button className="btn btn-sm btn-primary form-control col-sm-4" onClick={this.onAddToken}
-                                type="submit"
-                                disabled={this.state.token.symbol === "" || this.state.checkError}>Add
-                        </button>
-                    </div>
                 </form>
             </div>
         )

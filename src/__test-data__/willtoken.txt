@@ -1,1 +1,26 @@
 0xee6d23bc84f22c2be5db3b90ef091ae214989d4a
+
+seantest:
+0x4d61ca45e4c909f79be951210c34e5d6ed5f59cc
+
+HashnodeTestCoin
+0x384eb0e4416179047b82092b8741805935b2fed8
+
+zhongxh's test token
+0x655275d5ea52c62531aa43a85949c63dd858e0e0
+
+XBOX
+0xc2845bf1fd1702f0018c1fb2edd2f0e6e830693b
+
+Example Token
+0xf9239e0445cced9a89a92af3d3427811134835e5
+
+BNB
+0x107353db25d654cc24c9282c53e346f1609ac5aa
+
+TCZ
+0x2082fe8b67c9b3ee6a1e0b553f05d8fd4ef07bf1
+
+Find more:
+https://ropsten.etherscan.io/token-search
+

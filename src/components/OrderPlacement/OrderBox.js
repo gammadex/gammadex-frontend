@@ -106,7 +106,7 @@ export default class OrderBox extends React.Component {
         return (
             <Box>
                 <BoxHeader>
-                    <div className="hdr-stretch">
+                    <div>
                         <strong className="card-title">TRADING</strong>
                     </div>
                 </BoxHeader>

@@ -96,7 +96,7 @@ class TokenChooser extends React.Component {
         return (
             <div className="card token-chooser-component">
                 <div className="card-header">
-                    <div className="row hdr-stretch">
+                    <div className="row">
                         <div className="col-lg-6">
                             <strong className="card-title">Tokens<MarketResponseSpinner/></strong>
                         </div>
