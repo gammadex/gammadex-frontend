@@ -469,7 +469,7 @@
 
         .route-content {
             height: calc(100% - 50px);
-            padding: var(--main-padding) 15px;
+            padding: var(--main-padding) 0;
         }
 
         .main-warning {
@@ -478,6 +478,15 @@
 
         .route-content > div {
             height: 100%;
+        }
+
+        .row {
+            margin:0;
+        }
+
+        .card .row {
+            margin-left:-15px;
+            margin-right:-15px;
         }
 
         .card.last-card {
@@ -489,11 +498,11 @@
         }
 
         .middle-left-col {
-            padding: 0px var(--half-main-padding) 0 15px;
+            padding: 0 var(--half-main-padding) 0 0;
         }
 
         .middle-right-col {
-            padding: 0px 15px 0 var(--half-main-padding);
+            padding: 0 0 0 var(--half-main-padding);
         }
 
         /* history page layout */
