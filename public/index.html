@@ -445,6 +445,8 @@
 
         #app {
             height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
         }
 
         header {
@@ -527,6 +529,8 @@
         .exchange-left-col {
             display: flex;
             flex-direction: column;
+            height:100%;
+            max-height:100%;
         }
 
         .balances-component {
@@ -537,6 +541,8 @@
         .token-chooser-component {
             flex-grow: 1;
             flex-shrink: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .unlisted-tokens-component {
@@ -547,6 +553,8 @@
         .exchange-right-col {
             display: flex;
             flex-direction: column;
+            height:100%;
+            max-height:100%;
             padding-right: var(--main-padding);
         }
 
@@ -556,6 +564,9 @@
 
         .market-trades-component {
             flex-grow: 1;
+            flex-shrink: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .exchange-middle-col {
