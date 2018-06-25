@@ -23,7 +23,7 @@ export default class Etherscan extends React.Component {
 
     getLinkText(childContent) {
         if (this.props.display === 'icon') {
-            return <span className="fas fa-external-link-square-alt"></span>
+            return <button className="btn btn-primary btn-sm"><span className="fas fa-external-link-square-alt"></span></button>
         } else {
             const text = this.props.text || childContent || this.props.address
 

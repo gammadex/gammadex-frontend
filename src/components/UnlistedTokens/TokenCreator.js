@@ -82,15 +82,15 @@ export default class TokenCreator extends React.Component {
 
                     <div className="form-group">
                         <label className="col-form-label" htmlFor="address">Address of token to add</label>
-                        <div className="" style={{"display":"flex"}}>
-                            <div className="mr-2" style={{"flex-grow": 1, "width":"100%"}}>
+                        <div className="token-creator-form">
+                            <div className="mr-2 token-creator-address">
                                 <input className={"form-control" + (this.state.checkError ? " is-invalid" : "")}
                                        id="address" placeholder="0x12345..."
                                        onChange={this.onAddressChange} value={this.state.token.address}/>
 
                                 <div className="invalid-feedback">{this.state.checkError}</div>
                             </div>
-                            <div style={{"flex-grow": 0}}>
+                            <div className="token-creator-add">
                                 <button className="btn btn-primary form-control" onClick={this.onAddToken}
                                         type="submit"
                                         disabled={this.state.token.symbol === "" || this.state.checkError}>Add Token

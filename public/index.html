@@ -92,13 +92,13 @@
         .balances-heading {
             padding-top: 0 ! important;
             padding-bottom: 4px ! important;
-            font-weight:normal;
+            font-weight: normal;
             font-size: 80%;
         }
 
         .balances-amount {
-            padding-top:0 !important;
-            padding-bottom:4px!important;
+            padding-top: 0 !important;
+            padding-bottom: 4px !important;
         }
 
         .balances-separator {
@@ -185,11 +185,11 @@
         }
 
         .balances-component .card-body > div.form-group {
-            margin-bottom:6px !important;
+            margin-bottom: 6px !important;
         }
 
         .balances-component .card-body > div.form-group:last-child {
-            margin-bottom:0px !important;
+            margin-bottom: 0px !important;
         }
 
         body, html {
@@ -330,6 +330,21 @@
             text-transform: uppercase;
         }
 
+        .token-creator-form {
+            display: flex;
+            width: 100%;
+        }
+
+        .token-creator-address {
+            flex-grow: 1;
+            flex-basis: 90%;
+        }
+
+        .token-creator-add {
+            flex-grow: 0;
+            flex-shrink: 0;
+        }
+
         /* TODO - is hdr-stretch needed? */
         .hdr-stretch {
             display: flex;
@@ -420,24 +435,6 @@
             height: 50px;
         }
 
-        /* temporary */
-
-        .highlight1 {
-            background: salmon;
-        }
-
-        .highlight2 {
-            background: lightpink;
-        }
-
-        .highlight3 {
-            background: lightblue;
-        }
-
-        .highlight4 {
-            background: lightgreen;
-        }
-
         /* layout bits and pieces */
 
         #app {
@@ -478,12 +475,12 @@
         }
 
         .row {
-            margin:0;
+            margin: 0;
         }
 
-        .card .row {
-            margin-left:-15px;
-            margin-right:-15px;
+        .global-message .row, .card .row {
+            margin-left: -15px;
+            margin-right: -15px;
         }
 
         .card.last-card {
@@ -527,7 +524,7 @@
         }
 
         .trade-history-container {
-            padding:var(--main-padding) var(--main-padding) 0 var(--main-padding);
+            padding: var(--main-padding) var(--main-padding) 0 var(--main-padding);
         }
 
         /* exchange page layout */
@@ -535,8 +532,8 @@
         .exchange-left-col {
             display: flex;
             flex-direction: column;
-            height:100%;
-            max-height:100%;
+            height: 100%;
+            max-height: 100%;
         }
 
         .balances-component {
@@ -549,20 +546,20 @@
             flex-shrink: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            min-height:100px;
+            min-height: 100px;
         }
 
         .unlisted-tokens-component {
             min-height: 250px;
             flex-grow: 0;
-            max-height:33%;
+            max-height: 33%;
         }
 
         .exchange-right-col {
             display: flex;
             flex-direction: column;
-            height:100%;
-            max-height:100%;
+            height: 100%;
+            max-height: 100%;
             padding-right: var(--main-padding);
         }
 
