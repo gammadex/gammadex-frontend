@@ -95,19 +95,19 @@ class TokenChooser extends React.Component {
 
         return (
             <div className="card token-chooser-component">
-                <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
                 <div className="card-header">
                     <div className="row hdr-stretch">
                         <div className="col-lg-6">
                             <strong className="card-title">Tokens<MarketResponseSpinner/></strong>
                         </div>
                         <div className="col-lg-6">
-                            <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                                   placeholder="Search" className="form-control"/>
+                            <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                                <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                                       placeholder="Search" className="form-control"/>
+                            </form>
                         </div>
                     </div>
                 </div>
-
 
                 <div className="table-responsive">
                     <table className="table table-striped table-bordered table-hover table-no-bottom-border">
@@ -121,7 +121,7 @@ class TokenChooser extends React.Component {
                         <tbody>{tokenRows}</tbody>
                     </table>
                 </div>
-                </form>
+
             </div>
         )
     }
