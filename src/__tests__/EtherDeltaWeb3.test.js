@@ -1,3 +1,15 @@
+/**
+ * EtherDeltaWeb3 is our own abstraction on top of web3, which allows us to inject two distinct providers: MetaMask and private key
+ * - both of which exercise different code paths. MetaMask uses direct contract calls, Private Key uses signed raw transactions.
+ * 
+ * This tests EtherDeltaWeb3 by deploying EtherDelta and a Test ERC-20 Token onto a local (ganache) blockchain and explicitly
+ * tests both providers / codepaths.
+ * 
+ * One important point is that in this part of the gammadex codebase *decimals are irrelevalent* since everything talks and
+ * expects "wei".
+ * 
+ */
+
 import Web3 from 'web3'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import Config from '../Config'
