@@ -5,6 +5,7 @@ import Web3 from 'web3'
 import Tx from 'ethereumjs-tx'
 import OrderFactory from './OrderFactory'
 import { truncate } from './util/FormatUtil'
+import { safeBigNumber } from './EtherConversion'
 
 let web3 = window.web3
 
@@ -99,6 +100,9 @@ class EtherDeltaWeb3 {
     }
 
     promiseTestTrade(account, order, amount) {
+        if(safeBigNumber(amount).isZero()) {
+            return Promise.resolve(false)
+        }
         return this.contractEtherDelta.methods.testTrade(
             order.tokenGet,
             order.amountGet,

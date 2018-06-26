@@ -19,6 +19,8 @@ import abiTestToken from '../config/testtoken.json'
 import testTokenBytecode from '../config/testtokenbytecode.json'
 import BigNumber from 'bignumber.js'
 import _ from "lodash"
+import OrderFactory from '../OrderFactory'
+import OrderSide from '../OrderSide'
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 
@@ -28,7 +30,7 @@ const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
 // This is a dynamic account local to this test and the running instance of the smart contract
 const primaryKeyAccount = web3.eth.accounts.create()
 
-const threeGwei = web3.utils.toWei('3', 'gwei')
+const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 
 beforeAll(() => {
     /**
@@ -43,7 +45,7 @@ beforeAll(() => {
     }).send({
         from: metamaskAddress,
         gas: 3000000,
-        gasPrice: threeGwei
+        gasPrice: defaultGasPrice
     }).then(newContractInstance => {
         global.edContractInstance = newContractInstance
         Config.getEnv().etherDeltaAddress = newContractInstance.options.address
@@ -58,16 +60,20 @@ beforeAll(() => {
     }).send({
         from: metamaskAddress,
         gas: 4700000,
-        gasPrice: threeGwei
+        gasPrice: defaultGasPrice
     }).then(newContractInstance => {
         global.testTokenContractInstance = newContractInstance
+
+
+        Config.getEnv().defaultPair.token.address = newContractInstance.options.address
+        Config.getEnv().defaultPair.token.decimals = 18
 
         // Transfer 20 TEST from the metamask to the private key account
         return newContractInstance.methods.transfer(primaryKeyAccount.address, web3.utils.toWei('20', 'ether'))
             .send({
                 from: metamaskAddress,
                 gas: 200000,
-                gasPrice: threeGwei
+                gasPrice: defaultGasPrice
             })
     })
 
@@ -147,7 +153,7 @@ function eventFromReceipt(receipt, eventName) {
         let data = receipt.logs[0].data
         let log = receipt.logs[0]
         // interesting case where we get two log events generated for the token deposit in ganache...
-        if(receipt.logs.length === 2) {
+        if (receipt.logs.length === 2) {
             data = receipt.logs[1].data
             log = receipt.logs[1]
         }
@@ -158,6 +164,7 @@ function eventFromReceipt(receipt, eventName) {
 function testTokenAddress() {
     return testTokenContractInstance.options.address
 }
+
 function testContract(userAddress) {
     describe('promiseDepositEther', () => {
         test('should increase exchange ETH balance', () => {
@@ -252,7 +259,7 @@ function testContract(userAddress) {
             // once you have approved an amount, the only way to reduce that approval amount is to:
             // - transfer it
             // - reset the approval amount to zero (which we do hear so future tests have clean state)
-            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', threeGwei)
+            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', defaultGasPrice)
                 .then(() => web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count))
         })
 
@@ -272,13 +279,13 @@ function testContract(userAddress) {
                 weiGasPrice,
                 Config.getGasLimit('approveTokenDeposit')
             )
-        })      
+        })
     })
 
     describe('promiseDepositToken', () => {
 
         beforeEach(() => {
-            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', threeGwei)
+            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', defaultGasPrice)
                 .then(() => web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count))
         })
 
@@ -286,7 +293,7 @@ function testContract(userAddress) {
             const weiTestAmount = web3.utils.toWei('0.41', 'ether')
             return contractBalanceTest(
                 () => {
-                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiTestAmount, threeGwei)
+                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiTestAmount, defaultGasPrice)
                         .then(() => {
                             return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 1, testTokenAddress(), weiTestAmount, web3.utils.toWei('1.41', 'gwei'))
                         })
@@ -298,7 +305,7 @@ function testContract(userAddress) {
             const weiTestAmount = web3.utils.toWei('0.42', 'ether')
             return tokWalletBalanceTest(
                 () => {
-                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiTestAmount, threeGwei)
+                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiTestAmount, defaultGasPrice)
                         .then(() => {
                             return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 1, testTokenAddress(), weiTestAmount, web3.utils.toWei('1.42', 'gwei'))
                         })
@@ -312,7 +319,7 @@ function testContract(userAddress) {
             const weiGasPrice = web3.utils.toWei('1.43', 'gwei')
             return gasTest(
                 () => {
-                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiTestAmount, threeGwei)
+                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiTestAmount, defaultGasPrice)
                         .then(() => {
                             return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 1, testTokenAddress(), weiTestAmount, weiGasPrice)
                         })
@@ -324,32 +331,32 @@ function testContract(userAddress) {
 
         test('Should generate a Deposit Event for this user and TEST token deposit amount', () => {
             const weiDepositAmount = web3.utils.toWei('0.44', 'ether')
-            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiDepositAmount, threeGwei)
-            .then(() => {
-                return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 1, testTokenAddress(), weiDepositAmount, web3.utils.toWei('1.44', 'gwei'))
-                    .then(receipt => {
-                        const { token, user, amount } = eventFromReceipt(receipt, 'Deposit')
-                        expect(token).toEqual(testTokenAddress())
-                        expect(user.toLowerCase()).toEqual(userAddress.toLowerCase())
-                        expect(amount).toEqual(weiDepositAmount)
-                    })
-            })
+            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), weiDepositAmount, defaultGasPrice)
+                .then(() => {
+                    return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 1, testTokenAddress(), weiDepositAmount, web3.utils.toWei('1.44', 'gwei'))
+                        .then(receipt => {
+                            const { token, user, amount } = eventFromReceipt(receipt, 'Deposit')
+                            expect(token).toEqual(testTokenAddress())
+                            expect(user.toLowerCase()).toEqual(userAddress.toLowerCase())
+                            expect(amount).toEqual(weiDepositAmount)
+                        })
+                })
         })
-    })    
+    })
 
     describe('promiseWithdrawToken', () => {
 
         beforeEach(() => {
             const depositAmount = web3.utils.toWei('1', 'ether')
-            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', threeGwei)
+            return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', defaultGasPrice)
                 .then(() => {
-                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce + 1, testTokenAddress(), depositAmount, threeGwei)
-                    .then(() => {
-                        return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 2, testTokenAddress(), depositAmount, threeGwei)
-                         .then(() => {
-                             return web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count)
-                         })
-                    })
+                    return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce + 1, testTokenAddress(), depositAmount, defaultGasPrice)
+                        .then(() => {
+                            return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 2, testTokenAddress(), depositAmount, defaultGasPrice)
+                                .then(() => {
+                                    return web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count)
+                                })
+                        })
                 })
         })
 
@@ -388,7 +395,25 @@ function testContract(userAddress) {
                 })
         })
     })
+}
 
+function testRefreshEthAndTokBalance(userAddress) {
+    test(`Should return user's wallet and exchange balance for ETH and TEST token`, () => {
+        return web3.eth.getBalance(userAddress).then(ethWalletBalance => {
+            return testTokenContractInstance.methods.balanceOf(userAddress).call().then(tokenWalletBalance => {
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalance => {
+                    return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalance => {
+                        return EtherDeltaWeb3.refreshEthAndTokBalance(userAddress, testTokenAddress()).then(bal => {
+                            expect(bal[0]).toEqual(ethWalletBalance)
+                            expect(bal[1]).toEqual(tokenWalletBalance)
+                            expect(bal[2]).toEqual(ethExchangeBalance)
+                            expect(bal[3]).toEqual(tokenExchangeBalance)
+                        })
+                    })
+                })
+            })
+        })
+    })
 }
 
 describe('WalletAccountProvider', () => {
@@ -442,4 +467,181 @@ describe('MetaMaskAccountProvider', () => {
 
     testContract(metamaskAddress)
 })
+
+// creates a new account with 5 ETH and 5 TEST tokens in both wallet and exchange
+function createTradeableAccount() {
+    const tradeableAccount = web3.eth.accounts.create()
+    EtherDeltaWeb3.initForPrivateKey(tradeableAccount.address, tradeableAccount.privateKey.slice(2))
+    return testTokenContractInstance.methods.transfer(tradeableAccount.address, web3.utils.toWei('10', 'ether'))
+        .send({ from: metamaskAddress, gas: 200000, gasPrice: defaultGasPrice })
+        .then(() => {
+            return web3.eth.sendTransaction({ from: metamaskAddress, to: tradeableAccount.address, value: web3.utils.toWei('10', 'ether') })
+                .then(() => {
+                    return EtherDeltaWeb3.promiseDepositEther(tradeableAccount.address, 0, web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                        .then(() => {
+                            return EtherDeltaWeb3.promiseTokenApprove(tradeableAccount.address, 1, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                                .then(() => {
+                                    return EtherDeltaWeb3.promiseDepositToken(tradeableAccount.address, 2, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                                        .then(() => {
+                                            return tradeableAccount
+                                        })
+                                })
+                        })
+                })
+        })
+}
+
+describe('Account Provider independent functions', () => {
+
+    beforeAll(() => {
+        return createTradeableAccount()
+            .then(maker => {
+                global.orderMakerAccount = maker
+                return createTradeableAccount()
+                    .then(taker => {
+                        global.orderTakerAccount = taker
+                    })
+            })
+    })
+
+    describe('MetaMask balance check', () => {
+        testRefreshEthAndTokBalance(metamaskAddress)
+    })
+
+    describe('Wallet balance check', () => {
+        testRefreshEthAndTokBalance(primaryKeyAccount.address)
+    })
+
+    describe('Taker BUY (aka Maker SELL)', () => {
+        beforeAll(() => {
+            const expiry = 100000
+            const price = 0.2 // ETH per TEST token
+            const amount = 2 // TEST tokens
+            const order = OrderFactory.createSignedOrder(
+                OrderSide.SELL,
+                expiry,
+                price,
+                amount,
+                testTokenAddress(),
+                orderMakerAccount.address,
+                orderMakerAccount.privateKey)
+            global.takerBuyOrder = order
+        })
+        describe('promiseTestTrade', () => {
+            test('should return true if the Taker wants to fully fill the order', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
+                    .then(canTrade => expect(canTrade).toBe(true))
+            })
+            test('should return true if the Taker wants to partially fill the order', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, BigNumber(takerBuyOrder.amountGet).times(BigNumber('0.5')))
+                    .then(canTrade => expect(canTrade).toBe(true))
+            })
+            test('should return false if the Taker amount is zero', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, '0')
+                    .then(canTrade => expect(canTrade).toBe(false))
+            })
+            test('should return false if the Taker tries to over-fill the order', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, BigNumber(takerBuyOrder.amountGet).times(BigNumber('2')))
+                    .then(canTrade => expect(canTrade).toBe(false))
+            })
+            test('should return false if the Maker does not have TEST tokens to sell', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderMakerAccount.address, orderMakerAccount.privateKey.slice(2))
+                // maker withdraws all TEST tokens from exchange
+                return EtherDeltaWeb3.promiseWithdrawToken(orderMakerAccount.address, 3, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
+                            .then(canTrade => {
+                                expect(canTrade).toBe(false)
+                                // maker re-deposits TEST tokens to exchange as a test cleanup
+                                return EtherDeltaWeb3.promiseTokenApprove(orderMakerAccount.address, 4, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                                    .then(() => {
+                                        return EtherDeltaWeb3.promiseDepositToken(orderMakerAccount.address, 5, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                                    })
+                            })
+                    })
+            })
+            test('should return false if the Taker does not have ETH to buy the TEST tokens', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderTakerAccount.address, orderTakerAccount.privateKey.slice(2))
+                // taker withdraws all ETH from exchange
+                return EtherDeltaWeb3.promiseWithdrawEther(orderTakerAccount.address, 3, web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
+                            .then(canTrade => {
+                                expect(canTrade).toBe(false)
+                                // taker re-deposits ETH to exchange as a test cleanup
+                                return EtherDeltaWeb3.promiseDepositEther(orderTakerAccount.address, 4, web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                            })
+                    })
+            })            
+        })
+    })
+
+    describe('Taker SELL (aka Maker BUY)', () => {
+        beforeAll(() => {
+            const expiry = 100000
+            const price = 0.2 // ETH per TEST token
+            const amount = 2 // TEST tokens
+            const order = OrderFactory.createSignedOrder(
+                OrderSide.BUY,
+                expiry,
+                price,
+                amount,
+                testTokenAddress(),
+                orderMakerAccount.address,
+                orderMakerAccount.privateKey)
+            global.takerSellOrder = order
+        })
+        describe('promiseTestTrade', () => {
+            test('should return true if the Taker wants to fully fill the order', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerSellOrder, takerSellOrder.amountGet)
+                    .then(canTrade => expect(canTrade).toBe(true))
+            })
+            test('should return true if the Taker wants to partially fill the order', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerSellOrder, BigNumber(takerSellOrder.amountGet).times(BigNumber('0.5')))
+                    .then(canTrade => expect(canTrade).toBe(true))
+            })
+            test('should return false if the Taker amount is zero', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerSellOrder, '0')
+                    .then(canTrade => expect(canTrade).toBe(false))
+            })
+            test('should return false if the Taker tries to over-fill the order', () => {
+                return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerSellOrder, BigNumber(takerSellOrder.amountGet).times(BigNumber('2')))
+                    .then(canTrade => expect(canTrade).toBe(false))
+            })
+
+            test('should return false if the Maker does not have ETH to buy the TEST tokens', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderMakerAccount.address, orderMakerAccount.privateKey.slice(2))
+                // maker withdraws all ETH from exchange
+                return EtherDeltaWeb3.promiseWithdrawEther(orderMakerAccount.address, 6, web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerSellOrder, takerSellOrder.amountGet)
+                            .then(canTrade => {
+                                expect(canTrade).toBe(false)
+                                // maker re-deposits ETH to exchange as a test cleanup
+                                return EtherDeltaWeb3.promiseDepositEther(orderMakerAccount.address, 7, web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                            })
+                    })
+            })  
+
+            test('should return false if the Taker does not have TEST tokens to sell', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderTakerAccount.address, orderTakerAccount.privateKey.slice(2))
+                // taker withdraws all TEST tokens from exchange
+                return EtherDeltaWeb3.promiseWithdrawToken(orderTakerAccount.address, 5, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerSellOrder, takerSellOrder.amountGet)
+                            .then(canTrade => {
+                                expect(canTrade).toBe(false)
+                                // taker re-deposits TEST tokens to exchange as a test cleanup
+                                return EtherDeltaWeb3.promiseTokenApprove(orderTakerAccount.address, 6, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                                    .then(() => {
+                                        return EtherDeltaWeb3.promiseDepositToken(orderTakerAccount.address, 7, testTokenAddress(), web3.utils.toWei('5', 'ether'), defaultGasPrice)
+                                    })
+                            })
+                    })
+            })
+          
+        })
+    })
+})
+
 
