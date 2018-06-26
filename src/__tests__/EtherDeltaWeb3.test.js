@@ -10,6 +10,10 @@
  * 
  */
 
+
+ // ESLint
+ /* global global, nonce, takerBuyOrder, orderTakerAccount, orderMakerAccount, orderMakerNonce, orderTakerNonce, takerSellOrder, edContractInstance, testTokenContractInstance */
+
 import Web3 from 'web3'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import Config from '../Config'
