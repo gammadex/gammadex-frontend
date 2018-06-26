@@ -11,8 +11,8 @@
  */
 
 
- // ESLint
- /* global global, nonce, takerBuyOrder, orderTakerAccount, orderMakerAccount, orderMakerNonce, orderTakerNonce, takerSellOrder, edContractInstance, testTokenContractInstance */
+// ESLint
+/* global global, nonce, takerBuyOrder, orderTakerAccount, orderMakerAccount, orderMakerNonce, orderTakerNonce, takerSellOrder, edContractInstance, testTokenContractInstance */
 
 import Web3 from 'web3'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
@@ -34,6 +34,9 @@ const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
 // This is a dynamic account local to this test and the running instance of the smart contract
 const primaryKeyAccount = web3.eth.accounts.create()
 
+// receives fees from the ED contract
+const feeAccount = web3.eth.accounts.create()
+
 const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 
 beforeAll(() => {
@@ -45,7 +48,7 @@ beforeAll(() => {
     const edContract = new web3.eth.Contract(abiEtherDelta)
     const promiseDeployEdContract = edContract.deploy({
         data: etherDeltaBytecode.data,
-        arguments: [metamaskAddress, metamaskAddress, "0x0", 0, 3000000000000000, 0]
+        arguments: [metamaskAddress, feeAccount.address, "0x0", 0, 3000000000000000, 0]
     }).send({
         from: metamaskAddress,
         gas: 3000000,
@@ -264,7 +267,7 @@ function testContract(userAddress) {
             // - transfer it
             // - reset the approval amount to zero (which we do hear so future tests have clean state)
             return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', defaultGasPrice)
-                .then(() => web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count))
+                .then(() => web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count))
         })
 
         test(`should allow the ED contract to deposit an amount of token on the user's behalf`, () => {
@@ -290,7 +293,7 @@ function testContract(userAddress) {
 
         beforeEach(() => {
             return EtherDeltaWeb3.promiseTokenApprove(userAddress, nonce, testTokenAddress(), '0', defaultGasPrice)
-                .then(() => web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count))
+                .then(() => web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count))
         })
 
         test('should increase exchange TEST token balance', () => {
@@ -358,7 +361,7 @@ function testContract(userAddress) {
                         .then(() => {
                             return EtherDeltaWeb3.promiseDepositToken(userAddress, nonce + 2, testTokenAddress(), depositAmount, defaultGasPrice)
                                 .then(() => {
-                                    return web3.eth.getTransactionCount(primaryKeyAccount.address).then(count => global.nonce = count)
+                                    return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
                                 })
                         })
                 })
@@ -398,6 +401,180 @@ function testContract(userAddress) {
                     expect(amount).toEqual(weiWithdrawAmount)
                 })
         })
+    })
+
+    describe('promiseTrade', () => {
+        describe('Trade Taker BUY (aka Maker SELL)', () => {
+            beforeEach(() => {
+                return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
+            })
+            test(`Should increase Taker's TEST exchange balance`, () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceAfter => {
+                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(order.amountGive)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should decrease Maker's TEST exchange balance`, () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceAfter => {
+                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).minus(BigNumber(order.amountGive)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should decrease Taker's ETH exchange balance (accounting for Fee payable in ETH)`, () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceAfter => {
+                            const feeEth = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                            expect(ethExchangeBalanceAfter)
+                                .toEqual(BigNumber(ethExchangeBalanceBefore).minus(BigNumber(order.amountGet).plus(feeEth)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should increase Maker's ETH exchange balance`, () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceAfter => {
+                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(order.amountGet)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should increase the Fee Accounts's ETH exchange balance`, () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), feeAccount.address).call().then(ethExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), feeAccount.address).call().then(ethExchangeBalanceAfter => {
+                            const feeEth = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(feeEth)).toFixed())
+                        })
+                    })
+                })                
+            })
+            test('should use the gas settings provided by the user and app', () => {
+                const weiGasPrice = web3.utils.toWei('1.61', 'gwei')
+                const order = createTestOrder(OrderSide.SELL)
+                return gasTest(
+                    () => EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, weiGasPrice),
+                    weiGasPrice,
+                    Config.getGasLimit('trade')
+                )
+            })
+            test('Should generate a Trade Event for this user and TEST token withdraw amount', () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                .then(receipt => {
+                    const { tokenGet, amountGet, tokenGive, amountGive, get, give } = eventFromReceipt(receipt, 'Trade')
+                    expect(tokenGet).toEqual(Config.getBaseAddress())
+                    expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                    expect(tokenGive).toEqual(testTokenAddress())
+                    expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                    expect(get.toLowerCase()).toEqual(orderMakerAccount.address.toLowerCase())
+                    expect(give.toLowerCase()).toEqual(userAddress.toLowerCase())
+                })                
+            })
+        })
+
+        describe('Trade Taker SELL (aka Maker BUY)', () => {
+            beforeEach(() => {
+                return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
+            })
+            test(`Should increase Taker's ETH exchange balance`, () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceAfter => {
+                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(order.amountGive)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should decrease Maker's ETH exchange balance`, () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceAfter => {
+                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).minus(BigNumber(order.amountGive)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should decrease Taker's TEST exchange balance (accounting for Fee payable in TEST token)`, () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceAfter => {
+                            const feeTestToken = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                            expect(tokenExchangeBalanceAfter)
+                                .toEqual(BigNumber(tokenExchangeBalanceBefore).minus(BigNumber(order.amountGet).plus(feeTestToken)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should increase Maker's TEST exchange balance`, () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceAfter => {
+                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(order.amountGet)).toFixed())
+                        })
+                    })
+                })
+            })
+            test(`Should increase the Fee Accounts's TEST exchange balance`, () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return edContractInstance.methods.balanceOf(testTokenAddress(), feeAccount.address).call().then(tokenExchangeBalanceBefore => {
+                    return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                    .then(() => {
+                        return edContractInstance.methods.balanceOf(testTokenAddress(), feeAccount.address).call().then(tokenExchangeBalanceAfter => {
+                            const feeTestToken = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(feeTestToken)).toFixed())
+                        })
+                    })
+                })                
+            })
+            test('should use the gas settings provided by the user and app', () => {
+                const weiGasPrice = web3.utils.toWei('1.71', 'gwei')
+                const order = createTestOrder(OrderSide.BUY)
+                return gasTest(
+                    () => EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, weiGasPrice),
+                    weiGasPrice,
+                    Config.getGasLimit('trade')
+                )
+            })
+            test('Should generate a Trade Event for this user and TEST token withdraw amount', () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
+                .then(receipt => {
+                    const { tokenGet, amountGet, tokenGive, amountGive, get, give } = eventFromReceipt(receipt, 'Trade')
+                    expect(tokenGive).toEqual(Config.getBaseAddress())
+                    expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                    expect(tokenGet).toEqual(testTokenAddress())
+                    expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                    expect(get.toLowerCase()).toEqual(orderMakerAccount.address.toLowerCase())
+                    expect(give.toLowerCase()).toEqual(userAddress.toLowerCase())
+                })                
+            })
+        })        
     })
 }
 
@@ -444,7 +621,16 @@ describe('WalletAccountProvider', () => {
             .then(nonce => expect(nonce).toEqual(nonce))
     })
 
-    testContract(primaryKeyAccount.address)
+    describe('testContract', () => {
+        beforeAll(() => {
+            return createTradeableAccount()
+                .then(maker => {
+                    global.orderMakerAccount = maker
+                    EtherDeltaWeb3.initForPrivateKey(primaryKeyAccount.address, primaryKeyAccount.privateKey.slice(2))
+                })
+        })
+        testContract(primaryKeyAccount.address)
+    })
 })
 
 describe('MetaMaskAccountProvider', () => {
@@ -469,7 +655,17 @@ describe('MetaMaskAccountProvider', () => {
             .then(nonce => expect(nonce).toEqual(0))
     })
 
-    testContract(metamaskAddress)
+    describe('testContract', () => {
+        beforeAll(() => {
+            return createTradeableAccount()
+                .then(maker => {
+                    global.orderMakerAccount = maker
+                    EtherDeltaWeb3.initForMetaMaskWeb3(web3)
+                    global.nonce = 0
+                })
+        })
+        testContract(metamaskAddress)
+    })
 })
 
 // creates a new account with 5 ETH and 5 TEST tokens in both wallet and exchange
@@ -497,8 +693,8 @@ function createTradeableAccount() {
 
 function createTestOrder(makerSide) {
     const expiry = 100000
-    const price = 0.2 // ETH per TEST token
-    const amount = 2 // TEST tokens
+    const price = 0.02 // ETH per TEST token
+    const amount = 0.4 // TEST tokens
     return OrderFactory.createSignedOrder(
         makerSide,
         expiry,
@@ -551,7 +747,7 @@ describe('Account Provider independent functions', () => {
         testRefreshEthAndTokBalance(primaryKeyAccount.address)
     })
 
-    describe('Taker BUY (aka Maker SELL)', () => {
+    describe('State queries for Taker BUY (aka Maker SELL)', () => {
         beforeAll(() => {
             global.takerBuyOrder = createTestOrder(OrderSide.SELL)
         })
@@ -577,17 +773,17 @@ describe('Account Provider independent functions', () => {
                 // maker withdraws all TEST tokens from exchange
                 return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenBalance => {
                     return EtherDeltaWeb3.promiseWithdrawToken(orderMakerAccount.address, orderMakerNonce, testTokenAddress(), tokenBalance, defaultGasPrice)
-                    .then(() => {
-                        return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
-                            .then(canTrade => {
-                                expect(canTrade).toBe(false)
-                                // maker re-deposits TEST tokens to exchange as a test cleanup
-                                return EtherDeltaWeb3.promiseTokenApprove(orderMakerAccount.address, orderMakerNonce + 1, testTokenAddress(), tokenBalance, defaultGasPrice)
-                                    .then(() => {
-                                        return EtherDeltaWeb3.promiseDepositToken(orderMakerAccount.address, orderMakerNonce + 2, testTokenAddress(), tokenBalance, defaultGasPrice)
-                                    })
-                            })
-                    })
+                        .then(() => {
+                            return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
+                                .then(canTrade => {
+                                    expect(canTrade).toBe(false)
+                                    // maker re-deposits TEST tokens to exchange as a test cleanup
+                                    return EtherDeltaWeb3.promiseTokenApprove(orderMakerAccount.address, orderMakerNonce + 1, testTokenAddress(), tokenBalance, defaultGasPrice)
+                                        .then(() => {
+                                            return EtherDeltaWeb3.promiseDepositToken(orderMakerAccount.address, orderMakerNonce + 2, testTokenAddress(), tokenBalance, defaultGasPrice)
+                                        })
+                                })
+                        })
                 })
             })
             test('should return false if the Taker does not have ETH to buy the TEST tokens', () => {
@@ -595,14 +791,14 @@ describe('Account Provider independent functions', () => {
                 // taker withdraws all ETH from exchange
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderTakerAccount.address).call().then(etherBalance => {
                     return EtherDeltaWeb3.promiseWithdrawEther(orderTakerAccount.address, orderTakerNonce, etherBalance, defaultGasPrice)
-                    .then(() => {
-                        return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
-                            .then(canTrade => {
-                                expect(canTrade).toBe(false)
-                                // taker re-deposits ETH to exchange as a test cleanup
-                                return EtherDeltaWeb3.promiseDepositEther(orderTakerAccount.address, orderTakerNonce + 1, etherBalance, defaultGasPrice)
-                            })
-                    })
+                        .then(() => {
+                            return EtherDeltaWeb3.promiseTestTrade(orderTakerAccount.address, takerBuyOrder, takerBuyOrder.amountGet)
+                                .then(canTrade => {
+                                    expect(canTrade).toBe(false)
+                                    // taker re-deposits ETH to exchange as a test cleanup
+                                    return EtherDeltaWeb3.promiseDepositEther(orderTakerAccount.address, orderTakerNonce + 1, etherBalance, defaultGasPrice)
+                                })
+                        })
                 })
             })
         })
@@ -639,20 +835,20 @@ describe('Account Provider independent functions', () => {
                 // maker withdraws all TEST tokens from exchange
                 return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenBalance => {
                     return EtherDeltaWeb3.promiseWithdrawToken(orderMakerAccount.address, orderMakerNonce, testTokenAddress(), tokenBalance, defaultGasPrice)
-                    .then(() => {
-                        return EtherDeltaWeb3.promiseAvailableVolume(order)
-                            .then(availableVolume => {
-                                expect(BigNumber(availableVolume).toFixed()).toEqual('0')
-                                // maker re-deposits TEST tokens to exchange as a test cleanup
-                                return EtherDeltaWeb3.promiseTokenApprove(orderMakerAccount.address, orderMakerNonce + 1, testTokenAddress(), tokenBalance, defaultGasPrice)
-                                    .then(() => {
-                                        return EtherDeltaWeb3.promiseDepositToken(orderMakerAccount.address, orderMakerNonce + 2, testTokenAddress(), tokenBalance, defaultGasPrice)
-                                    })
-                            })
-                    })
+                        .then(() => {
+                            return EtherDeltaWeb3.promiseAvailableVolume(order)
+                                .then(availableVolume => {
+                                    expect(BigNumber(availableVolume).toFixed()).toEqual('0')
+                                    // maker re-deposits TEST tokens to exchange as a test cleanup
+                                    return EtherDeltaWeb3.promiseTokenApprove(orderMakerAccount.address, orderMakerNonce + 1, testTokenAddress(), tokenBalance, defaultGasPrice)
+                                        .then(() => {
+                                            return EtherDeltaWeb3.promiseDepositToken(orderMakerAccount.address, orderMakerNonce + 2, testTokenAddress(), tokenBalance, defaultGasPrice)
+                                        })
+                                })
+                        })
                 })
 
-            })            
+            })
         })
 
         describe('promiseAmountFilled', () => {
@@ -678,11 +874,11 @@ describe('Account Provider independent functions', () => {
                         return EtherDeltaWeb3.promiseAmountFilled(order)
                             .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
                     })
-            })       
-        })        
+            })
+        })
     })
 
-    describe('Taker SELL (aka Maker BUY)', () => {
+    describe('State queries for Taker SELL (aka Maker BUY)', () => {
         beforeAll(() => {
             global.takerSellOrder = createTestOrder(OrderSide.BUY)
         })
@@ -774,19 +970,19 @@ describe('Account Provider independent functions', () => {
                 // maker withdraws all ETH from exchange
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(etherBalance => {
                     return EtherDeltaWeb3.promiseWithdrawEther(orderMakerAccount.address, orderMakerNonce, etherBalance, defaultGasPrice)
-                    .then(() => {
-                        return EtherDeltaWeb3.promiseAvailableVolume(order)
-                            .then(availableVolume => {
-                                expect(BigNumber(availableVolume).toFixed()).toEqual('0')
-                                // maker re-deposits ETH to exchange as a test cleanup
-                                return EtherDeltaWeb3.promiseDepositEther(orderMakerAccount.address, orderMakerNonce + 1, etherBalance, defaultGasPrice)
-                            })
-                    })
+                        .then(() => {
+                            return EtherDeltaWeb3.promiseAvailableVolume(order)
+                                .then(availableVolume => {
+                                    expect(BigNumber(availableVolume).toFixed()).toEqual('0')
+                                    // maker re-deposits ETH to exchange as a test cleanup
+                                    return EtherDeltaWeb3.promiseDepositEther(orderMakerAccount.address, orderMakerNonce + 1, etherBalance, defaultGasPrice)
+                                })
+                        })
                 })
 
-            })            
-        })      
-        
+            })
+        })
+
         describe('promiseAmountFilled', () => {
             test('should return zero if the order is unfilled', () => {
                 const order = createTestOrder(OrderSide.BUY)
@@ -810,8 +1006,8 @@ describe('Account Provider independent functions', () => {
                         return EtherDeltaWeb3.promiseAmountFilled(order)
                             .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
                     })
-            })       
-        })          
+            })
+        })
     })
 })
 
