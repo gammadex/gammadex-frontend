@@ -79,16 +79,16 @@ export default class PlotlyDepthChart extends React.Component {
             dragmode: 'zoom',
             showlegend: false,
             xaxis: {
-                title: 'Price',
+                //title: 'Price',
             },
             yaxis: {
-                title: 'Cumulative Volume',
+                //title: 'Cumulative Volume',
             },
             margin: {
-                l: 80,
-                r: 40,
-                b: 50,
-                t: 20,
+                l: 60,
+                r: 30,
+                b: 30,
+                t: 10,
                 pad: 4
             }, font: {
                 size: 12,
