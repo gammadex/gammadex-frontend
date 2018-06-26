@@ -3,7 +3,7 @@ import TokenChooser from '../components/TokenChooser'
 import OpenOrders from '../components/OpenOrders'
 import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
-import Charts from '../components/Charts'
+import OrderDepthChart from '../components/OrderDepthChart'
 import * as TokenApi from "../apis/TokenApi"
 import UnlistedTokens from "../components/UnlistedTokens"
 import Trading from "../components/Trading"
@@ -12,6 +12,8 @@ import AccountDetail from '../components/AccountDetail'
 import UnrecognisedToken from "../components/UnrecognisedToken"
 import {withRouter} from "react-router-dom"
 import InvalidUrlTokenWarning from "../components/InvalidUrlTokenWarning"
+import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
+import PriceChart from "../components/PriceChart"
 
 class Exchange extends Component {
     constructor() {
@@ -58,11 +60,11 @@ class Exchange extends Component {
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                     <Trading token={token}/>
-                    <OpenOrders/>
-                    <PendingTrades/>
+                    <OpenOrdersAndPendingTrades/>
                 </div>
                 <div className="pl-0 col-lg-3 exchange-right-col main-col">
-                    <Charts token={token}/>
+                    <PriceChart/>
+                    <OrderDepthChart token={token}/>
                     <TradeHistory token={token}/>
                 </div>
             </div>

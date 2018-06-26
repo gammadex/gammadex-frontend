@@ -35,13 +35,15 @@ export default class PlotlyPriceChart extends React.Component {
     }
 
     updateChartDimensions(prevProps) {
-        const {width, height} = this.props
+        const {width, height, trades} = this.props
 
-        if (width !== prevProps.width || height !== prevProps.height) {
-            Plotly.relayout('chart', {
-                width: width,
-                height: height,
-            })
+        if (trades && trades.length > 0) {
+            if (width !== prevProps.width || height !== prevProps.height) {
+                Plotly.relayout('chart', {
+                    width: width,
+                    height: height,
+                })
+            }
         }
     }
 
