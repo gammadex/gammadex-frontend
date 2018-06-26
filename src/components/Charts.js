@@ -61,7 +61,7 @@ export default class Charts extends React.Component {
 
         return (
             <Box className="chart-component">
-                <BoxHeader noBorder={allTrades.length === 0 || noChartActiveClass === "active"} className="with-button">
+                <BoxHeader className="with-button">
                     <ul className="nav nav-pills card-header-pills">
                         <li className="nav-item">
                             <button className={"nav-link btn btn-sm card-header-button " + priceChartActiveClass}
@@ -69,7 +69,7 @@ export default class Charts extends React.Component {
                         </li>
                         <li className="nav-item">
                             <button className={"nav-link  btn btn-sm card-header-button " + depthChartActiveClass}
-                               onClick={() => this.selectTab("DepthChart")}>Depth Chart</button>
+                               onClick={() => this.selectTab("DepthChart")}>Order Depth Chart</button>
                         </li>
                         <li>
                             <MarketResponseSpinner/>
@@ -80,7 +80,6 @@ export default class Charts extends React.Component {
                 <Conditional displayCondition={allTrades.length > 0}>
                     {content}
                 </Conditional>
-
             </Box>
         )
     }

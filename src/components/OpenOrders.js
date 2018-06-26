@@ -168,41 +168,9 @@ export default class OpenOrders extends React.Component {
         }
 
         return (
-            <div className="card">
-                <div className="card-header">
-                    <div className="row hdr-stretch">
-                        <div className="col-lg-6">
-                            <strong className="card-title">Open Orders<MarketResponseSpinner/></strong>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="form-group">
-                                <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
-                                    <input type="checkbox"
-                                           className="custom-control-input"
-                                           id="openOrdersAllTokens"
-                                           onChange={this.handleShowAll}
-                                           value="true"
-                                           checked={showAllTokens}/>
-                                    <label className="custom-control-label" htmlFor="openOrdersAllTokens">Show All
-                                        Tokens</label>
-                                </div>
-                                <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
-                                    <strong className="card-title"><Round>{ethCommited}</Round> ETH</strong>
-                                </div>
-                                <Conditional displayCondition={!showAllTokens}>
-                                    <div className="custom-control custom-checkbox my-1 mr-sm-2 float-right">
-                                        <strong
-                                            className="card-title dimmed-heading"><Round>{tokCommited}</Round> {currentTokenSymbol}
-                                        </strong>
-                                    </div>
-                                </Conditional>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    {content}
-                </div>
+            <div>
+                {content}
+
                 <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className} keyboard>
                     <ModalBody>{modalText}<br/>
                         <small className='text-muted'>{modalFeeText}</small>

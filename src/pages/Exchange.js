@@ -12,6 +12,7 @@ import AccountDetail from '../components/AccountDetail'
 import UnrecognisedToken from "../components/UnrecognisedToken"
 import {withRouter} from "react-router-dom"
 import InvalidUrlTokenWarning from "../components/InvalidUrlTokenWarning"
+import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
 
 class Exchange extends Component {
     constructor() {
@@ -58,8 +59,7 @@ class Exchange extends Component {
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                     <Trading token={token}/>
-                    <OpenOrders/>
-                    <PendingTrades/>
+                    <OpenOrdersAndPendingTrades/>
                 </div>
                 <div className="pl-0 col-lg-3 exchange-right-col main-col">
                     <Charts token={token}/>

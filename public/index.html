@@ -553,6 +553,7 @@
             min-height: 250px;
             flex-grow: 0;
             max-height: 33%;
+            flex-basis: 25%;
         }
 
         .exchange-right-col {
@@ -582,8 +583,15 @@
 
         .trading-and-orderbook-component {
             padding-bottom: var(--main-padding);
+            flex-shrink: 0;
             flex-grow: 1;
-            min-width: 75%; /* TODO - remove once open orders and pending trades are combined */
+            flex-basis: 75%;
+        }
+
+        .open-orders-and-pending-trades-component {
+            flex-shrink: 1;
+            flex-grow: 0;
+            flex-basis: 25%;
         }
 
         .trading-and-orderbook-component .card {
