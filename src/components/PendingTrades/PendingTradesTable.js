@@ -12,7 +12,11 @@ export default class PendingTradesTable extends React.Component {
                 <table className="table table-striped table-bordered">
                     <thead>
                     <tr>
-                        <th>Trade</th>
+                        <th>Market</th>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Amount</th>
+                        <th>Total (ETH)</th>
                         <th>Date</th>
                         <th>Status</th>
                         <th></th>
