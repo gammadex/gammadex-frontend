@@ -4,16 +4,42 @@ import {convertToOhlc, getPricesAndDates} from "../../util/OhlcConverter"
 import {getInitialDateRange} from "../../util/ChartUtil"
 import _ from "lodash"
 import {BoxSection} from "../CustomComponents/Box"
+import ReactResizeDetector from 'react-resize-detector'
+import OrderBookStore from '../../stores/OrderBookStore'
+import {Box} from "../CustomComponents/Box"
 
 export default class PlotlyPriceChart extends React.Component {
-    state = {
-        ohlcIntervalMins: 1440,
-        chartElements: {
-            ohlc: true,
-            volume: true,
-            price: false
-        },
-        plotCreatedForToken: null
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            trades: OrderBookStore.getAllTradesSortedByDateAsc(),
+            ohlcIntervalMins: 1440,
+            chartElements: {
+                ohlc: true,
+                volume: true,
+                price: false
+            },
+            plotCreatedForToken: null,
+            chartContainerWidth: null,
+            chartContainerHeight: null
+        }
+
+        this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
+    }
+
+    componentWillMount() {
+        OrderBookStore.on("change", this.saveBidsAndOffers)
+    }
+
+    componentWillUnmount() {
+        OrderBookStore.removeListener("change", this.saveBidsAndOffers)
+    }
+
+    saveBidsAndOffers() {
+        this.setState({
+            trades: OrderBookStore.getAllTradesSortedByDateAsc(),
+        })
     }
 
     componentDidMount() {
@@ -21,34 +47,31 @@ export default class PlotlyPriceChart extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const {trades, token} = this.props
-        const {plotCreatedForToken} = this.state
-        let stateChanged = (!_.isEqual(prevState, this.state) || prevProps.token !== token)
+        const {token} = this.props
+        const {plotCreatedForToken, trades} = this.state
+        const tokenSymbol = token ? token.symbol : null
+
+        const prevTrades = prevState.trades || []
+        const currTrades = trades || []
+
+        const stateChanged = (!_.isEqual(prevState, this.state) || prevProps.token !== token || prevTrades.length !== currTrades.length)
 
         if (trades && trades.length > 0) {
-            if (plotCreatedForToken !== token || stateChanged) {
-                this.createNewChart()
-            } else {
+            if (plotCreatedForToken === token && !stateChanged) {
                 this.updateChartDimensions(prevProps)
-            }
-        }
-    }
-
-    updateChartDimensions(prevProps) {
-        const {width, height, trades} = this.props
-
-        if (trades && trades.length > 0) {
-            if (width !== prevProps.width || height !== prevProps.height) {
-                Plotly.relayout('chart', {
-                    width: width,
-                    height: height,
-                })
+            } else {
+                this.createNewChart()
             }
         }
     }
 
     createNewChart() {
-        const {trades, token} = this.props
+        const {token} = this.props
+        const tokenSymbol = token ? token.symbol : null
+        const {trades, chartContainerWidth, chartContainerHeight} = this.state
+
+        console.log(`creating: ${chartContainerWidth}x${chartContainerHeight}`, trades)
+
 
         if (trades && trades.length > 0) {
             const {data, layout} = this.getDataAndLayout()
@@ -62,10 +85,23 @@ export default class PlotlyPriceChart extends React.Component {
         }
     }
 
+    updateChartDimensions(prevProps) {
+        const {chartContainerWidth, chartContainerHeight} = this.state
+
+        if (chartContainerWidth && chartContainerHeight) {
+            try {
+                Plotly.relayout('chart', {
+                    width: chartContainerWidth,
+                    height: chartContainerHeight,
+                })
+            } catch (error) {
+                console.log(`Error ${error}`)
+            }
+        }
+    }
 
     getDataAndLayout = () => {
-        const {ohlcIntervalMins, chartElements} = this.state
-        const {trades} = this.props
+        const {trades, ohlcIntervalMins, chartElements} = this.state
 
         const ohlc = convertToOhlc(trades, ohlcIntervalMins, 'yyyy-mm-dd HH:MM')
         const prices = getPricesAndDates(trades, 'yyyy-mm-dd HH:MM:ss')
@@ -135,7 +171,7 @@ export default class PlotlyPriceChart extends React.Component {
                 tickformat: '%b %d',
             },
             yaxis: {
-               // title: 'Price',
+                // title: 'Price',
                 autorange: true,
             },
             margin: {
@@ -163,71 +199,52 @@ export default class PlotlyPriceChart extends React.Component {
         })
     }
 
-    onChartElementsChange = (event) => {
-        let elementName = event.target.value
-        let elementEnabled = event.target.checked
-
-        this.setState((prevState) => {
-            const {chartElements: prevChartElements} = prevState
-            const chartElements = Object.assign({}, prevChartElements, {[elementName]: elementEnabled})
-
-            if (chartElements['ohlc'] || chartElements['volume'] || chartElements['price']) { // at least one needs to be visible
-                return {
-                    chartElements
-                }
-            } else {
-                return {}
-            }
+    onResize = (width, height) => {
+        this.setState({
+            chartContainerWidth: width,
+            chartContainerHeight: height
         })
     }
 
     render() {
-        const {chartElements, ohlcIntervalMins} = this.state
-        const {trades} = this.props
+        const {ohlcIntervalMins} = this.state
 
-        if (!trades || trades.length === 0) {
-            return <div></div>
-        }
+        return (
+            <Box title="Price Chart" className="chart-component price-chart-component">
+                <div className="float-right ohlc-interval">
+                    <span className="ohlc-interval-description">OHLC interval</span>
 
-        return <BoxSection>
-            <div className="row">
-                <div className="col-lg-12">
-                    <div className="float-right ohlc-interval">
-                        <span className="ohlc-interval-description">OHLC interval</span>
-
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan1"
-                                   value="60"
-                                   onChange={this.onOhlcSpanChange}
-                                   checked={ohlcIntervalMins === 60}
-                            />
-                            <label className="form-check-label" htmlFor="ohlcSpan1">1 hour</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan2"
-                                   value="360"
-                                   onChange={this.onOhlcSpanChange}
-                                   checked={ohlcIntervalMins === 360}
-                            />
-                            <label className="form-check-label" htmlFor="ohlcSpan2">6 hours</label>
-                        </div>
-                        <div className="form-check form-check-inline">
-                            <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan3"
-                                   value="1440"
-                                   onChange={this.onOhlcSpanChange}
-                                   checked={ohlcIntervalMins === 1440}
-                            />
-                            <label className="form-check-label" htmlFor="ohlcSpan3">1 day</label>
-                        </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan1"
+                               value="60"
+                               onChange={this.onOhlcSpanChange}
+                               checked={ohlcIntervalMins === 60}
+                        />
+                        <label className="form-check-label" htmlFor="ohlcSpan1">1 hour</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan2"
+                               value="360"
+                               onChange={this.onOhlcSpanChange}
+                               checked={ohlcIntervalMins === 360}
+                        />
+                        <label className="form-check-label" htmlFor="ohlcSpan2">6 hours</label>
+                    </div>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan3"
+                               value="1440"
+                               onChange={this.onOhlcSpanChange}
+                               checked={ohlcIntervalMins === 1440}
+                        />
+                        <label className="form-check-label" htmlFor="ohlcSpan3">1 day</label>
                     </div>
                 </div>
-            </div>
 
-            <div className="row">
-                <div className="col-lg-12">
+                <BoxSection id="price-chart-resize-container">
+                    <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="price-chart-resize-container"/>
                     <div id="chart"/>
-                </div>
-            </div>
-        </BoxSection>
+                </BoxSection>
+            </Box>
+        )
     }
 }

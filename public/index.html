@@ -30,6 +30,12 @@
         :root {
             --main-padding: 6px;
             --half-main-padding: 3px;
+            --card-header-height: 40px;
+        }
+
+        #chart {
+            height: 100%;
+            max-height: 100%;
         }
 
         .zeros {
@@ -575,6 +581,32 @@
             flex-grow: 0;
             flex-shrink: 0;
             flex-basis: 30%;
+            max-height: 30%;
+            display: flex;
+        }
+
+        .price-chart-component .card-body {
+            height: calc(100% - 40px - 40px);
+            padding-top: 0;
+        }
+
+        .price-chart-component .ohlc-interval {
+            height: 40px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .order-depth-chart-component .card-body {
+            height: calc(100% - 40px);
+            padding-top: 0;
+        }
+
+        .chart-component .js-plotly-plot, .chart-component .plot-container, .chart-component .svg-container, .chart-component .main-svg {
+            height: 100%;
+            max-height: 100%;
         }
 
         .market-trades-component {
@@ -621,7 +653,12 @@
             height: calc(50% - 20px);
         }
 
+        .card-header {
+            height: var(--card-header-height);
+        }
+
         /* end layout bits and pieces */
+
 
     </style>
     <title>GammaDEX</title>

@@ -1,9 +1,37 @@
 import React from "react"
 import Plotly from 'plotly.js/dist/plotly-finance'
 import {cumulativeAdd} from "../../util/CumulativeOrderVolumeAdder"
-import {BoxSection} from "../CustomComponents/Box"
+import {Box, BoxSection} from "../CustomComponents/Box"
+import OrderBookStore from "../../stores/OrderBookStore"
+import ReactResizeDetector from 'react-resize-detector'
 
 export default class PlotlyDepthChart extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            bids: OrderBookStore.getBids(),
+            offers: OrderBookStore.getOffers(),
+        }
+
+        this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
+    }
+
+    componentWillMount() {
+        OrderBookStore.on("change", this.saveBidsAndOffers)
+    }
+
+    componentWillUnmount() {
+        OrderBookStore.removeListener("change", this.saveBidsAndOffers)
+    }
+
+    saveBidsAndOffers() {
+        this.setState({
+            bids: OrderBookStore.getBids(),
+            offers: OrderBookStore.getOffers(),
+        })
+    }
+
     componentDidMount() {
         this.createChart()
     }
@@ -13,7 +41,7 @@ export default class PlotlyDepthChart extends React.Component {
     }
 
     createChart() {
-        const {bids, offers} = this.props
+        const {bids, offers} = this.state
 
         if (bids && bids.length > 0 && offers && offers.length > 0) {
             const {data, layout} = this.getDataAndLayout(bids, offers)
@@ -58,7 +86,7 @@ export default class PlotlyDepthChart extends React.Component {
             },
             margin: {
                 l: 80,
-                r: 80,
+                r: 40,
                 b: 50,
                 t: 20,
                 pad: 4
@@ -74,9 +102,21 @@ export default class PlotlyDepthChart extends React.Component {
         }
     }
 
+    onResize = (width, height) => {
+        this.setState({
+            chartContainerWidth: width,
+            chartContainerHeight: height
+        })
+    }
+
     render() {
-        return <BoxSection>
-            <div id="depthChart"/>
-        </BoxSection>
+        return (
+            <Box title="Order Depth Chart" className="chart-component order-depth-chart-component">
+                <BoxSection id="depth-chart-resize-container">
+                    <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="depth-chart-resize-container"/>
+                    <div id="depthChart"/>
+                </BoxSection>
+            </Box>
+        )
     }
 }
