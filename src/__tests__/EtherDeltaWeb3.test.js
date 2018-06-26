@@ -591,7 +591,7 @@ describe('Account Provider independent functions', () => {
             })
         })
 
-        describe('promiseAmountFilled', () => {
+        describe('promiseAvailableVolume', () => {
             test('should return the order quantity (aka amountGet) if the order is unfilled', () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return EtherDeltaWeb3.promiseAvailableVolume(order)
@@ -615,7 +615,55 @@ describe('Account Provider independent functions', () => {
                             .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual('0'))
                     })
             })
+            test('should return zero if the maker does not have the TEST token to sell', () => {
+
+                EtherDeltaWeb3.initForPrivateKey(orderMakerAccount.address, orderMakerAccount.privateKey.slice(2))
+                const order = createTestOrder(OrderSide.SELL)
+
+                // maker withdraws all TEST tokens from exchange
+                return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenBalance => {
+                    return EtherDeltaWeb3.promiseWithdrawToken(orderMakerAccount.address, orderMakerNonce, testTokenAddress(), tokenBalance, defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseAvailableVolume(order)
+                            .then(availableVolume => {
+                                expect(BigNumber(availableVolume).toFixed()).toEqual('0')
+                                // maker re-deposits TEST tokens to exchange as a test cleanup
+                                return EtherDeltaWeb3.promiseTokenApprove(orderMakerAccount.address, orderMakerNonce + 1, testTokenAddress(), tokenBalance, defaultGasPrice)
+                                    .then(() => {
+                                        return EtherDeltaWeb3.promiseDepositToken(orderMakerAccount.address, orderMakerNonce + 2, testTokenAddress(), tokenBalance, defaultGasPrice)
+                                    })
+                            })
+                    })
+                })
+
+            })            
         })
+
+        describe('promiseAmountFilled', () => {
+            test('should return zero if the order is unfilled', () => {
+                const order = createTestOrder(OrderSide.SELL)
+                return EtherDeltaWeb3.promiseAmountFilled(order)
+                    .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual('0'))
+            })
+            test('should return the filled order quantity if the order is partially filled', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderTakerAccount.address, orderTakerAccount.privateKey.slice(2))
+                const order = createTestOrder(OrderSide.SELL)
+                return EtherDeltaWeb3.promiseTrade(orderTakerAccount.address, orderTakerNonce, order, BigNumber(order.amountGet).times(BigNumber('0.25')).toFixed())
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseAmountFilled(order)
+                            .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).times(BigNumber('0.25')).toFixed()))
+                    })
+            })
+            test('should return the order quantity (aka amountGet) if the order is fully filled', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderTakerAccount.address, orderTakerAccount.privateKey.slice(2))
+                const order = createTestOrder(OrderSide.SELL)
+                return EtherDeltaWeb3.promiseTrade(orderTakerAccount.address, orderTakerNonce, order, BigNumber(order.amountGet).toFixed())
+                    .then(receipt => {
+                        return EtherDeltaWeb3.promiseAmountFilled(order)
+                            .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
+                    })
+            })       
+        })        
     })
 
     describe('Taker SELL (aka Maker BUY)', () => {
@@ -677,7 +725,7 @@ describe('Account Provider independent functions', () => {
 
         })
 
-        describe('promiseAmountFilled', () => {
+        describe('promiseAvailableVolume', () => {
             test('should return the order quantity (aka amountGet) if the order is unfilled', () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return EtherDeltaWeb3.promiseAvailableVolume(order)
@@ -701,7 +749,53 @@ describe('Account Provider independent functions', () => {
                             .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual('0'))
                     })
             })
-        })        
+
+            test('should return zero if the maker does not have the ETH to buy TEST tokens', () => {
+
+                EtherDeltaWeb3.initForPrivateKey(orderMakerAccount.address, orderMakerAccount.privateKey.slice(2))
+                const order = createTestOrder(OrderSide.BUY)
+
+                // maker withdraws all ETH from exchange
+                return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(etherBalance => {
+                    return EtherDeltaWeb3.promiseWithdrawEther(orderMakerAccount.address, orderMakerNonce, etherBalance, defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseAvailableVolume(order)
+                            .then(availableVolume => {
+                                expect(BigNumber(availableVolume).toFixed()).toEqual('0')
+                                // maker re-deposits ETH to exchange as a test cleanup
+                                return EtherDeltaWeb3.promiseDepositEther(orderMakerAccount.address, orderMakerNonce + 1, etherBalance, defaultGasPrice)
+                            })
+                    })
+                })
+
+            })            
+        })      
+        
+        describe('promiseAmountFilled', () => {
+            test('should return zero if the order is unfilled', () => {
+                const order = createTestOrder(OrderSide.BUY)
+                return EtherDeltaWeb3.promiseAmountFilled(order)
+                    .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual('0'))
+            })
+            test('should return the filled order quantity if the order is partially filled', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderTakerAccount.address, orderTakerAccount.privateKey.slice(2))
+                const order = createTestOrder(OrderSide.BUY)
+                return EtherDeltaWeb3.promiseTrade(orderTakerAccount.address, orderTakerNonce, order, BigNumber(order.amountGet).times(BigNumber('0.25')).toFixed())
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseAmountFilled(order)
+                            .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).times(BigNumber('0.25')).toFixed()))
+                    })
+            })
+            test('should return the order quantity (aka amountGet) if the order is fully filled', () => {
+                EtherDeltaWeb3.initForPrivateKey(orderTakerAccount.address, orderTakerAccount.privateKey.slice(2))
+                const order = createTestOrder(OrderSide.BUY)
+                return EtherDeltaWeb3.promiseTrade(orderTakerAccount.address, orderTakerNonce, order, BigNumber(order.amountGet).toFixed())
+                    .then(receipt => {
+                        return EtherDeltaWeb3.promiseAmountFilled(order)
+                            .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
+                    })
+            })       
+        })          
     })
 })
 
