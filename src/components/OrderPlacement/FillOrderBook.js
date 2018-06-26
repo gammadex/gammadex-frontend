@@ -31,7 +31,7 @@ export default class FillOrderBook extends React.Component {
             exchangeBalanceEthWei: 0,
             exchangeBalanceTokWei: 0,
             selectedAccountType: null,
-            confirmTradeModal: false
+            confirmTradeModalSide: null
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
@@ -95,12 +95,12 @@ export default class FillOrderBook extends React.Component {
         if (this.isTakerBuyComponent()) {
             this.setState({
                 fillOrder: tradeState.fillOrderTakerBuy,
-                confirmTradeModal: tradeState.confirmTradeModal
+                confirmTradeModalSide: tradeState.confirmTradeModalSide
             })
         } else {
             this.setState({
                 fillOrder: tradeState.fillOrderTakerSell,
-                confirmTradeModal: tradeState.confirmTradeModal
+                confirmTradeModalSide: tradeState.confirmTradeModalSide
             })
         }
     }
@@ -136,7 +136,7 @@ export default class FillOrderBook extends React.Component {
             if (selectedAccountType === AccountType.METAMASK || selectedAccountType === AccountType.LEDGER) {
                 TradeActions.executeFillOrder(fillOrder)
             } else {
-                TradeActions.confirmFillOrder()
+                TradeActions.confirmFillOrder(this.props.type)
             }
         }
 
@@ -175,7 +175,7 @@ export default class FillOrderBook extends React.Component {
             ethereumPriceUsd,
             exchangeBalanceEthWei,
             exchangeBalanceTokWei,
-            confirmTradeModal
+            confirmTradeModalSide
         } = this.state
 
         let body = null
@@ -251,7 +251,7 @@ export default class FillOrderBook extends React.Component {
                             </Col>
                         </FormGroup>
                     </form>
-                    <Modal isOpen={confirmTradeModal} toggle={this.abortFundingAction} className={this.props.className} keyboard>
+                    <Modal isOpen={confirmTradeModalSide!=null  && confirmTradeModalSide === type} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                         <ModalBody>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${fillOrder.fillAmountControlled} ${tokenSymbol}?`}</ModalBody>
                         <ModalFooter>
                             <Button color="secondary" onClick={this.onAbort}>Abort</Button>{' '}

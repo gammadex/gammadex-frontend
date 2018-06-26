@@ -10,14 +10,14 @@ class TradeStore extends EventEmitter {
         super()
         this.fillOrderTakerBuy = null,
         this.fillOrderTakerSell = null,
-        this.confirmTradeModal = false
+        this.confirmTradeModalSide = null
     }
 
     getTradeState() {
         return {
             fillOrderTakerBuy: this.fillOrderTakerBuy,
             fillOrderTakerSell: this.fillOrderTakerSell,
-            confirmTradeModal: this.confirmTradeModal
+            confirmTradeModalSide: this.confirmTradeModalSide
         }
     }
 
@@ -61,12 +61,12 @@ class TradeStore extends EventEmitter {
                 break
             }    
             case ActionNames.CONFIRM_FILL_ORDER: {
-                this.confirmTradeModal = true
+                this.confirmTradeModalSide = action.takerSide
                 this.emitChange()
                 break
             }       
             case ActionNames.HIDE_FILL_ORDER_MODAL: {
-                this.confirmTradeModal = false
+                this.confirmTradeModalSide = null
                 this.emitChange()
                 break
             }                               

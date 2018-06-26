@@ -235,9 +235,10 @@ export function clearFillOrder(takerSide) {
     })
 }
 
-export function confirmFillOrder() {
+export function confirmFillOrder(takerSide) {
     dispatcher.dispatch({
-        type: ActionNames.CONFIRM_FILL_ORDER
+        type: ActionNames.CONFIRM_FILL_ORDER,
+        takerSide
     })
 }
 
