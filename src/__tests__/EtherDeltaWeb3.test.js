@@ -527,6 +527,18 @@ describe('Account Provider independent functions', () => {
         })
     })
 
+    describe('promiseCurrentBlockNumber', () => {
+        test('should return the current block number', () => {
+            return EtherDeltaWeb3.promiseCurrentBlockNumber()
+                .then(blockNumber => {
+                    return web3.eth.getBlockNumber()
+                        .then(expectedBlockNumber => {
+                            expect(blockNumber).toEqual(expectedBlockNumber)
+                        })
+                })
+        })
+    })
+
     describe('MetaMask balance check', () => {
         testRefreshEthAndTokBalance(metamaskAddress)
     })
