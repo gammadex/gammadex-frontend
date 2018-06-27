@@ -9,7 +9,7 @@ export class Box extends React.Component {
         const id = this.props.id || null
 
         const title = this.props.title ? <div className="card-header">
-            <strong className="card-title">{this.props.title}{marketResponseSpinner}</strong>
+            <div><strong className="card-title">{this.props.title}{marketResponseSpinner}</strong></div>
         </div> : ""
 
         if (id) {

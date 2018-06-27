@@ -27,30 +27,23 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
 
         return (
             <Box className="open-orders-and-pending-trades-component last-card">
-                <BoxHeader className="with-button">
-                    <div className="row hdr-stretch">
-                        <div className="col-lg-6">
-                            <strong className="card-title">Open Orders / Pending Trades</strong>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="float-right">
-                                <ul className="nav nav-pills card-header-pills">
-                                    <li className="nav-item">
-                                        <button className={"nav-link btn btn-sm card-header-button " + openOrdersActiveClass}
-                                                onClick={() => this.selectTab("OpenOrders")}>My Open Orders
-                                        </button>
-                                    </li>
-                                    <li className="nav-item">
-                                        <button className={"nav-link  btn btn-sm card-header-button " + pendingTradesActiveClass}
-                                                onClick={() => this.selectTab("PendingTrades")}>My Pending Trades
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                <BoxHeader>
+                    <div className="card-title">Open Orders / Pending Trades</div>
+                    <div>
+                        <ul className="nav nav-pills card-header-pills">
+                            <li className="nav-item">
+                                <button className={"nav-link btn btn-sm card-header-button " + openOrdersActiveClass}
+                                        onClick={() => this.selectTab("OpenOrders")}>My Open Orders
+                                </button>
+                            </li>
+                            <li className="nav-item">
+                                <button className={"nav-link  btn btn-sm card-header-button " + pendingTradesActiveClass}
+                                        onClick={() => this.selectTab("PendingTrades")}>My Pending Trades
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </BoxHeader>
-
                 {content}
             </Box>
         )

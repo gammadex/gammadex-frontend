@@ -96,16 +96,12 @@ class TokenChooser extends React.Component {
         return (
             <div className="card token-chooser-component">
                 <div className="card-header">
-                    <div className="row">
-                        <div className="col-lg-6">
-                            <strong className="card-title">Tokens<MarketResponseSpinner/></strong>
-                        </div>
-                        <div className="col-lg-6">
-                            <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
-                                <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                                       placeholder="Search" className="form-control"/>
-                            </form>
-                        </div>
+                    <div className="card-title">Tokens<MarketResponseSpinner/></div>
+                    <div>
+                        <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                            <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                                   placeholder="Search" className="form-control"/>
+                        </form>
                     </div>
                 </div>
 

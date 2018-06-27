@@ -15,7 +15,6 @@ export default class TradeHistoryTable extends React.Component {
         const emptyRows = JsxUtils.emptyRows(numEmptyRows, 4)
 
         return (
-            <div className="table-responsive">
                 <table className="table table-striped table-bordered table-no-bottom-border numbers-table">
                     <thead>
                         <tr>
@@ -31,7 +30,6 @@ export default class TradeHistoryTable extends React.Component {
                         {emptyRows}
                     </tbody>
                 </table>
-            </div>
         )
     }
 }

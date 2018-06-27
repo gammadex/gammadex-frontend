@@ -162,10 +162,6 @@
             vertical-align: middle;
         }
 
-        .card-header.with-button {
-            padding: 6px;
-        }
-
         .card-header-button {
             padding: 3px 6px 3px 6px;
         }
@@ -350,13 +346,6 @@
         .token-creator-add {
             flex-grow: 0;
             flex-shrink: 0;
-        }
-
-        /* TODO - is hdr-stretch needed? */
-        .hdr-stretch {
-            display: flex;
-            align-items: center;
-            justify-content: space-between
         }
 
         .hdr-stretch-ctr {
@@ -611,11 +600,12 @@
         }
 
         .market-trades-component {
-            flex-grow: 1;
-            flex-shrink: 1;
-            overflow-y: auto;
+            flex-grow: 0;
+            flex-shrink: 0;
             overflow-x: hidden;
             flex-basis: 40%;
+            max-height: 40%;
+            height: 40%;
         }
 
         .exchange-middle-col {
@@ -656,6 +646,11 @@
 
         .card-header {
             height: var(--card-header-height);
+            min-height: var(--card-header-height);
+            max-height: var(--card-header-height);
+            display:flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         /* end layout bits and pieces */
@@ -670,6 +665,10 @@
             padding-right: 0 !important;
             white-space: nowrap;
             border-right: 0 !important;
+        }
+
+        .nopad {
+            padding:0;
         }
 
 

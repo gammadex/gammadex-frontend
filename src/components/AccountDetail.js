@@ -92,17 +92,11 @@ export default class AccountDetail extends React.Component {
         return (
             <div className="card balances-component">
                 <div className="card-header with-button">
-                    <div className="row hdr-stretch">
-                        <div className="col-lg-6">
-                            <strong className="card-title">Balances</strong>
-                        </div>
-                        <div className="col-lg-6">
-                            <div className="float-right">
-                                <RefreshButton onClick={this.refreshBalances}
-                                               disabled={!accountRetrieved || retrievingBalance}
-                                               updating={retrievingBalance}/>
-                            </div>
-                        </div>
+                    <div className="card-title">Balances</div>
+                    <div>
+                        <RefreshButton onClick={this.refreshBalances}
+                                       disabled={!accountRetrieved || retrievingBalance}
+                                       updating={retrievingBalance}/>
                     </div>
                 </div>
 

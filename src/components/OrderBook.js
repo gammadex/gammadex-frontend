@@ -2,7 +2,7 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import {Box} from "./CustomComponents/Box"
+import {Box, BoxSection} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Conditional from "./CustomComponents/Conditional"
 
@@ -106,6 +106,7 @@ export default class OrderBook extends React.Component {
 
         return (
             <Box title="Bids and Offers" marketResponseSpinner>
+                <BoxSection className="nopad">
                 <Conditional displayCondition={!token}>
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
                 </Conditional>
@@ -134,6 +135,7 @@ export default class OrderBook extends React.Component {
                         </div>
                     </div>
                 </Conditional>
+                </BoxSection>
             </Box>
         )
     }
