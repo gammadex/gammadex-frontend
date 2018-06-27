@@ -90,53 +90,63 @@ export default class OrderBook extends React.Component {
 
         const openOrderIds = openOrders.map(o => o.id)
 
-        let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
-        if (token && bids && bids.length > 0) {
-            bidsContent = <OrdersTable orderType="bid" orders={bids}
+        //let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
+        //if (token && bids && bids.length > 0) {
+           const bidsContent = <OrdersTable orderType="bid" orders={bids}
                                        openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
                                        rowClass="buy-green"/>
-        }
+        //}
 
-        let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
-        if (token && offers && offers.length > 0) {
-            offersContent = <OrdersTable orderType="offer" orders={offers}
+        //let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
+        //if (token && offers && offers.length > 0) {
+           const offersContent = <OrdersTable orderType="offer" orders={offers}
                                          openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
                                          rowClass="sell-red"/>
-        }
+        //}
+        /*
+        return (
+            <Box title="Bids and Offers" marketResponseSpinner>
+
+                    {offersContent}
+
+            </Box>
+        )
+      */
 
         return (
             <Box title="Bids and Offers" marketResponseSpinner>
-                <BoxSection className="nopad">
+
                 <Conditional displayCondition={!token}>
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
                 </Conditional>
                 <Conditional displayCondition={!!token}>
-                    <div className="col-lg-12 bids-and-offers">
-                        <div className="row bids-and-offers-offers">
+                    <div className="bids-and-offers">
+                        <div className="bids-and-offers-offers">
                             {offersContent}
                         </div>
 
-                        <div className="row orders-col-border bids-and-offers-spacer">
+                        <div className="orders-col-border bids-and-offers-spacer">
                             <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
                                 <table className="table-bordered">
                                     <tbody>
                                     <tr>
                                         <td>{tokenSymbol}/ETH</td>
-                                        <td>Size ({tokenSymbol})</td>
-                                        <td>Total (ETH)</td>
+                                        <td>Size {tokenSymbol}</td>
+                                        <td>Total ETH</td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div className="row bids-and-offers-bids">
+                        <div className="bids-and-offers-bids">
                             {bidsContent}
                         </div>
                     </div>
                 </Conditional>
-                </BoxSection>
+
             </Box>
         )
+
     }
 }

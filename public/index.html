@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -31,6 +32,7 @@
             --main-padding: 6px;
             --half-main-padding: 3px;
             --card-header-height: 40px;
+            --bids-and-offers-spacer-height: 30px;
         }
 
         #chart {
@@ -126,7 +128,6 @@
         .card table {
             margin-bottom: 0;
             border-width: 0;
-            /*background: red;*/
         }
 
         .card .table tr td:first-child,
@@ -141,7 +142,12 @@
 
         .card .table-no-bottom-border tr:last-child td,
         .card .table-no-bottom-border tr:last-child th {
-            /*border-bottom: 0;*/
+            border-bottom: 0;
+        }
+
+        .card .table-no-top-border tr:first-child td,
+        .card .table-no-top-border tr:first-child th {
+            border-top: 0;
         }
 
         .card .table tr th {
@@ -217,11 +223,13 @@
 
         .orders-colnames {
             width: 100%;
+            height: 100%;
         }
 
         .orders-colnames table {
             margin: 0;
             width: 100%;
+            height: 100%;
         }
 
         .orders-colnames tbody {
@@ -247,9 +255,25 @@
             border: 0;
         }
 
-        .orders-table {
-            max-height: 220px;
-            width: 100%;
+        #orders-div-offer {
+            height: 100%;
+            max-height: 100%;
+        }
+
+        #orders-div-offer tr:last-child td,
+        #orders-div-offer tr:last-child th {
+            border-bottom: 0;
+            border-top: 0;
+        }
+
+        #orders-div-bid {
+            height: 100%;
+            max-height: 100%;
+        }
+
+        #orders-div-bid tr:first-child td,
+        #orders-div-bid tr:first-child th {
+            border-top: 0;
         }
 
         .card .orders-table table.table-bordered {
@@ -268,6 +292,10 @@
 
         .orders-table tr:first-child td {
             border-top: 0;
+        }
+
+        .orders-col-border tbody, .orders-col-border tr, .orders-col-border td {
+            height: 100%;
         }
 
         .card-header ul.nav {
@@ -603,9 +631,9 @@
             flex-grow: 0;
             flex-shrink: 0;
             overflow-x: hidden;
-            flex-basis: 40%;
-            max-height: 40%;
-            height: 40%;
+            flex-basis: calc(40% - 2 * var(--main-padding));
+            max-height: calc(40% - 2 * var(--main-padding));
+            height: calc(40% - 2 * var(--main-padding));
         }
 
         .exchange-middle-col {
@@ -633,22 +661,31 @@
         .bids-and-offers {
             display: flex;
             flex-direction: column;
+            height: calc(100% - var(--card-header-height));
+            max-height: calc(100% - var(--card-header-height));
+            min-height: calc(100% - var(--card-header-height));
         }
 
         .bids-and-offers-spacer {
             flex-grow: 0;
             flex-shrink: 0;
+            height: var(--bids-and-offers-spacer-height);
         }
 
         .bids-and-offers-bids, .bids-and-offers-offers {
-            height: calc(50% - 20px);
+            flex-basis: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+            flex-shrink: 0;
+            flex-grow: 0;
+            height: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+            max-height: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+            min-height: calc(50% - var(--bids-and-offers-spacer-height) / 2);
         }
 
         .card-header {
             height: var(--card-header-height);
             min-height: var(--card-header-height);
             max-height: var(--card-header-height);
-            display:flex;
+            display: flex;
             align-items: center;
             justify-content: space-between;
         }
@@ -668,9 +705,12 @@
         }
 
         .nopad {
-            padding:0;
+            padding: 0;
         }
 
+        .card-body {
+            max-height: calc(100% - var(--card-header-height));
+        }
 
     </style>
     <title>GammaDEX</title>

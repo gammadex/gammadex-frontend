@@ -10,9 +10,9 @@ export default class OrdersTable extends React.Component {
                        isPendingCancel={pendingCancelIds.includes(order.id)}/>)
 
         return (
-            <div id={"orders-div-" + orderType} className="table-responsive orders-table">
+            <div id={"orders-div-" + orderType} className="table-responsive">
                 <table id={"order-table-" + orderType}
-                       className="table table-striped table-bordered table-hover table-no-bottom-border numbers-table">
+                       className="table table-striped table-bordered table-hover numbers-table orders-table">
                     <tbody>
                     {rows}
                     </tbody>
