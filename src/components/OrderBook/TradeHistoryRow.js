@@ -1,7 +1,7 @@
 import React from "react"
 import Round from "../CustomComponents/Round"
 import Etherscan from "../CustomComponents/Etherscan"
-import { Popover, PopoverHeader, PopoverBody } from 'reactstrap'
+import {Popover, PopoverHeader, PopoverBody} from 'reactstrap'
 import Date from "../CustomComponents/Date"
 
 export default class TradeHistoryRow extends React.Component {
@@ -18,12 +18,12 @@ export default class TradeHistoryRow extends React.Component {
         return (
             <tr>
                 <td><Round price softZeros>{trade.price}</Round></td>
-                <td onClick={this.toggle} className="clickable"><Round>{String(trade.amount)}</Round></td>
-                <td onClick={this.toggle} className="clickable"><Round>{String(trade.amountBase)}</Round></td>
-                <td onClick={this.toggle} className="clickable">
-                    <small><Date noSeconds>{trade.date}</Date><br/></small>
+                <td><Round>{String(trade.amount)}</Round></td>
+                <td><Round>{String(trade.amountBase)}</Round></td>
+                <td className="before-etherscan-column">
+                    <Date noSeconds>{trade.date}</Date>
                 </td>
-                <td><Etherscan type="tx" address={trade.txHash} display="icon"/></td>
+                <td className="etherscan-column"><Etherscan type="tx" address={trade.txHash} display="icon"/></td>
             </tr>
         )
     }

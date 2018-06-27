@@ -12,7 +12,7 @@ export default class OrdersTable extends React.Component {
         return (
             <div id={"orders-div-" + orderType} className="table-responsive orders-table">
                 <table id={"order-table-" + orderType}
-                       className="table table-striped table-bordered table-hover table-no-bottom-border">
+                       className="table table-striped table-bordered table-hover table-no-bottom-border numbers-table">
                     <tbody>
                     {rows}
                     </tbody>

@@ -16,14 +16,14 @@ export default class TradeHistoryTable extends React.Component {
 
         return (
             <div className="table-responsive">
-                <table className="table table-striped table-bordered table-no-bottom-border">
+                <table className="table table-striped table-bordered table-no-bottom-border numbers-table">
                     <thead>
                         <tr>
                             <th>Price</th>
-                            <th>Size ({token})</th>
-                            <th>Total ({base})</th>
-                            <th>Date</th>
-                            <th></th>
+                            <th>{token}</th>
+                            <th>{base}</th>
+                            <th className="before-etherscan-column">Date</th>
+                            <th className="etherscan-column"></th>
                         </tr>
                     </thead>
                     <tbody>
