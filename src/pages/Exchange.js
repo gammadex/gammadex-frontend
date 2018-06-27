@@ -54,7 +54,7 @@ class Exchange extends Component {
                     <TokenChooser/>
                     <UnlistedTokens/>
                 </div>
-                <div className="pl-0 col-lg-6 exchange-middle-col main-col">
+                <div className="pl-0 col-lg-6 exchange-middle-col main-col full-height">
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                     <Trading token={token}/>

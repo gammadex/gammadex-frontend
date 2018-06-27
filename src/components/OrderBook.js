@@ -90,31 +90,16 @@ export default class OrderBook extends React.Component {
 
         const openOrderIds = openOrders.map(o => o.id)
 
-        //let bidsContent = <EmptyTableMessage>There are no bids</EmptyTableMessage>
-        //if (token && bids && bids.length > 0) {
-           const bidsContent = <OrdersTable orderType="bid" orders={bids}
-                                       openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                                       rowClass="buy-green"/>
-        //}
-
-        //let offersContent = <EmptyTableMessage>There are no offers</EmptyTableMessage>
-        //if (token && offers && offers.length > 0) {
-           const offersContent = <OrdersTable orderType="offer" orders={offers}
+        const bidsContent = <OrdersTable orderType="bid" orders={bids}
                                          openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                                         rowClass="sell-red"/>
-        //}
-        /*
-        return (
-            <Box title="Bids and Offers" marketResponseSpinner>
+                                         rowClass="buy-green"/>
 
-                    {offersContent}
-
-            </Box>
-        )
-      */
+        const offersContent = <OrdersTable orderType="offer" orders={offers}
+                                           openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
+                                           rowClass="sell-red"/>
 
         return (
-            <Box title="Bids and Offers" marketResponseSpinner>
+            <Box title="Bids and Offers" marketResponseSpinner className="full-height">
 
                 <Conditional displayCondition={!token}>
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
