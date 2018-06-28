@@ -1,6 +1,11 @@
 import React from "react"
-import { FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button } from 'reactstrap'
+import _ from 'lodash'
+import {FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button} from 'reactstrap'
 import Conditional from "../CustomComponents/Conditional"
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
+import {safeBigNumber} from "../../EtherConversion"
+import BigNumber from 'bignumber.js'
 
 export default class NumericInput extends React.Component {
     constructor(props) {
@@ -8,6 +13,17 @@ export default class NumericInput extends React.Component {
         this.formFeedback = this.formFeedback.bind(this)
         this.formText = this.formText.bind(this)
         this.gasFeeFormText = this.gasFeeFormText.bind(this)
+        this.state = {
+            sliderValue: null
+        }
+
+        const {slider, value} = props
+
+        if (slider && !_.isUndefined(value)) {
+            const {max} = props.slider
+            const ratio = max.toString() === "0" ? 0 : safeBigNumber(value).div(BigNumber(max)).toNumber()
+            this.state.sliderValue = Math.round(100 * ratio)
+        }
     }
 
     static cleanValueToDecimal(value) {
@@ -22,10 +38,34 @@ export default class NumericInput extends React.Component {
             .replace(/[^0-9]/g, () => "") // globally strip everything that isn't a digit
     }
 
+    cleanValue = (value) => {
+        const {forceInteger = false} = this.props
+        return forceInteger ? NumericInput.cleanValueToInteger(value) : NumericInput.cleanValueToDecimal(value)
+    }
+
     onChangeFilteringInput = (e) => {
-        const { forceInteger = false } = this.props
-        const cleanValue = forceInteger ? NumericInput.cleanValueToInteger(e.target.value) : NumericInput.cleanValueToDecimal(e.target.value)
-        this.props.onChange(cleanValue)
+        const value = this.cleanValue(e.target.value)
+        this.props.onChange(value)
+    }
+
+    onChangeByPercentage = (sliderValue) => {
+        const {slider} = this.props
+        if (slider) {
+            const {min, max} = slider
+
+            let value = min.plus(max.times(safeBigNumber(sliderValue).div(safeBigNumber(100))))
+            if (sliderValue < 100) {
+                value = value.toFixed(2)
+            }
+            value = this.cleanValue(value.toString())
+
+            this.props.onChange(value)
+
+            this.setState({
+                sliderValue
+            })
+        }
+
     }
 
     onMax() {
@@ -37,7 +77,7 @@ export default class NumericInput extends React.Component {
     }
 
     formFeedback() {
-        const { errorMessage = null, feedbackIcon = null } = this.props
+        const {errorMessage = null, feedbackIcon = null} = this.props
         if (feedbackIcon) {
             return <FormFeedback><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
         } else {
@@ -46,7 +86,7 @@ export default class NumericInput extends React.Component {
     }
 
     formText() {
-        const { helpMessage = null, helpIcon = null } = this.props
+        const {helpMessage = null, helpIcon = null} = this.props
         if (helpIcon) {
             return <FormText color="muted"><i className={helpIcon}></i>&nbsp;&nbsp;{helpMessage}</FormText>
         } else {
@@ -55,7 +95,7 @@ export default class NumericInput extends React.Component {
     }
 
     gasFeeFormText() {
-        const { actionDisabled, gasFeeInfo } = this.props
+        const {actionDisabled, gasFeeInfo} = this.props
         return <FormText color="muted">{actionDisabled ? null : gasFeeInfo}</FormText>
     }
 
@@ -87,28 +127,30 @@ export default class NumericInput extends React.Component {
             actionName = null,
             actionDisabled = false,
             placeholder = "0.00",
-            submittable = false
+            submittable = false,
+            slider,
+            addendum
         } = this.props
         const isInvalid = valid !== null && !valid
         let maxButton = null
         if (typeof (onMax) === 'function') {
             maxButton = <InputGroupAddon addonType="append"><Button color="link"
-                onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
+                                                                    onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
         }
 
         const input = (
             <div className="input-group">
                 <Input id={fieldName}
-                    autoComplete="off"
-                    disabled={disabled}
-                    value={value}
-                    onChange={this.onChangeFilteringInput}
-                    placeholder={placeholder}
-                    invalid={isInvalid} />
-                {maxButton}
+                       autoComplete="off"
+                       disabled={disabled}
+                       value={value}
+                       onChange={this.onChangeFilteringInput}
+                       placeholder={placeholder}
+                       invalid={isInvalid}/>
                 <Conditional displayCondition={unitName != null}>
                     <span className="input-unit">{unitName}</span>
                 </Conditional>
+                {maxButton}
                 {this.formFeedback()}
                 {this.formText()}
             </div>
@@ -126,19 +168,48 @@ export default class NumericInput extends React.Component {
         if (typeof (onAction) === 'function' && actionName) {
             actionButton = <Col className="funding-action" sm={4}>
                 <Button color="primary" className="btn-block" disabled={actionDisabled}
-                    onClick={() => this.onAction()}>{actionName}
+                        onClick={() => this.onAction()}>{actionName}
                 </Button>
                 {this.gasFeeFormText()}
             </Col>
             inputWidth = 8
         }
+
+        let sliderComponent = null
+        if (slider) {
+            const {sliderValue} = this.state
+
+            if (_.isNumber(sliderValue)) {
+                const marks = {
+                    0: '0%',
+                    25: '25%',
+                    50: '50%',
+                    75: '75%',
+                    100: '100%',
+                }
+
+                sliderComponent = <div className="numeric-input-slider">
+                    <Slider min={0} max={100} defaultValue={sliderValue} value={sliderValue} marks={marks} included={false} onChange={this.onChangeByPercentage}/>
+                </div>
+            }
+        }
+
+        let addendumComponent = null
+        if (addendum) {
+            addendumComponent = <div className="numeric-input-addendum">{addendum}</div>
+        }
+
         return (
+
             <FormGroup row>
                 {label}
                 <Col sm={inputWidth}>
                     {content}
+                    {sliderComponent}
+                    {addendumComponent}
                 </Col>
                 {actionButton}
+
             </FormGroup>
         )
     }

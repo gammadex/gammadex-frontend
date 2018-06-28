@@ -222,7 +222,7 @@ export default class MakeOrder extends React.Component {
         }
 
         const expiryTypeText = expiryType === ExpiryType.GOOD_TILL_CANCEL
-            ? "Order will remain active until cancelled. (expiry is set to two billion blocks, which is almost one thousand years!!)"
+            ? "Order will remain active until cancelled"
             : ""
 
         let priceWarningAlert = null
@@ -235,18 +235,23 @@ export default class MakeOrder extends React.Component {
             prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
         }
 
+        const balanceUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
+
         const body = (
             <BoxSection className={"order-box"}>
                 <form onSubmit={this.onSubmit}>
-                <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenSymbol}
-                    disabled="true" fieldName={type + "ExchangeBalanceMakeOrder"} />
-                <hr />
+                    <hr/>
                 <NumericInput name="Price" value={price} unitName="ETH"
                     onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />
 
                 <NumericInput name="Amount" value={amount} unitName={tokenSymbol}
                     onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
-                    valid={amountFieldValid} errorMessage={amountFieldErrorMessage} />
+                    valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
+                    slider={{
+                        min: safeBigNumber(0),
+                        max: available
+                    }}
+                    addendum={`${balanceUnitName} balance: ${available.toFixed(3).toString()}`} />
 
                 <NumericInput name="Total" value={total} unitName="ETH"
                     onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
