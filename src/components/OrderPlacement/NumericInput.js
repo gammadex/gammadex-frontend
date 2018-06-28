@@ -107,9 +107,7 @@ export default class NumericInput extends React.Component {
                     invalid={isInvalid} />
                 {maxButton}
                 <Conditional displayCondition={unitName != null}>
-                    <div className="input-group-append">
-                        <div className="input-group-text">{unitName}</div>
-                    </div>
+                    <span className="input-unit">{unitName}</span>
                 </Conditional>
                 {this.formFeedback()}
                 {this.formText()}
