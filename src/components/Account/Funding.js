@@ -203,8 +203,6 @@ export default class Funding extends React.Component {
             ethDepositFeedbackIcon = "fas fa-exclamation-triangle"
         } else if (ethDepositState === FundingState.WARNING) {
             ethDepositFeedbackIcon = "fas fa-gas-pump"
-        } else if (ethDepositState === FundingState.OK) {
-            ethDepositHelpIcon = "fas fa-gas-pump"
         }
         return {
             ethDepositDisabled: this.disableFundingAction(ethDepositState),
@@ -370,8 +368,7 @@ export default class Funding extends React.Component {
                           actionDisabled={ethDepositDisabled}
                           feedbackIcon={ethDepositFeedbackIcon}
                           helpIcon={ethDepositHelpIcon}
-                          submittable={true}
-                          gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_ETH, currentGasPriceWei, ethereumPriceUsd)}/>
+                          submittable={true}/>
 
             <NumericInput value={ethWithdrawalAmountControlled}
                           onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
@@ -381,8 +378,7 @@ export default class Funding extends React.Component {
                           actionDisabled={ethWithdrawalDisabled}
                           feedbackIcon={ethWithdrawalFeedbackIcon}
                           actionName={"Withdraw ETH"}
-                          submittable={true}
-                          gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_ETH, currentGasPriceWei, ethereumPriceUsd)}/>
+                          submittable={true}/>
             <hr className="balances-separator"/>
 
             <table className="table table-borderless">
@@ -407,8 +403,7 @@ export default class Funding extends React.Component {
                           actionDisabled={tokDepositDisabled}
                           feedbackIcon={tokDepositFeedbackIcon}
                           actionName={"Deposit " + tokenName}
-                          submittable={true}
-                          gasFeeInfo={this.gasCostInfo(OperationCosts.DEPOSIT_TOK, currentGasPriceWei, ethereumPriceUsd)}/>
+                          submittable={true}/>
 
             <NumericInput value={tokWithdrawalAmountControlled}
                           onChange={this.onTokWithdrawAmountChange} fieldName={"tokWithdrawAmount"}
@@ -418,8 +413,7 @@ export default class Funding extends React.Component {
                           actionDisabled={tokWithdrawalDisabled}
                           feedbackIcon={ethDepositFeedbackIcon}
                           actionName={"Withdraw " + tokenName}
-                          submittable={true}
-                          gasFeeInfo={this.gasCostInfo(OperationCosts.WITHDRAW_TOK, currentGasPriceWei, ethereumPriceUsd)}/>
+                          submittable={true}/>
 
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                 <ModalBody>{modalBody}</ModalBody>

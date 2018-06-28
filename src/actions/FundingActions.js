@@ -34,10 +34,8 @@ export function ethDepositAmountWeiChanged(ethDepositAmountWei, ethDepositAmount
                 fundingText = `${remaining} This leaves insufficient gas to submit additional Trade transactions.`
             } else if (numberOfTrades.isGreaterThan(BigNumber(20))) {
                 fundingState = FundingState.OK
-                fundingText = `${remaining} This is sufficient gas for > 20 Trades`
             } else {
                 fundingState = FundingState.OK
-                fundingText = `${remaining} This is sufficient gas for approximately ${numberOfTrades.toFixed(0)} Trades`
             }
 
         } else {
@@ -85,7 +83,7 @@ export function ethWithdrawalAmountWeiChanged(ethWithdrawalAmountWei, ethWithdra
             fundingState = FundingState.OK
         } else {
             fundingState = FundingState.ERROR
-            fundingText = `You cannot withdraw more than your exchange ETH balance (${baseWeiToEth(exchangeBalanceEthWei)})`
+            fundingText = `You cannot withdraw more than your exchange ETH balance: ${baseWeiToEth(exchangeBalanceEthWei)}`
         }
     }
 
@@ -167,7 +165,7 @@ export function tokWithdrawalAmountWeiChanged(tokWithdrawalAmountWei, tokWithdra
             fundingState = FundingState.OK
         } else {
             fundingState = FundingState.ERROR
-            fundingText = `You cannot withdraw more than your exchange ${tokenName} balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedTokenAddress())})`
+            fundingText = `You cannot withdraw more than your exchange ${tokenName} balance: ${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedTokenAddress())}`
         }
     }
 

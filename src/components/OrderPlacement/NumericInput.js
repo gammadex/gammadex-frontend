@@ -201,7 +201,7 @@ export default class NumericInput extends React.Component {
 
         return (
 
-            <FormGroup row>
+            <FormGroup row className="numeric-input">
                 {label}
                 <Col sm={inputWidth}>
                     {content}
