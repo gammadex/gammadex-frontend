@@ -15,12 +15,12 @@ export default class OrderBook extends React.Component {
             offers: OrderBookStore.getOffersDescending(),
             openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
             pendingCancelIds: OpenOrdersStore.getOpenOrdersState().pendingCancelIds,
-            scrolled: false,
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
         this.saveOpenOrders = this.saveOpenOrders.bind(this)
         this.updateTitleWidths = this.updateTitleWidths.bind(this)
         this.scrollOffers = this.scrollOffers.bind(this)
+        this.scrolled = false
     }
 
     componentDidMount() {
@@ -43,8 +43,12 @@ export default class OrderBook extends React.Component {
             }
         }
 
+        if (prevProps.token !== this.props.token) {
+            this.scrolled = false
+        }
+
         const offersDiv = document.getElementById("orders-div-offer")
-        if (offersDiv && prevState.bids && prevState.bids.length > 0 && !prevState.scrolled) {
+        if (offersDiv && this.state.bids && this.state.bids.length > 0 && !this.scrolled) {
             this.scrollOffers()
         }
     }
@@ -65,7 +69,7 @@ export default class OrderBook extends React.Component {
         if (offersDiv) {
             offersDiv.scrollTop = offersDiv.scrollHeight
 
-            this.setState({scrolled: true})
+            this.scrolled = true
         }
     }
 
