@@ -1,4 +1,5 @@
-import {splitTrailingZeros} from '../NumberUtil'
+import {splitTrailingZeros, toFixedStringNoTrailingZeros} from '../NumberUtil'
+import BigNumber from 'bignumber.js'
 
 test("all trialing zeros get split", () => {
     let number = "1.10000"
@@ -48,3 +49,26 @@ test("just . is handled safely", () => {
     expect(split).toEqual(["", "."])
 })
 
+test("0.001000 BigDecimal has trialing zeros stripped", () => {
+    let result = toFixedStringNoTrailingZeros(BigNumber("0.001000"), 4)
+
+    expect(result).toEqual('0.001')
+})
+
+test("0.001000 String has trialing zeros stripped", () => {
+    let result = toFixedStringNoTrailingZeros("0.001000", 4)
+
+    expect(result).toEqual('0.001')
+})
+
+test("0.000000 String has trialing zeros stripped to .00 if mindecimals is 2", () => {
+    let result = toFixedStringNoTrailingZeros("0.000000", 4, 2)
+
+    expect(result).toEqual('0.00')
+})
+
+test("1000000 String has nothing stripped", () => {
+    let result = toFixedStringNoTrailingZeros("1000000", 4, 2)
+
+    expect(result).toEqual('1000000.00')
+})

@@ -256,7 +256,7 @@ export default class MakeOrder extends React.Component {
                 <NumericInput name="Total" value={total} unitName="ETH"
                     onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
                     valid={totalFieldValid} errorMessage={totalFieldErrorMessage} />
-                <hr />
+
                 <FormGroup row>
                     <Label for={type + "ExpiryType"} sm={3}>Expiry</Label>
                     <Col sm={9}>

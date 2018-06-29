@@ -77,11 +77,12 @@ export default class NumericInput extends React.Component {
     }
 
     formFeedback() {
-        const {errorMessage = null, feedbackIcon = null} = this.props
+        const {errorMessage = null, feedbackIcon = null, invalidFeedbackAbove = false} = this.props
+        const feedbackClass = invalidFeedbackAbove ? "invalid-feedback-above" : "invalid-feedback-below"
         if (feedbackIcon) {
-            return <FormFeedback><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
+            return <FormFeedback className={feedbackClass}><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
         } else {
-            return <FormFeedback>{errorMessage}</FormFeedback>
+            return <FormFeedback className={feedbackClass}>{errorMessage}</FormFeedback>
         }
     }
 
@@ -196,7 +197,14 @@ export default class NumericInput extends React.Component {
 
         let addendumComponent = null
         if (addendum) {
-            addendumComponent = <div className="numeric-input-addendum">{addendum}</div>
+            if (_.isArray(addendum)) {
+                addendumComponent = <div className="numeric-input-addendum">
+                    {addendum.map((a, id) => <div key={id}>{a}</div>)}
+                </div>
+
+            } else {
+                addendumComponent = <div className="numeric-input-addendum">{addendum}</div>
+            }
         }
 
         return (

@@ -19,6 +19,9 @@ import { OperationCosts } from "../../ContractOperations"
 import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import AccountType from "../../AccountType"
+import BigNumber from 'bignumber.js'
+import {Popover, PopoverBody} from "reactstrap/dist/reactstrap"
+import {toFixedStringNoTrailingZeros} from "../../util/NumberUtil"
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
@@ -31,7 +34,9 @@ export default class FillOrderBook extends React.Component {
             exchangeBalanceEthWei: 0,
             exchangeBalanceTokWei: 0,
             selectedAccountType: null,
-            confirmTradeModalSide: null
+            confirmTradeModalSide: null,
+            popOverOpenGasFee: false,
+            popOverOpenExchangeFee: false,
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
@@ -163,6 +168,18 @@ export default class FillOrderBook extends React.Component {
         return !fillOrder.fillAmountValid || !balanceRetrieved
     }
 
+    toggleGasFeePopOver = () => {
+        this.setState({
+            popOverOpenGasFee: !this.state.popOverOpenGasFee
+        })
+    }
+
+    toggleExchangeFeePopOver = () => {
+        this.setState({
+            popOverOpenExchangeFee: !this.state.popOverOpenExchangeFee
+        })
+    }
+
     render() {
         const {
             type, tokenSymbol, tokenAddress, balanceRetrieved
@@ -187,7 +204,7 @@ export default class FillOrderBook extends React.Component {
                 const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
                 const estimatedOperationCost = OperationCosts.TAKE_ORDER
                 const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
-                estGas = estimatedGasCost.toFixed(8)
+                estGas = toFixedStringNoTrailingZeros(estimatedGasCost, 8)
                 if(ethereumPriceUsd != null) {
                     usdFee = (estimatedGasCost * ethereumPriceUsd).toFixed(3)
                 }
@@ -201,6 +218,16 @@ export default class FillOrderBook extends React.Component {
             const exchangeCost = safeBigNumber(isTakerSell(fillOrder.order) ? fillOrder.fillAmountControlled : fillOrder.totalEthControlled).times(safeBigNumber(Config.getExchangeFeePercent()))
             const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenSymbol : "ETH"
 
+            let usdExchangeCost = ""
+            if (exchangeCost) {
+                if (exchangeCostUnits === 'ETH') {
+                    usdExchangeCost = exchangeCost.times(safeBigNumber(ethereumPriceUsd))
+                } else {
+                    usdExchangeCost = exchangeCost.times(safeBigNumber(ethereumPriceUsd)).div(priceOf(fillOrder.order))
+                }
+                usdExchangeCost = usdExchangeCost.toFixed(3).toString()
+            }
+
             const available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
 
             const amountFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountValid : true
@@ -210,37 +237,81 @@ export default class FillOrderBook extends React.Component {
 
             let bestExecutionWarning = null
             if (!fillOrder.isBestExecution) {
-                bestExecutionWarning = <Alert color="warning">You have not selected the best order in the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book
+                bestExecutionWarning = <Alert color="warning" className="best-execution-warning">You have not selected the best order in the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book
                 . The same amount of {tokenSymbol} can be {type === OrderSide.BUY ? 'bought' : 'sold'} for a {type === OrderSide.BUY ? 'cheaper' : 'higher'} price.</Alert>
             }
 
             const submitDisabled = this.isSubmitDisabled()
+            const balanceUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
+            const orderAmountAvailable = OrderSide.BUY ? fillOrder.order.ethAvailableVolumeBase : fillOrder.order.ethAvailableVolume
+            const maxAvailable = BigNumber.min(available, orderAmountAvailable)
 
             body =
                 <BoxSection className={"order-box"}>
+                    <hr/>
+
                     <form onSubmit={this.onSubmit}>
-                        {bestExecutionWarning}
-                        <NumericInput name="Balance" value={available.toString()} unitName={type === OrderSide.BUY ? 'ETH' : tokenSymbol}
-                            disabled="true" fieldName={type + "ExchangeBalanceFillOrder"} />
-                        <hr />
                         <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
                             fieldName={type + "OrderPrice"} disabled="true" />
+
                         <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenSymbol}
                             onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
                             valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
-                            onMax={this.onMaxAmount} />
+                                      slider={{
+                                          min: safeBigNumber(0),
+                                          max: maxAvailable
+                                      }}
+                                      addendum={[
+                                          `${balanceUnitName} balance: ${available.toFixed(3).toString()}`,
+                                          `${balanceUnitName} max for this trade: ${maxAvailable.toFixed(3).toString()}`,
+                                      ]}
+                                      invalidFeedbackAbove />
+
                         <NumericInput name="Total" value={fillOrder.totalEthControlled.toFixed(3)} unitName="ETH"
                             fieldName={type + "OrderTotal"}
                             valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
                             disabled="true" />
-                        <hr />
-                        <NumericInput name="Est. Gas Fee" value={estGas} placeholder={''} unitName="ETH"
-                            fieldName={type + "GasFeeEth"} disabled="true" />
-                        <NumericInput name="" value={usdFee} placeholder={''} unitName="USD"
-                            fieldName={type + "GasFeeUsd"} disabled="true" helpMessage="Estimated cost to submit and execute this transaction on the Ethereum network." />
-                        <hr />
-                        <NumericInput name="0.3% Exchange Fee" value={exchangeCost.toFixed(8)} unitName={exchangeCostUnits}
-                            fieldName={type + "ExchangeFee"} disabled="true" helpMessage={`0.3% fee deducted by the EtherDelta Smart Contract, in units of the token (${exchangeCostUnits}) you are giving to the order maker.`} />
+
+                        <div className="trading-fees">
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>Est. gas fee</td>
+                                <td>
+                                    {estGas} ETH<br/>{usdFee} USD
+                                </td>
+                                <td>
+                                    <span id={"GasFeePopover"} onClick={this.toggleGasFeePopOver}>
+                                        <i className="fas fa-question-circle"></i>
+                                    </span>
+                                    <Popover placement="bottom" isOpen={this.state.popOverOpenGasFee} target={"GasFeePopover"} toggle={this.toggleGasFeePopOver}>
+                                        <PopoverBody>
+                                            Estimated cost to submit and execute this transaction on the Ethereum network
+                                        </PopoverBody>
+                                    </Popover>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>0.3% Exchange Fee</td>
+                                <td>
+                                    {exchangeCost.toFixed(5)} {exchangeCostUnits}
+                                    <br/>{usdExchangeCost} USD
+                                </td>
+                                <td>
+                                    <span id={"ExchangeFeePopover"} onClick={this.toggleExchangeFeePopOver}>
+                                        <i className="fas fa-question-circle"></i>
+                                    </span>
+                                    <Popover placement="bottom" isOpen={this.state.popOverOpenExchangeFee} target={"ExchangeFeePopover"} toggle={this.toggleExchangeFeePopOver}>
+                                        <PopoverBody>
+                                            0.3% fee deducted by the EtherDelta smart contract
+                                        </PopoverBody>
+                                    </Popover>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        </div>
+
                         <FormGroup row className="hdr-stretch-ctr">
                             <Col sm={6}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
@@ -251,6 +322,9 @@ export default class FillOrderBook extends React.Component {
                             </Col>
                         </FormGroup>
                     </form>
+
+                    {bestExecutionWarning}
+
                     <Modal isOpen={confirmTradeModalSide!=null  && confirmTradeModalSide === type} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                         <ModalBody>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${fillOrder.fillAmountControlled} ${tokenSymbol}?`}</ModalBody>
                         <ModalFooter>

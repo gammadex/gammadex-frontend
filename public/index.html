@@ -751,15 +751,52 @@
             padding-right: 10px
         }
 
+        .numeric-input-addendum > div {
+            padding-top:6px;
+        }
+
         .numeric-input .invalid-feedback {
-            position:absolute;
-            top:30px;
-            left:0;
             background:#FFFFFF;
             z-index: 20;
             border:1px solid rgb(220, 53, 69);
             padding:6px;
             border-radius: .25rem;
+        }
+
+        .numeric-input .invalid-feedback.invalid-feedback-above {
+            position:absolute;
+            bottom:34px;
+            left:0;
+        }
+
+        .numeric-input .invalid-feedback.invalid-feedback-below {
+            position:absolute ;
+            top:34px;
+            left:0;
+        }
+
+        .trading-fees {
+            display:flex;
+            justify-content: flex-end;
+            padding-bottom:10px;
+        }
+
+        .trading-fees td:first-child {
+            text-align:right;
+        }
+
+        .trading-fees td:last-child {
+            opacity: 1;
+        }
+
+        .trading-fees td {
+            vertical-align: top;
+            padding:6px;
+            opacity: 0.5;
+        }
+
+        .best-execution-warning {
+            margin-top:10px;
         }
 
     </style>

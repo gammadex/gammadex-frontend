@@ -1,3 +1,5 @@
+import {safeBigNumber} from "../EtherConversion"
+
 export function splitTrailingZeros(number) {
     if (number.includes('.')) {
         const decimalPointIndex = number.lastIndexOf(".")
@@ -11,4 +13,17 @@ export function splitTrailingZeros(number) {
     } else {
         return [number, '']
     }
+}
+
+export function toFixedStringNoTrailingZeros(number, decimals, minDecimals=0) {
+    const num = safeBigNumber(number).toFixed(decimals).toString()
+
+    let match = null
+    if (minDecimals > 0) {
+        match = num.match("^([0-9]*.[0-9]{" + minDecimals + "})0{1,}$")
+    } else {
+        match = num.match("^([0-9]+.[0-9]*[1-9])0{1,}$")
+    }
+
+    return match ? match[1] : num
 }

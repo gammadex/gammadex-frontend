@@ -10,7 +10,7 @@ export class Box extends React.Component {
 
         const title = this.props.title ? <div className="card-header">
             <div><strong className="card-title">{this.props.title}{marketResponseSpinner}</strong></div>
-        </div> : ""
+        </div> : null
 
         if (id) {
             return <div id={id} className={"card " + extraClassName}>{title}{this.props.children}</div>

@@ -104,12 +104,7 @@ export default class OrderBox extends React.Component {
         const sellOrderActive = activeOrderSide === OrderBoxType.SELL_ORDER
 
         return (
-            <Box>
-                <BoxHeader>
-                    <div>
-                        <strong className="card-title">TRADING</strong>
-                    </div>
-                </BoxHeader>
+            <Box title="Trading">
                 <BoxSection>
                     <Nav tabs fill>
                         <NavItem>
@@ -177,7 +172,7 @@ export default class OrderBox extends React.Component {
                                 <TabPane tabId={OrderBoxType.BUY_TRADE}>
                                     <Row>
                                         <Col sm="12">
-                                            <FillOrderBook type={OrderSide.BUY} tokenSymbol={tokenSymbol} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
+                                           <FillOrderBook type={OrderSide.BUY} tokenSymbol={tokenSymbol} tokenAddress={tokenAddress} balanceRetrieved={balanceRetrieved} />
                                         </Col>
                                     </Row>
                                 </TabPane>
