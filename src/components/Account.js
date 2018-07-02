@@ -56,8 +56,10 @@ export default class Account extends React.Component {
         })
     }
 
-    toggerPopover() {
+    toggerPopover(e) {
         AccountActions.toggleAccountPopover(!this.state.accountPopoverOpen)
+
+        e.preventDefault()
     }
 
     disconnectWallet() {
