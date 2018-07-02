@@ -76,23 +76,34 @@ export default class PlotlyDepthChart extends React.Component {
         const data = [buyTrace, sellTrace]
 
         const layout = {
+            plot_bgcolor:'transparent',
+            gridcolor: '#0000FF',
+            linecolor: '#0000FF',
+            grid: {
+                color:'blue'
+            },
             dragmode: 'zoom',
             showlegend: false,
             xaxis: {
+                color:'#999',
+                gridcolor: '#999',
+                showline: false,
                 //title: 'Price',
             },
             yaxis: {
+                color:'#999',
+                gridcolor: '#999',
+                showline: false,
                 //title: 'Cumulative Volume',
             },
             margin: {
-                l: 60,
-                r: 30,
+                l: 50,
+                r: 20,
                 b: 30,
                 t: 10,
                 pad: 4
             }, font: {
                 size: 12,
-                family: 'Lato, sans-serif',
             }, height: this.props.height
         }
 

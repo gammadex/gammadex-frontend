@@ -106,7 +106,7 @@ class TokenChooser extends React.Component {
                 </div>
 
                 <div className="table-responsive">
-                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                    <table className="table table-bordered table-hover table-no-bottom-border">
                         <thead>
                         <tr>
                             <th>Symbol</th>

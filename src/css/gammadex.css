@@ -1,0 +1,831 @@
+:root {
+    --main-padding: 2px;
+    --half-main-padding: 1px;
+    --card-header-height: 40px;
+    --bids-and-offers-spacer-height: 30px;
+}
+
+#chart {
+    height: 100%;
+    max-height: 100%;
+}
+
+.zeros {
+    opacity: 0.3;
+}
+
+.faded td, td.faded {
+    opacity: 0.5;
+}
+
+.faded .zeros {
+    opacity: 0.5;
+}
+
+.gas-price-value {
+    font-size: 130%;
+}
+
+.shadow {
+    box-shadow: 3px 6px 24px 0px rgba(0, 0, 0, 0.75);
+}
+
+.gas-prices .popover-body {
+    padding: 0;
+}
+
+.ohlc-interval {
+    display: flex;
+    align-items: center;
+}
+
+.ohlc-interval-description {
+    margin-right: 10px;
+}
+
+.clickable {
+    cursor: pointer
+}
+
+.selected-row {
+    font-weight: bold;
+}
+
+.wallet {
+    float: left;
+    width: 24px;
+    height: 24px;
+    margin: 5px;
+}
+
+.balances-heading {
+    padding-top: 0 ! important;
+    padding-bottom: 4px ! important;
+    font-weight: normal;
+    font-size: 80%;
+}
+
+.balances-amount {
+    padding-top: 0 !important;
+    padding-bottom: 4px !important;
+}
+
+.balances-separator {
+    margin: 3px 0 3px 0;
+}
+
+.card {
+    margin-bottom: var(--main-padding);
+}
+
+.card table {
+    margin-bottom: 0;
+    border-width: 0;
+}
+
+.card .table tr td:first-child,
+.card .table tr th:first-child {
+    border-left: 0;
+}
+
+.card .table tr td:last-child,
+.card .table tr th:last-child {
+    border-right: 0;
+}
+
+.card .table-no-bottom-border tr:last-child td,
+.card .table-no-bottom-border tr:last-child th {
+    border-bottom: 0;
+}
+
+.card .table-no-top-border tr:first-child td,
+.card .table-no-top-border tr:first-child th {
+    border-top: 0;
+}
+
+.card .table tr th {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.card-body {
+    padding: 6px;
+}
+
+.card-body .pagination {
+    margin-bottom: 0;
+}
+
+.card-header {
+    padding: 8px;
+    vertical-align: middle;
+}
+
+.card-header-button {
+    padding: 3px 6px 3px 6px;
+}
+
+.card-footer {
+    padding: 8px;
+}
+
+.card-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    float: left;
+    margin-bottom: 0;
+}
+
+.card .table-bordered {
+    border: 0;
+}
+
+.table-borderless td,
+.table-borderless th {
+    border: 0;
+}
+
+.balances-component .card-body > div.form-group {
+    margin-bottom: 6px !important;
+}
+
+.balances-component .card-body > div.form-group:last-child {
+    margin-bottom: 0px !important;
+}
+
+body, html {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.125em
+}
+
+.table td, .table th {
+    padding: 6px;
+}
+
+.orders-col-border {
+    border-style: solid;
+    border-width: 1px 0;
+}
+
+.funding-action {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.orders-colnames {
+    width: 100%;
+    height: 100%;
+}
+
+.orders-colnames table {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.orders-colnames tbody {
+    margin: 0;
+    width: 100%;
+}
+
+.orders-colnames td {
+    text-align: center;
+    padding: 6px;
+    width: 33%;
+    border-top: 0;
+    border-bottom: 0;
+    font-weight: bolder;
+}
+
+.orders-colnames td:first-child {
+    width: 34%;
+    border: 0;
+}
+
+.orders-colnames td:last-child {
+    border: 0;
+}
+
+#orders-div-offer {
+    height: 100%;
+    max-height: 100%;
+}
+
+#orders-div-offer tr:last-child td,
+#orders-div-offer tr:last-child th {
+    border-bottom: 0;
+    border-top: 0;
+}
+
+#orders-div-bid {
+    height: 100%;
+    max-height: 100%;
+}
+
+#orders-div-bid tr:first-child td,
+#orders-div-bid tr:first-child th {
+    border-top: 0;
+}
+
+.card .orders-table table.table-bordered {
+    width: 100%;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+}
+
+.orders-table td, .orders-table th {
+    width: 33%;
+}
+
+.orders-table td:first-child, .orders-table th:first-child {
+    width: 34%;
+}
+
+.orders-table tr:first-child td {
+    border-top: 0;
+}
+
+.orders-col-border tbody, .orders-col-border tr, .orders-col-border td {
+    height: 100%;
+}
+
+.card-header ul.nav {
+    padding-left: 10px;
+}
+
+.order-box {
+    padding: 6px;
+}
+
+.order-box .form-group {
+    margin-bottom: 6px;
+}
+
+.order-box .form-group:last-of-type {
+    margin-bottom: 0;
+}
+
+.order-box label {
+    padding-right: 0;
+}
+
+.nav-link.btn {
+    margin-right: 10px;
+}
+
+h1.main-header {
+    margin-bottom: 0;
+    float: left;
+}
+
+.card-title {
+    float: left;
+}
+
+.token-title {
+    font-size: 200%;
+}
+
+.token-stats {
+    margin-left: 20px;
+}
+
+.token-stat-name {
+    font-size: 75%;
+}
+
+.token-stat-value {
+    font-size: 110%;
+    font-weight: bold;
+}
+
+.empty-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    opacity: 0.7;
+}
+
+.popover-header {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.token-creator-form {
+    display: flex;
+    width: 100%;
+}
+
+.token-creator-address {
+    flex-grow: 1;
+    flex-basis: 90%;
+}
+
+.token-creator-add {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.hdr-stretch-ctr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.egspinner {
+    width: 30px;
+    height: 30px;
+}
+
+.hover {
+    z-index: 10;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    opacity: .60;
+    text-align: center;
+}
+
+.sub-card {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.txt-center {
+    text-align: center;
+}
+
+.txt-right {
+    text-align: right;
+}
+
+.input-group-text {
+    min-width: 48px;
+}
+
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.fa-question-circle {
+    cursor: pointer;
+}
+
+.nav-link {
+    cursor: pointer
+}
+
+.nav-link.active {
+    cursor: default
+}
+
+.global-messages {
+    position: fixed;
+    width: calc(50% - 20px);
+    bottom: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.global-message {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.splash-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    height: 50px;
+}
+
+/* layout bits and pieces */
+
+#app {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    box-sizing: border-box;
+    padding-left: 10px;
+}
+
+header > div {
+    display: flex;
+    align-items: center;
+}
+
+.page-content {
+    height: 100vh;
+}
+
+.route-content {
+    height: calc(100% - 50px);
+    padding: var(--main-padding) 0;
+}
+
+.main-warning {
+    margin-bottom: var(--main-padding);
+}
+
+.route-content > div {
+    height: 100%;
+}
+
+.row {
+    margin: 0;
+}
+
+.global-message .row, .card .row {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.card.last-card {
+    margin-bottom: 0px;
+}
+
+.main-col {
+    padding: 0px var(--main-padding);
+}
+
+.middle-left-col {
+    padding: 0 var(--half-main-padding) 0 0;
+}
+
+.middle-right-col {
+    padding: 0 0 0 var(--half-main-padding);
+}
+
+/* history page layout */
+
+.history-row {
+    height: 50%;
+}
+
+.history-component {
+    height: 100%;
+}
+
+.history-component .card {
+    height: 100%;
+}
+
+.deposit-history-container {
+    padding-left: var(--main-padding);
+    padding-right: var(--half-main-padding);
+}
+
+.withdraw-history-container {
+    padding-left: var(--half-main-padding);
+    padding-right: var(--main-padding);
+}
+
+.trade-history-container {
+    padding: var(--main-padding) var(--main-padding) 0 var(--main-padding);
+}
+
+/* exchange page layout */
+
+.exchange-left-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+}
+
+.balances-component {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.token-chooser-component {
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100px;
+}
+
+.unlisted-tokens-component {
+    min-height: 250px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    max-height: 33%;
+    flex-basis: 25%;
+}
+
+.exchange-right-col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    padding-right: var(--main-padding);
+}
+
+.order-depth-chart-component {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 30%;
+}
+
+.price-chart-component {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 30%;
+    max-height: 30%;
+    display: flex;
+}
+
+.price-chart-component .card-body {
+    height: calc(100% - 40px - 40px);
+    padding-top: 0;
+}
+
+.price-chart-component .ohlc-interval {
+    height: 40px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid;
+}
+
+.order-depth-chart-component .card-body {
+    height: calc(100% - 40px);
+    padding-top: 0;
+}
+
+.chart-component .js-plotly-plot, .chart-component .plot-container, .chart-component .svg-container, .chart-component .main-svg {
+    height: 100%;
+    max-height: 100%;
+}
+
+.market-trades-component {
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow-x: hidden;
+    flex-basis: calc(40% - 2 * var(--main-padding));
+    max-height: calc(40% - 2 * var(--main-padding));
+    height: calc(40% - 2 * var(--main-padding));
+}
+
+.exchange-middle-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.trading-and-orderbook-component {
+    padding-bottom: var(--main-padding);
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: 75%;
+    height: 75%;
+    max-height: 75%;
+    display: flex;
+}
+
+.trading-and-orderbook-component > div {
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: 50%;
+}
+
+.open-orders-and-pending-trades-component {
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: 25%;
+}
+
+.trading-and-orderbook-component .card {
+    height: 100%;
+}
+
+.bids-and-offers {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - var(--card-header-height));
+    max-height: calc(100% - var(--card-header-height));
+    min-height: calc(100% - var(--card-header-height));
+}
+
+.bids-and-offers-spacer {
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: var(--bids-and-offers-spacer-height);
+}
+
+.bids-and-offers-bids, .bids-and-offers-offers {
+    flex-basis: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+    flex-shrink: 0;
+    flex-grow: 0;
+    height: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+    max-height: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+    min-height: calc(50% - var(--bids-and-offers-spacer-height) / 2);
+}
+
+.card-header {
+    height: var(--card-header-height);
+    min-height: var(--card-header-height);
+    max-height: var(--card-header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* end layout bits and pieces */
+
+.etherscan-column {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-left: 0 !important;
+}
+
+.before-etherscan-column {
+    padding-right: 0 !important;
+    white-space: nowrap;
+    border-right: 0 !important;
+}
+
+.nopad {
+    padding: 0;
+}
+
+.card-body {
+    max-height: calc(100% - var(--card-header-height));
+}
+
+.full-height {
+    height: 100%;
+    max-height: 100%;
+    min-height: 100%;
+}
+
+.input-unit {
+    position: absolute;
+    right: 16px;
+    top: 8px;
+    opacity: 0.4;
+    font-weight: bold;
+    z-index: 5;
+}
+
+.numeric-input-slider {
+    margin-bottom: 12px;
+    margin-top: 10px;
+    padding-left: 10px;
+    padding-right: 20px;
+}
+
+.numeric-input-addendum {
+    padding-top: 12px;
+    padding-bottom: 10px;
+    text-align: right;
+    opacity: 0.5;
+    padding-right: 10px
+}
+
+.numeric-input-addendum > div {
+    padding-top: 6px;
+}
+
+.numeric-input .invalid-feedback {
+    z-index: 20;
+    border: 1px solid;
+    padding: 6px;
+    border-radius: .25rem;
+}
+
+.numeric-input .invalid-feedback.invalid-feedback-above {
+    position: absolute;
+    bottom: 34px;
+    left: 0;
+}
+
+.numeric-input .invalid-feedback.invalid-feedback-below {
+    position: absolute;
+    top: 34px;
+    left: 0;
+}
+
+.trading-fees {
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 10px;
+}
+
+.trading-fees td:first-child {
+    text-align: right;
+}
+
+.trading-fees td:last-child {
+    opacity: 1;
+}
+
+.trading-fees td {
+    vertical-align: top;
+    padding: 6px;
+    opacity: 0.5;
+}
+
+.best-execution-warning {
+    margin-top: 10px;
+}
+
+/* Theme */
+
+.plotly .main-svg {
+    background-color: transparent !important;
+}
+
+.plotly .bglayer, .plotly .bg {
+    background-color: transparent !important;
+}
+
+.price-chart-component .ohlc-interval {
+    border-bottom-color: #dee2e6;
+}
+
+.numeric-input .invalid-feedback {
+    border-color: var(--danger);
+}
+
+body {
+    background: #2d2e2f;
+}
+
+.card {
+    background: #363839;
+    color: #ced2d5;
+}
+
+.card-header {
+    background: #414445;
+    border-color: #414445;
+}
+
+.sell-red {
+    color: #DD5555;
+}
+
+.buy-green {
+    color: #119911;
+}
+
+.text-muted {
+    color: grey
+}
+
+.clr-warn {
+    color: #ff9933;
+}
+
+.fa-question-circle {
+    color: #a5a5a5
+}
+
+.wallet {
+    background: rgb(93, 170, 252);
+}
+
+.hover {
+    background: gray;
+}
+
+.numeric-input .invalid-feedback {
+    background: #FFFFFF;
+}
+
+.orders-col-border {
+    border-color: var(--gray-dark);
+}
+
+.orders-colnames, .orders-col-border {
+    background: var(--secondary);
+}
+
+.orders-colnames, .table-bordered {
+
+    border-color: black;
+
+}
+
+.text-light {
+    color: var(--white) !important;
+}

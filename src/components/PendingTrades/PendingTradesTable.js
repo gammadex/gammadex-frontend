@@ -9,7 +9,7 @@ export default class PendingTradesTable extends React.Component {
 
         return (
             <div className="table-responsive my-trades-history">
-                <table className="table table-striped table-bordered">
+                <table className="table table-bordered">
                     <thead>
                     <tr>
                         <th>Market</th>
