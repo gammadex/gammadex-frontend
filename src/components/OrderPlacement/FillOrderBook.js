@@ -35,7 +35,6 @@ export default class FillOrderBook extends React.Component {
             exchangeBalanceTokWei: 0,
             selectedAccountType: null,
             confirmTradeModalSide: null,
-            popOverOpenGasFee: false,
             popOverOpenExchangeFee: false,
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
@@ -168,12 +167,6 @@ export default class FillOrderBook extends React.Component {
         return !fillOrder.fillAmountValid || !balanceRetrieved
     }
 
-    toggleGasFeePopOver = () => {
-        this.setState({
-            popOverOpenGasFee: !this.state.popOverOpenGasFee
-        })
-    }
-
     toggleExchangeFeePopOver = () => {
         this.setState({
             popOverOpenExchangeFee: !this.state.popOverOpenExchangeFee
@@ -188,7 +181,6 @@ export default class FillOrderBook extends React.Component {
         const {
             orders,
             fillOrder,
-            currentGasPriceWei,
             ethereumPriceUsd,
             exchangeBalanceEthWei,
             exchangeBalanceTokWei,
@@ -197,19 +189,6 @@ export default class FillOrderBook extends React.Component {
 
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
-            let estGas = ""
-            let usdFee = ""
-
-            if(currentGasPriceWei != null) {
-                const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
-                const estimatedOperationCost = OperationCosts.TAKE_ORDER
-                const estimatedGasCost = gweiToEth(estimatedOperationCost * currentGasPriceGwei)
-                estGas = toFixedStringNoTrailingZeros(estimatedGasCost, 8)
-                if(ethereumPriceUsd != null) {
-                    usdFee = (estimatedGasCost * ethereumPriceUsd).toFixed(3)
-                }
-            }
-
             // https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/SMART_CONTRACT.md
             // fees:
             // amount in amountGet terms
@@ -275,22 +254,6 @@ export default class FillOrderBook extends React.Component {
                         <div className="trading-fees">
                         <table>
                             <tbody>
-                            <tr>
-                                <td>Est. gas fee</td>
-                                <td>
-                                    {estGas} ETH<br/>{usdFee} USD
-                                </td>
-                                <td>
-                                    <span id={"GasFeePopover"} onClick={this.toggleGasFeePopOver}>
-                                        <i className="fas fa-question-circle"></i>
-                                    </span>
-                                    <Popover placement="bottom" isOpen={this.state.popOverOpenGasFee} target={"GasFeePopover"} toggle={this.toggleGasFeePopOver}>
-                                        <PopoverBody>
-                                            Estimated cost to submit and execute this transaction on the Ethereum network
-                                        </PopoverBody>
-                                    </Popover>
-                                </td>
-                            </tr>
                             <tr>
                                 <td>0.3% Exchange Fee</td>
                                 <td>
