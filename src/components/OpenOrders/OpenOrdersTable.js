@@ -56,7 +56,7 @@ export default class OpenOrdersTable extends React.Component {
         )
 
         return (
-            <table className="table table-striped table-bordered">
+            <table className="table table-bordered">
                 <thead>
                 <tr>
                     <th>Market</th>
