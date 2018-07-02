@@ -412,59 +412,59 @@ function testContract(userAddress) {
                 const order = createTestOrder(OrderSide.SELL)
                 return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceAfter => {
-                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(order.amountGive)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceAfter => {
+                                expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(order.amountGive)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should decrease Maker's TEST exchange balance`, () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceAfter => {
-                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).minus(BigNumber(order.amountGive)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceAfter => {
+                                expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).minus(BigNumber(order.amountGive)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should decrease Taker's ETH exchange balance (accounting for Fee payable in ETH)`, () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceAfter => {
-                            const feeEth = BigNumber(order.amountGet).times(BigNumber('0.003'))
-                            expect(ethExchangeBalanceAfter)
-                                .toEqual(BigNumber(ethExchangeBalanceBefore).minus(BigNumber(order.amountGet).plus(feeEth)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceAfter => {
+                                const feeEth = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                                expect(ethExchangeBalanceAfter)
+                                    .toEqual(BigNumber(ethExchangeBalanceBefore).minus(BigNumber(order.amountGet).plus(feeEth)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should increase Maker's ETH exchange balance`, () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceAfter => {
-                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(order.amountGet)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceAfter => {
+                                expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(order.amountGet)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should increase the Fee Accounts's ETH exchange balance`, () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), feeAccount.address).call().then(ethExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), feeAccount.address).call().then(ethExchangeBalanceAfter => {
-                            const feeEth = BigNumber(order.amountGet).times(BigNumber('0.003'))
-                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(feeEth)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(Config.getBaseAddress(), feeAccount.address).call().then(ethExchangeBalanceAfter => {
+                                const feeEth = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                                expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(feeEth)).toFixed())
+                            })
                         })
-                    })
-                })                
+                })
             })
             test('should use the gas settings provided by the user and app', () => {
                 const weiGasPrice = web3.utils.toWei('1.61', 'gwei')
@@ -478,15 +478,15 @@ function testContract(userAddress) {
             test('Should generate a Trade Event for this user and TEST token withdraw amount', () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                .then(receipt => {
-                    const { tokenGet, amountGet, tokenGive, amountGive, get, give } = eventFromReceipt(receipt, 'Trade')
-                    expect(tokenGet).toEqual(Config.getBaseAddress())
-                    expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
-                    expect(tokenGive).toEqual(testTokenAddress())
-                    expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
-                    expect(get.toLowerCase()).toEqual(orderMakerAccount.address.toLowerCase())
-                    expect(give.toLowerCase()).toEqual(userAddress.toLowerCase())
-                })                
+                    .then(receipt => {
+                        const { tokenGet, amountGet, tokenGive, amountGive, get, give } = eventFromReceipt(receipt, 'Trade')
+                        expect(tokenGet).toEqual(Config.getBaseAddress())
+                        expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                        expect(tokenGive).toEqual(testTokenAddress())
+                        expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                        expect(get.toLowerCase()).toEqual(orderMakerAccount.address.toLowerCase())
+                        expect(give.toLowerCase()).toEqual(userAddress.toLowerCase())
+                    })
             })
         })
 
@@ -498,59 +498,59 @@ function testContract(userAddress) {
                 const order = createTestOrder(OrderSide.BUY)
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceAfter => {
-                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(order.amountGive)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(Config.getBaseAddress(), userAddress).call().then(ethExchangeBalanceAfter => {
+                                expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).plus(BigNumber(order.amountGive)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should decrease Maker's ETH exchange balance`, () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceAfter => {
-                            expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).minus(BigNumber(order.amountGive)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(Config.getBaseAddress(), orderMakerAccount.address).call().then(ethExchangeBalanceAfter => {
+                                expect(ethExchangeBalanceAfter).toEqual(BigNumber(ethExchangeBalanceBefore).minus(BigNumber(order.amountGive)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should decrease Taker's TEST exchange balance (accounting for Fee payable in TEST token)`, () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceAfter => {
-                            const feeTestToken = BigNumber(order.amountGet).times(BigNumber('0.003'))
-                            expect(tokenExchangeBalanceAfter)
-                                .toEqual(BigNumber(tokenExchangeBalanceBefore).minus(BigNumber(order.amountGet).plus(feeTestToken)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(testTokenAddress(), userAddress).call().then(tokenExchangeBalanceAfter => {
+                                const feeTestToken = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                                expect(tokenExchangeBalanceAfter)
+                                    .toEqual(BigNumber(tokenExchangeBalanceBefore).minus(BigNumber(order.amountGet).plus(feeTestToken)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should increase Maker's TEST exchange balance`, () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceAfter => {
-                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(order.amountGet)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(testTokenAddress(), orderMakerAccount.address).call().then(tokenExchangeBalanceAfter => {
+                                expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(order.amountGet)).toFixed())
+                            })
                         })
-                    })
                 })
             })
             test(`Should increase the Fee Accounts's TEST exchange balance`, () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return edContractInstance.methods.balanceOf(testTokenAddress(), feeAccount.address).call().then(tokenExchangeBalanceBefore => {
                     return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                    .then(() => {
-                        return edContractInstance.methods.balanceOf(testTokenAddress(), feeAccount.address).call().then(tokenExchangeBalanceAfter => {
-                            const feeTestToken = BigNumber(order.amountGet).times(BigNumber('0.003'))
-                            expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(feeTestToken)).toFixed())
+                        .then(() => {
+                            return edContractInstance.methods.balanceOf(testTokenAddress(), feeAccount.address).call().then(tokenExchangeBalanceAfter => {
+                                const feeTestToken = BigNumber(order.amountGet).times(BigNumber('0.003'))
+                                expect(tokenExchangeBalanceAfter).toEqual(BigNumber(tokenExchangeBalanceBefore).plus(BigNumber(feeTestToken)).toFixed())
+                            })
                         })
-                    })
-                })                
+                })
             })
             test('should use the gas settings provided by the user and app', () => {
                 const weiGasPrice = web3.utils.toWei('1.71', 'gwei')
@@ -564,17 +564,17 @@ function testContract(userAddress) {
             test('Should generate a Trade Event for this user and TEST token withdraw amount', () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
-                .then(receipt => {
-                    const { tokenGet, amountGet, tokenGive, amountGive, get, give } = eventFromReceipt(receipt, 'Trade')
-                    expect(tokenGive).toEqual(Config.getBaseAddress())
-                    expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
-                    expect(tokenGet).toEqual(testTokenAddress())
-                    expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
-                    expect(get.toLowerCase()).toEqual(orderMakerAccount.address.toLowerCase())
-                    expect(give.toLowerCase()).toEqual(userAddress.toLowerCase())
-                })                
+                    .then(receipt => {
+                        const { tokenGet, amountGet, tokenGive, amountGive, get, give } = eventFromReceipt(receipt, 'Trade')
+                        expect(tokenGive).toEqual(Config.getBaseAddress())
+                        expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                        expect(tokenGet).toEqual(testTokenAddress())
+                        expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                        expect(get.toLowerCase()).toEqual(orderMakerAccount.address.toLowerCase())
+                        expect(give.toLowerCase()).toEqual(userAddress.toLowerCase())
+                    })
             })
-        })        
+        })
     })
 }
 
@@ -847,7 +847,6 @@ describe('Account Provider independent functions', () => {
                                 })
                         })
                 })
-
             })
         })
 
@@ -981,6 +980,24 @@ describe('Account Provider independent functions', () => {
                 })
 
             })
+
+            test('should return zero if the amount overflows uint (256 bits)', () => {
+                const expiry = 100000
+                const price = 100 // ETH per TEST token
+                BigNumber.config({ POW_PRECISION: 0 })
+                const amount = new BigNumber(1.23456789).exponentiatedBy(1000)
+                const order = OrderFactory.createSignedOrder(
+                    OrderSide.BUY,
+                    expiry,
+                    price,
+                    amount,
+                    testTokenAddress(),
+                    orderMakerAccount.address,
+                    orderMakerAccount.privateKey)
+
+                return EtherDeltaWeb3.promiseAvailableVolume(order)
+                    .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual('0'))
+            })            
         })
 
         describe('promiseAmountFilled', () => {
