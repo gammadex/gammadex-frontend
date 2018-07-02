@@ -7,21 +7,6 @@ import { gweiToWei } from '../EtherConversion'
 import GasPriceStore from '../stores/GasPriceStore'
 import web3 from 'web3'
 
-jest.mock('popper.js', () => {
-    const PopperJS = jest.requireActual('popper.js');
-  
-    return class {
-      static placements = PopperJS.placements;
-  
-      constructor() {
-        return {
-          destroy: () => {},
-          scheduleUpdate: () => {}
-        };
-      }
-    };
-  });
-
 function mountGasPriceChooser() {
     // workaround for "The target <target id> could not be identified in the dom, tip: check spelling"
     // https://github.com/reactstrap/reactstrap/issues/773
