@@ -27,7 +27,7 @@ import Web3PromiEvent from 'web3-core-promievent'
 import BigNumber from 'bignumber.js'
 
 import _ from "lodash"
-import {formatNumber} from '../util/FormatUtil'
+import { formatNumber } from '../util/FormatUtil'
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
@@ -61,10 +61,16 @@ describe('AccountDetail', () => {
                 return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
             })
     })
-    it('should render initial state where user has 10 ETH and 20 ABC test tokens in wallet', () => {
+    beforeEach(() => {
         const wrapper = mount(
             <AccountDetail />
         )
+        global.wrapper = wrapper
+    })
+    afterEach(() => {
+        wrapper.unmount()
+    })
+    it('should render initial state where user has 10 ETH and 20 ABC test tokens in wallet', () => {
         const fundingWrapper = wrapper.find(Funding)
 
         // test props
@@ -84,9 +90,6 @@ describe('AccountDetail', () => {
 
     describe('User deposits 4 ether', () => {
         it('should propogate value through to store and back to UI, when user updates the eth deposit amount', () => {
-            const wrapper = mount(
-                <AccountDetail />
-            )
             // simulate the user updating the ethDepositAmount numeric input field
             const value = '4'
             // https://github.com/airbnb/enzyme/blob/master/docs/guides/migration-from-2-to-3.md - find() now returns host nodes and DOM nodes
@@ -108,9 +111,6 @@ describe('AccountDetail', () => {
         })
 
         it('should display a confirmation modal when the user submits an eth deposit', () => {
-            const wrapper = mount(
-                <AccountDetail />
-            )
             const value = '4'
             wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
 
@@ -137,9 +137,6 @@ describe('AccountDetail', () => {
                     promiEvent.eventEmitter.emit('transactionHash', '123')
                     return promiEvent.eventEmitter
                 })
-                const wrapper = mount(
-                    <AccountDetail />
-                )
                 const value = '4'
                 wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
                 wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
@@ -155,9 +152,6 @@ describe('AccountDetail', () => {
             })
             it('variation 2 using actual web3 and local ganache blockchain', (done) => {
                 // this might be considered overkill since we already comprehensively test EtherDeltaWeb3 in EtherDeltaWeb3.test.js
-                const wrapper = mount(
-                    <AccountDetail />
-                )
                 const value = '4'
                 wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
                 wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
@@ -186,6 +180,55 @@ describe('AccountDetail', () => {
                         })
                 }, 500)
             })
+        })
+    })
+
+    describe('User withdraws 3 ether', () => {
+        it('should propogate value through to store and back to UI, when user updates the eth withdraw amount', () => {
+            const value = '3'
+            wrapper.find('#ethWithdrawAmount').hostNodes().simulate('change', { target: { value } })
+
+            const { ethWithdrawalAmountControlled, ethWithdrawalAmountWei } = FundingStore.getFundingState()
+            expect(ethWithdrawalAmountControlled).toEqual(value)
+            expect(ethWithdrawalAmountWei.toString()).toEqual(Web3.utils.toWei(value, 'ether'))
+
+            expect(wrapper.find('#ethWithdrawAmount').hostNodes().props().value).toEqual(value)
+
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().ethWithdrawalState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().ethWithdrawalInputProps().ethWithdrawalValid).toEqual(true)
+        })
+
+        it('should display a confirmation modal when the user submits an eth withdrawal', () => {
+            const value = '3'
+            wrapper.find('#ethWithdrawAmount').hostNodes().simulate('change', { target: { value } })
+            wrapper.find('#ethWithdrawAmountButton').hostNodes().simulate('click')
+            const { modalType, modalText } = FundingStore.getFundingState()
+            expect(modalType).toEqual(FundingModalType.ETH_WITHDRAWAL)
+            expect(modalText).toEqual(`Withdraw ${value} ETH from exchange?`)
+            expect(wrapper.find(Modal).instance().props.isOpen).toEqual(true)
+            expect(wrapper.find('#fundingModalBody').hostNodes().text()).toEqual(`Withdraw ${value} ETH from exchange?`)
+        })
+
+        it('should execute the eth withdrawal when the user confirms the modal', () => {
+            const promiseWithdrawEtherMock = jest.spyOn(EtherDeltaWeb3, "promiseWithdrawEther")
+            promiseWithdrawEtherMock.mockImplementation(() => {
+                const promiEvent = Web3PromiEvent()
+                promiEvent.eventEmitter.emit('transactionHash', '123')
+                return promiEvent.eventEmitter
+            })
+            const value = '3'
+            wrapper.find('#ethWithdrawAmount').hostNodes().simulate('change', { target: { value } })
+            wrapper.find('#ethWithdrawAmountButton').hostNodes().simulate('click')
+            wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
+
+            expect(promiseWithdrawEtherMock).toHaveBeenCalledWith(
+                primaryKeyAccount.address,
+                1,
+                BigNumber(Web3.utils.toWei(value, 'ether')),
+                BigNumber(Web3.utils.toWei('6', 'gwei')))
+
+            promiseWithdrawEtherMock.mockRestore()
         })
     })
 })
