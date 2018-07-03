@@ -750,13 +750,18 @@ header > div {
 
 /* Theme */
 
+/*chart*/
 .plotly .main-svg {
     background-color: transparent !important;
 }
-
 .plotly .bglayer, .plotly .bg {
     background-color: transparent !important;
 }
+
+/*scrollbars*/
+.custom-scroll .inner-handle {
+    background-color: var(--primary);
+ }
 
 .price-chart-component .ohlc-interval {
     border-bottom-color: var(--secondary);
@@ -829,3 +834,7 @@ body {
 .text-light {
     color: var(--white) !important;
 }
+
+
+
+

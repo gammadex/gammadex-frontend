@@ -96,11 +96,13 @@ export default class OrderBook extends React.Component {
 
         const bidsContent = <OrdersTable orderType="bid" orders={bids}
                                          openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                                         rowClass="buy-green"/>
+                                         rowClass="buy-green"
+                                         keepAtBottom={false}/>
 
         const offersContent = <OrdersTable orderType="offer" orders={offers}
                                            openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
-                                           rowClass="sell-red"/>
+                                           rowClass="sell-red"
+                                           keepAtBottom={true}/>
 
         return (
             <Box title="Bids and Offers" marketResponseSpinner className="full-height">
