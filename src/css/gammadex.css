@@ -27,7 +27,7 @@
 }
 
 .shadow {
-    box-shadow: 3px 6px 24px 0px rgba(0, 0, 0, 0.75);
+    /*box-shadow: 3px 6px 24px 0px rgba(200, 200, 200, 0.75);*/
 }
 
 .gas-prices .popover-body {
@@ -759,7 +759,7 @@ header > div {
 }
 
 .price-chart-component .ohlc-interval {
-    border-bottom-color: #dee2e6;
+    border-bottom-color: var(--secondary);
 }
 
 .numeric-input .invalid-feedback {
