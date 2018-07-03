@@ -12,7 +12,7 @@ import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
 import SplashScreen from "./SplashScreen"
 import GlobalMessages from "../components/GlobalMessages"
-import '../css/bootstrap.min.css'
+import '../css/bootstrap.css'
 import '../css/gammadex.css'
 
 class App extends Component {
