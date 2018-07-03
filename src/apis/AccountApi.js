@@ -73,7 +73,7 @@ export function refreshAccountThenEthAndTokBalance(accountType, history, getMark
 }
 
 export function refreshNonce() {
-    EtherDeltaWeb3.promiseRefreshNonce()
+    return EtherDeltaWeb3.promiseRefreshNonce()
         .then(nonce => {
             AccountActions.nonceUpdated(nonce)
         })
@@ -139,7 +139,7 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
                 GlobalMessageActions.sendGlobalMessage(
                     GlobalMessageFormatters.getApprovalInitiated(tokenAmount, 'deposit', tokenName, hash))
 
-                EtherDeltaWeb3.promiseDepositToken(account, nonce + 1, tokenAddress, amount, gasPriceWei)
+                return EtherDeltaWeb3.promiseDepositToken(account, nonce + 1, tokenAddress, amount, gasPriceWei)
                     .once('transactionHash', hash => {
                         AccountActions.nonceUpdated(nonce + 2) // as tok deposit is two transactions
                         AccountActions.addPendingTransfer(DepositType.DEPOSIT, tokenAddress,
