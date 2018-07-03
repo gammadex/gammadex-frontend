@@ -2,7 +2,7 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
-import {Box, BoxSection} from "./CustomComponents/Box"
+import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Conditional from "./CustomComponents/Conditional"
 
@@ -19,8 +19,6 @@ export default class OrderBook extends React.Component {
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
         this.saveOpenOrders = this.saveOpenOrders.bind(this)
         this.updateTitleWidths = this.updateTitleWidths.bind(this)
-        this.scrollOffers = this.scrollOffers.bind(this)
-        this.scrolled = false
     }
 
     componentDidMount() {
@@ -42,15 +40,6 @@ export default class OrderBook extends React.Component {
                 this.updateTitleWidths()
             }
         }
-
-        if (prevProps.token !== this.props.token) {
-            this.scrolled = false
-        }
-
-        const offersDiv = document.getElementById("orders-div-offer")
-        if (offersDiv && this.state.bids && this.state.bids.length > 0 && !this.scrolled) {
-            this.scrollOffers()
-        }
     }
 
     updateTitleWidths() {
@@ -61,15 +50,6 @@ export default class OrderBook extends React.Component {
                     return {tableWidth: offersTable.clientWidth}
                 }
             })
-        }
-    }
-
-    scrollOffers() {
-        const offersDiv = document.getElementById("orders-div-offer")
-        if (offersDiv) {
-            offersDiv.scrollTop = offersDiv.scrollHeight
-
-            this.scrolled = true
         }
     }
 
