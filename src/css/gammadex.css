@@ -23,11 +23,15 @@
 }
 
 .gas-price-value {
-    font-size: 130%;
+    font-weight:bold;
 }
 
 .shadow {
     /*box-shadow: 3px 6px 24px 0px rgba(200, 200, 200, 0.75);*/
+}
+
+.popover {
+    font-size:1rem;
 }
 
 .gas-prices .popover-body {
@@ -681,7 +685,6 @@ header > div {
     position: absolute;
     right: 16px;
     top: 8px;
-    opacity: 0.4;
     font-weight: bold;
     z-index: 5;
 }
@@ -748,7 +751,13 @@ header > div {
     margin-top: 10px;
 }
 
-/* Theme */
+.card .table td {
+    vertical-align: middle;
+}
+
+/*
+     Theme
+*/
 
 /*chart*/
 .plotly .main-svg {
@@ -776,13 +785,8 @@ body {
 }
 
 .card {
-    background: #363839;
+    /*background: #363839;*/
     color: #ced2d5;
-}
-
-.card-header {
-    background: #414445;
-    border-color: #414445;
 }
 
 .sell-red {
@@ -826,15 +830,53 @@ body {
 }
 
 .orders-colnames, .table-bordered {
-
     border-color: black;
-
 }
 
 .text-light {
     color: var(--white) !important;
 }
 
+*::placeholder {
+    color:var(--gray-dark) !important;
+    opacity:0.8;
+}
 
+input[type=text] {
+    color:var(--gray-dark) !important;
+}
 
+.popover-body .card {
+    border: 1px solid var(--gray)
+}
+
+.popover-body .card {
+    padding:6px;
+}
+
+.rc-slider-rail {
+    background:var(--primary);
+}
+
+.rc-slider-dot {
+    background:var(--gray-dark);
+    border-color:var(--gray);
+}
+
+.rc-slider-handle {
+    background:var(--gray-dark);
+    border-color:var(--gray);
+}
+
+/*
+.rc-slider-handle:hover {
+    background:var(--gray-dark);
+    border-color:var(--white);
+}
+*/
+
+.rc-slider-handle:active {
+    background:var(--gray-dark);
+    border-color:var(--white);
+}
 

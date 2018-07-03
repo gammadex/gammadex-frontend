@@ -24,8 +24,8 @@ export default class AppStatusRow extends React.Component {
         return (
             <div>
                 <div><strong>{this.props.title}</strong></div>
-                <div className="row">
-                    <div className={"col-lg-1 fas fa-lg " + this.props.state.class}/>
+                <div className="row mt-2">
+                    <div className={"col-lg-1 mr-2 fas fa-lg " + this.props.state.class}/>
                     <div>
                         <div className="lmargin">{this.props.message}</div>
                         <div className="lmargin">{this.props.children}</div>
