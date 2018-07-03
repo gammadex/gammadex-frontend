@@ -184,7 +184,7 @@ describe('AccountDetail', () => {
                                 .toEqual(formatNumber(BigNumber(Web3.utils.fromWei(remainingWalletEthWei.toString())), 3))
                             done()
                         })
-                }, 2000)
+                }, 500)
             })
         })
     })
