@@ -12,6 +12,8 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import AccountType from "../AccountType"
 import * as AccountApi from "../apis/AccountApi"
 import FundingStore from "../stores/FundingStore"
+import AccountStore from "../stores/AccountStore"
+import TransferStore from "../stores/TransferStore"
 import FundingState from "../components/Account/FundingState"
 
 import { deployContracts } from '../util/ContractDeployer'
@@ -23,6 +25,9 @@ import { ModalBody, Modal, ModalFooter } from 'reactstrap'
 
 import Web3PromiEvent from 'web3-core-promievent'
 import BigNumber from 'bignumber.js'
+
+import _ from "lodash"
+import {formatNumber} from '../util/FormatUtil'
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
@@ -139,16 +144,16 @@ describe('AccountDetail', () => {
                 wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
                 wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
                 wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
-    
+
                 expect(promiseDepositEtherMock).toHaveBeenCalledWith(
                     primaryKeyAccount.address,
                     0,
                     BigNumber(Web3.utils.toWei(value, 'ether')),
                     BigNumber(Web3.utils.toWei('6', 'gwei')))
-    
+
                 promiseDepositEtherMock.mockRestore()
-            }) 
-            it('variation 2 using full end-to-end test and local ganache blockchain', () => {
+            })
+            it('variation 2 using actual web3 and local ganache blockchain', (done) => {
                 // this might be considered overkill since we already comprehensively test EtherDeltaWeb3 in EtherDeltaWeb3.test.js
                 const wrapper = mount(
                     <AccountDetail />
@@ -156,17 +161,31 @@ describe('AccountDetail', () => {
                 const value = '4'
                 wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
                 wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
+                wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
 
-                // Currently facing this error:
-                //
-                // Invariant Violation: The `document` global was defined when React was initialized, but is not defined anymore.
-                // This can happen in a test environment if a component schedules an update from an asynchronous callback, but the test
-                // has already finished running. To solve this, you can either unmount the component at the end of your test
-                // (and ensure that any asynchronous operations get canceled in `componentWillUnmount`),
-                // or you can change the test itself to be asynchronous.
-                
-                // wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
-            })               
+                // the last action of confirmation the modal triggers some async logic to execute the deposit.
+                // We do not have easy access to that future, after triggering the 'click' event so wait for 2s.
+                setTimeout(() => {
+                    // check the correct amount has been deposited into the exchange
+                    expect(wrapper.find('#tdExchangeBalanceEth').text()).toEqual('4.000')
+
+                    // check the correct amount has been deducted from the wallet (including the gas fee)
+                    const txHash = _.last(TransferStore.getAllTransfers()).txHash
+                    return web3.eth.getTransactionReceipt(txHash)
+                        .then(receipt => {
+                            const gasCostWei = BigNumber(receipt.gasUsed).times(BigNumber(Web3.utils.toWei('6', 'gwei')))
+                            const remainingWalletEthWei = BigNumber(Web3.utils.toWei('10', 'ether'))
+                                .minus(BigNumber(Web3.utils.toWei(value, 'ether')))
+                                .minus(gasCostWei)
+
+                            const { walletBalanceEthWei } = AccountStore.getAccountState()
+                            expect(remainingWalletEthWei.toString()).toEqual(walletBalanceEthWei.toString())
+                            expect(wrapper.find('#tdWalletBalanceEth').text())
+                                .toEqual(formatNumber(BigNumber(Web3.utils.fromWei(remainingWalletEthWei.toString())), 3))
+                            done()
+                        })
+                }, 2000)
+            })
         })
     })
 })
