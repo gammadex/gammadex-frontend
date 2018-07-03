@@ -20,7 +20,7 @@ export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
         AccountActions.retrievingBalance()
     }
 
-    EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
+    return EtherDeltaWeb3.refreshEthAndTokBalance(account, tokenAddress)
         .then(balance => {
             AccountActions.balanceRetrieved(balance, notify, tokenAddress)
         })
@@ -39,7 +39,7 @@ export function refreshEthAndTokBalanceUsingStore() {
     }
 }
 
-export function refreshAccount(accountType, history) {
+export function refreshAccount(accountType, history, getMarket = true) {
     LifeCycleActions.web3Initialised()
     AccountActions.retrievingAccount()
 
@@ -52,7 +52,9 @@ export function refreshAccount(accountType, history) {
                 history.push(Routes.Exchange)
             }
 
-            WebSocketActions.getMarket()
+            if(getMarket) {
+                WebSocketActions.getMarket()
+            }
 
             return addressNonce.address
         })
@@ -61,11 +63,11 @@ export function refreshAccount(accountType, history) {
         })
 }
 
-export function refreshAccountThenEthAndTokBalance(accountType, history) {
-    return refreshAccount(accountType, history)
+export function refreshAccountThenEthAndTokBalance(accountType, history, getMarket = true) {
+    return refreshAccount(accountType, history, getMarket)
         .then(address => {
             if (address) {
-                refreshEthAndTokBalance(address, TokenStore.getSelectedTokenAddress(), true)
+                return refreshEthAndTokBalance(address, TokenStore.getSelectedTokenAddress(), true)
             }
         })
 }

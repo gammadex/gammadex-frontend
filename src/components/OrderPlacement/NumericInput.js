@@ -168,7 +168,7 @@ export default class NumericInput extends React.Component {
         let inputWidth = 9
         if (typeof (onAction) === 'function' && actionName) {
             actionButton = <Col className="funding-action" sm={4}>
-                <Button color="primary" className="btn-block" disabled={actionDisabled}
+                <Button id={fieldName + "Button"} color="primary" className="btn-block" disabled={actionDisabled}
                         onClick={() => this.onAction()}>{actionName}
                 </Button>
                 {this.gasFeeFormText()}

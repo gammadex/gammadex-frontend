@@ -3,9 +3,9 @@ import React from 'react'
 import { shallow, mount } from 'enzyme'
 import GasPriceChooser from '../components/GasPriceChooser'
 import * as GasActions from '../actions/GasActions'
-import { gweiToWei } from '../EtherConversion'
 import GasPriceStore from '../stores/GasPriceStore'
 import web3 from 'web3'
+import BigNumber from 'bignumber.js'
 
 function mountGasPriceChooser() {
     // workaround for "The target <target id> could not be identified in the dom, tip: check spelling"
@@ -19,10 +19,10 @@ function mountGasPriceChooser() {
 describe('GasPriceChooser', () => {
     beforeAll(() => {
         GasActions.gasPricesRetrieved(
-            gweiToWei(40 / 10),
-            gweiToWei(60 / 10),
-            gweiToWei(90 / 10),
-            gweiToWei(120 / 10),
+            BigNumber(web3.utils.toWei('4', 'gwei')),
+            BigNumber(web3.utils.toWei('6', 'gwei')),
+            BigNumber(web3.utils.toWei('9', 'gwei')),
+            BigNumber(web3.utils.toWei('12', 'gwei')),
             new Date(),
             14.5)
     })

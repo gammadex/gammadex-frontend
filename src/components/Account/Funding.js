@@ -353,8 +353,8 @@ export default class Funding extends React.Component {
                 </tr>
 
                 <tr>
-                    <td className="txt-right clickable balances-amount" onClick={() => FundingActions.ethDepositMaxAmount()}><Round fallback="-">{walletBalanceEth}</Round></td>
-                    <td className="txt-right clickable balances-amount" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round fallback="-">{exchangeBalanceEth}</Round></td>
+                    <td id="tdWalletBalanceEth" className="txt-right clickable balances-amount" onClick={() => FundingActions.ethDepositMaxAmount()}><Round fallback="-">{walletBalanceEth}</Round></td>
+                    <td id="tdExchangeBalanceEth" className="txt-right clickable balances-amount" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round fallback="-">{exchangeBalanceEth}</Round></td>
                 </tr>
                 </tbody>
             </table>
@@ -389,8 +389,8 @@ export default class Funding extends React.Component {
                     <td className="txt-right balances-heading">Exchange</td>
                 </tr>
                 <tr>
-                    <td className="txt-right clickable balances-amount" onClick={() => FundingActions.tokDepositMaxAmount()}><Round fallback="-">{walletBalanceTok}</Round></td>
-                    <td className="txt-right clickable balances-amount" onClick={() => FundingActions.tokWithdrawMaxAmount()}><Round fallback="-">{exchangeBalanceTok}</Round></td>
+                    <td id="tdWalletBalanceTok" className="txt-right clickable balances-amount" onClick={() => FundingActions.tokDepositMaxAmount()}><Round fallback="-">{walletBalanceTok}</Round></td>
+                    <td id="tdExchangeBalanceTok" className="txt-right clickable balances-amount" onClick={() => FundingActions.tokWithdrawMaxAmount()}><Round fallback="-">{exchangeBalanceTok}</Round></td>
                 </tr>
                 </tbody>
             </table>
@@ -416,10 +416,10 @@ export default class Funding extends React.Component {
                           submittable={true}/>
 
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
-                <ModalBody>{modalBody}</ModalBody>
+                <ModalBody id='fundingModalBody'>{modalBody}</ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.abortFundingAction}>Abort</Button>{' '}
-                    <Button color="primary" onClick={this.confirmFundingAction}>{confirmModalName}</Button>
+                    <Button id='fundingModalConfirmButton' color="primary" onClick={this.confirmFundingAction}>{confirmModalName}</Button>
                 </ModalFooter>
             </Modal>
         </BoxSection>
