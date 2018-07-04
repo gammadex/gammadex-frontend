@@ -26,16 +26,9 @@ describe('GasPriceChooser', () => {
             new Date(),
             14.5)
     })
-    it('renders without crashing', () => {
-        // shallow does not render child components
-        const wrapper = shallow(
-            <GasPriceChooser />
-        )
-        expect(wrapper).toMatchSnapshot()
-    })
     it('should render default (= average) gas price', () => {
         const wrapper = mountGasPriceChooser()
-        expect(wrapper.text()).toEqual('Gas Price: 6 Gwei')
+        expect(wrapper.text()).toEqual('Gas Price:6 Gwei')
     })
     // This test fails due to popper.js issues with the mocking framework enzyme
     // it(`should open Popover when 'gasPrice' button is clicked`, () => {
@@ -48,25 +41,25 @@ describe('GasPriceChooser', () => {
         // and trigger the event from that
         const wrapper = mountGasPriceChooser()
         wrapper.instance().onSliderChange('8')
-        expect(wrapper.text()).toEqual('Gas Price: 8 Gwei')
+        expect(wrapper.text()).toEqual('Gas Price:8 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('8', 'gwei'))
     })
     it(`onUseRecommended event callback should update current gas price to the average`, () => {
         const wrapper = mountGasPriceChooser()
         wrapper.instance().onUseRecommended()
-        expect(wrapper.text()).toEqual('Gas Price: 6 Gwei')
+        expect(wrapper.text()).toEqual('Gas Price:6 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('6', 'gwei'))
     })
     it(`onUseCheapest event callback should update current gas price to the safe low value`, () => {
         const wrapper = mountGasPriceChooser()
         wrapper.instance().onUseCheapest()
-        expect(wrapper.text()).toEqual('Gas Price: 4 Gwei')
+        expect(wrapper.text()).toEqual('Gas Price:4 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('4', 'gwei'))
     })       
     it(`onUseExpensive event callback should update current gas price to the fastest value`, () => {
         const wrapper = mountGasPriceChooser()
         wrapper.instance().onUseExpensive()
-        expect(wrapper.text()).toEqual('Gas Price: 12 Gwei')
+        expect(wrapper.text()).toEqual('Gas Price:12 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('12', 'gwei'))
     })         
 })
