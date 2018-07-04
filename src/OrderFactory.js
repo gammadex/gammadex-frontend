@@ -195,7 +195,7 @@ class OrderFactory {
             let length = lengthIn
             if (!length) length = 32
             if (dec < 0) {
-                return (BigNumber(2)).pow(length).add(BigNumber(dec)).toString(16)
+                return (BigNumber(2)).pow(length).plus(BigNumber(dec)).toString(16)
             }
             let result = null
             try {
