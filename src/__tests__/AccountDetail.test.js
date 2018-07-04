@@ -30,12 +30,14 @@ import BigNumber from 'bignumber.js'
 
 import _ from "lodash"
 import { formatNumber } from '../util/FormatUtil'
-
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
 const primaryKeyAccount = web3.eth.accounts.create()
 const feeAccount = web3.eth.accounts.create()
 const defaultGasPrice = web3.utils.toWei('3', 'gwei')
+
+// ESLint
+/* global global, testTokenContractInstance, wrapper */
 
 describe('AccountDetail', () => {
     beforeAll(() => {
