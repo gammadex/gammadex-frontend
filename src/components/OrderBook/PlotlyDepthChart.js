@@ -60,7 +60,7 @@ export default class PlotlyDepthChart extends React.Component {
             y: cumulativeBuys.volumes,
             fill: 'tozeroy',
             type: 'scatter',
-            line: {shape: 'vh', color: 'green'},
+            line: {shape: 'vh', color: '#65dd65'},
             name: 'bids',
         }
 
@@ -69,7 +69,7 @@ export default class PlotlyDepthChart extends React.Component {
             y: cumulativeSells.volumes,
             fill: 'tozeroy',
             type: 'scatter',
-            line: {shape: 'vh', color: 'red'},
+            line: {shape: 'vh', color: '#ff6565'},
             name: 'offers',
         }
 
@@ -77,8 +77,6 @@ export default class PlotlyDepthChart extends React.Component {
 
         const layout = {
             plot_bgcolor:'transparent',
-            gridcolor: '#0000FF',
-            linecolor: '#0000FF',
             grid: {
                 color:'blue'
             },

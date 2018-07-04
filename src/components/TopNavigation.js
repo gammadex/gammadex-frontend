@@ -37,7 +37,9 @@ class TopNavigation extends Component {
 
         return (
             <header className="bg-primary text-light">
-                <div>
+                <div className="full-height">
+                    <img src={require("../images/eth-logo.png")} style={{"height":"30px"}} className="mr-2"/>
+
                     <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
 
                     <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
@@ -54,26 +56,24 @@ class TopNavigation extends Component {
 
                 <TokenSummary token={token}/>
 
-                <div>
-                    <form className="form-inline">
-                        <div className="form-group mr-1">
-                            <AppStatus/>
-                        </div>
-                        <GasPriceChooser/>
-                        <Account/>
+                <form className="form-inline">
+                    <div className="form-group mr-1">
+                        <AppStatus/>
+                    </div>
+                    <GasPriceChooser/>
+                    <Account/>
 
-                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
-                            <ul className="navbar-nav">
-                                <li className="nav-item">
-                                    <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
-                                </li>
-                            </ul>
-                        </nav>
-                    </form>
-                </div>
+                    <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                        <ul className="navbar-nav">
+                            <li className="nav-item">
+                                <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </form>
             </header>
         )
     }

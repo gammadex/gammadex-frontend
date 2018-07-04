@@ -3,15 +3,15 @@ import React from "react"
 export const States = {
     OK: {
         index: 0,
-        class: "fa-check-circle buy-green"
+        class: "fa-check-circle text-success"
     },
     WARN: {
         index: 1,
-        class: "fa-info-circle clr-warn"
+        class: "fa-info-circle text-warning"
     },
     ERROR: {
         index: 2,
-        class: "fa-exclamation-triangle sell-red"
+        class: "fa-exclamation-triangle text-danger"
     }
 }
 

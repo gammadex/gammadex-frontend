@@ -44,7 +44,7 @@ class App extends Component {
         let contents = <SplashScreen/>
         if (this.state.web3Initialised) {
             contents = <div className="container-fluid route-content">
-                <Route path="/app" exact component={Exchange}/>
+                <Route path="/" exact component={Exchange}/>
                 <Route path={Routes.Exchange + "*"} exact component={Exchange}/>
                 <Route path={Routes.Wallets} exact component={Wallets}/>
                 <Route path={Routes.NewWallet} exact component={NewWallet}/>

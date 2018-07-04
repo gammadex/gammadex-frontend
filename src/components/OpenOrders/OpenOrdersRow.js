@@ -37,7 +37,7 @@ export default class OpenOrdersRow extends React.Component {
         }
 
         const cancelOrderButton =
-            <button className={"btn btn-danger btn-sm"} disabled={isPendingCancel}
+            <button className={"btn btn-danger btn-tiny"} disabled={isPendingCancel}
                 onClick={this.cancelOrder}><i className="fas fa-times" />
             </button>
             
@@ -50,7 +50,7 @@ export default class OpenOrdersRow extends React.Component {
                 <td><Round>{ethAmount}</Round></td>
                 <td><Date year>{openOrder.updated}</Date></td>
                 <td>{status}</td>
-                <td>{cancelOrderButton}</td>
+                <td className="button-row">{cancelOrderButton}</td>
             </tr>
         )
     }

@@ -3,6 +3,9 @@
     --half-main-padding: 1px;
     --card-header-height: 40px;
     --bids-and-offers-spacer-height: 30px;
+    --gray-light: #ced2d5;
+    --sell-red: #dd6565;
+    --sell-green: #65dd65;
 }
 
 #chart {
@@ -23,7 +26,7 @@
 }
 
 .gas-price-value {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .shadow {
@@ -31,7 +34,7 @@
 }
 
 .popover {
-    font-size:1rem;
+    font-size: 1rem;
 }
 
 .gas-prices .popover-body {
@@ -418,7 +421,6 @@ input[type="number"] {
 #app {
     height: 100vh;
     max-height: 100vh;
-    overflow: hidden;
 }
 
 header {
@@ -522,8 +524,7 @@ header > div {
 .token-chooser-component {
     flex-grow: 1;
     flex-shrink: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     min-height: 100px;
 }
 
@@ -763,6 +764,7 @@ header > div {
 .plotly .main-svg {
     background-color: transparent !important;
 }
+
 .plotly .bglayer, .plotly .bg {
     background-color: transparent !important;
 }
@@ -770,14 +772,17 @@ header > div {
 /*scrollbars*/
 .custom-scroll .inner-handle {
     background-color: var(--primary);
- }
+}
 
 .price-chart-component .ohlc-interval {
     border-bottom-color: var(--secondary);
 }
 
 .numeric-input .invalid-feedback {
-    border-color: var(--danger);
+    border-color: white;
+    background-color: var(--danger) !important;
+    font-size: 1rem;
+    color: white;
 }
 
 body {
@@ -786,15 +791,15 @@ body {
 
 .card {
     /*background: #363839;*/
-    color: #ced2d5;
+    color: var(--gray-light);
 }
 
 .sell-red {
-    color: #DD5555;
+    color: #dd6565;
 }
 
 .buy-green {
-    color: #119911;
+    color: #65dd65;
 }
 
 .text-muted {
@@ -837,35 +842,31 @@ body {
     color: var(--white) !important;
 }
 
-*::placeholder {
-    color:var(--gray-dark) !important;
-    opacity:0.8;
-}
-
-input[type=text] {
-    color:var(--gray-dark) !important;
+.popover {
+    border: 1px solid var(--gray);
+    border-radius: 0;
 }
 
 .popover-body .card {
-    border: 1px solid var(--gray)
+    padding: 6px;
 }
 
-.popover-body .card {
-    padding:6px;
+.popover-body {
+    color: var(--gray-light);
 }
 
 .rc-slider-rail {
-    background:var(--primary);
+    background: var(--primary);
 }
 
 .rc-slider-dot {
-    background:var(--gray-dark);
-    border-color:var(--gray);
+    background: var(--gray-dark);
+    border-color: var(--gray);
 }
 
 .rc-slider-handle {
-    background:var(--gray-dark);
-    border-color:var(--gray);
+    background: var(--gray-dark);
+    border-color: var(--gray);
 }
 
 /*
@@ -876,7 +877,19 @@ input[type=text] {
 */
 
 .rc-slider-handle:active {
-    background:var(--gray-dark);
-    border-color:var(--white);
+    background: var(--gray-dark);
+    border-color: var(--white);
 }
 
+.btn-tiny {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.7203125rem;
+}
+
+.button-row {
+    padding:3px;
+}
+
+.input-unit, .input-unit.disabled {
+    color:var(--gray);
+}

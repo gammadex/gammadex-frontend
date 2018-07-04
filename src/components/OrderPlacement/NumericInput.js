@@ -135,8 +135,7 @@ export default class NumericInput extends React.Component {
         const isInvalid = valid !== null && !valid
         let maxButton = null
         if (typeof (onMax) === 'function') {
-            maxButton = <InputGroupAddon addonType="append"><Button id={fieldName + 'MaxButton'} color="link"
-                                                                    onClick={() => this.onMax()}>MAX</Button></InputGroupAddon>
+            maxButton = <Button id={fieldName + 'MaxButton'} className="ml-1" onClick={() => this.onMax()}>MAX</Button>
         }
 
         const input = (
@@ -149,7 +148,7 @@ export default class NumericInput extends React.Component {
                        placeholder={placeholder}
                        invalid={isInvalid}/>
                 <Conditional displayCondition={unitName != null}>
-                    <span className="input-unit">{unitName}</span>
+                    <span className={"input-unit " + (disabled ? "disabled" : "")}>{unitName}</span>
                 </Conditional>
                 {maxButton}
                 {this.formFeedback()}
