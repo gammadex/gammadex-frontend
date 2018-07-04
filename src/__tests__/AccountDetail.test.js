@@ -37,7 +37,7 @@ const feeAccount = web3.eth.accounts.create()
 const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 
 // ESLint
-/* global global, testTokenContractInstance, wrapper */
+/* global global, testTokenContractInstance, wrapper, testTokenContractInstanceNineDecimals */
 
 describe('AccountDetail', () => {
     beforeAll(() => {
@@ -62,6 +62,8 @@ describe('AccountDetail', () => {
                     name: null,
                     symbol: 'ABC'
                 })
+                Config.getEnv().defaultPair.token.address = testTokenContractInstance.options.address
+                Config.getEnv().defaultPair.token.decimals = 18
                 return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
             })
     })
@@ -416,15 +418,20 @@ describe('AccountDetail', () => {
 
     describe('User deposits 3 DEF test tokens (9 decimals)', () => {
         beforeAll(() => {
-            TokenStore.listedTokens[0].decimals = 9
-            TokenActions.selectToken({
-                address: testTokenContractInstance.options.address,
+            const nineDecimalToken = {
+                address: testTokenContractInstanceNineDecimals.options.address,
                 decimals: 9,
                 isListed: true,
                 name: null,
                 symbol: 'DEF'
-            })
+            }
+            TokenStore.listedTokens[0] = nineDecimalToken
+            TokenActions.selectToken(nineDecimalToken)
+            Config.getEnv().defaultPair.token.address = testTokenContractInstanceNineDecimals.options.address
+            Config.getEnv().defaultPair.token.decimals = 9
+            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
         })
+
         it('should propogate value through to store and back to UI, when user updates the tok deposit amount', () => {
             const value = '3'
             wrapper.find('#tokDepositAmount').hostNodes().simulate('change', { target: { value } })
@@ -432,6 +439,20 @@ describe('AccountDetail', () => {
             expect(tokDepositAmountControlled).toEqual(value)
             expect(tokDepositAmountWei.toString()).toEqual(BigNumber(value).times(BigNumber(10 ** 9)).toString())
             expect(wrapper.find('#tokDepositAmount').hostNodes().props().value).toEqual(value)
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().tokDepositState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().tokDepositInputProps().tokDepositValid).toEqual(true)
+        })
+
+        it('should set the maximum token deposit amount', () => {
+            wrapper.find('#tokDepositAmountMaxButton').hostNodes().simulate('click')
+
+            const { tokDepositAmountControlled, tokDepositAmountWei } = FundingStore.getFundingState()
+            expect(tokDepositAmountControlled.toString()).toEqual('20')
+            expect(tokDepositAmountWei.toString()).toEqual(BigNumber('20').times(BigNumber(10 ** 9)).toString())
+
+            expect(wrapper.find('#tokDepositAmount').hostNodes().props().value.toString()).toEqual('20')
+
             const fundingWrapper = wrapper.find(Funding)
             expect(FundingStore.getFundingState().tokDepositState).toEqual(FundingState.OK)
             expect(fundingWrapper.instance().tokDepositInputProps().tokDepositValid).toEqual(true)
@@ -464,7 +485,7 @@ describe('AccountDetail', () => {
             expect(promiseTokenApproveMock).toHaveBeenCalledWith(
                 primaryKeyAccount.address,
                 5,
-                testTokenContractInstance.options.address,
+                testTokenContractInstanceNineDecimals.options.address,
                 BigNumber(value).times(BigNumber(10 ** 9)),
                 BigNumber(Web3.utils.toWei('6', 'gwei')))
 
@@ -489,14 +510,14 @@ describe('AccountDetail', () => {
                 expect(promiseDepositTokenMock).toHaveBeenCalledWith(
                     primaryKeyAccount.address,
                     6,
-                    testTokenContractInstance.options.address,
+                    testTokenContractInstanceNineDecimals.options.address,
                     BigNumber(value).times(BigNumber(10 ** 9)),
                     BigNumber(Web3.utils.toWei('6', 'gwei')))
 
                 promiseDepositTokenMock.mockRestore()
 
                 // need to reset the approval amount to zero in the token smart contract (so we can deposit tokens in the next test)
-                return EtherDeltaWeb3.promiseTokenApprove(primaryKeyAccount.address, 6, testTokenContractInstance.options.address, BigNumber(0), BigNumber(Web3.utils.toWei('6', 'gwei')))
+                return EtherDeltaWeb3.promiseTokenApprove(primaryKeyAccount.address, 6, testTokenContractInstanceNineDecimals.options.address, BigNumber(0), BigNumber(Web3.utils.toWei('6', 'gwei')))
                     .then(res => {
                         done()
                     })
@@ -507,7 +528,7 @@ describe('AccountDetail', () => {
 
     describe('User withdraws 2 DEF test tokens (9 decimals)', () => {
         it('should propogate value through to store and back to UI, when user updates the eth withdraw amount', (done) => {
-            const value = '2'
+            const value = '3'
             wrapper.find('#tokDepositAmount').hostNodes().simulate('change', { target: { value } })
             wrapper.find('#tokDepositAmountButton').hostNodes().simulate('click')
             wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
@@ -526,6 +547,20 @@ describe('AccountDetail', () => {
                 expect(fundingWrapper.instance().tokWithdrawalInputProps().tokWithdrawalValid).toEqual(true)
                 done()
             }, 2000)
+        })
+
+        it('should set the maximum token withdrawal amount', () => {
+            wrapper.find('#tokWithdrawAmountMaxButton').hostNodes().simulate('click')
+
+            const { tokWithdrawalAmountControlled, tokWithdrawalAmountWei } = FundingStore.getFundingState()
+            expect(tokWithdrawalAmountControlled.toString()).toEqual('3')
+            expect(tokWithdrawalAmountWei.toString()).toEqual(BigNumber('3').times(BigNumber(10 ** 9)).toString())
+
+            expect(wrapper.find('#tokWithdrawAmount').hostNodes().props().value.toString()).toEqual('3')
+
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().tokWithdrawalState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().tokWithdrawalInputProps().tokWithdrawalValid).toEqual(true)
         })
 
         it('should display a confirmation modal when the user submits a token withdrawal', () => {
@@ -554,7 +589,7 @@ describe('AccountDetail', () => {
             expect(promiseWithdrawTokenMock).toHaveBeenCalledWith(
                 primaryKeyAccount.address,
                 9,
-                testTokenContractInstance.options.address,
+                testTokenContractInstanceNineDecimals.options.address,
                 BigNumber(value).times(BigNumber(10 ** 9)),
                 BigNumber(Web3.utils.toWei('6', 'gwei')))
 

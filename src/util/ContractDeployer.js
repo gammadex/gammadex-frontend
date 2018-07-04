@@ -3,6 +3,10 @@ import abiEtherDelta from '../config/etherdelta.json'
 import etherDeltaBytecode from '../config/etherdeltabytecode.json'
 import abiTestToken from '../config/testtoken.json'
 import testTokenBytecode from '../config/testtokenbytecode.json'
+import BigNumber from 'bignumber.js'
+
+// ESLint
+/* global global */
 
 export function deployContracts(web3, metamaskAddress, feeAccount, primaryKeyAccount, defaultGasPrice) {
     /**
@@ -29,7 +33,7 @@ export function deployContracts(web3, metamaskAddress, feeAccount, primaryKeyAcc
      * Deploy ERC-20 Test Token to ganache. The contract by default gives the owner (metamask) account 100 TEST
      */
     const testTokenContract = new web3.eth.Contract(abiTestToken)
-    const promiseDeployTestTokenContract = () => {
+    const promiseDeployTestTokenContract = (weiAmount) => {
         return testTokenContract.deploy({
             data: testTokenBytecode.data
         }).send({
@@ -37,17 +41,15 @@ export function deployContracts(web3, metamaskAddress, feeAccount, primaryKeyAcc
             gas: 4700000,
             gasPrice: defaultGasPrice
         }).then(newContractInstance => {
-            global.testTokenContractInstance = newContractInstance
-
-            Config.getEnv().defaultPair.token.address = newContractInstance.options.address
-            Config.getEnv().defaultPair.token.decimals = 18
-
             // Transfer 20 TEST from the metamask to the private key account
-            return newContractInstance.methods.transfer(primaryKeyAccount.address, web3.utils.toWei('20', 'ether'))
+            return newContractInstance.methods.transfer(primaryKeyAccount.address, weiAmount)
                 .send({
                     from: metamaskAddress,
                     gas: 200000,
                     gasPrice: defaultGasPrice
+                })
+                .then(() => {
+                    return newContractInstance
                 })
         })
     }
@@ -62,6 +64,19 @@ export function deployContracts(web3, metamaskAddress, feeAccount, primaryKeyAcc
     }
 
     return promiseDeployEdContract()
-        .then(() => promiseTopupWalletEth())
-        .then(() => promiseDeployTestTokenContract())
+        .then(() => {
+            return promiseTopupWalletEth()
+        })
+        .then(() => {
+            return promiseDeployTestTokenContract(web3.utils.toWei('20', 'ether'))
+                .then(newContractInstance => {
+                    global.testTokenContractInstance = newContractInstance
+                })
+        })
+        .then(() => {
+            return promiseDeployTestTokenContract(BigNumber('20').times(BigNumber(10 ** 9)).toString())
+                .then(newContractInstance => {
+                    global.testTokenContractInstanceNineDecimals = newContractInstance
+                })
+        })        
 }
