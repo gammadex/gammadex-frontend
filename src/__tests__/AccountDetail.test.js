@@ -115,6 +115,28 @@ describe('AccountDetail', () => {
             expect(fundingWrapper.instance().ethDepositInputProps().ethDepositValid).toEqual(true)
         })
 
+        it('should set the maximum eth deposit amount (accounting for the gas fee)', () => {
+            // simulate user clicking on "MAX"
+            wrapper.find('#ethDepositAmountMaxButton').hostNodes().simulate('click')
+
+            const depositMaxFeeWei = BigNumber(Web3.utils.toWei('6', 'gwei')).times(BigNumber(Config.getGasLimit('deposit')))
+            const maxDepositAmount = BigNumber(Web3.utils.toWei('10', 'ether')).minus(depositMaxFeeWei)
+
+            const { ethDepositAmountControlled, ethDepositAmountWei } = FundingStore.getFundingState()
+            expect(ethDepositAmountControlled.toString()).toEqual(Web3.utils.fromWei(maxDepositAmount.toString()))
+            expect(ethDepositAmountWei.toString()).toEqual(maxDepositAmount.toString())
+
+            expect(wrapper.find('#ethDepositAmount').hostNodes().props().value.toString())
+                .toEqual(Web3.utils.fromWei(maxDepositAmount.toString()).toString())
+
+            // depositing the maximum leaves 0 ETH for further transactions, which is a warning
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().ethDepositState).toEqual(FundingState.WARNING)
+            expect(fundingWrapper.instance().ethDepositInputProps().ethDepositErrorText)
+                .toEqual('0 ETH remaining after this deposit + max gas fee. This leaves insufficient gas to submit additional Trade transactions.')
+            expect(fundingWrapper.instance().ethDepositInputProps().ethDepositValid).toEqual(false)
+        })
+
         it('should display a confirmation modal when the user submits an eth deposit', () => {
             const value = '4'
             wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
@@ -204,6 +226,20 @@ describe('AccountDetail', () => {
             expect(fundingWrapper.instance().ethWithdrawalInputProps().ethWithdrawalValid).toEqual(true)
         })
 
+        it('should set the maximum eth withdrawal amount', () => {
+            wrapper.find('#ethWithdrawAmountMaxButton').hostNodes().simulate('click')
+
+            const { ethWithdrawalAmountControlled, ethWithdrawalAmountWei } = FundingStore.getFundingState()
+            expect(ethWithdrawalAmountControlled.toString()).toEqual('4')
+            expect(ethWithdrawalAmountWei.toString()).toEqual(Web3.utils.toWei('4', 'ether'))
+
+            expect(wrapper.find('#ethWithdrawAmount').hostNodes().props().value.toString()).toEqual('4')
+
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().ethWithdrawalState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().ethWithdrawalInputProps().ethWithdrawalValid).toEqual(true)
+        })
+        
         it('should display a confirmation modal when the user submits an eth withdrawal', () => {
             const value = '3'
             wrapper.find('#ethWithdrawAmount').hostNodes().simulate('change', { target: { value } })
@@ -246,6 +282,20 @@ describe('AccountDetail', () => {
             expect(tokDepositAmountControlled).toEqual(value)
             expect(tokDepositAmountWei.toString()).toEqual(Web3.utils.toWei(value, 'ether'))
             expect(wrapper.find('#tokDepositAmount').hostNodes().props().value).toEqual(value)
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().tokDepositState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().tokDepositInputProps().tokDepositValid).toEqual(true)
+        })
+
+        it('should set the maximum token deposit amount', () => {
+            wrapper.find('#tokDepositAmountMaxButton').hostNodes().simulate('click')
+
+            const { tokDepositAmountControlled, tokDepositAmountWei } = FundingStore.getFundingState()
+            expect(tokDepositAmountControlled.toString()).toEqual('20')
+            expect(tokDepositAmountWei.toString()).toEqual(Web3.utils.toWei('20', 'ether'))
+
+            expect(wrapper.find('#tokDepositAmount').hostNodes().props().value.toString()).toEqual('20')
+
             const fundingWrapper = wrapper.find(Funding)
             expect(FundingStore.getFundingState().tokDepositState).toEqual(FundingState.OK)
             expect(fundingWrapper.instance().tokDepositInputProps().tokDepositValid).toEqual(true)
@@ -328,18 +378,32 @@ describe('AccountDetail', () => {
             setTimeout(() => {
                 const value = '5'
                 wrapper.find('#tokWithdrawAmount').hostNodes().simulate('change', { target: { value } })
-    
+
                 const { tokWithdrawalAmountControlled, tokWithdrawalAmountWei } = FundingStore.getFundingState()
                 expect(tokWithdrawalAmountControlled).toEqual(value)
                 expect(tokWithdrawalAmountWei.toString()).toEqual(Web3.utils.toWei(value, 'ether'))
-    
+
                 expect(wrapper.find('#tokWithdrawAmount').hostNodes().props().value).toEqual(value)
-    
+
                 const fundingWrapper = wrapper.find(Funding)
                 expect(FundingStore.getFundingState().tokWithdrawalState).toEqual(FundingState.OK)
                 expect(fundingWrapper.instance().tokWithdrawalInputProps().tokWithdrawalValid).toEqual(true)
                 done()
             }, 2000)
+        })
+
+        it('should set the maximum token withdrawal amount', () => {
+            wrapper.find('#tokWithdrawAmountMaxButton').hostNodes().simulate('click')
+
+            const { tokWithdrawalAmountControlled, tokWithdrawalAmountWei } = FundingStore.getFundingState()
+            expect(tokWithdrawalAmountControlled.toString()).toEqual('8')
+            expect(tokWithdrawalAmountWei.toString()).toEqual(Web3.utils.toWei('8', 'ether'))
+
+            expect(wrapper.find('#tokWithdrawAmount').hostNodes().props().value.toString()).toEqual('8')
+
+            const fundingWrapper = wrapper.find(Funding)
+            expect(FundingStore.getFundingState().tokWithdrawalState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().tokWithdrawalInputProps().tokWithdrawalValid).toEqual(true)
         })
 
         it('should display a confirmation modal when the user submits a token withdrawal', () => {
@@ -374,7 +438,7 @@ describe('AccountDetail', () => {
 
             promiseWithdrawTokenMock.mockRestore()
         })
-    })    
+    })
 
     describe('User deposits 3 DEF test tokens (9 decimals)', () => {
         beforeAll(() => {
@@ -476,13 +540,13 @@ describe('AccountDetail', () => {
             setTimeout(() => {
                 const value = '2'
                 wrapper.find('#tokWithdrawAmount').hostNodes().simulate('change', { target: { value } })
-    
+
                 const { tokWithdrawalAmountControlled, tokWithdrawalAmountWei } = FundingStore.getFundingState()
                 expect(tokWithdrawalAmountControlled).toEqual(value)
                 expect(tokWithdrawalAmountWei.toString()).toEqual(BigNumber(value).times(BigNumber(10 ** 9)).toString())
-    
+
                 expect(wrapper.find('#tokWithdrawAmount').hostNodes().props().value).toEqual(value)
-    
+
                 const fundingWrapper = wrapper.find(Funding)
                 expect(FundingStore.getFundingState().tokWithdrawalState).toEqual(FundingState.OK)
                 expect(fundingWrapper.instance().tokWithdrawalInputProps().tokWithdrawalValid).toEqual(true)
@@ -522,6 +586,6 @@ describe('AccountDetail', () => {
 
             promiseWithdrawTokenMock.mockRestore()
         })
-    })    
+    })
 
 })
