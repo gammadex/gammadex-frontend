@@ -154,63 +154,37 @@ describe('AccountDetail', () => {
             expect(wrapper.find('#fundingModalBody').hostNodes().text()).toEqual(`Deposit ${value} ETH to exchange?`)
         })
 
-        describe('should execute the eth deposit when the user confirms the modal', () => {
-            it('variation 1 using jest mock of EtherDeltaWeb3', () => {
-                // all we really care about is that promiseDepositEther is called with the expected params.
-                // EtherDeltaWeb3.test.js asserts correct behavour separately past that point
-                const promiseDepositEtherMock = jest.spyOn(EtherDeltaWeb3, "promiseDepositEther")
-                promiseDepositEtherMock.mockImplementation(() => {
-                    const promiEvent = Web3PromiEvent()
-                    promiEvent.eventEmitter.emit('transactionHash', '123')
-                    return promiEvent.eventEmitter
-                })
-                const value = '4'
-                wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
-                wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
-                wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
-
-                expect(promiseDepositEtherMock).toHaveBeenCalledWith(
-                    primaryKeyAccount.address,
-                    0,
-                    BigNumber(Web3.utils.toWei(value, 'ether')),
-                    BigNumber(Web3.utils.toWei('6', 'gwei')))
-
-                promiseDepositEtherMock.mockRestore()
+        it('should execute the eth deposit when the user confirms the modal', () => {
+            // all we really care about is that promiseDepositEther is called with the expected params.
+            // EtherDeltaWeb3.test.js asserts correct behavour separately past that point
+            const promiseDepositEtherMock = jest.spyOn(EtherDeltaWeb3, "promiseDepositEther")
+            promiseDepositEtherMock.mockImplementation(() => {
+                const promiEvent = Web3PromiEvent()
+                promiEvent.eventEmitter.emit('transactionHash', '123')
+                return promiEvent.eventEmitter
             })
-            it('variation 2 using actual web3 and local ganache blockchain', (done) => {
-                // this might be considered overkill since we already comprehensively test EtherDeltaWeb3 in EtherDeltaWeb3.test.js
-                const value = '4'
-                wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
-                wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
-                wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
+            const value = '4'
+            wrapper.find('#ethDepositAmount').hostNodes().simulate('change', { target: { value } })
+            wrapper.find('#ethDepositAmountButton').hostNodes().simulate('click')
+            wrapper.find('#fundingModalConfirmButton').hostNodes().simulate('click')
 
-                // the last action of confirmation the modal triggers some async logic to execute the deposit.
-                // We do not have easy access to that future, after triggering the 'click' event so wait for 2s.
-                setTimeout(() => {
-                    // check the correct amount has been deposited into the exchange
-                    expect(wrapper.find('#tdExchangeBalanceEth').text()).toEqual('4.000')
+            expect(promiseDepositEtherMock).toHaveBeenCalledWith(
+                primaryKeyAccount.address,
+                0,
+                BigNumber(Web3.utils.toWei(value, 'ether')),
+                BigNumber(Web3.utils.toWei('6', 'gwei')))
 
-                    // check the correct amount has been deducted from the wallet (including the gas fee)
-                    const txHash = _.last(TransferStore.getAllTransfers()).txHash
-                    return web3.eth.getTransactionReceipt(txHash)
-                        .then(receipt => {
-                            const gasCostWei = BigNumber(receipt.gasUsed).times(BigNumber(Web3.utils.toWei('6', 'gwei')))
-                            const remainingWalletEthWei = BigNumber(Web3.utils.toWei('10', 'ether'))
-                                .minus(BigNumber(Web3.utils.toWei(value, 'ether')))
-                                .minus(gasCostWei)
-
-                            const { walletBalanceEthWei } = AccountStore.getAccountState()
-                            expect(remainingWalletEthWei.toString()).toEqual(walletBalanceEthWei.toString())
-                            expect(wrapper.find('#tdWalletBalanceEth').text())
-                                .toEqual(formatNumber(BigNumber(Web3.utils.fromWei(remainingWalletEthWei.toString())), 3))
-                            done()
-                        })
-                }, 2000)
-            })
+            promiseDepositEtherMock.mockRestore()
         })
     })
 
     describe('User withdraws 3 ether', () => {
+        beforeAll(() => {
+            return EtherDeltaWeb3.promiseDepositEther(primaryKeyAccount.address, 0, BigNumber(Web3.utils.toWei('4', 'ether')), BigNumber(Web3.utils.toWei('6', 'gwei')))
+                .then(() => {
+                    return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
+                })
+        })
         it('should propogate value through to store and back to UI, when user updates the eth withdraw amount', () => {
             const value = '3'
             wrapper.find('#ethWithdrawAmount').hostNodes().simulate('change', { target: { value } })
@@ -239,7 +213,7 @@ describe('AccountDetail', () => {
             expect(FundingStore.getFundingState().ethWithdrawalState).toEqual(FundingState.OK)
             expect(fundingWrapper.instance().ethWithdrawalInputProps().ethWithdrawalValid).toEqual(true)
         })
-        
+
         it('should display a confirmation modal when the user submits an eth withdrawal', () => {
             const value = '3'
             wrapper.find('#ethWithdrawAmount').hostNodes().simulate('change', { target: { value } })
@@ -531,7 +505,7 @@ describe('AccountDetail', () => {
         })
     })
 
-    describe('User withdraws 2 ABC test tokens (9 decimals)', () => {
+    describe('User withdraws 2 DEF test tokens (9 decimals)', () => {
         it('should propogate value through to store and back to UI, when user updates the eth withdraw amount', (done) => {
             const value = '2'
             wrapper.find('#tokDepositAmount').hostNodes().simulate('change', { target: { value } })
