@@ -904,3 +904,15 @@ body {
 .input-unit, .input-unit.disabled {
     color: var(--gray);
 }
+
+.navbar-card li a {
+    border-right:1px solid var(--gray-light);
+}
+
+.navbar-card li a:hover {
+    color: var(--green) !important;
+}
+
+.navbar-card li:last-child a {
+    border-right:2px solid transparent;
+}

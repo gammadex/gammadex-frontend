@@ -20,26 +20,25 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
 
     render() {
         const openOrdersActive = this.state.activeTab === 'OpenOrders'
-        const openOrdersActiveClass = openOrdersActive ? 'active' : ''
-        const pendingTradesActiveClass = (!openOrdersActive) ? 'active' : ''
 
         const content = openOrdersActive ? <OpenOrders/> : <PendingTrades/>
+        const title = openOrdersActive ? 'Open Orders' : 'Pending Trades'
 
         return (
             <Box className="open-orders-and-pending-trades-component last-card">
                 <BoxHeader>
-                    <div className="card-title">Open Orders / Pending Trades</div>
+                    <div className="card-title">{title}</div>
                     <div>
-                        <ul className="nav nav-pills card-header-pills">
+                        <ul className="nav navbar-dark navbar-card">
                             <li className="nav-item">
-                                <button className={"nav-link btn btn-sm card-header-button " + openOrdersActiveClass}
-                                        onClick={() => this.selectTab("OpenOrders")}>My Open Orders
-                                </button>
+                                <a className={"nav-link card-header-button "}
+                                        onClick={() => this.selectTab("OpenOrders")}>Open Orders
+                                </a>
                             </li>
                             <li className="nav-item">
-                                <button className={"nav-link  btn btn-sm card-header-button " + pendingTradesActiveClass}
-                                        onClick={() => this.selectTab("PendingTrades")}>My Pending Trades
-                                </button>
+                                <a className={"nav-link card-header-button "}
+                                        onClick={() => this.selectTab("PendingTrades")}>Pending Trades
+                                </a>
                             </li>
                         </ul>
                     </div>
