@@ -22,6 +22,7 @@ import _ from "lodash"
 import OrderFactory from '../OrderFactory'
 import OrderSide from '../OrderSide'
 import {deployContracts} from '../util/ContractDeployer'
+import TokenStore from "../stores/TokenStore"
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 
@@ -38,6 +39,17 @@ const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 
 beforeAll(() => {
     return deployContracts(web3, metamaskAddress, feeAccount, primaryKeyAccount, defaultGasPrice)
+        .then(() => {
+            const tok = {
+                address: testTokenContractInstance.options.address,
+                decimals: 18,
+                isListed: true,
+                name: null,
+                symbol: 'ABC'
+            }
+            TokenStore.listedTokens = [ tok ]
+            TokenStore.allTokens = [ tok ]
+        })
 })
 
 function contractBalanceTest(promiseAction = () => { }, userAddress, tokenAddress, weiExpectedAmountDiff) {
