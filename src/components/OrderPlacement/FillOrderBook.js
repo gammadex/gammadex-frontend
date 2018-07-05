@@ -225,6 +225,8 @@ export default class FillOrderBook extends React.Component {
             const orderAmountAvailable = OrderSide.BUY ? fillOrder.order.ethAvailableVolumeBase : fillOrder.order.ethAvailableVolume
             const maxAvailable = BigNumber.min(available, orderAmountAvailable)
 
+            const buySell = type === OrderSide.BUY ? 'BUY' : 'SELL'
+
             body =
                 <BoxSection className={"order-box"}>
                     <hr/>
@@ -278,9 +280,9 @@ export default class FillOrderBook extends React.Component {
                         <FormGroup row className="hdr-stretch-ctr">
                             <Col sm={6}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
-                                    onClick={this.onSubmit}>{type === OrderSide.BUY ? 'BUY' : 'SELL'}</Button>
+                                    onClick={this.onSubmit}>{buySell}</Button>
                                 <Conditional displayCondition={!balanceRetrieved}>
-                                    <FormText color="muted">{`Please unlock a wallet to enable ${type === OrderSide.BUY ? 'BUY' : 'SELL'} trades`}</FormText>
+                                    <FormText color="muted">{`Please unlock a wallet to enable ${buySell} trades`}</FormText>
                                 </Conditional>
                             </Col>
                         </FormGroup>
@@ -288,11 +290,11 @@ export default class FillOrderBook extends React.Component {
 
                     {bestExecutionWarning}
 
-                    <Modal isOpen={confirmTradeModalSide!=null  && confirmTradeModalSide === type} toggle={this.abortFundingAction} className={this.props.className} keyboard>
-                        <ModalBody>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${fillOrder.fillAmountControlled} ${tokenSymbol}?`}</ModalBody>
+                    <Modal isOpen={confirmTradeModalSide!=null && confirmTradeModalSide === type} toggle={this.abortFundingAction} className={this.props.className} keyboard>
+                        <ModalBody id={type + 'FillOrderModal'}>{`${buySell} ${fillOrder.fillAmountControlled} ${tokenSymbol}?`}</ModalBody>
                         <ModalFooter>
                             <Button color="secondary" onClick={this.onAbort}>Abort</Button>{' '}
-                            <Button color="primary" onClick={this.onConfirm}>{`${type === OrderSide.BUY ? 'BUY' : 'SELL'} ${tokenSymbol}`}</Button>
+                            <Button id={type + 'FillOrderModalButton'} color="primary" onClick={this.onConfirm}>{`${buySell} ${tokenSymbol}`}</Button>
                         </ModalFooter>
                     </Modal>
                 </BoxSection>

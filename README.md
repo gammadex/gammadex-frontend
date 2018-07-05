@@ -29,7 +29,7 @@ npm install -g ganache-cli
 In a new terminal start ganache, which also creates a test wallet populated with 1000 ETH (this exact wallet is used by the tests)
 
 ```
-ganache-cli --account="0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef,1000000000000000000000" --port=19546
+ganache-cli --account="0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef,1000000000000000000000000000" --port=19546
 ```
 
 ### Running Tests
