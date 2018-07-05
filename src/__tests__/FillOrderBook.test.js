@@ -28,6 +28,7 @@ import { makerSide, tokenAddress, priceOf } from '../OrderUtil'
 import { baseWeiToEth, tokWeiToEth } from '../EtherConversion'
 import AccountStore from '../stores/AccountStore'
 import Web3PromiEvent from 'web3-core-promievent'
+import OrderEntryField from '../OrderEntryField'
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
@@ -35,7 +36,7 @@ const primaryKeyAccount = web3.eth.accounts.create()
 const feeAccount = web3.eth.accounts.create()
 const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 // ESLint
-/* global global, wrapper, testTokenContractInstance */
+/* global global, wrapper, testTokenContractInstance, makerSellTestOrder */
 
 function formatV1Order(order) {
     return EtherDeltaWeb3.promiseAvailableVolume(order)
@@ -152,7 +153,7 @@ describe('OrderBox', () => {
                                                 return formatV1Order(order)
                                                     .then(fillOrder => {
                                                         OrderBookStore.offers = [fillOrder]
-                                                        TradeActions.fillOrder(fillOrder)
+                                                        global.makerSellTestOrder = fillOrder
                                                     })
                                             })
                                     })
@@ -174,7 +175,10 @@ describe('OrderBox', () => {
         wrapper.unmount()
     })
     describe('User selects a taker buy (aka maker sell) order for 18 decimal ABC token from the order book', () => {
-        describe('By default the trade component will be populated with the selected order details', () => {
+        beforeAll(() => {
+            TradeActions.fillOrder(makerSellTestOrder)
+        })
+        describe('By default the trade component will be populated to fully fill the order', () => {
             it('should display the (read-only) price of the order', () => {
                 const buyOrderPriceInput = wrapper.find('#buyOrderPrice').hostNodes().instance()
                 expect(buyOrderPriceInput.value).toEqual('0.02000000')
@@ -199,7 +203,7 @@ describe('OrderBox', () => {
             })
             describe('should execute the BUY when the user confirms the modal', () => {
                 beforeEach(() => {
-                    TradeActions.fillOrder(wrapper.state().fillOrder.order)
+                    TradeActions.fillOrder(makerSellTestOrder)
                     wrapper.find('#buyButton').hostNodes().simulate('click')
                 })
                 it('should first call promiseTestTrade', (done) => {
@@ -209,13 +213,17 @@ describe('OrderBox', () => {
 
                     // there is an async period between testing the trade and executing it
                     setTimeout(() => {
-                        expect(promiseTestTradeMock).toHaveBeenCalledWith(
-                            primaryKeyAccount.address,
-                            wrapper.state().fillOrder.order,
-                            BigNumber(web3.utils.toWei('0.008', 'ether')))
-                        promiseTestTradeMock.mockRestore()
-                        promiseTradeMock.mockRestore()
-                        done()
+                        try {
+                            expect(promiseTestTradeMock).toHaveBeenCalledWith(
+                                primaryKeyAccount.address,
+                                wrapper.state().fillOrder.order,
+                                BigNumber(web3.utils.toWei('0.008', 'ether')))
+                            promiseTradeMock.mockRestore()    
+                            done()
+                        } catch (err) {
+                            promiseTradeMock.mockRestore()
+                            done.fail(err)
+                        }
                     }, 500)
                 })
                 it('should then call promiseTrade', (done) => {
@@ -236,5 +244,60 @@ describe('OrderBox', () => {
             })
 
         })
+
+        describe('User updates trade amount to partially fill the order', () => {
+            beforeEach(() => {
+                const value = '0.1'
+                wrapper.find('#buyOrderAmount').hostNodes().simulate('change', { target: { value } })
+            })
+            it('should display the new fill amount', () => {
+                expect(wrapper.find('#buyOrderAmount').hostNodes().instance().value).toEqual('0.1')
+            })
+            it('should display the (read-only) eth total for the fill amount', () => {
+                expect(wrapper.find('#buyOrderTotal').hostNodes().instance().value).toEqual('0.002')
+            })
+            it('should call promiseTestTrade and promiseTrade with the new fill amount', (done) => {
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+                const promiseTradeMock = tradeMock()
+                wrapper.find('#buyFillOrderModalButton').hostNodes().simulate('click')
+
+                setTimeout(() => {
+                    try {
+                        expect(promiseTradeMock).toHaveBeenCalledWith(
+                            primaryKeyAccount.address,
+                            3,
+                            wrapper.state().fillOrder.order,
+                            BigNumber(web3.utils.toWei('0.002', 'ether')),
+                            BigNumber(web3.utils.toWei('6', 'gwei')))
+                        promiseTradeMock.mockRestore()    
+                        done()
+                    } catch (err) {
+                        promiseTradeMock.mockRestore()
+                        done.fail(err)
+                    }
+                }, 500)
+            })
+        })
+
+        describe('User attempts to overfill the order', () => {
+            beforeEach(() => {
+                const value = '0.5'
+                wrapper.find('#buyOrderAmount').hostNodes().simulate('change', { target: { value } })
+            })
+            it('should display the new fill amount', () => {
+                expect(wrapper.find('#buyOrderAmount').hostNodes().instance().value).toEqual('0.5')
+            })
+            it('should display the (read-only) eth total for the fill amount', () => {
+                expect(wrapper.find('#buyOrderTotal').hostNodes().instance().value).toEqual('0.010')
+            })
+            it('the BUY button should be disabled', () => {
+                const buyOrderButton = wrapper.find('#buyButton').hostNodes().instance()
+                expect(buyOrderButton.disabled).toEqual(true)
+                const { fillAmountValid, fillAmountInvalidField, fillAmountInvalidReason } = wrapper.state().fillOrder
+                expect(fillAmountValid).toEqual(false)
+                expect(fillAmountInvalidField).toEqual(OrderEntryField.AMOUNT)
+                expect(fillAmountInvalidReason).toEqual("Token amount greater than max order amount (0.4)")
+            })            
+        })        
     })
 })
