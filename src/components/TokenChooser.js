@@ -7,6 +7,9 @@ import _ from "lodash"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import OrderBookStore from "../stores/OrderBookStore"
 import MarketResponseSpinner from "./MarketResponseSpinner"
+import ReactResizeDetector from 'react-resize-detector'
+import CustomScroll from 'react-custom-scroll'
+import 'react-custom-scroll/dist/customScroll.css'
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -16,7 +19,8 @@ class TokenChooser extends React.Component {
             searchedToken: "",
             selectedToken: null,
             serverTickers: {},
-            currentStats: OrderBookStore.getTradeStats()
+            currentStats: OrderBookStore.getTradeStats(),
+            containerHeight: 100
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -78,8 +82,14 @@ class TokenChooser extends React.Component {
             .value()
     }
 
+    onResize = (width, height) => {
+        this.setState({
+            containerHeight: height
+        })
+    }
+
     render() {
-        const {searchedToken, selectedToken, serverTickers, currentStats} = this.state
+        const {searchedToken, selectedToken, serverTickers, currentStats, containerHeight} = this.state
 
         const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(), serverTickers, searchedToken, selectedToken)
 
@@ -94,19 +104,22 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <div className="card token-chooser-component">
-                <div className="card-header">
-                    <div className="card-title">Tokens<MarketResponseSpinner/></div>
-                    <div>
-                        <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
-                            <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                                   placeholder="Search" className="form-control"/>
-                        </form>
-                    </div>
-                </div>
+            <div id="token-chooser-container" className="token-chooser-component">
+                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="token-chooser-container"/>
 
-                <div className="table-responsive">
-                    <table className="table table-bordered table-hover table-no-bottom-border">
+                <div className="card " style={{"height": containerHeight}}>
+                    <div className="card-header">
+                        <div className="card-title">Tokens<MarketResponseSpinner/></div>
+                        <div>
+                            <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                                <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                                       placeholder="Search" className="form-control"/>
+                            </form>
+                        </div>
+                    </div>
+
+                    <CustomScroll heightRelativeToParent="100%">
+                        <table className="table table-bordered table-hover table-no-bottom-border">
                             <thead>
                             <tr>
                                 <th>Symbol</th>
@@ -116,8 +129,8 @@ class TokenChooser extends React.Component {
                             </thead>
                             <tbody>{tokenRows}</tbody>
                         </table>
-                    </div>
-
+                    </CustomScroll>
+                </div>
             </div>
         )
     }

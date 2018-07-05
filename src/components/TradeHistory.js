@@ -3,6 +3,8 @@ import {Box, BoxSection} from "./CustomComponents/Box"
 import OrderBookStore from "../stores/OrderBookStore"
 import Conditional from "./CustomComponents/Conditional"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
+import CustomScroll from 'react-custom-scroll'
+import 'react-custom-scroll/dist/customScroll.css'
 
 export default class TradeHistory extends React.Component {
     constructor(props) {
@@ -34,14 +36,14 @@ export default class TradeHistory extends React.Component {
 
         return (
             <Box title="Market Trades" marketResponseSpinner className="market-trades-component last-card">
-                <div className="table-responsive">
-                <BoxSection className="nopad">
-                    <Conditional displayCondition={trades && trades.length > 0}
-                                 fallbackMessage={'There is no trade history for ' + tokenSymbol}>
-                        <TradeHistoryTable base="ETH" token={tokenSymbol} trades={trades}/>
-                    </Conditional>
-                </BoxSection>
-                </div>
+                <CustomScroll heightRelativeToParent="100%">
+                    <BoxSection className="nopad">
+                        <Conditional displayCondition={trades && trades.length > 0}
+                                     fallbackMessage={'There is no trade history for ' + tokenSymbol}>
+                            <TradeHistoryTable base="ETH" token={tokenSymbol} trades={trades}/>
+                        </Conditional>
+                    </BoxSection>
+                </CustomScroll>
             </Box>
         )
     }

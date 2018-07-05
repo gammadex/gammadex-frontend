@@ -7,6 +7,8 @@ import {Box} from "./CustomComponents/Box"
 import TransactionStatus from "../TransactionStatus"
 import PendingTradesTable from "./PendingTrades/PendingTradesTable"
 import Conditional from "./CustomComponents/Conditional"
+import CustomScroll from 'react-custom-scroll'
+import 'react-custom-scroll/dist/customScroll.css'
 
 export default class PendingTrades extends React.Component {
     constructor(props) {
@@ -48,13 +50,17 @@ export default class PendingTrades extends React.Component {
         const displayTrades = TradeDisplayUtil.toDisplayableTrades(pendingAndFailedTrades, account)
 
         return (
-            <Conditional displayCondition={!!account}
-                         fallbackMessage="Please unlock a wallet to see your pending trades">
-                <Conditional displayCondition={displayTrades && displayTrades.length > 0}
-                             fallbackMessage="You have no pending trades">
-                    <PendingTradesTable trades={displayTrades}/>
+            <div className="pending-trades-component">
+                <Conditional displayCondition={!!account}
+                             fallbackMessage="Please unlock a wallet to see your pending trades">
+                    <Conditional displayCondition={displayTrades && displayTrades.length > 0}
+                                 fallbackMessage="You have no pending trades">
+                        <CustomScroll heightRelativeToParent="100%">
+                            <PendingTradesTable trades={displayTrades}/>
+                        </CustomScroll>
+                    </Conditional>
                 </Conditional>
-            </Conditional>
+            </div>
         )
     }
 }
