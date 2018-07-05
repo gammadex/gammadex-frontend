@@ -43,10 +43,10 @@ export default class PlotlyDepthChart extends React.Component {
     createChart() {
         const {bids, offers} = this.state
 
-        if (bids && bids.length > 0 && offers && offers.length > 0) {
+        Plotly.purge('depthChart')
+        if (bids && bids.length > 0 || offers && offers.length > 0) {
             const {data, layout} = this.getDataAndLayout(bids, offers)
 
-            Plotly.purge('depthChart')
             Plotly.newPlot('depthChart', data, layout, {displayModeBar: false})
         }
     }
