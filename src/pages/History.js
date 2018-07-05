@@ -7,15 +7,15 @@ class History extends Component {
         return (
             <div>
                 <div className="row history-row">
-                    <div className="col-lg-6 deposit-history-container" style={{"padding-left":"6px", "padding-right":"3px"}}>
+                    <div className="col-lg-6 deposit-history-container">
                         <Transfers type="Deposit" title="Deposit History"/>
                     </div>
-                    <div className="col-lg-6 withdraw-history-container" style={{"padding-left":"3px", "padding-right":"6px"}}>
+                    <div className="col-lg-6 withdraw-history-container">
                         <Transfers type="Withdraw" title="Withdraw History"/>
                     </div>
                 </div>
                 <div className="row history-row">
-                    <div className="col-lg-12 trade-history-container" style={{"padding":"6px 6px 0 6px"}}>
+                    <div className="col-lg-12 trade-history-container">
                         <MyTrades/>
                     </div>
                 </div>

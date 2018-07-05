@@ -27,6 +27,6 @@ export function truncate(toTruncate, options) {
 
 export function truncateAddress(address) {
     return truncate(address, {
-        left: "7", right: "5"
+        left: "7", right: "0"
     })
 }

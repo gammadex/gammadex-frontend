@@ -447,7 +447,7 @@ header > div {
 }
 
 .main-warning {
-    margin-bottom: var(--main-padding);
+    margin: var(--main-padding);
 }
 
 .route-content > div {
@@ -524,16 +524,20 @@ header > div {
 .token-chooser-component {
     flex-grow: 1;
     flex-shrink: 1;
-    overflow: hidden;
     min-height: 100px;
 }
 
 .unlisted-tokens-component {
-    min-height: 250px;
     flex-grow: 0;
     flex-shrink: 0;
+    height: 33%;
     max-height: 33%;
-    flex-basis: 25%;
+    min-height: 33%;
+    flex-basis: 33%;
+}
+
+.unlisted-tokens-component .card {
+    height: 100%;
 }
 
 .exchange-right-col {
@@ -634,6 +638,9 @@ header > div {
     flex-grow: 0;
     flex-shrink: 0;
     height: var(--bids-and-offers-spacer-height);
+    max-height: var(--bids-and-offers-spacer-height);
+    min-height: var(--bids-and-offers-spacer-height);
+    overflow:hidden;
 }
 
 .bids-and-offers-bids, .bids-and-offers-offers {
@@ -754,6 +761,10 @@ header > div {
 
 .card .table td {
     vertical-align: middle;
+}
+
+.open-orders-component, .pending-trades-component {
+    height:calc(100% - var(--card-header-height));
 }
 
 /*
@@ -887,9 +898,9 @@ body {
 }
 
 .button-row {
-    padding:3px;
+    padding: 3px;
 }
 
 .input-unit, .input-unit.disabled {
-    color:var(--gray);
+    color: var(--gray);
 }

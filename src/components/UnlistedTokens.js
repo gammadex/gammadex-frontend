@@ -7,6 +7,9 @@ import {Box, BoxSection} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
+import ReactResizeDetector from 'react-resize-detector'
+import CustomScroll from 'react-custom-scroll'
+import 'react-custom-scroll/dist/customScroll.css'
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -15,7 +18,8 @@ class TokenChooser extends React.Component {
         this.state = {
             searchedToken: "",
             selectedToken: null,
-            serverTickers: {}
+            serverTickers: {},
+            containerHeight: 100
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -61,8 +65,14 @@ class TokenChooser extends React.Component {
         TokenActions.resetCreate("")
     }
 
+    onResize = (width, height) => {
+        this.setState({
+            containerHeight: height
+        })
+    }
+
     render() {
-        const {selectedToken} = this.state
+        const {selectedToken, containerHeight} = this.state
 
         const userTokens = TokenRepository.getUserTokens()
 
@@ -76,26 +86,31 @@ class TokenChooser extends React.Component {
         })
 
         return (
-            <Box title="My Unlisted Tokens" className="unlisted-tokens-component last-card">
-                <Conditional displayCondition={tokenRows.length > 0}>
-                    <div className="table-responsive">
-                        <table className="table table-striped table-bordered table-hover table-no-bottom-border">
-                            <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Name</th>
-                                <th>Smart Contract</th>
-                            </tr>
-                            </thead>
-                            <tbody>{tokenRows}</tbody>
-                        </table>
-                    </div>
-                </Conditional>
+            <div id="unlisted-tokens-container" className="unlisted-tokens-component">
+                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="unlisted-tokens-container"/>
+                <div style={{"height": containerHeight}}>
+                    <Box title="My Unlisted Tokens" className="last-card">
+                        <Conditional displayCondition={tokenRows.length > 0}>
+                                <CustomScroll heightRelativeToParent="100%">
+                                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                                        <thead>
+                                        <tr>
+                                            <th>Symbol</th>
+                                            <th>Name</th>
+                                            <th>Smart Contract</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>{tokenRows}</tbody>
+                                    </table>
+                                </CustomScroll>
+                        </Conditional>
 
-                <BoxSection>
-                    <TokenCreator selectToken={this.onTokenSelect}/>
-                </BoxSection>
-            </Box>
+                        <BoxSection>
+                            <TokenCreator selectToken={this.onTokenSelect}/>
+                        </BoxSection>
+                    </Box>
+                </div>
+            </div>
         )
     }
 }
