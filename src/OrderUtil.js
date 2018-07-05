@@ -13,6 +13,14 @@ export function priceOf(order) {
     }
 }
 
+export function weiPriceOf(order) {
+    if (isMakerBuy(order)) {
+        return safeBigNumber(order.amountGive).div(safeBigNumber(order.amountGet))
+    } else {
+        return safeBigNumber(order.amountGet).div(safeBigNumber(order.amountGive))
+    }
+}
+
 export function makerSide(order) {
     if(order.tokenGive === Config.getBaseAddress()) {
         return OrderSide.BUY
