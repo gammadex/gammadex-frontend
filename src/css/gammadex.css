@@ -1,4 +1,7 @@
 :root {
+    --header-height: 65px;
+    --upper-header-height: 45px;
+    --lower-header-height:calc(var(--header-height) - var(--upper-header-height));
     --main-padding: 2px;
     --half-main-padding: 1px;
     --card-header-height: 40px;
@@ -295,16 +298,26 @@ h1.main-header {
 }
 
 .token-stats {
-    margin-left: 20px;
+    display:flex;
+    flex-direction: row;
+    margin-left:50px;
+    margin-right:0;
+}
+
+.token-stats:first-child {
+    margin-left:0;
+}
+
+.token-stats:last-child {
+    margin-right:0;
 }
 
 .token-stat-name {
-    font-size: 75%;
+    margin-right:10px;
+    font-weight: bold;
 }
 
 .token-stat-value {
-    font-size: 110%;
-    font-weight: bold;
 }
 
 .empty-message {
@@ -423,18 +436,38 @@ input[type="number"] {
     max-height: 100vh;
 }
 
-header {
+.header {
+    display:flex;
+    flex-direction: column;
+    height: var(--header-height);
+}
+
+.upper-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 50px;
+    height: var(--upper-header-height);
     box-sizing: border-box;
     padding-left: 10px;
 }
 
-header > div {
+.upper-header > div {
     display: flex;
     align-items: center;
+}
+
+.lower-header {
+    background: var(--secondary);
+    height: var(--lower-header-height);
+    display:flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.upper-header .navbar {
+    padding:0;
 }
 
 .page-content {
@@ -442,7 +475,7 @@ header > div {
 }
 
 .route-content {
-    height: calc(100% - 50px);
+    height: calc(100% - var(--header-height));
     padding: var(--main-padding) 0;
 }
 
@@ -530,10 +563,10 @@ header > div {
 .unlisted-tokens-component {
     flex-grow: 0;
     flex-shrink: 0;
-    height: 33%;
-    max-height: 33%;
-    min-height: 33%;
-    flex-basis: 33%;
+    height: 30%;
+    max-height: 30%;
+    min-height: 30%;
+    flex-basis: 30%;
 }
 
 .unlisted-tokens-component .card {
