@@ -37,7 +37,7 @@ const primaryKeyAccount = web3.eth.accounts.create()
 const feeAccount = web3.eth.accounts.create()
 const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 // ESLint
-/* global global, wrapper, testTokenContractInstance, testTokenContractInstanceNineDecimals, makerSellTestOrder */
+/* global global, wrapper, testTokenContractInstance, testTokenContractInstanceNineDecimals, makerSellTestOrder, makerBuyTestOrder */
 
 function formatV1Order(order) {
     return EtherDeltaWeb3.promiseAvailableVolume(order)
@@ -304,6 +304,176 @@ describe('OrderBox', () => {
         })
     }) 
 
+    describe('User selects a taker sell (aka maker buy) order for 18 decimal ABC token from the order book', () => {
+        beforeEach(() => {
+            const div = document.createElement('div')
+            document.body.appendChild(div)
+            // mount does render child components
+            const wrapper = mount(<FillOrderBook type={OrderSide.SELL} tokenSymbol={'ABC'} tokenAddress={testTokenContractInstance.options.address} balanceRetrieved={true} />, { attachTo: div })
+            global.wrapper = wrapper
+        })
+        afterEach(() => {
+            wrapper.unmount()
+        })
+        beforeAll(() => {
+            TokenActions.selectToken({
+                address: testTokenContractInstance.options.address,
+                decimals: 18,
+                isListed: true,
+                name: null,
+                symbol: 'ABC'
+            })
+            Config.getEnv().defaultPair.token.address = testTokenContractInstance.options.address
+            Config.getEnv().defaultPair.token.decimals = 18
+            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
+                .then(() => {
+                    const expiry = 100000
+                    const price = 0.4 // ETH per ABC token
+                    const amount = 0.8 // ABC tokens
+                    const order = OrderFactory.createSignedOrder(
+                        OrderSide.BUY,
+                        expiry,
+                        price,
+                        amount,
+                        testTokenContractInstance.options.address,
+                        primaryKeyAccount.address,
+                        primaryKeyAccount.privateKey.slice(2))
+                    return formatV1Order(order)
+                        .then(fillOrder => {
+                            OrderBookStore.bids = [fillOrder]
+                            global.makerBuyTestOrder = fillOrder
+                            TradeActions.fillOrder(makerBuyTestOrder)
+                        })
+                })
+        })
+        describe('By default the trade component will be populated to fully fill the order', () => {
+            it('should display the (read-only) price of the taker sell order', () => {
+                const sellOrderPriceInput = wrapper.find('#sellOrderPrice').hostNodes().instance()
+                expect(sellOrderPriceInput.value).toEqual('0.40000000')
+                expect(sellOrderPriceInput.disabled).toEqual(true)
+            })
+            it('should display the full amount of the order (the current default, TODO change to max user amount)', () => {
+                const sellOrderAmountInput = wrapper.find('#sellOrderAmount').hostNodes().instance()
+                expect(sellOrderAmountInput.value).toEqual('0.8')
+            })
+            it('should display the (read-only) eth total for the order amount', () => {
+                const sellOrderTotalInput = wrapper.find('#sellOrderTotal').hostNodes().instance()
+                expect(sellOrderTotalInput.value).toEqual('0.320')
+            })
+            it('the SELL button should be enabled', () => {
+                const sellOrderButton = wrapper.find('#sellButton').hostNodes().instance()
+                expect(sellOrderButton.disabled).toEqual(false)
+            })
+            it('should display a SELL confirmation modal (only for private key accounts) when the user clicks SELL', () => {
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+                expect(wrapper.find(Modal).instance().props.isOpen).toEqual(true)
+                expect(wrapper.find('#sellFillOrderModal').hostNodes().text()).toEqual(`SELL 0.8 ABC?`)
+            })
+            describe('should execute the SELL when the user confirms the modal', () => {
+                beforeEach(() => {
+                    TradeActions.fillOrder(makerBuyTestOrder)
+                    wrapper.find('#sellButton').hostNodes().simulate('click')
+                })
+                it('should first call promiseTestTrade', (done) => {
+                    const promiseTestTradeMock = jest.spyOn(EtherDeltaWeb3, "promiseTestTrade")
+                    const promiseTradeMock = tradeMock()
+                    wrapper.find('#sellFillOrderModalButton').hostNodes().simulate('click')
+
+                    // there is an async period between testing the trade and executing it
+                    setTimeout(() => {
+                        try {
+                            expect(promiseTestTradeMock).toHaveBeenCalledWith(
+                                primaryKeyAccount.address,
+                                wrapper.state().fillOrder.order,
+                                BigNumber(web3.utils.toWei('0.8', 'ether')))
+                            promiseTradeMock.mockRestore()
+                            done()
+                        } catch (err) {
+                            promiseTradeMock.mockRestore()
+                            done.fail(err)
+                        }
+                    }, 500)
+                })
+                it('should then call promiseTrade', (done) => {
+                    const promiseTradeMock = tradeMock()
+                    wrapper.find('#sellFillOrderModalButton').hostNodes().simulate('click')
+
+                    setTimeout(() => {
+                        try {
+                            expect(promiseTradeMock).toHaveBeenCalledWith(
+                                primaryKeyAccount.address,
+                                5,
+                                wrapper.state().fillOrder.order,
+                                BigNumber(web3.utils.toWei('0.8', 'ether')),
+                                BigNumber(web3.utils.toWei('6', 'gwei')))
+                            promiseTradeMock.mockRestore()
+                            done()
+                        } catch (err) {
+                            promiseTradeMock.mockRestore()
+                            done.fail(err)
+                        }
+                    }, 500)
+                })
+            })
+
+        })
+
+        describe('User updates trade amount to partially fill the order', () => {
+            beforeEach(() => {
+                const value = '0.2'
+                wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value } })
+            })
+            it('should display the new fill amount', () => {
+                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('0.2')
+            })
+            it('should display the (read-only) eth total for the fill amount', () => {
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('0.080')
+            })
+            it('should call promiseTestTrade and promiseTrade with the new fill amount', (done) => {
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+                const promiseTradeMock = tradeMock()
+                wrapper.find('#sellFillOrderModalButton').hostNodes().simulate('click')
+
+                setTimeout(() => {
+                    try {
+                        expect(promiseTradeMock).toHaveBeenCalledWith(
+                            primaryKeyAccount.address,
+                            5,
+                            wrapper.state().fillOrder.order,
+                            BigNumber(web3.utils.toWei('0.2', 'ether')),
+                            BigNumber(web3.utils.toWei('6', 'gwei')))
+                        promiseTradeMock.mockRestore()
+                        done()
+                    } catch (err) {
+                        promiseTradeMock.mockRestore()
+                        done.fail(err)
+                    }
+                }, 500)
+            })
+        })
+
+        describe('User attempts to overfill the order', () => {
+            beforeEach(() => {
+                const value = '1.6'
+                wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value } })
+            })
+            it('should display the new fill amount', () => {
+                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('1.6')
+            })
+            it('should display the (read-only) eth total for the fill amount', () => {
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('0.640')
+            })
+            it('the SELL button should be disabled', () => {
+                const sellOrderButton = wrapper.find('#sellButton').hostNodes().instance()
+                expect(sellOrderButton.disabled).toEqual(true)
+                const { fillAmountValid, fillAmountInvalidField, fillAmountInvalidReason } = wrapper.state().fillOrder
+                expect(fillAmountValid).toEqual(false)
+                expect(fillAmountInvalidField).toEqual(OrderEntryField.AMOUNT)
+                expect(fillAmountInvalidReason).toEqual("Token amount greater than max order amount (0.8)")
+            })
+        })
+    }) 
+
     describe('User selects a taker buy (aka maker sell) order for 9 decimal DEF token from the order book', () => {
         beforeEach(() => {
             const div = document.createElement('div')
@@ -474,5 +644,175 @@ describe('OrderBox', () => {
             })
         })
     })
+
+    describe('User selects a taker sell (aka maker buy) order for 9 decimal DEF token from the order book', () => {
+        beforeEach(() => {
+            const div = document.createElement('div')
+            document.body.appendChild(div)
+            // mount does render child components
+            const wrapper = mount(<FillOrderBook type={OrderSide.SELL} tokenSymbol={'DEF'} tokenAddress={testTokenContractInstanceNineDecimals.options.address} balanceRetrieved={true} />, { attachTo: div })
+            global.wrapper = wrapper
+        })
+        afterEach(() => {
+            wrapper.unmount()
+        })
+        beforeAll(() => {
+            TokenActions.selectToken({
+                address: testTokenContractInstanceNineDecimals.options.address,
+                decimals: 9,
+                isListed: true,
+                name: null,
+                symbol: 'DEF'
+            })
+            Config.getEnv().defaultPair.token.address = testTokenContractInstanceNineDecimals.options.address
+            Config.getEnv().defaultPair.token.decimals = 9
+            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
+                .then(() => {
+                    const expiry = 100000
+                    const price = 0.75 // ETH per DEF token
+                    const amount = 2.5 // DEF tokens
+                    const order = OrderFactory.createSignedOrder(
+                        OrderSide.BUY,
+                        expiry,
+                        price,
+                        amount,
+                        testTokenContractInstanceNineDecimals.options.address,
+                        primaryKeyAccount.address,
+                        primaryKeyAccount.privateKey.slice(2))
+                    return formatV1Order(order)
+                        .then(fillOrder => {
+                            OrderBookStore.bids = [fillOrder]
+                            global.makerBuyTestOrder = fillOrder
+                            TradeActions.fillOrder(makerBuyTestOrder)
+                        })
+                })
+        })
+        describe('By default the trade component will be populated to fully fill the order', () => {
+            it('should display the (read-only) price of the taker sell order', () => {
+                const sellOrderPriceInput = wrapper.find('#sellOrderPrice').hostNodes().instance()
+                expect(sellOrderPriceInput.value).toEqual('0.75000000')
+                expect(sellOrderPriceInput.disabled).toEqual(true)
+            })
+            it('should display the full amount of the order (the current default, TODO change to max user amount)', () => {
+                const sellOrderAmountInput = wrapper.find('#sellOrderAmount').hostNodes().instance()
+                expect(sellOrderAmountInput.value).toEqual('2.5')
+            })
+            it('should display the (read-only) eth total for the order amount', () => {
+                const sellOrderTotalInput = wrapper.find('#sellOrderTotal').hostNodes().instance()
+                expect(sellOrderTotalInput.value).toEqual('1.875')
+            })
+            it('the SELL button should be enabled', () => {
+                const sellOrderButton = wrapper.find('#sellButton').hostNodes().instance()
+                expect(sellOrderButton.disabled).toEqual(false)
+            })
+            it('should display a SELL confirmation modal (only for private key accounts) when the user clicks SELL', () => {
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+                expect(wrapper.find(Modal).instance().props.isOpen).toEqual(true)
+                expect(wrapper.find('#sellFillOrderModal').hostNodes().text()).toEqual(`SELL 2.5 DEF?`)
+            })
+            describe('should execute the SELL when the user confirms the modal', () => {
+                beforeEach(() => {
+                    TradeActions.fillOrder(makerBuyTestOrder)
+                    wrapper.find('#sellButton').hostNodes().simulate('click')
+                })
+                it('should first call promiseTestTrade', (done) => {
+                    const promiseTestTradeMock = jest.spyOn(EtherDeltaWeb3, "promiseTestTrade")
+                    const promiseTradeMock = tradeMock()
+                    wrapper.find('#sellFillOrderModalButton').hostNodes().simulate('click')
+
+                    // there is an async period between testing the trade and executing it
+                    setTimeout(() => {
+                        try {
+                            expect(promiseTestTradeMock).toHaveBeenCalledWith(
+                                primaryKeyAccount.address,
+                                wrapper.state().fillOrder.order,
+                                BigNumber('2.5').times(BigNumber(10 ** 9)))
+                            promiseTradeMock.mockRestore()
+                            done()
+                        } catch (err) {
+                            promiseTradeMock.mockRestore()
+                            done.fail(err)
+                        }
+                    }, 500)
+                })
+                it('should then call promiseTrade', (done) => {
+                    const promiseTradeMock = tradeMock()
+                    wrapper.find('#sellFillOrderModalButton').hostNodes().simulate('click')
+
+                    setTimeout(() => {
+                        try {
+                            expect(promiseTradeMock).toHaveBeenCalledWith(
+                                primaryKeyAccount.address,
+                                5,
+                                wrapper.state().fillOrder.order,
+                                BigNumber('2.5').times(BigNumber(10 ** 9)),
+                                BigNumber(web3.utils.toWei('6', 'gwei')))
+                            promiseTradeMock.mockRestore()
+                            done()
+                        } catch (err) {
+                            promiseTradeMock.mockRestore()
+                            done.fail(err)
+                        }
+                    }, 500)
+                })
+            })
+
+        })
+
+        describe('User updates trade amount to partially fill the order', () => {
+            beforeEach(() => {
+                const value = '1.1'
+                wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value } })
+            })
+            it('should display the new fill amount', () => {
+                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('1.1')
+            })
+            it('should display the (read-only) eth total for the fill amount', () => {
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('0.825')
+            })
+            it('should call promiseTestTrade and promiseTrade with the new fill amount', (done) => {
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+                const promiseTradeMock = tradeMock()
+                wrapper.find('#sellFillOrderModalButton').hostNodes().simulate('click')
+
+                setTimeout(() => {
+                    try {
+                        expect(promiseTradeMock).toHaveBeenCalledWith(
+                            primaryKeyAccount.address,
+                            5,
+                            wrapper.state().fillOrder.order,
+                            BigNumber('1.1').times(BigNumber(10 ** 9)),
+                            BigNumber(web3.utils.toWei('6', 'gwei')))
+                        promiseTradeMock.mockRestore()
+                        done()
+                    } catch (err) {
+                        promiseTradeMock.mockRestore()
+                        done.fail(err)
+                    }
+                }, 500)
+            })
+        })
+
+        describe('User attempts to overfill the order', () => {
+            beforeEach(() => {
+                const value = '5.5'
+                wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value } })
+            })
+            it('should display the new fill amount', () => {
+                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('5.5')
+            })
+            it('should display the (read-only) eth total for the fill amount', () => {
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('4.125')
+            })
+            it('the SELL button should be disabled', () => {
+                const sellOrderButton = wrapper.find('#sellButton').hostNodes().instance()
+                expect(sellOrderButton.disabled).toEqual(true)
+                const { fillAmountValid, fillAmountInvalidField, fillAmountInvalidReason } = wrapper.state().fillOrder
+                expect(fillAmountValid).toEqual(false)
+                expect(fillAmountInvalidField).toEqual(OrderEntryField.AMOUNT)
+                expect(fillAmountInvalidReason).toEqual("Token amount greater than max order amount (2.5)")
+            })
+        })
+    }) 
 
 })
