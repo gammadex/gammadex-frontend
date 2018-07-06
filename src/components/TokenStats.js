@@ -5,9 +5,8 @@ import EtherScan from "../components/CustomComponents/Etherscan"
 import MarketResponseSpinner from "./MarketResponseSpinner"
 import {withRouter} from "react-router-dom"
 import Conditional from "./CustomComponents/Conditional"
-import TokenStats from "./TokenStats"
 
-class TokenSummary extends React.Component {
+class TokenStats extends React.Component {
     constructor(props) {
         super(props)
 
@@ -49,18 +48,28 @@ class TokenSummary extends React.Component {
 
         return (
             <Conditional displayCondition={inExchange}>
-                <div className="token-summary">
-                    <div className="token-title">
-                        {title}
-                    </div>
-                    <div className="token-info" style={{"margin-left": "10px"}}>
-                        <div>{longName}</div>
-                        <div>{name} smart contract: {contract}</div>
-                    </div>
+                <div className="token-stats">
+                    <div className="token-stat-name">24h Volume</div>
+                    <div className="token-stat-value"><Round fallback="0">{ethVolume}</Round> ETH (<Round fallback="0">{tokenVolume}</Round> {name})</div>
+                </div>
+
+                <div className="token-stats">
+                    <div className="token-stat-name">24h High</div>
+                    <div className="token-stat-value"><Round price softZeros fallback="0">{high}</Round></div>
+                </div>
+
+                <div className="token-stats">
+                    <div className="token-stat-name">24h Low</div>
+                    <div className="token-stat-value"><Round price softZeros fallback="0">{low}</Round></div>
+                </div>
+
+                <div className="token-stats">
+                    <div className="token-stat-name">24h Price Change</div>
+                    <div className="token-stat-value"><Round percent suffix="%" fallback="0" classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round></div>
                 </div>
             </Conditional>
         )
     }
 }
 
-export default withRouter(TokenSummary)
+export default withRouter(TokenStats)

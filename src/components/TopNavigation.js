@@ -7,6 +7,7 @@ import GasPriceChooser from "../components/GasPriceChooser"
 import AppStatus from "./AppStatus"
 import * as TokenApi from "../apis/TokenApi"
 import TokenStore from "../stores/TokenStore"
+import TokenStats from "./TokenStats"
 
 class TopNavigation extends Component {
     constructor() {
@@ -36,44 +37,49 @@ class TopNavigation extends Component {
         const {token} = this.state
 
         return (
-            <header className="bg-primary text-light">
-                <div className="full-height">
-                    <img src={require("../images/eth-logo.png")} style={{"height":"30px"}} className="mr-2"/>
+            <header className="bg-primary text-light header">
+                <div className="upper-header">
+                    <div className="full-height">
+                        <img src={require("../images/eth-logo.png")} style={{"height": "28px"}} className="mr-2"/>
 
-                    <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
+                        <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
 
-                    <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
-                        <ul className="navbar-nav mr-auto">
-                            <li className="nav-item">
-                                <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to={Routes.History} className="nav-link">History</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-
-                <TokenSummary token={token}/>
-
-                <form className="form-inline">
-                    <div className="form-group mr-1">
-                        <AppStatus/>
+                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                            <ul className="navbar-nav mr-auto">
+                                <li className="nav-item">
+                                    <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to={Routes.History} className="nav-link">History</Link>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
-                    <GasPriceChooser/>
-                    <Account/>
 
-                    <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
-                            </li>
-                        </ul>
-                    </nav>
-                </form>
+                    <TokenSummary token={token}/>
+
+                    <form className="form-inline">
+                        <div className="form-group mr-1">
+                            <AppStatus/>
+                        </div>
+                        <GasPriceChooser/>
+                        <Account/>
+
+                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
+                                </li>
+                            </ul>
+                        </nav>
+                    </form>
+                </div>
+                <div className="lower-header">
+                    <TokenStats token={token}/>
+                </div>
             </header>
         )
     }
