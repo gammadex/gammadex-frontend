@@ -29,7 +29,7 @@ import { baseWeiToEth, tokWeiToEth } from '../EtherConversion'
 import AccountStore from '../stores/AccountStore'
 import Web3PromiEvent from 'web3-core-promievent'
 import OrderEntryField from '../OrderEntryField'
-import GasPriceChooser from '../components/GasPriceChooser';
+import GasPriceChooser from '../components/GasPriceChooser'
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
@@ -112,7 +112,7 @@ function tradeMock() {
     return promiseTradeMock
 }
 
-describe('OrderBox', () => {
+describe('FillOrderBook', () => {
     beforeAll(() => {
         GasActions.gasPricesRetrieved(
             BigNumber(web3.utils.toWei('4', 'gwei')),
