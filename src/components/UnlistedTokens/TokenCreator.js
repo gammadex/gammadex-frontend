@@ -88,7 +88,13 @@ export default class TokenCreator extends React.Component {
                                        id="address" placeholder="0x12345..."
                                        onChange={this.onAddressChange} value={this.state.token.address}/>
 
-                                <div className="invalid-feedback">{this.state.checkError}</div>
+                                <div className="invalid-feedback feedback-below">{this.state.checkError}</div>
+
+                                <Conditional displayCondition={this.state.token.symbol !== ""}>
+                                    <div className="alert alert-success feedback-below unlisted-token-valid">
+                                        Token is valid: <b>{this.state.token.symbol} - {this.state.token.name}</b>
+                                    </div>
+                                </Conditional>
                             </div>
                             <div className="token-creator-add">
                                 <button className="btn btn-primary form-control" onClick={this.onAddToken}
@@ -98,16 +104,13 @@ export default class TokenCreator extends React.Component {
                             </div>
                         </div>
                     </div>
-
-                    <Conditional displayCondition={this.state.token.symbol !== ""}>
-                        <div>
-                            <div className="alert alert-success">
-                                Token is valid: <b>{this.state.token.symbol} - {this.state.token.name}</b>
-                            </div>
-                        </div>
-                    </Conditional>
                 </form>
             </div>
         )
     }
 }
+
+/*
+
+
+ */

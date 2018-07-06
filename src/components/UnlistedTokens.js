@@ -90,24 +90,25 @@ class TokenChooser extends React.Component {
                 <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="unlisted-tokens-container"/>
                 <div style={{"height": containerHeight}}>
                     <Box title="My Unlisted Tokens" className="last-card">
+                        <BoxSection className="with-bottom-border">
+                            <TokenCreator selectToken={this.onTokenSelect}/>
+                        </BoxSection>
+
                         <Conditional displayCondition={tokenRows.length > 0}>
                                 <CustomScroll heightRelativeToParent="100%">
-                                    <table className="table table-striped table-bordered table-hover table-no-bottom-border">
+                                    <table className="table table-striped table-hover table-bordered" style={{"border-top-width":"1px"}}>
                                         <thead>
                                         <tr>
                                             <th>Symbol</th>
                                             <th>Name</th>
                                             <th>Smart Contract</th>
+                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>{tokenRows}</tbody>
                                     </table>
                                 </CustomScroll>
                         </Conditional>
-
-                        <BoxSection>
-                            <TokenCreator selectToken={this.onTokenSelect}/>
-                        </BoxSection>
                     </Box>
                 </div>
             </div>

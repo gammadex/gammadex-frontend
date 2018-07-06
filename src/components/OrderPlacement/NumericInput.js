@@ -218,7 +218,7 @@ export default class NumericInput extends React.Component {
 
     formFeedback() {
         const {errorMessage = null, feedbackIcon = null, invalidFeedbackAbove = false} = this.props
-        const feedbackClass = invalidFeedbackAbove ? "invalid-feedback-above" : "invalid-feedback-below"
+        const feedbackClass = invalidFeedbackAbove ? "feedback-above" : "feedback-below"
         if (feedbackIcon) {
             return <FormFeedback className={feedbackClass}><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
         } else if (errorMessage) {

@@ -573,6 +573,10 @@ input[type="number"] {
     height: 100%;
 }
 
+.unlisted-tokens-component .form-group {
+    margin-bottom:8px;
+}
+
 .exchange-right-col {
     display: flex;
     flex-direction: column;
@@ -749,20 +753,20 @@ input[type="number"] {
     padding-top: 6px;
 }
 
-.numeric-input .invalid-feedback {
+.invalid-feedback {
     z-index: 20;
     border: 1px solid;
     padding: 6px;
     border-radius: .25rem;
 }
 
-.numeric-input .invalid-feedback.invalid-feedback-above {
+.feedback-above {
     position: absolute;
     bottom: 34px;
     left: 0;
 }
 
-.numeric-input .invalid-feedback.invalid-feedback-below {
+.feedback-below {
     position: absolute;
     top: 34px;
     left: 0;
@@ -822,7 +826,7 @@ input[type="number"] {
     border-bottom-color: var(--secondary);
 }
 
-.numeric-input .invalid-feedback {
+.invalid-feedback {
     border-color: white;
     background-color: var(--danger) !important;
     font-size: 1rem;
@@ -957,4 +961,12 @@ body {
 
 .balance-token-name {
     font-size:14px;
+}
+
+.unlisted-token-valid {
+    width:100%;
+}
+
+.unlisted-tokens-component .card .table tr th {
+    border-top:1px solid var(--secondary);
 }
