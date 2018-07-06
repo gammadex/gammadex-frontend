@@ -40,7 +40,7 @@ class TopNavigation extends Component {
             <header className="bg-primary text-light header">
                 <div className="upper-header">
                     <div className="full-height">
-                        <img src={require("../images/eth-logo.png")} style={{"height": "30px"}} className="mr-2"/>
+                        <img src={require("../images/eth-logo.png")} style={{"height": "28px"}} className="mr-2"/>
 
                         <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
 

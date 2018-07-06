@@ -1,5 +1,5 @@
 :root {
-    --header-height: 58px;
+    --header-height: 60px;
     --upper-header-height: 38px;
     --lower-header-height:calc(var(--header-height) - var(--upper-header-height));
     --main-padding: 2px;
