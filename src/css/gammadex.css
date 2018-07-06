@@ -949,3 +949,12 @@ body {
 .navbar-card li:last-child a {
     border-right:2px solid transparent;
 }
+
+.action-button {
+    width:80px;
+    padding-left:3px;
+}
+
+.balance-token-name {
+    font-size:14px;
+}

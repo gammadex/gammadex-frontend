@@ -76,30 +76,6 @@ export default class NumericInput extends React.Component {
         this.props.onAction()
     }
 
-    formFeedback() {
-        const {errorMessage = null, feedbackIcon = null, invalidFeedbackAbove = false} = this.props
-        const feedbackClass = invalidFeedbackAbove ? "invalid-feedback-above" : "invalid-feedback-below"
-        if (feedbackIcon) {
-            return <FormFeedback className={feedbackClass}><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
-        } else {
-            return <FormFeedback className={feedbackClass}>{errorMessage}</FormFeedback>
-        }
-    }
-
-    formText() {
-        const {helpMessage = null, helpIcon = null} = this.props
-        if (helpIcon) {
-            return <FormText color="muted"><i className={helpIcon}></i>&nbsp;&nbsp;{helpMessage}</FormText>
-        } else {
-            return <FormText color="muted">{helpMessage}</FormText>
-        }
-    }
-
-    gasFeeFormText() {
-        const {actionDisabled, gasFeeInfo} = this.props
-        return <FormText color="muted">{actionDisabled ? null : gasFeeInfo}</FormText>
-    }
-
     onSubmit = event => {
         const {
             valid = true,
@@ -133,10 +109,13 @@ export default class NumericInput extends React.Component {
             addendum
         } = this.props
         const isInvalid = valid !== null && !valid
-        let maxButton = null
-        if (typeof (onMax) === 'function') {
-            maxButton = <Button id={fieldName + 'MaxButton'} className="ml-1" onClick={() => this.onMax()}>MAX</Button>
-        }
+
+        let maxButton = this.createMaxButton(onMax, fieldName)
+        let label = this.createLabel(fieldName, name)
+        const inputWidth = label === null ? 12 : 9
+        let actionButton = this.createActionButton(onAction, actionName, fieldName, actionDisabled)
+        let sliderComponent = this.createSlider(slider)
+        let addendumComponent = this.createAddendum(addendum)
 
         const input = (
             <div className="input-group">
@@ -151,6 +130,7 @@ export default class NumericInput extends React.Component {
                     <span className={"input-unit " + (disabled ? "disabled" : "")}>{unitName}</span>
                 </Conditional>
                 {maxButton}
+                {actionButton}
                 {this.formFeedback()}
                 {this.formText()}
             </div>
@@ -158,23 +138,63 @@ export default class NumericInput extends React.Component {
 
         const content = submittable ? <form onSubmit={this.onSubmit}>{input}</form> : input
 
+        return (
+            <FormGroup row className="numeric-input">
+                {label}
+                <Col sm={inputWidth}>
+                    {content}
+                    {sliderComponent}
+                    {addendumComponent}
+                </Col>
+            </FormGroup>
+        )
+    }
+
+    createLabel(fieldName, name) {
         let label = <Label for={fieldName} sm={3}>{name}</Label>
         if (name == null) {
             label = null //<Label for={fieldName} sm={0}></Label>
         }
+        return label
+    }
 
+    createMaxButton(onMax, fieldName) {
+        let maxButton = null
+        if (typeof (onMax) === 'function') {
+            maxButton = <Button id={fieldName + 'MaxButton'} className="ml-1" onClick={() => this.onMax()}>MAX</Button>
+        }
+        return maxButton
+    }
+
+    createActionButton(onAction, actionName, fieldName, actionDisabled) {
         let actionButton = null
-        let inputWidth = 9
         if (typeof (onAction) === 'function' && actionName) {
-            actionButton = <Col className="funding-action" sm={4}>
+            actionButton = <div className="action-button">
                 <Button id={fieldName + "Button"} color="primary" className="btn-block" disabled={actionDisabled}
                         onClick={() => this.onAction()}>{actionName}
                 </Button>
                 {this.gasFeeFormText()}
-            </Col>
-            inputWidth = 8
+            </div>
         }
+        return actionButton
+    }
 
+    createAddendum(addendum) {
+        let addendumComponent = null
+        if (addendum) {
+            if (_.isArray(addendum)) {
+                addendumComponent = <div className="numeric-input-addendum">
+                    {addendum.map((a, id) => <div key={id}>{a}</div>)}
+                </div>
+
+            } else {
+                addendumComponent = <div className="numeric-input-addendum">{addendum}</div>
+            }
+        }
+        return addendumComponent
+    }
+
+    createSlider(slider) {
         let sliderComponent = null
         if (slider) {
             const {sliderValue} = this.state
@@ -193,31 +213,39 @@ export default class NumericInput extends React.Component {
                 </div>
             }
         }
+        return sliderComponent
+    }
 
-        let addendumComponent = null
-        if (addendum) {
-            if (_.isArray(addendum)) {
-                addendumComponent = <div className="numeric-input-addendum">
-                    {addendum.map((a, id) => <div key={id}>{a}</div>)}
-                </div>
+    formFeedback() {
+        const {errorMessage = null, feedbackIcon = null, invalidFeedbackAbove = false} = this.props
+        const feedbackClass = invalidFeedbackAbove ? "invalid-feedback-above" : "invalid-feedback-below"
+        if (feedbackIcon) {
+            return <FormFeedback className={feedbackClass}><i className={feedbackIcon}></i>&nbsp;&nbsp;{errorMessage}</FormFeedback>
+        } else if (errorMessage) {
+            return <FormFeedback className={feedbackClass}>{errorMessage}</FormFeedback>
+        } else {
+            return null
+        }
+    }
 
-            } else {
-                addendumComponent = <div className="numeric-input-addendum">{addendum}</div>
-            }
+    formText() {
+        const {helpMessage = null, helpIcon = null} = this.props
+        if (helpIcon) {
+            return <FormText color="muted"><i className={helpIcon}></i>&nbsp;&nbsp;{helpMessage}x</FormText>
+        } else if (helpMessage) {
+            return <FormText color="muted">{helpMessage}</FormText>
+        } else {
+            return null
+        }
+    }
+
+    gasFeeFormText() {
+        const {actionDisabled, gasFeeInfo} = this.props
+        if (gasFeeInfo && !actionDisabled) {
+            return <FormText color="muted">{gasFeeInfo}</FormText>
+        } else {
+            return null
         }
 
-        return (
-
-            <FormGroup row className="numeric-input">
-                {label}
-                <Col sm={inputWidth}>
-                    {content}
-                    {sliderComponent}
-                    {addendumComponent}
-                </Col>
-                {actionButton}
-
-            </FormGroup>
-        )
     }
 }

@@ -347,44 +347,7 @@ export default class Funding extends React.Component {
             <table className="table table-borderless">
                 <tbody>
                 <tr>
-                    <td rowSpan={2}><strong>ETH</strong></td>
-                    <td className="txt-right balances-heading">Wallet</td>
-                    <td className="txt-right balances-heading">Exchange</td>
-                </tr>
-
-                <tr>
-                    <td id="tdWalletBalanceEth" className="txt-right clickable balances-amount" onClick={() => FundingActions.ethDepositMaxAmount()}><Round fallback="-">{walletBalanceEth}</Round></td>
-                    <td id="tdExchangeBalanceEth" className="txt-right clickable balances-amount" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round fallback="-">{exchangeBalanceEth}</Round></td>
-                </tr>
-                </tbody>
-            </table>
-
-            <NumericInput value={ethDepositAmountControlled}
-                          onChange={this.onEthDepositAmountChange} fieldName={"ethDepositAmount"}
-                          valid={ethDepositValid} errorMessage={ethDepositErrorText} helpMessage={ethDepositHelpText}
-                          onMax={this.onMaxEthDepositAmount}
-                          onAction={this.onEthDepositAction}
-                          actionName={"Deposit ETH"}
-                          actionDisabled={ethDepositDisabled}
-                          feedbackIcon={ethDepositFeedbackIcon}
-                          helpIcon={ethDepositHelpIcon}
-                          submittable={true}/>
-
-            <NumericInput value={ethWithdrawalAmountControlled}
-                          onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
-                          valid={ethWithdrawalValid} errorMessage={ethWithdrawalErrorText}
-                          onMax={this.onMaxEthWithdrawAmount}
-                          onAction={this.onEthWithdrawAction}
-                          actionDisabled={ethWithdrawalDisabled}
-                          feedbackIcon={ethWithdrawalFeedbackIcon}
-                          actionName={"Withdraw ETH"}
-                          submittable={true}/>
-            <hr className="balances-separator"/>
-
-            <table className="table table-borderless">
-                <tbody>
-                <tr>
-                    <td rowSpan={2}><strong>{tokenName}</strong></td>
+                    <td rowSpan={2}><strong className="balance-token-name">{tokenName}</strong></td>
                     <td className="txt-right balances-heading">Wallet</td>
                     <td className="txt-right balances-heading">Exchange</td>
                 </tr>
@@ -402,7 +365,7 @@ export default class Funding extends React.Component {
                           onAction={this.onTokDepositAction}
                           actionDisabled={tokDepositDisabled}
                           feedbackIcon={tokDepositFeedbackIcon}
-                          actionName={"Deposit " + tokenName}
+                          actionName={"Deposit"}
                           submittable={true}/>
 
             <NumericInput value={tokWithdrawalAmountControlled}
@@ -412,7 +375,45 @@ export default class Funding extends React.Component {
                           onAction={this.onTokWithdrawAction}
                           actionDisabled={tokWithdrawalDisabled}
                           feedbackIcon={ethDepositFeedbackIcon}
-                          actionName={"Withdraw " + tokenName}
+                          actionName={"Withdraw"}
+                          submittable={true}/>
+
+            <hr className="balances-separator"/>
+
+            <table className="table table-borderless">
+                <tbody>
+                <tr>
+                    <td rowSpan={2}><strong className="balance-token-name">ETH</strong></td>
+                    <td className="txt-right balances-heading">Wallet</td>
+                    <td className="txt-right balances-heading">Exchange</td>
+                </tr>
+
+                <tr>
+                    <td id="tdWalletBalanceEth" className="txt-right clickable balances-amount" onClick={() => FundingActions.ethDepositMaxAmount()}><Round fallback="-">{walletBalanceEth}</Round></td>
+                    <td id="tdExchangeBalanceEth" className="txt-right clickable balances-amount" onClick={() => FundingActions.ethWithdrawalMaxAmount()}><Round fallback="-">{exchangeBalanceEth}</Round></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <NumericInput value={ethDepositAmountControlled}
+                          onChange={this.onEthDepositAmountChange} fieldName={"ethDepositAmount"}
+                          valid={ethDepositValid} errorMessage={ethDepositErrorText} helpMessage={ethDepositHelpText}
+                          onMax={this.onMaxEthDepositAmount}
+                          onAction={this.onEthDepositAction}
+                          actionName={"Deposit"}
+                          actionDisabled={ethDepositDisabled}
+                          feedbackIcon={ethDepositFeedbackIcon}
+                          helpIcon={ethDepositHelpIcon}
+                          submittable={true}/>
+
+            <NumericInput value={ethWithdrawalAmountControlled}
+                          onChange={this.onEthWithdrawAmountChange} fieldName={"ethWithdrawAmount"}
+                          valid={ethWithdrawalValid} errorMessage={ethWithdrawalErrorText}
+                          onMax={this.onMaxEthWithdrawAmount}
+                          onAction={this.onEthWithdrawAction}
+                          actionDisabled={ethWithdrawalDisabled}
+                          feedbackIcon={ethWithdrawalFeedbackIcon}
+                          actionName={"Withdraw"}
                           submittable={true}/>
 
             <Modal isOpen={modalType != FundingModalType.NO_MODAL} toggle={this.abortFundingAction} className={this.props.className} keyboard>
