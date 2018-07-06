@@ -32,8 +32,8 @@ import lifecycleStore from "../stores/LifecycleStore"
  */
 function calcTotal(priceControlled, amountWei, amountControlled) {
     if (amountControlled !== "" && priceControlled !== "") {
-        const totalEthWei = BigNumber(String(priceControlled)).times(amountWei).dp(0, BigNumber.ROUND_FLOOR)
-        const totalEthControlled = baseWeiToEth(totalEthWei).toFixed()
+        const totalEthControlled = BigNumber(String(amountControlled)).times(BigNumber(String(priceControlled))).toFixed()
+        const totalEthWei = baseEthToWei(totalEthControlled)
         return { totalEthWei: totalEthWei, totalEthControlled: totalEthControlled }
     }
 

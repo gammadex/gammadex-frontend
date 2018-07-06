@@ -503,7 +503,7 @@ describe('MakeOrder', () => {
                     .then(sig => {
                         const expectedOrder = {
                             amountGet: BigNumber(Web3.utils.toWei('2.25', 'ether')),
-                            amountGive: BigNumber(Web3.utils.toWei('3', 'ether')), // TODO check this
+                            amountGive: BigNumber(Web3.utils.toWei('3', 'ether')),
                             contractAddr: Config.getEtherDeltaAddress(),
                             expires: BigNumber('2000000010'),
                             nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
@@ -605,4 +605,538 @@ describe('MakeOrder', () => {
         })   
     })
 
+
+    describe('User creates a BUY order for a 9 decimal DEF token', () => {
+        beforeEach(() => {
+            const div = document.createElement('div')
+            document.body.appendChild(div)
+            // mount does render child components
+            const wrapper = mount(<MakeOrder type={OrderSide.BUY} tokenSymbol={'DEF'} tokenAddress={testTokenContractInstanceNineDecimals.options.address} balanceRetrieved={true} />, { attachTo: div })
+            global.wrapper = wrapper
+
+            const emitOrderMock = jest.spyOn(EtherDeltaSocket, "emitOrder")
+            emitOrderMock.mockImplementation(() => {
+                return Promise.resolve(null)
+            })
+
+            global.emitOrderMock = emitOrderMock
+
+            wrapper.find('#buyOrderPrice').hostNodes().simulate('change', { target: { value: '0.46' } })
+            wrapper.find('#buyOrderAmount').hostNodes().simulate('change', { target: { value: '1.2' } })
+        })
+        afterEach(() => {
+            wrapper.unmount()
+        })
+        beforeAll(() => {
+            TokenActions.selectToken({
+                address: testTokenContractInstanceNineDecimals.options.address,
+                decimals: 9,
+                isListed: true,
+                name: null,
+                symbol: 'DEF'
+            })
+            Config.getEnv().defaultPair.token.address = testTokenContractInstanceNineDecimals.options.address
+            Config.getEnv().defaultPair.token.decimals = 9
+            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
+        })
+        describe('User enters price then amount', () => {
+            it('should display the total ETH', () => {
+                expect(wrapper.find('#buyOrderTotal').hostNodes().instance().value).toEqual('0.552')
+            })
+            it('should send a new Order when the user clicks PLACE BUY ORDER', (done) => {
+                // need to dismiss the price warning first (no ABC order book or recent trades as this is test)
+                wrapper.instance().onDismissPriceWarningAlert()
+
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('1.2').times(BigNumber(10 ** 9)),
+                            amountGive: BigNumber(Web3.utils.toWei('0.552', 'ether')),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().buyOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: testTokenContractInstanceNineDecimals.options.address,
+                            tokenGive: Config.getBaseAddress(),
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })
+
+        describe('With price and amount populated, the user changes the amount', () => {
+            it('should re-calculate the total ETH', () => {
+                // change amount
+                wrapper.find('#buyOrderAmount').hostNodes().simulate('change', { target: { value: '2.4' } })
+                expect(wrapper.find('#buyOrderTotal').hostNodes().instance().value).toEqual('1.104')
+            })
+            it('should send a new Order when the user clicks PLACE BUY ORDER', (done) => {
+                wrapper.find('#buyOrderAmount').hostNodes().simulate('change', { target: { value: '2.4' } })
+                wrapper.instance().onDismissPriceWarningAlert()
+
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('2.4').times(BigNumber(10 ** 9)),
+                            amountGive: BigNumber(Web3.utils.toWei('1.104', 'ether')),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().buyOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: testTokenContractInstanceNineDecimals.options.address,
+                            tokenGive: Config.getBaseAddress(),
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })
+
+        describe('With price and amount populated, the user changes the price', () => {
+            it('should re-calculate the total ETH', () => {
+                // change price
+                wrapper.find('#buyOrderPrice').hostNodes().simulate('change', { target: { value: '0.64' } })
+                expect(wrapper.find('#buyOrderTotal').hostNodes().instance().value).toEqual('0.768')
+            })
+            it('should send a new Order when the user clicks PLACE BUY ORDER', (done) => {
+                wrapper.find('#buyOrderPrice').hostNodes().simulate('change', { target: { value: '0.64' } })
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('1.2').times(BigNumber(10 ** 9)),
+                            amountGive: BigNumber(Web3.utils.toWei('0.768', 'ether')),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().buyOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: testTokenContractInstanceNineDecimals.options.address,
+                            tokenGive: Config.getBaseAddress(),
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        }) 
+
+        describe('With price and amount populated, the user changes the total', () => {
+            it('should re-calculate the amount in TOK', () => {
+                // change total
+                wrapper.find('#buyOrderTotal').hostNodes().simulate('change', { target: { value: '0.368' } })
+                expect(wrapper.find('#buyOrderAmount').hostNodes().instance().value).toEqual('0.8')
+            })
+            it('should send a new Order when the user clicks PLACE BUY ORDER', (done) => {
+    
+                wrapper.find('#buyOrderTotal').hostNodes().simulate('change', { target: { value: '0.368' } })
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('0.8').times(BigNumber(10 ** 9)),
+                            amountGive: BigNumber('368000000000000050'),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().buyOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: testTokenContractInstanceNineDecimals.options.address,
+                            tokenGive: Config.getBaseAddress(),
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })         
+
+        describe('With price and amount populated, the user changes the expiry to Expire After (Blocks) with the default of 10000', () => {
+            it('should display the blocks input when the user changes to Expire After expiry type', () => {
+                // change type
+                wrapper.find('#buyExpiryType').hostNodes().simulate('change', { target: { value: 'Expire After' } })
+                const expireAfterBlocks = wrapper.find('#buyExpireAfterBlocks').hostNodes().instance()
+                expect(expireAfterBlocks.value).toEqual('10000')
+            })
+            it('should send a new Order when the user clicks PLACE BUY ORDER', (done) => {
+                // need to dismiss the price warning first (no ABC order book or recent trades as this is test)
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('1.2').times(BigNumber(10 ** 9)),
+                            amountGive: BigNumber(Web3.utils.toWei('0.552', 'ether')),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('10010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().buyOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: testTokenContractInstanceNineDecimals.options.address,
+                            tokenGive: Config.getBaseAddress(),
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })    
+        
+        describe('With price and amount populated, the user changes the expiry to Expire After (Blocks) and updates the expiry blocks', () => {
+            it('should send a new Order when the user clicks PLACE BUY ORDER', (done) => {
+
+                wrapper.find('#buyExpiryType').hostNodes().simulate('change', { target: { value: 'Expire After' } })
+                // change expiry blocks
+                wrapper.find('#buyExpireAfterBlocks').hostNodes().simulate('change', { target: { value: '500' } })
+
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#buyButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('1.2').times(BigNumber(10 ** 9)),
+                            amountGive: BigNumber(Web3.utils.toWei('0.552', 'ether')),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('510'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().buyOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: testTokenContractInstanceNineDecimals.options.address,
+                            tokenGive: Config.getBaseAddress(),
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })   
+    })
+
+    describe('User creates a SELL order for an 9 decimal DEF token', () => {
+        beforeEach(() => {
+            const div = document.createElement('div')
+            document.body.appendChild(div)
+            // mount does render child components
+            const wrapper = mount(<MakeOrder type={OrderSide.SELL} tokenSymbol={'DEF'} tokenAddress={testTokenContractInstanceNineDecimals.options.address} balanceRetrieved={true} />, { attachTo: div })
+            global.wrapper = wrapper
+
+            const emitOrderMock = jest.spyOn(EtherDeltaSocket, "emitOrder")
+            emitOrderMock.mockImplementation(() => {
+                return Promise.resolve(null)
+            })
+
+            global.emitOrderMock = emitOrderMock
+
+            wrapper.find('#sellOrderPrice').hostNodes().simulate('change', { target: { value: '0.75' } })
+            wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value: '1.5' } })
+        })
+        afterEach(() => {
+            wrapper.unmount()
+        })
+        beforeAll(() => {
+            TokenActions.selectToken({
+                address: testTokenContractInstanceNineDecimals.options.address,
+                decimals: 9,
+                isListed: true,
+                name: null,
+                symbol: 'DEF'
+            })
+            Config.getEnv().defaultPair.token.address = testTokenContractInstanceNineDecimals.options.address
+            Config.getEnv().defaultPair.token.decimals = 9
+            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, null, false)
+        })
+        describe('User enters price then amount', () => {
+            it('should display the total ETH', () => {
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('1.125')
+            })
+            it('should send a new Order when the user clicks PLACE SELL ORDER', (done) => {
+                // need to dismiss the price warning first (no ABC order book or recent trades as this is test)
+                wrapper.instance().onDismissPriceWarningAlert()
+
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber(Web3.utils.toWei('1.125', 'ether')),
+                            amountGive: BigNumber('1.5').times(BigNumber(10 ** 9)),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: Config.getBaseAddress(),
+                            tokenGive: testTokenContractInstanceNineDecimals.options.address,
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })
+
+        describe('With price and amount populated, the user changes the amount', () => {
+            it('should re-calculate the total ETH', () => {
+                // change amount
+                wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value: '2.5' } })
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('1.875')
+            })
+            it('should send a new Order when the user clicks PLACE SELL ORDER', (done) => {
+                wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value: '2.5' } })
+                wrapper.instance().onDismissPriceWarningAlert()
+
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber(Web3.utils.toWei('1.875', 'ether')),
+                            amountGive: BigNumber('2.5').times(BigNumber(10 ** 9)),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: Config.getBaseAddress(),
+                            tokenGive: testTokenContractInstanceNineDecimals.options.address,
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })
+
+        describe('With price and amount populated, the user changes the price', () => {
+            it('should re-calculate the total ETH', () => {
+                // change price
+                wrapper.find('#sellOrderPrice').hostNodes().simulate('change', { target: { value: '0.55' } })
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('0.825')
+            })
+            it('should send a new Order when the user clicks PLACE SELL ORDER', (done) => {
+                wrapper.find('#sellOrderPrice').hostNodes().simulate('change', { target: { value: '0.55' } })
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber('825000000000000100'),
+                            amountGive: BigNumber('1.5').times(BigNumber(10 ** 9)),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: Config.getBaseAddress(),
+                            tokenGive: testTokenContractInstanceNineDecimals.options.address,
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        }) 
+
+        describe('With price and amount populated, the user changes the total', () => {
+            it('should re-calculate the amount in TOK', () => {
+                // change total
+                wrapper.find('#sellOrderTotal').hostNodes().simulate('change', { target: { value: '2.25' } })
+                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('3')
+            })
+            it('should send a new Order when the user clicks PLACE SELL ORDER', (done) => {
+    
+                wrapper.find('#sellOrderTotal').hostNodes().simulate('change', { target: { value: '2.25' } })
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber(Web3.utils.toWei('2.25', 'ether')),
+                            amountGive: BigNumber('3').times(BigNumber(10 ** 9)),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('2000000010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: Config.getBaseAddress(),
+                            tokenGive: testTokenContractInstanceNineDecimals.options.address,
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })         
+
+        describe('With price and amount populated, the user changes the expiry to Expire After (Blocks) with the default of 10000', () => {
+            it('should display the blocks input when the user changes to Expire After expiry type', () => {
+                // change type
+                wrapper.find('#sellExpiryType').hostNodes().simulate('change', { target: { value: 'Expire After' } })
+                const expireAfterBlocks = wrapper.find('#sellExpireAfterBlocks').hostNodes().instance()
+                expect(expireAfterBlocks.value).toEqual('10000')
+            })
+            it('should send a new Order when the user clicks PLACE SELL ORDER', (done) => {
+                // need to dismiss the price warning first (no ABC order book or recent trades as this is test)
+                wrapper.instance().onDismissPriceWarningAlert()
+
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber(Web3.utils.toWei('1.125', 'ether')),
+                            amountGive: BigNumber('1.5').times(BigNumber(10 ** 9)),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('10010'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: Config.getBaseAddress(),
+                            tokenGive: testTokenContractInstanceNineDecimals.options.address,
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })    
+        
+        describe('With price and amount populated, the user changes the expiry to Expire After (Blocks) and updates the expiry blocks', () => {
+            it('should send a new Order when the user clicks PLACE SELL ORDER', (done) => {
+
+                wrapper.find('#sellExpiryType').hostNodes().simulate('change', { target: { value: 'Expire After' } })
+                // change expiry blocks
+                wrapper.find('#sellExpireAfterBlocks').hostNodes().simulate('change', { target: { value: '500' } })
+
+                wrapper.instance().onDismissPriceWarningAlert()
+    
+                wrapper.find('#sellButton').hostNodes().simulate('click')
+    
+                return EtherDeltaWeb3.promiseSignData(wrapper.state().orderHash, primaryKeyAccount.address)
+                    .then(sig => {
+                        const expectedOrder = {
+                            amountGet: BigNumber(Web3.utils.toWei('1.125', 'ether')),
+                            amountGive: BigNumber('1.5').times(BigNumber(10 ** 9)),
+                            contractAddr: Config.getEtherDeltaAddress(),
+                            expires: BigNumber('510'),
+                            nonce: OrderPlacementStore.getOrderPlacementState().sellOrderUnsigned.nonce,
+                            r: sig.r,
+                            s: sig.s,
+                            tokenGet: Config.getBaseAddress(),
+                            tokenGive: testTokenContractInstanceNineDecimals.options.address,
+                            user: primaryKeyAccount.address,
+                            v: sig.v
+                        }
+                        setTimeout(() => {
+                            try {
+                                expect(emitOrderMock).toHaveBeenCalledWith(expectedOrder)
+                                done()
+                            } catch (err) {
+                                done.fail(err)
+                            }
+                        }, 500)
+                    })
+            })
+        })   
+    })    
 })
