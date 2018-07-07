@@ -77,7 +77,7 @@ This is Gammadex's interface to the EtherDelta Smart Contract and web3 common me
 
 `EtherDeltaWeb3.test.js` exercises all of the class's methods, against a local ganache blockchain. What we're testing here is that the input params to each function are propogated through to the blockchain and have the necessary side effects. Input params for example for filling an order would include: the order itself, the amount to fill and the gas passed in by the caller.
 
-We crucially test two distinct providers that get injected into EtherDeltaWeb3: MetaMask and Wallet (private key). The former calls the contract methods directly, the latter signs and raw transactions (with the contract method call as the payload).
+We crucially test two distinct providers that get injected into EtherDeltaWeb3: MetaMask and Wallet (private key). The former calls the contract methods directly, the latter signs and sends raw transactions (with the contract method call as the payload).
 
 #### React Component Testing
 
