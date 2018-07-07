@@ -1,9 +1,9 @@
 :root {
-    --header-height: 60px;
-    --upper-header-height: 38px;
+    --header-height: 62px;
+    --upper-header-height: 42px;
     --lower-header-height:calc(var(--header-height) - var(--upper-header-height));
-    --main-padding: 2px;
-    --half-main-padding: 1px;
+    --main-padding: 0px;
+    --half-main-padding: 0px;
     --card-header-height: 40px;
     --bids-and-offers-spacer-height: 30px;
     --gray-light: #ced2d5;
@@ -449,6 +449,7 @@ input[type="number"] {
     height: var(--upper-header-height);
     box-sizing: border-box;
     padding-left: 10px;
+    border-bottom:1px solid var(--gray-dark);
 }
 
 .upper-header > div {
@@ -960,7 +961,7 @@ body {
 }
 
 .balance-token-name {
-    font-size:14px;
+    font-size:13px;
 }
 
 .unlisted-token-valid {
