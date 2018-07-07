@@ -21,13 +21,14 @@ import BigNumber from 'bignumber.js'
 import _ from "lodash"
 import OrderFactory from '../OrderFactory'
 import OrderSide from '../OrderSide'
-import {deployContracts} from '../util/ContractDeployer'
+import { deployContracts } from '../util/ContractDeployer'
 import TokenStore from "../stores/TokenStore"
 
 const web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
 
 // This is the primary (only) account on the ganache node, which is used to deploy contracts and as a metamask proxy
 const metamaskAddress = '0xfcad0b19bb29d4674531d6f115237e16afce377c'
+const metamaskPrivateKey = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
 
 // This is a dynamic account local to this test and the running instance of the smart contract
 const primaryKeyAccount = web3.eth.accounts.create()
@@ -47,8 +48,8 @@ beforeAll(() => {
                 name: null,
                 symbol: 'ABC'
             }
-            TokenStore.listedTokens = [ tok ]
-            TokenStore.allTokens = [ tok ]
+            TokenStore.listedTokens = [tok]
+            TokenStore.allTokens = [tok]
         })
 })
 
@@ -126,7 +127,7 @@ function testTokenAddress() {
     return testTokenContractInstance.options.address
 }
 
-function testContract(userAddress) {
+function testContract(userAddress, userPrivateKey) {
     describe('promiseDepositEther', () => {
         test('should increase exchange ETH balance', () => {
             const weiTestAmount = web3.utils.toWei('0.11', 'ether')
@@ -530,6 +531,114 @@ function testContract(userAddress) {
             })
         })
     })
+
+    describe('promiseOrder', () => {
+        describe('Maker BUY order)', () => {
+            beforeEach(() => {
+                return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
+            })
+            test(`Should generate an Order Event for this order`, () => {
+                const order = createTestOrder(OrderSide.BUY, userAddress, userPrivateKey)
+                EtherDeltaWeb3.promiseOrder(userAddress, nonce, order, defaultGasPrice)
+                    .then(receipt => {
+                        const { tokenGet, amountGet, tokenGive, amountGive, expires, nonce, user } = eventFromReceipt(receipt, 'Order')
+                        expect(tokenGive).toEqual(Config.getBaseAddress())
+                        expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                        expect(tokenGet).toEqual(testTokenAddress())
+                        expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                        expect(BigNumber(expires).toFixed()).toEqual(BigNumber(order.expires).toFixed())
+                        expect(BigNumber(nonce).toFixed()).toEqual(BigNumber(order.nonce).toFixed())
+                        expect(user.toLowerCase()).toEqual(userAddress.toLowerCase())
+                    })
+            })
+        })
+
+        describe('Maker SELL order)', () => {
+            beforeEach(() => {
+                return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
+            })
+            test(`Should generate an Order Event for this order`, () => {
+                const order = createTestOrder(OrderSide.SELL, userAddress, userPrivateKey)
+                EtherDeltaWeb3.promiseOrder(userAddress, nonce, order, defaultGasPrice)
+                    .then(receipt => {
+                        const { tokenGet, amountGet, tokenGive, amountGive, expires, nonce, user } = eventFromReceipt(receipt, 'Order')
+                        expect(tokenGive).toEqual(testTokenAddress())
+                        expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                        expect(tokenGet).toEqual(Config.getBaseAddress())
+                        expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                        expect(BigNumber(expires).toFixed()).toEqual(BigNumber(order.expires).toFixed())
+                        expect(BigNumber(nonce).toFixed()).toEqual(BigNumber(order.nonce).toFixed())
+                        expect(user.toLowerCase()).toEqual(userAddress.toLowerCase())
+                    })
+            })
+        })
+    })
+
+    describe('promiseCancelOrder', () => {
+        describe('Maker BUY order)', () => {
+            beforeEach(() => {
+                return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
+            })
+            test(`Should generate a Cancel Event for this order`, () => {
+                const order = createTestOrder(OrderSide.BUY, userAddress, userPrivateKey)
+                EtherDeltaWeb3.promiseCancelOrder(userAddress, nonce, order, defaultGasPrice)
+                    .then(receipt => {
+                        const { tokenGet, amountGet, tokenGive, amountGive, expires, nonce, user, v, r, s } = eventFromReceipt(receipt, 'Cancel')
+                        expect(tokenGive).toEqual(Config.getBaseAddress())
+                        expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                        expect(tokenGet).toEqual(testTokenAddress())
+                        expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                        expect(BigNumber(expires).toFixed()).toEqual(BigNumber(order.expires).toFixed())
+                        expect(BigNumber(nonce).toFixed()).toEqual(BigNumber(order.nonce).toFixed())
+                        expect(user.toLowerCase()).toEqual(userAddress.toLowerCase())
+                        expect(v).toEqual(order.v.toString())
+                        expect(r).toEqual(order.r)
+                        expect(s).toEqual(order.s)
+                    })
+            })
+
+            test(`Should max out the orderFills field`, () => {
+                const order = createTestOrder(OrderSide.BUY, userAddress, userPrivateKey)
+                EtherDeltaWeb3.promiseCancelOrder(userAddress, nonce, order, defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseAmountFilled(order)
+                            .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
+                    })
+            })
+        })
+
+        describe('Maker SELL order)', () => {
+            beforeEach(() => {
+                return web3.eth.getTransactionCount(userAddress).then(count => global.nonce = count)
+            })
+            test(`Should generate a Cancel Event for this order`, () => {
+                const order = createTestOrder(OrderSide.SELL, userAddress, userPrivateKey)
+                EtherDeltaWeb3.promiseCancelOrder(userAddress, nonce, order, defaultGasPrice)
+                    .then(receipt => {
+                        const { tokenGet, amountGet, tokenGive, amountGive, expires, nonce, user, v, r, s } = eventFromReceipt(receipt, 'Cancel')
+                        expect(tokenGive).toEqual(testTokenAddress())
+                        expect(BigNumber(amountGet).toFixed()).toEqual(BigNumber(order.amountGet).toFixed())
+                        expect(tokenGet).toEqual(Config.getBaseAddress())
+                        expect(BigNumber(amountGive).toFixed()).toEqual(BigNumber(order.amountGive).toFixed())
+                        expect(BigNumber(expires).toFixed()).toEqual(BigNumber(order.expires).toFixed())
+                        expect(BigNumber(nonce).toFixed()).toEqual(BigNumber(order.nonce).toFixed())
+                        expect(user.toLowerCase()).toEqual(userAddress.toLowerCase())
+                        expect(v).toEqual(order.v.toString())
+                        expect(r).toEqual(order.r)
+                        expect(s).toEqual(order.s)
+                    })
+            })
+
+            test(`Should max out the orderFills field`, () => {
+                const order = createTestOrder(OrderSide.SELL, userAddress, userPrivateKey)
+                EtherDeltaWeb3.promiseCancelOrder(userAddress, nonce, order, defaultGasPrice)
+                    .then(() => {
+                        return EtherDeltaWeb3.promiseAmountFilled(order)
+                            .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
+                    })
+            })            
+        })
+    })
 }
 
 function testRefreshEthAndTokBalance(userAddress) {
@@ -583,7 +692,7 @@ describe('WalletAccountProvider', () => {
                     EtherDeltaWeb3.initForPrivateKey(primaryKeyAccount.address, primaryKeyAccount.privateKey.slice(2))
                 })
         })
-        testContract(primaryKeyAccount.address)
+        testContract(primaryKeyAccount.address, primaryKeyAccount.privateKey.slice(2))
     })
 })
 
@@ -618,7 +727,7 @@ describe('MetaMaskAccountProvider', () => {
                     global.nonce = 0
                 })
         })
-        testContract(metamaskAddress)
+        testContract(metamaskAddress, metamaskPrivateKey)
     })
 })
 
@@ -645,7 +754,7 @@ function createTradeableAccount() {
         })
 }
 
-function createTestOrder(makerSide) {
+function createTestOrder(makerSide, address = orderMakerAccount.address, privateKey = orderMakerAccount.privateKey) {
     const expiry = 100000
     const price = 0.02 // ETH per TEST token
     const amount = 0.4 // TEST tokens
@@ -655,8 +764,8 @@ function createTestOrder(makerSide) {
         price,
         amount,
         testTokenAddress(),
-        orderMakerAccount.address,
-        orderMakerAccount.privateKey)
+        address,
+        privateKey)
 }
 
 describe('Account Provider independent functions', () => {
@@ -825,7 +934,7 @@ describe('Account Provider independent functions', () => {
                 return EtherDeltaWeb3.promiseTrade(orderTakerAccount.address, orderTakerNonce, order, BigNumber(order.amountGet).toFixed())
                     .then(receipt => {
                         return EtherDeltaWeb3.promiseAmountFilled(order)
-                            .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
+                            .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
                     })
             })
         })
@@ -951,7 +1060,7 @@ describe('Account Provider independent functions', () => {
 
                 return EtherDeltaWeb3.promiseAvailableVolume(order)
                     .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual('0'))
-            })            
+            })
         })
 
         describe('promiseAmountFilled', () => {
@@ -975,7 +1084,7 @@ describe('Account Provider independent functions', () => {
                 return EtherDeltaWeb3.promiseTrade(orderTakerAccount.address, orderTakerNonce, order, BigNumber(order.amountGet).toFixed())
                     .then(receipt => {
                         return EtherDeltaWeb3.promiseAmountFilled(order)
-                            .then(availableVolume => expect(BigNumber(availableVolume).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
+                            .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
                     })
             })
         })
