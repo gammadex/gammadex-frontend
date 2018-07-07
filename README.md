@@ -67,6 +67,29 @@ Workaround:
 
 * https://github.com/facebook/create-react-app/issues/871
 
+### Test coverage of critical codepaths (#117)
+
+The general goal here is to have high confidence in the funds, trading and gas management sections of the codebase. It is not meant to be fully comprehensive, but the bare minimum MVP to ensure client funds are not at risk.
+
+#### EtherDeltaWeb3
+
+This is Gammadex's interface to the EtherDelta Smart Contract and web3 common methods (e.g. get current block number).
+
+`EtherDeltaWeb3.test.js` exercises all of the class's methods, against a local ganache blockchain. What we're testing here is that the input params to each function are propogated through to the blockchain and have the necessary side effects. Input params for example for filling an order would include: the order itself, the amount to fill and the gas passed in by the caller.
+
+We crucially test two distinct providers that get injected into EtherDeltaWeb3: MetaMask and Wallet (private key). The former calls the contract methods directly, the latter signs and raw transactions (with the contract method call as the payload).
+
+#### React Component Testing
+
+Here we test the major account affecting areas: Funding, Trading, Order Creation and Gas Management.
+
+We wrap the components (e.g. `FillOrderBook.js`) using the `enzyme` library which allows us to perform headless testing. For that component for example we might test:
+
+* That when the user clicks on an order it populates the fill component with those details
+* When the user adjusts the fill quantity the total (eth) gets recalculated
+* **When the user submits the trade, we call into `EtherDeltaWeb3` with the expected parameters (in most cases expanded to wei). This test is crucial to ensuring no client funds are at risk due to: price/amount/total miscalculation, wei miscalcuation or gas mismanagement.**
+* We test two distinct ERC-20 tokens, one with 18 decimals the other with 9.
+
 ## Useful Links
 
 ### React
