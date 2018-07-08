@@ -58,6 +58,9 @@ export function convertToOhlc(data, periodMins, dateFormat, useAmountBase = fals
 }
 
 export function convertToOhlcReactStockChart(data, periodMins) {
+    if(data == null || data.length == 0) {
+        return []
+    }
     const ohlc = convertToOhlc(data, periodMins, null, true)
     // transpose what plotly expects
     return ohlc.open.map((o, i) => {

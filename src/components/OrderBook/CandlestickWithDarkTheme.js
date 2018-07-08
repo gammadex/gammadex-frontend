@@ -133,7 +133,6 @@ class CandleStickChartWithDarkTheme extends React.Component {
             >
 
                 <Chart id={1} height={120}
-
                     yExtents={[d => [d.high, d.low]]}
                     padding={{ top: 10, bottom: 20 }}
                 >
@@ -165,7 +164,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
                 <Chart id={2}
                     yExtents={d => d.volume}
                     height={40} origin={(w, h) => [0, h - 50]}>
-                    <YAxis axisAt="right" orient="right" ticks={2} tickFormat={format(".2s")}
+                    <YAxis axisAt="right" orient="right" ticks={2} tickFormat={format(".3f")}
                         stroke='#C0C0C0' tickStroke="#C0C0C0" />
                     <BarSeries
                         yAccessor={d => d.volume}

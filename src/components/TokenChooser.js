@@ -60,10 +60,16 @@ class TokenChooser extends React.Component {
     }
 
     onTokenSelect = (tokenName) => {
-        const newURL = `/exchange/${tokenName}`
-        if (newURL !== this.props.history.location.pathname) {
-            this.props.history.push(newURL)
+        const { onTokenSelectOverride } = this.props
+        if(onTokenSelectOverride != null && typeof (onTokenSelectOverride) === 'function') {
+            onTokenSelectOverride(tokenName)
+        } else {
+            const newURL = `/exchange/${tokenName}`
+            if (newURL !== this.props.history.location.pathname) {
+                this.props.history.push(newURL)
+            }
         }
+
     }
 
     selectTokenIfOnlyOne = (event, tokens) => {
