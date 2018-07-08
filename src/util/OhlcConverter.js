@@ -8,7 +8,7 @@ export function convertDateToTimestamp(data) {
     })
 }
 
-export function convertToOhlc(data, periodMins, dateFormat) {
+export function convertToOhlc(data, periodMins, dateFormat, useAmountBase = false) {
     if (data.length === 0) {
         return []
     }
@@ -31,7 +31,11 @@ export function convertToOhlc(data, periodMins, dateFormat) {
             acc.close.push(_.last(prices))
             acc.high.push(Math.max(...prices))
             acc.low.push(Math.min(...prices))
-            acc.volume.push(_.sum(entriesInInterval.map(e => parseFloat(e.amount))))
+            if(useAmountBase) {
+                acc.volume.push(_.sum(entriesInInterval.map(e => parseFloat(e.amountBase))))
+            } else {
+                acc.volume.push(_.sum(entriesInInterval.map(e => parseFloat(e.amount))))
+            }
 
             const date = new Date((startTime + endTime) / 2)
 
@@ -53,6 +57,20 @@ export function convertToOhlc(data, periodMins, dateFormat) {
     })
 }
 
+export function convertToOhlcReactStockChart(data, periodMins) {
+    const ohlc = convertToOhlc(data, periodMins, null, true)
+    // transpose what plotly expects
+    return ohlc.open.map((o, i) => {
+        return {
+            open: Number(ohlc.open[i]),
+            high: ohlc.high[i],
+            low: ohlc.low[i],
+            close: Number(ohlc.close[i]),
+            volume: ohlc.volume[i],
+            date: ohlc.date[i],
+        }
+    })
+}
 
 function getOhlcIntervals(data, periodMins) {
     const {min, max} = getMinAndMaxTimestamp(data, periodMins)

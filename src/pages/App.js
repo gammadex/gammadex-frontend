@@ -8,6 +8,7 @@ import Wallets from './Wallets'
 import History from './History'
 import NewWallet from './NewWallet'
 import Debug from './Debug'
+import Chart from './Chart'
 import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
 import SplashScreen from "./SplashScreen"
@@ -50,6 +51,7 @@ class App extends Component {
                 <Route path={Routes.NewWallet} exact component={NewWallet}/>
                 <Route path={Routes.History} exact component={History}/>
                 <Route path={Routes.Debug} exact component={Debug}/>
+                <Route path={Routes.Chart} exact component={Chart}/>
             </div>
         }
 
