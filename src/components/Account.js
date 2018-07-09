@@ -1,5 +1,5 @@
 import React from "react"
-import {Popover, PopoverHeader, PopoverBody, Badge} from 'reactstrap'
+import { Popover, PopoverHeader, PopoverBody, Badge } from 'reactstrap'
 import * as WalletActions from "../actions/WalletActions"
 import * as AccountActions from "../actions/AccountActions"
 import * as WalletDao from "../util/WalletDao"
@@ -8,20 +8,24 @@ import WalletStore from "../stores/WalletStore"
 import Conditional from "./CustomComponents/Conditional"
 import * as LifeCycleActions from "../actions/LifecycleActions"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
-import {toDataUrl} from '../lib/blockies.js'
-import {truncate} from "../util/FormatUtil"
-import {Box, BoxFooter, BoxSection, BoxHeader} from "./CustomComponents/Box"
+import { toDataUrl } from '../lib/blockies.js'
+import { truncate } from "../util/FormatUtil"
+import { Box, BoxFooter, BoxSection, BoxHeader } from "./CustomComponents/Box"
 import TruncatedAddress from "../components/CustomComponents/TruncatedAddress"
 import Config from '../Config'
 import AccountType from '../AccountType'
 import * as EthereumNetworks from "../util/EthereumNetworks"
+import { withRouter } from "react-router-dom"
+import Routes from '../Routes'
 
-export default class Account extends React.Component {
+class Account extends React.Component {
     constructor(props) {
         super(props)
         this.onAccountStoreChange = this.onAccountStoreChange.bind(this)
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
         this.toggerPopover = this.toggerPopover.bind(this)
+        this.createNewWallet = this.createNewWallet.bind(this)
+        this.unlockWallet = this.unlockWallet.bind(this)
     }
 
     state = {
@@ -68,22 +72,31 @@ export default class Account extends React.Component {
         EtherDeltaWeb3.initForAnonymous()
     }
 
+    unlockWallet() {
+        this.props.history.push(Routes.Wallets)
+    }
+
+    createNewWallet() {
+        this.props.history.push(Routes.NewWallet)
+
+    }
+
     render() {
-        const {account, accountPopoverOpen, selectedAccountType, providedWeb3} = this.state
-        const {available, isMainNet, netDescription, accountAvailable} = providedWeb3
-        const truncatedAccount = account ? truncate(account, {left: 7, right: 5}) : ""
+        const { account, accountPopoverOpen, selectedAccountType, providedWeb3 } = this.state
+        const { available, isMainNet, netDescription, accountAvailable } = providedWeb3
+        const truncatedAccount = account ? truncate(account, { left: 7, right: 5 }) : "No Wallet"
         const accountOrEmpty = account ? account : ""
-        //const accountLink = <TruncatedAddress url={`${Config.getEtherscanUrl()}/address/${accountOrEmpty}`}>{accountOrEmpty}</TruncatedAddress>
         const accountLink = <small><a target="_blank" rel="noopener noreferrer" href={`${Config.getEtherscanUrl()}/address/${accountOrEmpty}`}>{accountOrEmpty}</a></small>
         const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
+        const accountImage = account == null ? null : <img width="16" height="16" src={toDataUrl(account)} className="mr-2" />
         return (
-            <Conditional displayCondition={account != null}>
-                <div id="accountTop" className="form-group ml-1">
-                    <button className="btn" onClick={this.toggerPopover} value={truncatedAccount}><img width="16" height="16" src={account == null ? null : toDataUrl(account)} className="mr-2"/>{truncatedAccount}</button>
+            <div id="accountTop" className="form-group ml-1">
+                <button className="btn" onClick={this.toggerPopover} value={truncatedAccount}>{accountImage}{truncatedAccount}</button>
 
-                    <Popover placement="bottom" isOpen={accountPopoverOpen} target="accountTop" toggle={this.toggerPopover}>
-                        <div className="shadow gas-prices">
-                            <PopoverBody>
+                <Popover placement="bottom" isOpen={accountPopoverOpen} target="accountTop" toggle={this.toggerPopover}>
+                    <div className="shadow gas-prices">
+                        <PopoverBody>
+                            <Conditional displayCondition={account != null}>
                                 <Box>
                                     <BoxHeader>
                                         <div className="row">
@@ -96,7 +109,7 @@ export default class Account extends React.Component {
                                         <div className="row">
                                             <div className="col-lg-12 text-center">
                                                 Address (open in Etherscan)
-                                                <br/>
+                                                <br />
                                                 {accountLink}
                                             </div>
                                         </div>
@@ -108,12 +121,47 @@ export default class Account extends React.Component {
                                             </div>
                                         </div>
                                     </BoxFooter>
+                                    <hr/>
+                                    <BoxSection>
+                                        <div className="row">
+                                            <div className="col-lg-12 text-center">
+                                                <button className="btn" onClick={this.unlockWallet}>Unlock Wallet</button>
+                                            </div>
+                                        </div>
+                                    </BoxSection>
+                                    <BoxSection>
+                                        <div className="row">
+                                            <div className="col-lg-12 text-center">
+                                                <button className="btn" onClick={this.createNewWallet}>New Wallet</button>
+                                            </div>
+                                        </div>
+                                    </BoxSection>                                    
                                 </Box>
-                            </PopoverBody>
-                        </div>
-                    </Popover>
-                </div>
-            </Conditional>
+                            </Conditional>
+                            <Conditional displayCondition={account == null}>
+                                <Box>
+                                    <BoxSection>
+                                        <div className="row">
+                                            <div className="col-lg-12 text-center">
+                                                <button className="btn" onClick={this.unlockWallet}>Unlock Wallet</button>
+                                            </div>
+                                        </div>
+                                    </BoxSection>
+                                    <BoxSection>
+                                        <div className="row">
+                                            <div className="col-lg-12 text-center">
+                                                <button className="btn" onClick={this.createNewWallet}>New Wallet</button>
+                                            </div>
+                                        </div>
+                                    </BoxSection>
+                                </Box>
+                            </Conditional>
+                        </PopoverBody>
+                    </div>
+                </Popover>
+            </div>
         )
     }
 }
+
+export default withRouter(Account)

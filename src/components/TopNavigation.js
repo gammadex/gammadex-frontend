@@ -64,17 +64,6 @@ class TopNavigation extends Component {
                         </div>
                         <GasPriceChooser/>
                         <Account/>
-
-                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
-                            <ul className="navbar-nav">
-                                <li className="nav-item">
-                                    <Link to={Routes.Wallets} className="nav-link">Unlock Wallet</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link to={Routes.NewWallet} className="nav-link">New Wallet</Link>
-                                </li>
-                            </ul>
-                        </nav>
                     </form>
                 </div>
                 <div className="lower-header">
