@@ -88,11 +88,6 @@ export default class Account extends React.Component {
                                     <BoxHeader>
                                         <div className="row">
                                             <div className="col-lg-12 text-center">
-                                                <Conditional displayCondition={selectedAccountType === AccountType.METAMASK}>
-                                                    <img src="https://metamask.io/img/favicon-16x16.png"/>
-                                                    <br/>
-                                                    <br/>
-                                                </Conditional>
                                                 <strong>{accountTypeName} Connected</strong>
                                             </div>
                                         </div>
