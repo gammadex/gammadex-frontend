@@ -1,5 +1,6 @@
 import _ from "lodash"
 import dateformat from 'dateformat'
+import math from 'mathjs'
 
 export function convertDateToTimestamp(data) {
     return data.map(v => {
@@ -61,7 +62,16 @@ export function convertToOhlcReactStockChart(data, periodMins) {
     if(data == null || data.length === 0) {
         return []
     }
-    const ohlc = convertToOhlc(data, periodMins, null, true)
+
+    const prices = data.map(d => Number(d.price))
+    const mean = math.mean(prices)
+    const std = math.std(prices)
+
+    const dataNoFatFingers = data.filter(d => {
+        return d.price > (mean - (std * 2)) && d.price < (mean + (std * 2))
+    })
+
+    const ohlc = convertToOhlc(dataNoFatFingers, periodMins, null, true)
     // transpose what plotly expects
     return ohlc.open.map((o, i) => {
         return {

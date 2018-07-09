@@ -83,7 +83,7 @@ class ReactChart extends Component {
         if (chartData && chartData.length > 1) {
             chart = <ChartRenderer chartType={chartType} data={chartData} width={350} />
         }
-        
+
         return (
             <Box title="React Stock Chart">
             <BoxSection>
