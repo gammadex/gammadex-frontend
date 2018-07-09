@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import TokenSummary from '../components/TokenSummary'
 import Account from '../components/Account'
 import Routes from '../Routes'
@@ -34,13 +34,13 @@ class TopNavigation extends Component {
     }
 
     render() {
-        const {token} = this.state
+        const { token } = this.state
 
         return (
             <header className="bg-primary text-light header">
                 <div className="upper-header">
                     <div className="full-height">
-                        <img src={require("../images/eth-logo.png")} style={{"height": "28px"}} className="mr-2"/>
+                        <img src={require("../images/eth-logo.png")} style={{ "height": "28px" }} className="mr-2" />
 
                         <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
 
@@ -56,18 +56,22 @@ class TopNavigation extends Component {
                         </nav>
                     </div>
 
-                    <TokenSummary token={token}/>
+                    <TokenSummary token={token} />
 
                     <form className="form-inline">
                         <div className="form-group mr-1">
-                            <AppStatus/>
+                            <AppStatus />
                         </div>
-                        <GasPriceChooser/>
-                        <Account/>
+                        <div className="form-group mr-1">
+                            <GasPriceChooser />
+                        </div>
+                        <div className="form-group mr-1">
+                            <Account />
+                        </div>
                     </form>
                 </div>
                 <div className="lower-header">
-                    <TokenStats token={token}/>
+                    <TokenStats token={token} />
                 </div>
             </header>
         )
