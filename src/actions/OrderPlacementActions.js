@@ -60,24 +60,17 @@ function calcAmount(priceControlled, totalEthControlled) {
     }
 }
 
+export function orderBoxSideChanged(orderBoxSide) {
+    dispatcher.dispatch({
+        type: ActionNames.ORDER_BOX_SIDE_CHANGED,
+        orderBoxSide
+    })
+}
+
 export function orderBoxTypeChanged(orderBoxType) {
     dispatcher.dispatch({
         type: ActionNames.ORDER_BOX_TYPE_CHANGED,
         orderBoxType
-    })
-}
-
-export function orderBoxTradeSideChanged(orderBoxTradeSide) {
-    dispatcher.dispatch({
-        type: ActionNames.ORDER_BOX_TRADE_SIDE_CHANGED,
-        orderBoxTradeSide
-    })
-}
-
-export function orderBoxOrderSideChanged(orderBoxOrderSide) {
-    dispatcher.dispatch({
-        type: ActionNames.ORDER_BOX_ORDER_SIDE_CHANGED,
-        orderBoxOrderSide
     })
 }
 

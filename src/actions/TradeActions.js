@@ -158,9 +158,9 @@ export function fillOrder(order) {
     })
 
     if (OrderUtil.isTakerBuy(order)) {
-        OrderPlacementActions.focusOnTradeBox(OrderBoxType.BUY_TRADE)
+        OrderPlacementActions.focusOnTradeBox(OrderBoxType.BUY)
     } else {
-        OrderPlacementActions.focusOnTradeBox(OrderBoxType.SELL_TRADE)
+        OrderPlacementActions.focusOnTradeBox(OrderBoxType.SELL)
     }
 }
 

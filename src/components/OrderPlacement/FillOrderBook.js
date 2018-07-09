@@ -229,8 +229,6 @@ export default class FillOrderBook extends React.Component {
 
             body =
                 <BoxSection className={"order-box"}>
-                    <hr/>
-
                     <form onSubmit={this.onSubmit}>
                         <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
                             fieldName={type + "OrderPrice"} disabled="true" />

@@ -1,7 +1,7 @@
 :root {
     --header-height: 62px;
     --upper-header-height: 42px;
-    --lower-header-height:calc(var(--header-height) - var(--upper-header-height));
+    --lower-header-height: calc(var(--header-height) - var(--upper-header-height));
     --main-padding: 0px;
     --half-main-padding: 0px;
     --card-header-height: 40px;
@@ -298,22 +298,22 @@ h1.main-header {
 }
 
 .token-stats {
-    display:flex;
+    display: flex;
     flex-direction: row;
-    margin-left:50px;
-    margin-right:0;
+    margin-left: 50px;
+    margin-right: 0;
 }
 
 .token-stats:first-child {
-    margin-left:0;
+    margin-left: 0;
 }
 
 .token-stats:last-child {
-    margin-right:0;
+    margin-right: 0;
 }
 
 .token-stat-name {
-    margin-right:10px;
+    margin-right: 10px;
     font-weight: bold;
 }
 
@@ -437,7 +437,7 @@ input[type="number"] {
 }
 
 .header {
-    display:flex;
+    display: flex;
     flex-direction: column;
     height: var(--header-height);
 }
@@ -449,7 +449,7 @@ input[type="number"] {
     height: var(--upper-header-height);
     box-sizing: border-box;
     padding-left: 10px;
-    border-bottom:1px solid var(--gray-dark);
+    border-bottom: 1px solid var(--gray-dark);
 }
 
 .upper-header > div {
@@ -460,7 +460,7 @@ input[type="number"] {
 .lower-header {
     background: var(--secondary);
     height: var(--lower-header-height);
-    display:flex;
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: center;
@@ -468,7 +468,7 @@ input[type="number"] {
 }
 
 .upper-header .navbar {
-    padding:0;
+    padding: 0;
 }
 
 .page-content {
@@ -575,7 +575,7 @@ input[type="number"] {
 }
 
 .unlisted-tokens-component .form-group {
-    margin-bottom:8px;
+    margin-bottom: 8px;
 }
 
 .exchange-right-col {
@@ -678,7 +678,7 @@ input[type="number"] {
     height: var(--bids-and-offers-spacer-height);
     max-height: var(--bids-and-offers-spacer-height);
     min-height: var(--bids-and-offers-spacer-height);
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .bids-and-offers-bids, .bids-and-offers-offers {
@@ -802,7 +802,7 @@ input[type="number"] {
 }
 
 .open-orders-component, .pending-trades-component {
-    height:calc(100% - var(--card-header-height));
+    height: calc(100% - var(--card-header-height));
 }
 
 /*
@@ -944,7 +944,7 @@ body {
 }
 
 .navbar-card li a {
-    border-right:1px solid var(--gray-light);
+    border-right: 1px solid var(--gray-light);
 }
 
 .navbar-card li a:hover {
@@ -952,22 +952,135 @@ body {
 }
 
 .navbar-card li:last-child a {
-    border-right:2px solid transparent;
+    border-right: 2px solid transparent;
 }
 
 .action-button {
-    width:80px;
-    padding-left:3px;
+    width: 80px;
+    padding-left: 3px;
 }
 
 .balance-token-name {
-    font-size:13px;
+    font-size: 13px;
 }
 
 .unlisted-token-valid {
-    width:100%;
+    width: 100%;
 }
 
 .unlisted-tokens-component .card .table tr th {
-    border-top:1px solid var(--secondary);
+    border-top: 1px solid var(--secondary);
+}
+
+.order-box {
+    padding-top: 10px;
+}
+
+.trading-buy-sell-nav {
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.trading-nav-buy-selected {
+    border-bottom: 1px solid var(--green);
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.trading-nav-sell-selected {
+    border-bottom: 1px solid var(--sell-red);
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.trading-nav-buy {
+    background: var(--dark);
+    border: 1px solid var(--green) !important;
+    color: var(--green) !important;
+    cursor: pointer;
+    margin-right: 6px;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.trading-nav-sell {
+    background: var(--dark);
+    border: 1px solid var(--sell-red) !important;
+    color: var(--sell-red) !important;
+    cursor: pointer;
+    margin-left: 6px;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.trading-nav-buy:not(.active), .trading-nav-sell:not(.active) {
+    background: var(--dark);
+    border: 1px solid var(--gray-light) !important;
+    color: var(--gray-light) !important;
+}
+
+.trading-nav-buy:not(.active):hover, .trading-nav-sell:not(.active):hover {
+    -webkit-box-shadow: 0 0 0 0.05rem var(--gray-light) !important;
+    box-shadow: 0 0 0 0.05rem var(--gray-light) !important;
+}
+
+.order-box {
+    border-width: 0;
+}
+
+.nav-trading-types  {
+    border-bottom-width:0;
+}
+
+.nav-link.active.nav-trading-type  {
+    background:inherit;
+}
+
+.nav-link.nav-trading-type:not(.active)  {
+    background:inherit;
+    border-bottom: 1px solid #444444;
+}
+
+.trading-and-orderbook-component .card-body  {
+    display:flex;
+    flex-direction: column;
+}
+
+.trading-and-orderbook-component .card-body > ul {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.trading-and-orderbook-component .card-body > div {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 100%;
+}
+
+.trading-types {
+    display:flex;
+    flex-direction: column;
+}
+
+.trading-types > ul {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.trading-types  > div {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 100%;
+}
+
+.trading-types .tab-content {
+    height:100%;
+    border:1px solid #444444;
+    border-top-width: 0;
 }

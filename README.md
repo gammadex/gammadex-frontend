@@ -23,8 +23,10 @@ https://localhost:3000/#!/debug/
 Globally install:
 
 ```
-npm install -g ganache-cli
+npm install -g ganache-cli@6.1.3
 ```
+
+**Note - ganache version `6.1.5` doesn't work so please use `6.1.3`**
 
 In a new terminal start ganache, which also creates a test wallet populated with 1000 ETH (this exact wallet is used by the tests)
 

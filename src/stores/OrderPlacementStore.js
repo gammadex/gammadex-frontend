@@ -9,9 +9,8 @@ import OrderBoxType from "../components/OrderPlacement/OrderBoxType"
 class OrderPlacementStore extends EventEmitter {
     constructor() {
         super()
-        this.orderBoxType = OrderBoxType.TRADE
-        this.orderBoxTradeSide = OrderBoxType.BUY_TRADE
-        this.orderBoxOrderSide = OrderBoxType.BUY_ORDER
+        this.orderBoxType = OrderBoxType.ORDER
+        this.orderBoxSide = OrderBoxType.BUY
         this.clearSellOrder = this.clearSellOrder.bind(this)
         this.clearBuyOrder = this.clearBuyOrder.bind(this)
 
@@ -58,8 +57,7 @@ class OrderPlacementStore extends EventEmitter {
     getOrderPlacementState() {
         return {
             orderBoxType: this.orderBoxType,
-            orderBoxTradeSide: this.orderBoxTradeSide,
-            orderBoxOrderSide: this.orderBoxOrderSide,
+            orderBoxSide: this.orderBoxSide,
             sellOrderPriceControlled: this.sellOrderPriceControlled,
             sellOrderAmountControlled: this.sellOrderAmountControlled,
             sellOrderAmountWei: this.sellOrderAmountWei,
@@ -103,26 +101,21 @@ class OrderPlacementStore extends EventEmitter {
                 this.orderBoxType = action.orderBoxType
                 this.emitChange()
                 break
-            }        
-            case ActionNames.ORDER_BOX_TRADE_SIDE_CHANGED: {
-                this.orderBoxTradeSide = action.orderBoxTradeSide
+            }
+            case ActionNames.ORDER_BOX_SIDE_CHANGED: {
+                this.orderBoxSide = action.orderBoxSide
                 this.emitChange()
                 break
-            }      
-            case ActionNames.ORDER_BOX_ORDER_SIDE_CHANGED: {
-                this.orderBoxOrderSide = action.orderBoxOrderSide
-                this.emitChange()
-                break
-            }   
+            }
             case ActionNames.FOCUS_ON_ORDER_BOX: {
                 this.orderBoxType = OrderBoxType.ORDER
-                this.orderBoxOrderSide = action.orderBoxSide
+                this.orderBoxSide = action.orderBoxSide
                 this.emitChange()
                 break
             } 
             case ActionNames.FOCUS_ON_TRADE_BOX: {
                 this.orderBoxType = OrderBoxType.TRADE
-                this.orderBoxTradeSide = action.tradeBoxSide
+                this.orderBoxSide = action.tradeBoxSide
                 this.emitChange()
                 break
             }                                        

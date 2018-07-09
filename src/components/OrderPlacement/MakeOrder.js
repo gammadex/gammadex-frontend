@@ -240,7 +240,6 @@ export default class MakeOrder extends React.Component {
         const body = (
             <BoxSection className={"order-box"}>
                 <form onSubmit={this.onSubmit}>
-                    <hr/>
                 <NumericInput name="Price" value={price} unitName="ETH"
                     onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />
 
