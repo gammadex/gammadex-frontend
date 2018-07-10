@@ -2,7 +2,6 @@ import React from "react"
 import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
 import {TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, UncontrolledTooltip, Popover, PopoverHeader, PopoverBody} from 'reactstrap'
 import classnames from 'classnames'
-import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import FillOrderBook from './FillOrderBook'
 import MakeOrder from './MakeOrder'
 import OrderSide from "../../OrderSide"
@@ -11,6 +10,8 @@ import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import OrderPlacementStore from "../../stores/OrderPlacementStore"
 import AccountStore from "../../stores/AccountStore"
 import Conditional from "../CustomComponents/Conditional"
+import UnrecognisedToken from "../UnrecognisedToken"
+import InvalidUrlTokenWarning from "../InvalidUrlTokenWarning"
 
 export default class OrderBox extends React.Component {
     constructor(props) {
@@ -86,6 +87,7 @@ export default class OrderBox extends React.Component {
         const {token} = this.props
 
         const tokenSymbol = token ? token.symbol : null
+        const tokenTitlePart = tokenSymbol ? `: ${tokenSymbol}` : ''
         const tokenAddress = token ? token.address : null
 
         const buyActive = activeSide === OrderBoxType.BUY
@@ -96,25 +98,30 @@ export default class OrderBox extends React.Component {
         const buySellClass = buyActive ? "trading-nav-buy-selected" : "trading-nav-sell-selected"
 
         return (
-            <Box title="Trading">
+            <div className="card">
+                <div className="card-header">
+                    <div><strong className="card-title">Trading{tokenTitlePart}</strong></div>
+                    <UnrecognisedToken/>
+                    <InvalidUrlTokenWarning/>
+                </div>
                 <BoxSection>
+                    <Conditional displayCondition={!!token} fallbackMessage="Please select a token to enable trading">
                     <Nav fill className={"trading-buy-sell-nav " + buySellClass}>
                         <NavItem>
                             <NavLink
                                 className={"trading-nav-buy " + classnames({active: buyActive})}
                                 onClick={() => this.toggleSide(OrderBoxType.BUY)}>
-                                <strong>BUY {tokenSymbol}</strong>
+                                <strong>BUY</strong>
                             </NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink
                                 className={"trading-nav-sell " + classnames({active: sellActive})}
                                 onClick={() => this.toggleSide(OrderBoxType.SELL)}>
-                                <strong>SELL {tokenSymbol}</strong>
+                                <strong>SELL</strong>
                             </NavLink>
                         </NavItem>
                     </Nav>
-                    <Conditional displayCondition={!!token}>
                         <div className="trading-types">
                             <Nav tabs fill className="nav-trading-types">
                                 <NavItem>
@@ -176,7 +183,7 @@ export default class OrderBox extends React.Component {
                         </div>
                     </Conditional>
                 </BoxSection>
-            </Box>
+            </div>
         )
     }
 }

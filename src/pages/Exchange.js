@@ -6,9 +6,7 @@ import * as TokenApi from "../apis/TokenApi"
 import UnlistedTokens from "../components/UnlistedTokens"
 import Trading from "../components/Trading"
 import AccountDetail from '../components/AccountDetail'
-import UnrecognisedToken from "../components/UnrecognisedToken"
 import {withRouter} from "react-router-dom"
-import InvalidUrlTokenWarning from "../components/InvalidUrlTokenWarning"
 import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
 import PlotlyPriceChart from "../components/OrderBook/PlotlyPriceChart"
 import PlotlyDepthChart from "../components/OrderBook/PlotlyDepthChart"
@@ -55,8 +53,6 @@ class Exchange extends Component {
                     <UnlistedTokens/>
                 </div>
                 <div className="pl-0 col-lg-6 exchange-middle-col main-col full-height">
-                    <UnrecognisedToken/>
-                    <InvalidUrlTokenWarning/>
                     <Trading token={token}/>
                     <OpenOrdersAndPendingTrades/>
                 </div>

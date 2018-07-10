@@ -482,6 +482,7 @@ input[type="number"] {
 
 .main-warning {
     margin: var(--main-padding);
+    margin-right:-4px;
 }
 
 .route-content > div {
@@ -859,7 +860,7 @@ body {
     color: #ff9933;
 }
 
-.fa-question-circle {
+.trading-buy-sell-nav .fa-question-circle {
     color: #a5a5a5
 }
 
@@ -1083,4 +1084,20 @@ body {
     height:100%;
     border:1px solid #444444;
     border-top-width: 0;
+}
+
+.padded-popover .popover-inner {
+    margin:8px;
+}
+
+.middle {
+    display: flex;
+    width:100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-header .alert {
+    padding-left:6px;
+    padding-right:6px;
 }

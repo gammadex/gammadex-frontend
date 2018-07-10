@@ -1,7 +1,7 @@
 import React from "react"
 import Conditional from "./CustomComponents/Conditional"
 import TokenStore from "../stores/TokenStore"
-import * as EthereumNetworks from "../util/EthereumNetworks"
+import {Popover, PopoverHeader, PopoverBody} from 'reactstrap'
 
 export default class InvalidUrlTokenWarning extends React.Component {
     constructor(props) {
@@ -9,6 +9,7 @@ export default class InvalidUrlTokenWarning extends React.Component {
 
         this.state = {
             invalidTokenIdentifierInUrl: TokenStore.getInvalidTokenIdentifierInUrl(),
+            invalidPopoverOpen: false,
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -28,14 +29,26 @@ export default class InvalidUrlTokenWarning extends React.Component {
         })
     }
 
+    toggleInvalidPopover = () => {
+        this.setState({
+            invalidPopoverOpen: !this.state.invalidPopoverOpen
+        })
+    }
+
     render() {
         const {invalidTokenIdentifierInUrl} = this.state
 
         return (
             <Conditional displayCondition={!!invalidTokenIdentifierInUrl}>
-                <div className="alert alert-danger">
-                    <strong>"{invalidTokenIdentifierInUrl}"</strong> is not recognised as a token address or symbol
-                </div>
+                <div className="alert alert-danger main-warning">Invalid token <span id="unlisted-popover-target" onClick={this.toggleInvalidPopover}><i className="fas fa-question-circle"></i></span></div>
+
+                <Popover className="padded-popover" placement="bottom" isOpen={this.state.invalidPopoverOpen} target={"unlisted-popover-target"} toggle={this.toggleInvalidPopover}>
+                    <PopoverHeader>Invalid token</PopoverHeader>
+                    <PopoverBody>
+                        <strong>{invalidTokenIdentifierInUrl}</strong> is not recognised as a token address or symbol
+                    </PopoverBody>
+                </Popover>
+
             </Conditional>
         )
     }
