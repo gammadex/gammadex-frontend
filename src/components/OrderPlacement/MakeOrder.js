@@ -185,7 +185,11 @@ export default class MakeOrder extends React.Component {
     }
 
     onSliderChange = (value) => {
-        this.onOrderAmountChange(value)
+        if (this.isMakerBuyComponent()) {
+            this.onOrderTotalChange(value)
+        } else {
+            this.onOrderAmountChange(value)
+        }
     }
 
     render() {
@@ -243,11 +247,13 @@ export default class MakeOrder extends React.Component {
 
         const balanceUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
 
-        let addendum = null
-        if (balanceUnitName === 'ETH') {
-            addendum = <span>{balanceUnitName} balance: <span onClick={() => this.onOrderTotalChange(String(available))}>{available.toFixed(3).toString()}</span></span>
+        let slider = null
+        if (type === OrderSide.BUY) {
+            const addendum = <span>{balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(available))}>{available.toFixed(3).toString()}</span></span>
+            slider = <OrderPercentageSlider onChange={this.onSliderChange} value={total} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
         } else {
-            addendum = <span>{balanceUnitName} balance: <span onClick={() => this.onOrderAmountChange(available)}>{available.toFixed(3).toString()}</span></span>
+            const addendum = <span>{balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(available))}>{available.toFixed(3).toString()}</span></span>
+            slider = <OrderPercentageSlider onChange={this.onSliderChange} value={amount} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
         }
 
         const body = (
@@ -263,7 +269,7 @@ export default class MakeOrder extends React.Component {
                     <Row>
                         <Col sm={3}/>
                         <Col sm={9}>
-                            <OrderPercentageSlider onChange={this.onSliderChange} value={amount} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
+                            {slider}
                         </Col>
                     </Row>
 
