@@ -23,6 +23,7 @@ export function connect() {
             connect: (event) => {
                 dispatcher.dispatch({
                     type: ActionNames.WEB_SOCKET_OPENED,
+                    url,
                     event,
                 })
 

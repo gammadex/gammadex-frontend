@@ -1,16 +1,17 @@
 import React from "react"
 import _ from "lodash"
-import {Box, BoxSection} from "./CustomComponents/Box"
-import {Popover, PopoverBody} from 'reactstrap'
+import { Box, BoxSection } from "./CustomComponents/Box"
+import { Popover, PopoverBody } from 'reactstrap'
 import WalletStore from "../stores/WalletStore"
 import AccountStore from "../stores/AccountStore"
 import WebSocketStore from '../stores/WebSocketStore'
 import AppStatusRow from "./AppStatus/AppStatusRow"
-import {States} from "./AppStatus/AppStatusRow"
+import { States } from "./AppStatus/AppStatusRow"
 import Config from "../Config"
 import BlockNumberDetail from "./BlockNumberDetail"
 import AccountType from "../AccountType"
 import * as EthereumNetworks from "../util/EthereumNetworks"
+import Conditional from "./CustomComponents/Conditional"
 
 export default class AppStatus extends React.Component {
     constructor(props) {
@@ -18,29 +19,24 @@ export default class AppStatus extends React.Component {
 
         this.state = {
             popoverOpen: false,
-            webSocket: {
-                state: States.ERROR,
-                url: null
-            },
-            web3: {
-                state: States.ERROR,
-                selectedAccountType: null
-            },
-            network: {
-                state: States.ERROR,
-                netDescription: null
-            }
+            webSocketState: States.ERROR,
+            webSocketUrl: null,
+            accountState: States.ERROR,
+            accountType: null,
+            web3State: States.ERROR,
+            web3Description: "Network not found"
         }
 
         this.onSocketConnectionChange = this.onSocketConnectionChange.bind(this)
-        this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
-        this.onAccountStoreChange = this.onAccountStoreChange.bind(this)
+        this.updateEthereumNetworkState = this.updateEthereumNetworkState.bind(this)
     }
 
     componentDidMount() {
         WebSocketStore.on("change", this.onSocketConnectionChange)
-        WalletStore.on("change", this.onWalletStoreChange)
-        AccountStore.on("change", this.onAccountStoreChange)
+        WalletStore.on("change", this.updateEthereumNetworkState)
+        AccountStore.on("change", this.updateEthereumNetworkState)
+        this.updateEthereumNetworkState()
+        this.onSocketConnectionChange()
     }
 
     componentWillUnmount() {
@@ -53,76 +49,80 @@ export default class AppStatus extends React.Component {
         const wssState = WebSocketStore.getConnectionState()
         const wsState = wssState.connected ? States.OK : wssState.connecting ? States.WARN : States.ERROR
         this.setState({
-            webSocket: {
-                state: wsState,
-                url: wssState.url
-            }
-        })
-    }
-    
-    onAccountStoreChange() {
-        const accountState = AccountStore.getAccountState()
-        const web3State = accountState.selectedAccountType ? States.OK : States.ERROR
-        this.setState({
-            web3: {
-                state: web3State,
-                selectedAccountType: accountState.selectedAccountType
-            }
+            webSocketState: wsState,
+            webSocketUrl: wssState.url
         })
     }
 
-    onWalletStoreChange() {
+    updateEthereumNetworkState() {
+        const { selectedAccountType } = AccountStore.getAccountState()
+        const accountState = selectedAccountType != null ? States.OK : States.ERROR
+
+        // web3Info will only be populated when using metamask
         const web3Info = WalletStore.getProvidedWeb3Info()
-        const selectedAccountType = this.state.web3.selectedAccountType
-        const nwState = (web3Info.netDescription && !selectedAccountType && !web3Info.isMainNet) ? States.ERROR : States.OK
-        const netDescription = (!selectedAccountType || selectedAccountType === AccountType.METAMASK) ? web3Info.netDescription : EthereumNetworks.getMainNetDescription()
-        this.setState({
-            network: {
-                state: nwState,
-                netDescription
+
+        let web3State = States.ERROR
+        let web3Description = ""
+        if (selectedAccountType == null) {
+            web3State = States.ERROR
+            web3Description = "Please unlock a wallet"
+        } else {
+            if (selectedAccountType === AccountType.METAMASK) {
+                if (web3Info.netDescription == null || !web3Info.isMainNet) {
+                    web3State = States.ERROR
+                    web3Description = `Please connect to ${EthereumNetworks.getMainNetDescription()}`
+                } else {
+                    web3State = States.OK
+                    web3Description = EthereumNetworks.getMainNetDescription()
+                }
+            } else {
+                web3State = States.OK
+                web3Description = EthereumNetworks.getMainNetDescription()
             }
+        }
+
+        this.setState({
+            accountType: selectedAccountType,
+            accountState: accountState,
+            web3State: web3State,
+            web3Description: web3Description
         })
     }
 
     toggleShowStatus = () => {
-        this.setState({popoverOpen: !this.state.popoverOpen})
+        this.setState({ popoverOpen: !this.state.popoverOpen })
     }
 
     getWebsocketMessage = () => {
-        switch (this.state.webSocket.state) {
-        case States.OK:
-            return `Connected to ${this.state.webSocket.url}`
-        case States.WARN:
-            return `Connecting to ${this.state.webSocket.url}`
-        case States.ERROR:
-            return `Disconnected`
+        const { webSocketState, webSocketUrl } = this.state
+        switch (webSocketState) {
+            case States.OK:
+                return `Connected to ${webSocketUrl}`
+            case States.WARN:
+                return `Connecting to ${webSocketUrl}`
+            case States.ERROR:
+                return `Disconnected`
         }
     }
 
-    getWeb3Message = () => {
-        switch (this.state.web3.state) {
-        case States.OK:
-            return `Provided by ${this.state.web3.selectedAccountType === AccountType.METAMASK ? this.state.web3.selectedAccountType : "INFURA" }`
-        case States.ERROR:
-            return `No provider`
+    getAccountMessage = () => {
+        const { accountState, accountType } = this.state
+        switch (accountState) {
+            case States.OK:
+                return `Provided by ${accountType === AccountType.METAMASK ? accountType : "INFURA"}`
+            case States.ERROR:
+                return null
         }
     }
 
     getNetworkMessage = () => {
-        switch (this.state.network.state) {
-        case States.OK:
-            return this.state.network.netDescription
-        case States.ERROR:
-            if (!this.state.network.netDescription) {
-                return "Network not found"
-            }
-
-            return `${this.state.network.netDescription} used in ${Config.getReactEnv()}`
-        }
+        return this.state.web3Description
     }
 
     render() {
-        const overall = _.maxBy([this.state.webSocket.state, this.state.web3.state, this.state.network.state], st => st.index)
+        const { webSocketState, accountState, web3State } = this.state
+        const overall = _.maxBy([webSocketState, accountState, web3State], st => st.index)
+        const ethereumNetworkState = _.maxBy([accountState, web3State], st => st.index)
 
         return (
             <div>
@@ -138,11 +138,14 @@ export default class AppStatus extends React.Component {
                         <PopoverBody>
                             <Box title="Status">
                                 <BoxSection>
-                                    <AppStatusRow title="GammaDex Websocket" state={this.state.webSocket.state} message={this.getWebsocketMessage()}/>
-                                    <div className="sub-card"><AppStatusRow title="Ethereum Node" state={this.state.web3.state} message={this.getWeb3Message()}/></div>
+                                    <AppStatusRow title="GammaDex Websocket" state={webSocketState} message={this.getWebsocketMessage()} />
+
                                     <div className="sub-card">
-                                        <AppStatusRow className="sub-card" title="Network" state={this.state.network.state} message={this.getNetworkMessage()}>
-                                            <BlockNumberDetail/>
+                                        <AppStatusRow className="sub-card" title="Ethereum Network" state={ethereumNetworkState} message={this.getNetworkMessage()}>
+                                            <Conditional displayCondition={this.getAccountMessage() != null}>
+                                                <span>{this.getAccountMessage()}<br /></span>
+                                            </Conditional>
+                                            <BlockNumberDetail state={ethereumNetworkState} />
                                         </AppStatusRow>
                                     </div>
                                 </BoxSection>

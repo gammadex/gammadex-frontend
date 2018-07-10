@@ -1,11 +1,11 @@
 import Config from '../Config'
 
 const networks = {
-    1: "main network",
-    2: "Morden test network",
-    3: "Ropsten test network",
-    4: "Rinkeby test network",
-    42: "Kovan test network",
+    1: "mainnet",
+    2: "testnet (Morden)",
+    3: "testnet (Ropsten)",
+    4: "testnet (Rinkeby)",
+    42: "testnet (Kovan)",
 }
 
 export function getNetworkDescription(netId) {

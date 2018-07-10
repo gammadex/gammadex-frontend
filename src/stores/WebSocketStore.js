@@ -38,6 +38,7 @@ class WebSocketStore extends EventEmitter {
             }
             case ActionNames.WEB_SOCKET_OPENED: {
                 console.log("WebSocket opened")
+                this.url = action.url
                 this.connected = true
                 this.connecting = false
                 this.emitChange()

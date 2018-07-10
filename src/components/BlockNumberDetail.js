@@ -1,6 +1,7 @@
 import React from "react"
 import LifecycleStore from '../stores/LifecycleStore'
 import Config from "../Config"
+import { States } from "./AppStatus/AppStatusRow"
 
 export default class BlockNumberDetail extends React.Component {
     constructor() {
@@ -27,9 +28,10 @@ export default class BlockNumberDetail extends React.Component {
 
     render() {
         const {currentBlockNumber} = this.state
+        const { state } = this.props
 
         return (
-            <span><strong>Current Block: </strong> {currentBlockNumber}</span>
+            <span><strong>Current Block: </strong> {state === States.ERROR ? "" : currentBlockNumber}</span>
         )
     }
 }
