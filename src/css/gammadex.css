@@ -482,6 +482,7 @@ input[type="number"] {
 
 .main-warning {
     margin: var(--main-padding);
+    margin-right:-4px;
 }
 
 .route-content > div {
