@@ -73,12 +73,13 @@ class Account extends React.Component {
     }
 
     unlockWallet() {
+        AccountActions.toggleAccountPopover(!this.state.accountPopoverOpen)
         this.props.history.push(Routes.Wallets)
     }
 
     createNewWallet() {
+        AccountActions.toggleAccountPopover(!this.state.accountPopoverOpen)
         this.props.history.push(Routes.NewWallet)
-
     }
 
     render() {
