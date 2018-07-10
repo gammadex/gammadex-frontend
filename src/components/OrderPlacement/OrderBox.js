@@ -87,6 +87,7 @@ export default class OrderBox extends React.Component {
         const {token} = this.props
 
         const tokenSymbol = token ? token.symbol : null
+        const tokenTitlePart = tokenSymbol ? `: ${tokenSymbol}` : ''
         const tokenAddress = token ? token.address : null
 
         const buyActive = activeSide === OrderBoxType.BUY
@@ -99,7 +100,7 @@ export default class OrderBox extends React.Component {
         return (
             <div className="card">
                 <div className="card-header">
-                    <div><strong className="card-title">Trading</strong></div>
+                    <div><strong className="card-title">Trading{tokenTitlePart}</strong></div>
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                 </div>
@@ -110,14 +111,14 @@ export default class OrderBox extends React.Component {
                             <NavLink
                                 className={"trading-nav-buy " + classnames({active: buyActive})}
                                 onClick={() => this.toggleSide(OrderBoxType.BUY)}>
-                                <strong>BUY {tokenSymbol}</strong>
+                                <strong>BUY</strong>
                             </NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink
                                 className={"trading-nav-sell " + classnames({active: sellActive})}
                                 onClick={() => this.toggleSide(OrderBoxType.SELL)}>
-                                <strong>SELL {tokenSymbol}</strong>
+                                <strong>SELL</strong>
                             </NavLink>
                         </NavItem>
                     </Nav>
