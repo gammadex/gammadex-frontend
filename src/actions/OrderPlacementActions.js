@@ -409,7 +409,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
             const bestOffer = safeBigNumber(OrderBookStore.getOffers()[0].price)
             if(safeBigNumber(priceControlled).isGreaterThan(bestOffer)) {
                 hasPriceWarning = true
-                crossedSpread = <li>Your order price of {priceControlled} is greater than the best offer ({bestOffer.toString()}). This is known as 'crossing the spread'.</li>
+                crossedSpread = <li>Your order price of {priceControlled} is greater than the best offer ({bestOffer.toString()})</li>
             }
         }
 
@@ -420,7 +420,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
             const bestBid = safeBigNumber(OrderBookStore.getBids()[0].price)
             if(safeBigNumber(priceControlled).isLessThan(bestBid)) {
                 hasPriceWarning = true
-                crossedSpread = <li>Your order price of {priceControlled} is less than the best bid ({bestBid.toString()}). This is known as 'crossing the spread'.</li>
+                crossedSpread = <li>Your order price of {priceControlled} is less than the best bid ({bestBid.toString()})</li>
             }
         }
 
@@ -428,7 +428,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
         if(hasPriceWarning) {
             priceWarning =
                 <div>
-                    <div><i className="fas fa-exclamation-triangle" />&nbsp;&nbsp;Fair value warnings detected, please double-check your order to {side} {tokenName} as:</div>
+                    <div><i className="fas fa-exclamation-triangle" /> Fair value warning</div>
                     <br />
                     <ul>
                         {noMarketTrades}
@@ -437,11 +437,9 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
                         {crossedSpread}
                         {noBids}
                     </ul>
-                    <hr />
-                    <div>Dismiss this warning [x] then select [PLACE {side} ORDER] if you intend to:</div>
-                    <br />
+                    <div>Dismiss this warning if you intend to:</div>
                     <div><strong>{side} {amountControlled} {tokenName} and {orderSide === OrderSide.BUY ? "PAY" : "RECEIVE"} {totalEthControlled} ETH</strong></div>
-                    <div><strong>PRICE: {priceControlled} ETH</strong></div>
+                    <div><strong>Price: {priceControlled} ETH/{tokenName}</strong></div>
                 </div>
         }
     }

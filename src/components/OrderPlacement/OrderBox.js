@@ -100,7 +100,7 @@ export default class OrderBox extends React.Component {
         return (
             <div className="card">
                 <div className="card-header">
-                    <div><strong className="card-title">Trading{tokenTitlePart}</strong></div>
+                    <div><strong className="card-title">Trade{tokenTitlePart}</strong></div>
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                 </div>

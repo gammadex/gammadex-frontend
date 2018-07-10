@@ -736,14 +736,14 @@ input[type="number"] {
     z-index: 5;
 }
 
-.numeric-input-slider {
+.numeric-input-slider, .percentage-slider {
     margin-bottom: 12px;
     margin-top: 10px;
     padding-left: 10px;
     padding-right: 20px;
 }
 
-.numeric-input-addendum {
+.numeric-input-addendum, .percentage-slider-addendum {
     padding-top: 12px;
     padding-bottom: 10px;
     text-align: right;

@@ -99,11 +99,15 @@ class OrderPlacementStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.ORDER_BOX_TYPE_CHANGED: {
                 this.orderBoxType = action.orderBoxType
+                this.clearSellOrder()
+                this.clearBuyOrder()
                 this.emitChange()
                 break
             }
             case ActionNames.ORDER_BOX_SIDE_CHANGED: {
                 this.orderBoxSide = action.orderBoxSide
+                this.clearSellOrder()
+                this.clearBuyOrder()
                 this.emitChange()
                 break
             }
