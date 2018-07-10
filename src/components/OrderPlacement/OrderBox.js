@@ -2,7 +2,6 @@ import React from "react"
 import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
 import {TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, UncontrolledTooltip, Popover, PopoverHeader, PopoverBody} from 'reactstrap'
 import classnames from 'classnames'
-import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import FillOrderBook from './FillOrderBook'
 import MakeOrder from './MakeOrder'
 import OrderSide from "../../OrderSide"
@@ -12,6 +11,7 @@ import OrderPlacementStore from "../../stores/OrderPlacementStore"
 import AccountStore from "../../stores/AccountStore"
 import Conditional from "../CustomComponents/Conditional"
 import UnrecognisedToken from "../UnrecognisedToken"
+import InvalidUrlTokenWarning from "../InvalidUrlTokenWarning"
 
 export default class OrderBox extends React.Component {
     constructor(props) {
@@ -101,8 +101,10 @@ export default class OrderBox extends React.Component {
                 <div className="card-header">
                     <div><strong className="card-title">Trading</strong></div>
                     <UnrecognisedToken/>
+                    <InvalidUrlTokenWarning/>
                 </div>
                 <BoxSection>
+                    <Conditional displayCondition={!!token} fallbackMessage="Please select a token to enable trading">
                     <Nav fill className={"trading-buy-sell-nav " + buySellClass}>
                         <NavItem>
                             <NavLink
@@ -119,7 +121,6 @@ export default class OrderBox extends React.Component {
                             </NavLink>
                         </NavItem>
                     </Nav>
-                    <Conditional displayCondition={!!token}>
                         <div className="trading-types">
                             <Nav tabs fill className="nav-trading-types">
                                 <NavItem>

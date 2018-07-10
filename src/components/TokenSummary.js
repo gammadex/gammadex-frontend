@@ -37,7 +37,6 @@ class TokenSummary extends React.Component {
         const inExchange = path.includes('/exchange/')
 
         const {token} = this.props
-        const {low, high, tokenVolume, ethVolume, last, percentChange} = this.state.tradeStats
         const [title, contract, name, longName] = token ? [
             `${token.symbol}/ETH`,
             <EtherScan type="address" address={token.address} display="truncate"/>,
@@ -48,7 +47,7 @@ class TokenSummary extends React.Component {
         ]
 
         return (
-            <Conditional displayCondition={inExchange}>
+            <Conditional displayCondition={inExchange && !! token}>
                 <div className="token-summary">
                     <div className="token-title">
                         {title}

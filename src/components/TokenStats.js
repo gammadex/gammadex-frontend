@@ -47,7 +47,7 @@ class TokenStats extends React.Component {
         ]
 
         return (
-            <Conditional displayCondition={inExchange}>
+            <Conditional displayCondition={inExchange && !! token}>
                 <div className="token-stats">
                     <div className="token-stat-name">24h Volume</div>
                     <div className="token-stat-value"><Round fallback="0">{ethVolume}</Round> ETH (<Round fallback="0">{tokenVolume}</Round> {name})</div>
