@@ -11,6 +11,7 @@ import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import OrderPlacementStore from "../../stores/OrderPlacementStore"
 import AccountStore from "../../stores/AccountStore"
 import Conditional from "../CustomComponents/Conditional"
+import UnrecognisedToken from "../UnrecognisedToken"
 
 export default class OrderBox extends React.Component {
     constructor(props) {
@@ -96,7 +97,11 @@ export default class OrderBox extends React.Component {
         const buySellClass = buyActive ? "trading-nav-buy-selected" : "trading-nav-sell-selected"
 
         return (
-            <Box title="Trading">
+            <div className="card">
+                <div className="card-header">
+                    <div><strong className="card-title">Trading</strong></div>
+                    <UnrecognisedToken/>
+                </div>
                 <BoxSection>
                     <Nav fill className={"trading-buy-sell-nav " + buySellClass}>
                         <NavItem>
@@ -176,7 +181,7 @@ export default class OrderBox extends React.Component {
                         </div>
                     </Conditional>
                 </BoxSection>
-            </Box>
+            </div>
         )
     }
 }
