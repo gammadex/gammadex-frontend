@@ -13,17 +13,39 @@ export default class NumericInput extends React.Component {
         this.formFeedback = this.formFeedback.bind(this)
         this.formText = this.formText.bind(this)
         this.gasFeeFormText = this.gasFeeFormText.bind(this)
-        this.state = {
-            sliderValue: null
-        }
+        this.updateSliderValue = this.updateSliderValue.bind(this)
+        this.calcSliderValue = this.calcSliderValue.bind(this)
+        this.componentDidUpdate = this.componentDidUpdate.bind(this)
 
-        const {slider, value} = props
+        this.state = {
+            sliderValue: this.calcSliderValue()
+        }
+    }
+
+    componentDidUpdate() {
+        this.updateSliderValue()
+    }
+
+    updateSliderValue() {
+        const sv = this.calcSliderValue()
+        if (sv !== this.state.sliderValue) {
+            this.setState(({
+                sliderValue: this.calcSliderValue()
+            }))
+        }
+    }
+
+    calcSliderValue() {
+        const {slider, value} = this.props
 
         if (slider && !_.isUndefined(value)) {
-            const {max} = props.slider
+            const {max} = slider
             const ratio = max.toString() === "0" ? 0 : safeBigNumber(value).div(BigNumber(max)).toNumber()
-            this.state.sliderValue = Math.round(100 * ratio)
+
+            return Math.round(100 * ratio)
         }
+
+        return null
     }
 
     static cleanValueToDecimal(value) {
@@ -45,6 +67,7 @@ export default class NumericInput extends React.Component {
 
     onChangeFilteringInput = (e) => {
         const value = this.cleanValue(e.target.value)
+
         this.props.onChange(value)
     }
 
@@ -65,7 +88,6 @@ export default class NumericInput extends React.Component {
                 sliderValue
             })
         }
-
     }
 
     onMax() {
