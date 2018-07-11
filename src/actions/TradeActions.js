@@ -7,7 +7,7 @@ import GasPriceStore from "../stores/GasPriceStore"
 import OrderBookStore from "../stores/OrderBookStore"
 import Config from "../Config"
 import * as OrderUtil from "../OrderUtil"
-import { tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei, safeBigNumber, weiToEth } from "../EtherConversion"
+import {tokWeiToEth, baseWeiToEth, baseEthToWei, tokEthToWei, safeBigNumber, weiToEth} from "../EtherConversion"
 import BigNumber from 'bignumber.js'
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as AccountActions from "../actions/AccountActions"
@@ -24,7 +24,7 @@ import TokenRepository from "../util/TokenRepository"
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
-    const { exchangeBalanceTokWei, exchangeBalanceEthWei } = AccountStore.getAccountState()
+    const {exchangeBalanceTokWei, exchangeBalanceEthWei} = AccountStore.getAccountState()
     let fillAmountValid = true
     let fillAmountInvalidReason = ""
     let fillAmountInvalidField = OrderEntryField.AMOUNT
@@ -42,12 +42,12 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
         fillAmountInvalidReason = `Total ETH amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
         fillAmountInvalidField = OrderEntryField.TOTAL
     }
-    return { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField }
+    return {fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField}
 }
 
 export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled) {
     const tokenAddress = TokenStore.getSelectedToken().address
-    const { account, nonce } = AccountStore.getAccountState()
+    const {account, nonce} = AccountStore.getAccountState()
     const gasPriceWei = GasPriceStore.getCurrentGasPriceWei()
 
     // amount is in amountGet terms
@@ -135,12 +135,26 @@ export function fillOrder(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
 
+    const {exchangeBalanceEthWei, exchangeBalanceTokWei} = AccountStore.getAccountState()
+
+    const availableVolumeBase = BigNumber(order.availableVolumeBase)
+    const availableVolume = BigNumber(order.availableVolume)
+    let weiFillAmount = null
+    let weiTotalEth = null
+    if (OrderUtil.isTakerBuy(order)) {
+        weiTotalEth = BigNumber.min(exchangeBalanceEthWei, availableVolumeBase)
+        const fillRatio = weiTotalEth.div(availableVolumeBase)
+        weiFillAmount = fillRatio.times(availableVolume)
+    } else {
+        weiFillAmount = BigNumber.min(exchangeBalanceTokWei, availableVolume)
+        const fillRatio = weiFillAmount.div(availableVolume)
+        weiTotalEth = fillRatio.times(availableVolumeBase)
+    }
+
     const isBestExecution = orderIsBestExecution(order)
-    const weiFillAmount = BigNumber(order.availableVolume)
     const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
-    const weiTotalEth = BigNumber(order.availableVolumeBase)
-    const totalEthControlled = BigNumber(order.ethAvailableVolumeBase)
-    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const totalEthControlled = baseWeiToEth(weiTotalEth)
+    const {fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField} = validateFillAmount(weiFillAmount, weiTotalEth, order)
     const fillOrder = {
         order,
         weiFillAmount,
@@ -166,14 +180,14 @@ export function fillOrder(order) {
 
 export function orderIsBestExecution(order) {
     if (OrderUtil.isMakerBuy(order)) {
-        const orderIndex = (_.findIndex(OrderBookStore.getBids(), { id: order.id }))
+        const orderIndex = (_.findIndex(OrderBookStore.getBids(), {id: order.id}))
         const bestOrderIndex = _.findIndex(OrderBookStore.getBids(), (o) => {
             return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
                 OrderUtil.priceOf(o).isGreaterThanOrEqualTo(OrderUtil.priceOf(order))
         })
         return orderIndex <= bestOrderIndex
     } else {
-        const orderIndex = (_.findIndex(OrderBookStore.getOffers(), { id: order.id }))
+        const orderIndex = (_.findIndex(OrderBookStore.getOffers(), {id: order.id}))
         const bestOrderIndex = _.findIndex(OrderBookStore.getOffers(), (o) => {
             return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
                 OrderUtil.priceOf(o).isLessThanOrEqualTo(OrderUtil.priceOf(order))
@@ -201,7 +215,7 @@ export function fillOrderTotalChanged(totalEthControlled, fillOrder) {
 }
 
 function fillOrderChanged(order, fillAmountControlled, weiFillAmount, weiTotalEth, totalEthControlled) {
-    const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const {fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField} = validateFillAmount(weiFillAmount, weiTotalEth, order)
     const updatedFillOrder = {
         order,
         weiFillAmount,
@@ -226,10 +240,10 @@ export function maxFillOrder(fillOrder) {
 // MAX ( order_available_volume, TOK/ETH_balance)
 export function getMaximumFillAmountWei(order) {
     if (OrderUtil.isTakerSell(order)) {
-        const { exchangeBalanceTokWei } = AccountStore.getAccountState()
+        const {exchangeBalanceTokWei} = AccountStore.getAccountState()
         return BigNumber.min(BigNumber(order.availableVolume), BigNumber(exchangeBalanceTokWei))
     } else {
-        const { exchangeBalanceEthWei } = AccountStore.getAccountState()
+        const {exchangeBalanceEthWei} = AccountStore.getAccountState()
         const exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei)
         const tokenAmountEth = exchangeBalanceEth.div(OrderUtil.priceOf(order))
         return BigNumber.min(BigNumber(order.availableVolume), tokEthToWei(tokenAmountEth, TokenStore.getSelectedToken().address))
@@ -238,7 +252,7 @@ export function getMaximumFillAmountWei(order) {
 
 export function executeFillOrder(fillOrder) {
     const tokenAddress = TokenStore.getSelectedToken().address
-    const { order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled } = fillOrder
+    const {order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled} = fillOrder
     executeOrder(order, weiFillAmount, fillAmountControlled, weiTotalEth, totalEthControlled)
 }
 
