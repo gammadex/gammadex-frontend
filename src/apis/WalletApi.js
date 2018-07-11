@@ -62,7 +62,6 @@ export function updateWalletStoreProvidedWeb3Details() {
             } else {
                 if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {
                     WalletActions.updateProvidedWeb3AccountAvailable(null)
-
                     warnIfMetaMaskOnWrongNetwork()
                 }
             }
@@ -72,12 +71,11 @@ export function updateWalletStoreProvidedWeb3Details() {
 
 function warnIfMetaMaskOnWrongNetwork() {
     if (! WalletStore.isMetamastNetworkWarningSentMessageId()) {
-        const account = AccountStore.getAccount()
         const providedWeb3 = WalletStore.getProvidedWeb3Info()
         const {isMainNet, netDescription} = providedWeb3
         const mainNetDescription = EthereumNetworks.getMainNetDescription()
 
-        if (netDescription && !isMainNet && !account) {
+        if (netDescription && !isMainNet) {
             const message = GlobalMessageFormatters.metamaskNetworkWarning(netDescription, mainNetDescription)
             const messageId = GlobalMessageActions.sendGlobalMessage(message, "danger")
             WalletActions.metamaskNetworkWarningSent(messageId)

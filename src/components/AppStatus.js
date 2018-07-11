@@ -148,7 +148,7 @@ export default class AppStatus extends React.Component {
     }
 
     render() {
-        const { webSocketState, accountState, web3State, gasState, gasDescription } = this.state
+        const { webSocketState, accountType, accountState, web3State, gasState, gasDescription } = this.state
         const overall = _.maxBy([webSocketState, accountState, web3State, gasState], st => st.index)
         const ethereumNetworkState = _.maxBy([accountState, web3State], st => st.index)
 
@@ -178,7 +178,7 @@ export default class AppStatus extends React.Component {
                                             </Conditional>
                                         </AppStatusRow>
                                     </div>
-                                    <Conditional displayCondition={gasState != States.OK}>
+                                    <Conditional displayCondition={accountType !=null && gasState != States.OK}>
                                         <div className="sub-card">
                                             <AppStatusRow title="Gas" state={gasState} message={gasDescription} />
                                         </div>
