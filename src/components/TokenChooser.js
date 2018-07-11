@@ -115,7 +115,7 @@ class TokenChooser extends React.Component {
 
                 <div className="card " style={{"height": containerHeight}}>
                     <div className="card-header">
-                        <div className="card-title">Tokens<MarketResponseSpinner/></div>
+                        <div className="card-title">Tokens</div>
                         <div>
                             <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
                                 <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}

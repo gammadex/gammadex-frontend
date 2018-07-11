@@ -8,6 +8,7 @@ import AppStatus from "./AppStatus"
 import * as TokenApi from "../apis/TokenApi"
 import TokenStore from "../stores/TokenStore"
 import TokenStats from "./TokenStats"
+import MarketResponseSpinner from "./MarketResponseSpinner"
 
 class TopNavigation extends Component {
     constructor() {
@@ -59,6 +60,9 @@ class TopNavigation extends Component {
                     <TokenSummary token={token} />
 
                     <form className="form-inline">
+                        <div className="form-group top-spinner mr-1">
+                            <MarketResponseSpinner />
+                        </div>
                         <div className="form-group mr-1">
                             <AppStatus />
                         </div>

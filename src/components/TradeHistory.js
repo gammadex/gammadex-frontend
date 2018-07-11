@@ -35,7 +35,7 @@ export default class TradeHistory extends React.Component {
         const tokenSymbol = token ? token.symbol : null
 
         return (
-            <Box title="Market Trades" marketResponseSpinner className="market-trades-component last-card">
+            <Box title="Market Trades" className="market-trades-component last-card">
                 <CustomScroll heightRelativeToParent="100%">
                     <BoxSection className="nopad">
                         <Conditional displayCondition={trades && trades.length > 0}

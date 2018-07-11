@@ -85,7 +85,7 @@ export default class OrderBook extends React.Component {
                                            keepAtBottom={true}/>
 
         return (
-            <Box title="Bids and Offers" marketResponseSpinner className="full-height">
+            <Box title="Bids and Offers" className="full-height">
 
                 <Conditional displayCondition={!token}>
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
