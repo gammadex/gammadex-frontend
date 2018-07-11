@@ -235,7 +235,7 @@ export default class FillOrderBook extends React.Component {
                         <div className="mt-2">ETH volume available: <span className="clickable" onClick={() => this.onOrderTotalChange(orderMaxVolumeEth)}>{orderMaxVolumeEth.toFixed(3).toString()}</span></div>
                     </div>
                 )
-                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={orderMaxVolumeEth} addendum={addendum} />
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={orderMaxVolumeEth} addendum={addendum} />
             } else {
                 const balanceTok = tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
                 const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
