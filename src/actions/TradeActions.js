@@ -187,6 +187,20 @@ export function fillOrderAmountChanged(fillAmountControlled, fillOrder) {
     const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
     const totalEthControlled = safeBigNumber(fillAmountControlled).times(safeBigNumber(order.price))
     const weiTotalEth = baseEthToWei(totalEthControlled)
+
+    fillOrderChanged(order, fillAmountControlled, weiFillAmount, weiTotalEth, totalEthControlled)
+}
+
+export function fillOrderTotalChanged(totalEthControlled, fillOrder) {
+    const order = fillOrder.order
+    const fillAmountControlled = safeBigNumber(totalEthControlled).div(safeBigNumber(order.price))
+    const weiFillAmount = tokEthToWei(fillAmountControlled, TokenStore.getSelectedToken().address)
+    const weiTotalEth = baseEthToWei(totalEthControlled)
+
+    fillOrderChanged(order, fillAmountControlled, weiFillAmount, weiTotalEth, totalEthControlled)
+}
+
+function fillOrderChanged(order, fillAmountControlled, weiFillAmount, weiTotalEth, totalEthControlled) {
     const { fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField } = validateFillAmount(weiFillAmount, weiTotalEth, order)
     const updatedFillOrder = {
         order,

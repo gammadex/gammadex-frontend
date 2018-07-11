@@ -14,14 +14,10 @@ import OrderEntryField from "../../OrderEntryField"
 import * as TradeActions from "../../actions/TradeActions"
 import Config from "../../Config"
 import Conditional from "../CustomComponents/Conditional"
-import GasPriceChooser from "../GasPriceChooser"
-import { OperationCosts } from "../../ContractOperations"
 import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
-import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import AccountType from "../../AccountType"
-import BigNumber from 'bignumber.js'
 import {Popover, PopoverBody} from "reactstrap/dist/reactstrap"
-import {toFixedStringNoTrailingZeros} from "../../util/NumberUtil"
+import OrderPercentageSlider from "./OrderPercentageSlider"
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
@@ -130,8 +126,8 @@ export default class FillOrderBook extends React.Component {
         TradeActions.fillOrderAmountChanged(value, this.state.fillOrder)
     }
 
-    onMaxAmount = () => {
-        TradeActions.maxFillOrder(this.state.fillOrder)
+    onOrderTotalChange = (value) => {
+        TradeActions.fillOrderTotalChanged(safeBigNumber(value), this.state.fillOrder)
     }
 
     onSubmit = event => {
@@ -173,6 +169,14 @@ export default class FillOrderBook extends React.Component {
         })
     }
 
+    onSliderChange = (value) => {
+        if (this.isTakerBuyComponent()) {
+            this.onOrderTotalChange(value)
+        } else {
+            this.onOrderAmountChange(value)
+        }
+    }
+
     render() {
         const {
             type, tokenSymbol, tokenAddress, balanceRetrieved
@@ -207,8 +211,6 @@ export default class FillOrderBook extends React.Component {
                 usdExchangeCost = usdExchangeCost.toFixed(3).toString()
             }
 
-            const available = type === OrderSide.BUY ? baseWeiToEth(exchangeBalanceEthWei) : tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
-
             const amountFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountValid : true
             const amountFieldErrorMessage = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountInvalidReason : ""
             const totalFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.TOTAL ? fillOrder.fillAmountValid : true
@@ -221,11 +223,30 @@ export default class FillOrderBook extends React.Component {
             }
 
             const submitDisabled = this.isSubmitDisabled()
-            const balanceUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
-            const orderAmountAvailable = OrderSide.BUY ? fillOrder.order.ethAvailableVolumeBase : fillOrder.order.ethAvailableVolume
-            const maxAvailable = BigNumber.min(available, orderAmountAvailable)
-
             const buySell = type === OrderSide.BUY ? 'BUY' : 'SELL'
+
+            let slider = null
+            if (type === OrderSide.BUY) {
+                const balanceEth = baseWeiToEth(exchangeBalanceEthWei)
+                const orderMaxVolumeEth = safeBigNumber(fillOrder.order.ethAvailableVolumeBase)
+                const addendum= (
+                    <div>
+                        <div>ETH balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(balanceEth))}>{balanceEth.toFixed(3).toString()}</span></div>
+                        <div className="mt-2">ETH volume available: <span className="clickable" onClick={() => this.onOrderTotalChange(orderMaxVolumeEth)}>{orderMaxVolumeEth.toFixed(3).toString()}</span></div>
+                    </div>
+                )
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={orderMaxVolumeEth} addendum={addendum} />
+            } else {
+                const balanceTok = tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
+                const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
+                const addendum= (
+                    <div>
+                        <div>{tokenSymbol} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(balanceTok))}>{balanceTok.toFixed(3).toString()}</span></div>
+                        <div className="mt-2">{tokenSymbol} volume available: <span className="clickable" onClick={() => this.onOrderAmountChange(orderMaxVolumeTok)}>{orderMaxVolumeTok.toFixed(3).toString()}</span></div>
+                    </div>
+                )
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={orderMaxVolumeTok} addendum={addendum} />
+            }
 
             body =
                 <BoxSection className={"order-box"}>
@@ -236,15 +257,14 @@ export default class FillOrderBook extends React.Component {
                         <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenSymbol}
                             onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
                             valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
-                                      slider={{
-                                          min: safeBigNumber(0),
-                                          max: maxAvailable
-                                      }}
-                                      addendum={[
-                                          `${balanceUnitName} balance: ${available.toFixed(3).toString()}`,
-                                          `${balanceUnitName} max for this trade: ${maxAvailable.toFixed(3).toString()}`,
-                                      ]}
                                       invalidFeedbackAbove />
+
+                        <Row>
+                            <Col sm={3}/>
+                            <Col sm={9}>
+                                {slider}
+                            </Col>
+                        </Row>
 
                         <NumericInput name="Total" value={fillOrder.totalEthControlled.toFixed(3)} unitName="ETH"
                             fieldName={type + "OrderTotal"}

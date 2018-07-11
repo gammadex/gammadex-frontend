@@ -87,7 +87,7 @@ export default class OrderBox extends React.Component {
         const {token} = this.props
 
         const tokenSymbol = token ? token.symbol : null
-        const tokenTitlePart = tokenSymbol ? `: ${tokenSymbol}` : ''
+        const tokenTitlePart = tokenSymbol ? ` ${tokenSymbol}` : ''
         const tokenAddress = token ? token.address : null
 
         const buyActive = activeSide === OrderBoxType.BUY
