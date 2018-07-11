@@ -5,12 +5,16 @@ export const States = {
         index: 0,
         class: "fa-check-circle text-success"
     },
-    WARN: {
+    PENDING: {
         index: 1,
+        class: "fa-download text-info"
+    },
+    WARN: {
+        index: 2,
         class: "fa-info-circle text-warning"
     },
     ERROR: {
-        index: 2,
+        index: 3,
         class: "fa-exclamation-triangle text-danger"
     }
 }

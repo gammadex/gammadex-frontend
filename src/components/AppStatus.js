@@ -46,8 +46,9 @@ export default class AppStatus extends React.Component {
     }
 
     onSocketConnectionChange() {
+        const { connected, connecting, marketResponseReceived } = WebSocketStore.getConnectionState()
         const wssState = WebSocketStore.getConnectionState()
-        const wsState = wssState.connected ? States.OK : wssState.connecting ? States.WARN : States.ERROR
+        const wsState = !marketResponseReceived ? States.PENDING : connected ? States.OK : connecting ? States.WARN : States.ERROR
         this.setState({
             webSocketState: wsState,
             webSocketUrl: wssState.url
@@ -98,6 +99,8 @@ export default class AppStatus extends React.Component {
         switch (webSocketState) {
             case States.OK:
                 return `Connected to ${webSocketUrl}`
+            case States.PENDING:
+                return "Awaiting Market Data..."
             case States.WARN:
                 return `Connecting to ${webSocketUrl}`
             case States.ERROR:

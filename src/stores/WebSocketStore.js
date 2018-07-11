@@ -16,6 +16,7 @@ class WebSocketStore extends EventEmitter {
             url: this.url,
             connected: this.connected,
             connecting: this.connecting,
+            marketResponseReceived: this.marketResponseReceived
         }
     }
 
