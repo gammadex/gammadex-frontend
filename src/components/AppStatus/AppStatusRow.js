@@ -11,7 +11,7 @@ export const States = {
     },
     WARN: {
         index: 2,
-        class: "fa-info-circle text-warning"
+        class: "fa-exclamation-circle text-warning"
     },
     ERROR: {
         index: 3,

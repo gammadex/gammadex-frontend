@@ -5,6 +5,7 @@ import { Popover, PopoverBody } from 'reactstrap'
 import WalletStore from "../stores/WalletStore"
 import AccountStore from "../stores/AccountStore"
 import WebSocketStore from '../stores/WebSocketStore'
+import GasPriceStore from '../stores/GasPriceStore'
 import AppStatusRow from "./AppStatus/AppStatusRow"
 import { States } from "./AppStatus/AppStatusRow"
 import Config from "../Config"
@@ -12,6 +13,7 @@ import BlockNumberDetail from "./BlockNumberDetail"
 import AccountType from "../AccountType"
 import * as EthereumNetworks from "../util/EthereumNetworks"
 import Conditional from "./CustomComponents/Conditional"
+import { safeBigNumber } from "../EtherConversion"
 
 export default class AppStatus extends React.Component {
     constructor(props) {
@@ -24,25 +26,29 @@ export default class AppStatus extends React.Component {
             accountState: States.ERROR,
             accountType: null,
             web3State: States.ERROR,
-            web3Description: "Network not found"
+            web3Description: "",
+            gasState: States.OK,
+            gasDescription: ""
         }
 
         this.onSocketConnectionChange = this.onSocketConnectionChange.bind(this)
-        this.updateEthereumNetworkState = this.updateEthereumNetworkState.bind(this)
+        this.updateAccountState = this.updateAccountState.bind(this)
     }
 
     componentDidMount() {
         WebSocketStore.on("change", this.onSocketConnectionChange)
-        WalletStore.on("change", this.updateEthereumNetworkState)
-        AccountStore.on("change", this.updateEthereumNetworkState)
-        this.updateEthereumNetworkState()
+        WalletStore.on("change", this.updateAccountState)
+        AccountStore.on("change", this.updateAccountState)
+        GasPriceStore.on("change", this.updateAccountState)
+        this.updateAccountState()
         this.onSocketConnectionChange()
     }
 
     componentWillUnmount() {
         WebSocketStore.removeListener("change", this.onSocketConnectionChange)
-        WalletStore.removeListener("change", this.onWalletStoreChange)
-        AccountStore.removeListener("change", this.onAccountStoreChange)
+        WalletStore.removeListener("change", this.updateAccountState)
+        AccountStore.removeListener("change", this.updateAccountState)
+        GasPriceStore.removeListener("change", this.updateAccountState)
     }
 
     onSocketConnectionChange() {
@@ -55,8 +61,8 @@ export default class AppStatus extends React.Component {
         })
     }
 
-    updateEthereumNetworkState() {
-        const { selectedAccountType } = AccountStore.getAccountState()
+    updateAccountState() {
+        const { selectedAccountType, walletBalanceEthWei } = AccountStore.getAccountState()
         const accountState = selectedAccountType != null ? States.OK : States.ERROR
 
         // web3Info will only be populated when using metamask
@@ -86,11 +92,26 @@ export default class AppStatus extends React.Component {
             }
         }
 
+        const { safeLowWei, averageWei, fastWei } = GasPriceStore.getPrices()
+        const currentGasPriceWei = GasPriceStore.getCurrentGasPriceWei()
+
+        let gasState = States.OK
+        let gasDescription = ""
+        if (safeBigNumber(walletBalanceEthWei).isZero()) {
+            gasState = States.WARN
+            gasDescription = "Wallet has no ETH for gas fees"
+        } else if (safeLowWei && averageWei && fastWei && currentGasPriceWei && currentGasPriceWei.isLessThan(safeLowWei)) {
+            gasState = States.WARN
+            gasDescription = "Very low gas price (30+ mins)"
+        }
+
         this.setState({
             accountType: selectedAccountType,
             accountState: accountState,
             web3State: web3State,
-            web3Description: web3Description
+            web3Description: web3Description,
+            gasState: gasState,
+            gasDescription: gasDescription
         })
     }
 
@@ -127,8 +148,8 @@ export default class AppStatus extends React.Component {
     }
 
     render() {
-        const { webSocketState, accountState, web3State } = this.state
-        const overall = _.maxBy([webSocketState, accountState, web3State], st => st.index)
+        const { webSocketState, accountState, web3State, gasState, gasDescription } = this.state
+        const overall = _.maxBy([webSocketState, accountState, web3State, gasState], st => st.index)
         const ethereumNetworkState = _.maxBy([accountState, web3State], st => st.index)
 
         return (
@@ -157,6 +178,11 @@ export default class AppStatus extends React.Component {
                                             </Conditional>
                                         </AppStatusRow>
                                     </div>
+                                    <Conditional displayCondition={gasState != States.OK}>
+                                        <div className="sub-card">
+                                            <AppStatusRow title="Gas" state={gasState} message={gasDescription} />
+                                        </div>
+                                    </Conditional>
                                 </BoxSection>
                             </Box>
                         </PopoverBody>
