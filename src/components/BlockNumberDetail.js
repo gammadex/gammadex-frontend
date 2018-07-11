@@ -28,10 +28,9 @@ export default class BlockNumberDetail extends React.Component {
 
     render() {
         const {currentBlockNumber} = this.state
-        const { state } = this.props
 
         return (
-            <span><strong>Current Block: </strong> {state === States.ERROR ? "" : currentBlockNumber}</span>
+            <span><strong>Current Block: </strong> {currentBlockNumber}</span>
         )
     }
 }

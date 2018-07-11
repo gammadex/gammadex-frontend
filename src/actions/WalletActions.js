@@ -158,6 +158,13 @@ export function updateProvidedWeb3AccountAvailable(isAvailable) {
     })
 }
 
+export function updateWeb3IsConnected(connected) {
+    dispatcher.dispatch({
+        type: ActionNames.WEB3_UPDATE_IS_CONNECTED,
+        connected,
+    })
+}
+
 export function ledgerAccountsRequested(deriviationPath) {
     dispatcher.dispatch({
         type: ActionNames.WALLET_LEDGER_ACCOUNTS_REQUESTED,

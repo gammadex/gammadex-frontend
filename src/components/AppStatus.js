@@ -64,7 +64,11 @@ export default class AppStatus extends React.Component {
 
         let web3State = States.ERROR
         let web3Description = ""
-        if (selectedAccountType == null) {
+        if (!web3Info.connected) {
+            web3State = States.ERROR
+            web3Description = "Cannot establish connection"
+        }
+        else if (selectedAccountType == null) {
             web3State = States.ERROR
             web3Description = "Please unlock a wallet"
         } else {
@@ -148,7 +152,9 @@ export default class AppStatus extends React.Component {
                                             <Conditional displayCondition={this.getAccountMessage() != null}>
                                                 <span>{this.getAccountMessage()}<br /></span>
                                             </Conditional>
-                                            <BlockNumberDetail state={ethereumNetworkState} />
+                                            <Conditional displayCondition={ethereumNetworkState != States.ERROR}>
+                                                <BlockNumberDetail />
+                                            </Conditional>
                                         </AppStatusRow>
                                     </div>
                                 </BoxSection>

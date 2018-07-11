@@ -53,6 +53,7 @@ class WalletStore extends EventEmitter {
         }
 
         this.providedWeb3 = {
+            connected: true, // connection status updated whenever we lookup block number (on a timer)
             available: null,
             isMainNet: null,
             netDescription: null,
@@ -352,6 +353,11 @@ class WalletStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.WEB3_UPDATE_IS_CONNECTED: {
+                this.providedWeb3.connected = action.connected
+                this.emitChange()
+                break
+            }            
             case ActionNames.WALLET_LEDGER_ACCOUNTS_REQUESTED: {
                 this.ledger.accounts = []
                 this.ledger.errorName = null
