@@ -147,10 +147,10 @@ class TokenChooser extends React.Component {
                     <div className="card-header">
                         <div className="card-title">Tokens</div>
                         <div>
-                            <form class="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly} />
-                                    <label class="form-check-label" for="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
+                            <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                                <div className="form-check form-check-inline">
+                                    <input className="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly} />
+                                    <label className="form-check-label" htmlFor="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
                                 </div>
 
                                 <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}

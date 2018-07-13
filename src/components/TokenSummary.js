@@ -52,7 +52,7 @@ class TokenSummary extends React.Component {
                     <div className="token-title">
                         {title}
                     </div>
-                    <div className="token-info" style={{"margin-left": "10px"}}>
+                    <div className="token-info" style={{"marginLeft": "10px"}}>
                         <div>{longName}</div>
                         <div>{name} smart contract: {contract}</div>
                     </div>

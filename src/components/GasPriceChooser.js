@@ -111,7 +111,7 @@ export default class GasPriceChooser extends React.Component {
         return (
             <div>
                 <button className="btn" id="gasPrice" type="button" onClick={this.toggleGasPrice}>
-                    <i className="fas fa-gas-pump mr-2"></i>Gas Price:<span style={{"width":"20px", "display":"inline-block", "text-align":"right"}}>{currentGasPriceGwei}</span>&nbsp;Gwei
+                    <i className="fas fa-gas-pump mr-2"></i>Gas Price:<span style={{"width":"20px", "display":"inline-block", "textAlign":"right"}}>{currentGasPriceGwei}</span>&nbsp;Gwei
                 </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>

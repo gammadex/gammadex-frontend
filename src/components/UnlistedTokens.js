@@ -99,7 +99,7 @@ class TokenChooser extends React.Component {
 
                         <Conditional displayCondition={tokenRows.length > 0}>
                                 <CustomScroll heightRelativeToParent="100%">
-                                    <table className="table table-striped table-hover table-bordered" style={{"border-top-width":"1px"}}>
+                                    <table className="table table-striped table-hover table-bordered" style={{"borderTopWidth":"1px"}}>
                                         <thead>
                                         <tr>
                                             <th>Symbol</th>
