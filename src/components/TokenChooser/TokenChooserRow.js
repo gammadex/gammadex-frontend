@@ -8,13 +8,18 @@ export default class TokenChooserRow extends React.Component {
         this.props.onTokenSelect(this.props.token.symbol, this.props.token.address)
     }
 
+    onFavourite = () => {
+        this.props.onFavourite(this.props.token.address)
+    }
+
     render() {
-        const {token, isSelected} = this.props
+        const {token, isSelected, isFavourite} = this.props
         const selectedClass = isSelected ? "selected-row" : ""
 
         return (
             <tr className={"clickable " + selectedClass}>
                 <td onClick={this.onRowSelect}><Truncated left="14" right="0">{token.symbol}</Truncated></td>
+                <td onClick={this.onFavourite}><span className={isFavourite ? "fas fa-star" : "far fa-star"}></span></td>
                 <td onClick={this.onRowSelect}><Round fallback="-">{token.baseVolume}</Round></td>
                 <td onClick={this.onRowSelect}>
                     <Round percent suffix="%" fallback="-"

@@ -1,10 +1,11 @@
 import React from "react"
 import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
-import {withRouter} from "react-router-dom"
+import { withRouter } from "react-router-dom"
 import TokenRepository from "../util/TokenRepository"
-import { setFavourite } from "../util/FavouritesDao"
+import { getFavourite, setFavourite } from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
+import Config from "../Config"
 import _ from "lodash"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import OrderBookStore from "../stores/OrderBookStore"
@@ -22,7 +23,9 @@ class TokenChooser extends React.Component {
             selectedToken: null,
             serverTickers: {},
             currentStats: OrderBookStore.getTradeStats(),
-            containerHeight: 100
+            containerHeight: 100,
+            favouritesTokens: getFavourite(Favourites.TOKENS) ? getFavourite(Favourites.TOKENS) : [],
+            showFavouritesOnly: getFavourite(Favourites.SHOW_FAVOURITES_ONLY) ? getFavourite(Favourites.SHOW_FAVOURITES_ONLY) : false,
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -63,7 +66,7 @@ class TokenChooser extends React.Component {
 
     onTokenSelect = (tokenName, tokenAddress) => {
         const { onTokenSelectOverride } = this.props
-        if(onTokenSelectOverride != null && typeof (onTokenSelectOverride) === 'function') {
+        if (onTokenSelectOverride != null && typeof (onTokenSelectOverride) === 'function') {
             onTokenSelectOverride(tokenName)
         } else {
             const newURL = `/exchange/${tokenName}`
@@ -72,7 +75,20 @@ class TokenChooser extends React.Component {
                 this.props.history.push(newURL)
             }
         }
+    }
 
+    onFavourite = (tokenAddress) => {
+        const { favouritesTokens } = this.state
+        const copyFavouritesTokens = favouritesTokens.slice()
+        if (copyFavouritesTokens.includes(tokenAddress.toLowerCase())) {
+            _.remove(copyFavouritesTokens, t => t === tokenAddress.toLowerCase())
+        } else {
+            copyFavouritesTokens.push(tokenAddress.toLowerCase())
+        }
+        setFavourite(Favourites.TOKENS, copyFavouritesTokens)
+        this.setState({
+            favouritesTokens: copyFavouritesTokens
+        })
     }
 
     selectTokenIfOnlyOne = (event, tokens) => {
@@ -84,9 +100,10 @@ class TokenChooser extends React.Component {
         event.preventDefault()
     }
 
-    static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken) {
+    static getTokensToDisplay(tokenList, serverTickers, searchedToken, selectedToken, favouritesTokens, showFavouritesOnly) {
         return _(tokenList).map(token => _.pick(token, ['symbol', 'address']))
             .map(token => _.assign(token, _.pick(serverTickers[token.address.toLowerCase()], ['percentChange', 'baseVolume'])))
+            .filter(token => !showFavouritesOnly || favouritesTokens.includes(token.address.toLowerCase()))
             .filter(token => !searchedToken || searchedToken.length === 0 || token.symbol.toLowerCase().includes(searchedToken.toLowerCase()))
             .value()
     }
@@ -97,10 +114,18 @@ class TokenChooser extends React.Component {
         })
     }
 
-    render() {
-        const {searchedToken, selectedToken, serverTickers, currentStats, containerHeight} = this.state
+    onShowFavouritesOnlyChange = (event) => {
+        const { showFavouritesOnly } = this.state
+        setFavourite(Favourites.SHOW_FAVOURITES_ONLY, !showFavouritesOnly)
+        this.setState({
+            showFavouritesOnly: !showFavouritesOnly
+        })
+    }
 
-        const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(), serverTickers, searchedToken, selectedToken)
+    render() {
+        const { searchedToken, selectedToken, serverTickers, currentStats, containerHeight, favouritesTokens, showFavouritesOnly } = this.state
+
+        const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(), serverTickers, searchedToken, selectedToken, favouritesTokens, showFavouritesOnly)
 
         const tokenRows = systemTokens.map(systemToken => {
             const token = systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
@@ -109,20 +134,27 @@ class TokenChooser extends React.Component {
                 key={token.address}
                 token={token}
                 isSelected={selectedToken && token.address === selectedToken.address}
-                onTokenSelect={this.onTokenSelect}/>
+                isFavourite={favouritesTokens.includes(token.address.toLowerCase())}
+                onTokenSelect={this.onTokenSelect}
+                onFavourite={this.onFavourite} />
         })
 
         return (
             <div id="token-chooser-container" className="token-chooser-component">
-                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="token-chooser-container"/>
+                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="token-chooser-container" />
 
-                <div className="card " style={{"height": containerHeight}}>
+                <div className="card " style={{ "height": containerHeight }}>
                     <div className="card-header">
                         <div className="card-title">Tokens</div>
                         <div>
-                            <form onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                            <form class="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly} />
+                                    <label class="form-check-label" for="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
+                                </div>
+
                                 <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                                       placeholder="Search" className="form-control"/>
+                                    placeholder="Search" className="form-control" />
                             </form>
                         </div>
                     </div>
@@ -130,11 +162,12 @@ class TokenChooser extends React.Component {
                     <CustomScroll heightRelativeToParent="100%">
                         <table className="table table-bordered table-hover table-no-bottom-border">
                             <thead>
-                            <tr>
-                                <th>Symbol</th>
-                                <th>Volume ETH</th>
-                                <th>% Change</th>
-                            </tr>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th><span className="fas fa-star"></span></th>
+                                    <th>Volume ETH</th>
+                                    <th>% Change</th>
+                                </tr>
                             </thead>
                             <tbody>{tokenRows}</tbody>
                         </table>
