@@ -5,6 +5,8 @@ import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
 import {Box, BoxSection} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
+import { setFavourite } from "../util/FavouritesDao"
+import Favourites from "../util/Favourites"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
 import ReactResizeDetector from 'react-resize-detector'
@@ -49,6 +51,7 @@ class TokenChooser extends React.Component {
     onTokenSelect = (tokenAddress) => {
         const newURL = `/exchange/${tokenAddress}`
         if (newURL !== this.props.history.location.pathname) {
+            setFavourite(Favourites.RECENT_TOKEN, tokenAddress)
             this.props.history.push(newURL)
         }
     }

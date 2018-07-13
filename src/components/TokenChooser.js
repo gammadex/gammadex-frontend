@@ -3,6 +3,8 @@ import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
 import TokenRepository from "../util/TokenRepository"
+import { setFavourite } from "../util/FavouritesDao"
+import Favourites from "../util/Favourites"
 import _ from "lodash"
 import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import OrderBookStore from "../stores/OrderBookStore"
@@ -59,13 +61,14 @@ class TokenChooser extends React.Component {
         TokenActions.searchToken(event.target.value)
     }
 
-    onTokenSelect = (tokenName) => {
+    onTokenSelect = (tokenName, tokenAddress) => {
         const { onTokenSelectOverride } = this.props
         if(onTokenSelectOverride != null && typeof (onTokenSelectOverride) === 'function') {
             onTokenSelectOverride(tokenName)
         } else {
             const newURL = `/exchange/${tokenName}`
             if (newURL !== this.props.history.location.pathname) {
+                setFavourite(Favourites.RECENT_TOKEN, tokenAddress)
                 this.props.history.push(newURL)
             }
         }

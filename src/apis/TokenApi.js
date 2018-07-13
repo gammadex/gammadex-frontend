@@ -3,6 +3,8 @@ import * as WebSocketActions from "../actions/WebSocketActions"
 import TokenRepository from "../util/TokenRepository"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as TokenUtil from "../util/TokenUtil"
+import { getFavourite } from "../util/FavouritesDao"
+import Favourites from "../util/Favourites"
 
 export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
     function getUrlTokenFromProps(props) {
@@ -13,8 +15,19 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
     let currUrlToken = getUrlTokenFromProps(currProps)
 
     if (!currUrlToken) {
-        currProps.history.push(`/exchange/${TokenRepository.getDefaultToken().symbol}`)
-        currUrlToken = TokenRepository.getDefaultToken().symbol
+        const favouriteAddress = getFavourite(Favourites.RECENT_TOKEN)
+        if(favouriteAddress) {
+            const listedFavourite = TokenRepository.getTokenBySymbolOrAddress(favouriteAddress, true)
+            if(listedFavourite) {
+                currProps.history.push(`/exchange/${listedFavourite.symbol}`)
+                currUrlToken = listedFavourite.symbol
+            } else {
+                currProps.history.push(`/exchange/${favouriteAddress}`)
+            }
+        } else {
+            currProps.history.push(`/exchange/${TokenRepository.getDefaultToken().symbol}`)
+            currUrlToken = TokenRepository.getDefaultToken().symbol
+        }
     }
 
     if (currUrlToken && currUrlToken != prevUrlToken) {
