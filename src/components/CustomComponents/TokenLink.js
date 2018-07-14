@@ -6,32 +6,13 @@ import {withRouter} from "react-router-dom"
 import {truncateAddress} from "../../util/FormatUtil"
 import * as OrderUtil from "../../OrderUtil"
 import _ from "lodash"
-import TokenStore from "../../stores/TokenStore"
 import GasPriceStore from "../../stores/GasPriceStore"
 
 class TokenLink extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            tokenIdentifier: props.tokenName ? props.tokenName : TokenStore.getTokenIdentifier(this.props.tokenAddress)
-        }
 
         this.onTokenSelect = this.onTokenSelect.bind(this)
-        this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
-    }
-
-    componentWillMount() {
-        TokenStore.on("change", this.onTokenStoreChange)
-    }
-
-    componentWillUnmount() {
-        TokenStore.removeListener("change", this.onTokenStoreChange)
-    }
-
-    onTokenStoreChange() {
-        this.setState((prevState, props) => ({
-            tokenIdentifier: props.tokenName ? props.tokenName : TokenStore.getTokenIdentifier(this.props.tokenAddress)
-        }))
     }
 
     onTokenSelect() {
@@ -42,13 +23,14 @@ class TokenLink extends React.Component {
     }
 
     render() {
-        const {tokenIdentifier} = this.state
+        const {tokenName, tokenAddress, tokenIdentifier} = this.props
+        const tokenId = tokenName ? tokenName : tokenIdentifier
 
-        if (tokenIdentifier === 'ETH') {
+        if (tokenId === 'ETH') {
             return <span>ETH</span>
         }
 
-        return <span className='clickable' onClick={this.onTokenSelect}>{tokenIdentifier}{this.props.pair ? '/ETH' : ''}</span>
+        return <span className='clickable' onClick={this.onTokenSelect}>{tokenId}{this.props.pair ? '/ETH' : ''}</span>
     }
 }
 

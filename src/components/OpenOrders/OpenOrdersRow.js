@@ -23,7 +23,7 @@ export default class OpenOrdersRow extends React.Component {
     }
 
     render() {
-        const { openOrder, isPendingCancel, tokenExists } = this.props
+        const { openOrder, isPendingCancel, tokenExists, tokenIdentifier} = this.props
         const tokenAddr = tokenAddress(openOrder)
         const tokenName = TokenRepository.getTokenName(tokenAddr)
         const side = makerSide(openOrder) === OrderSide.SELL ? "Sell" : "Buy"
@@ -43,7 +43,7 @@ export default class OpenOrdersRow extends React.Component {
             
         return (
             <tr>
-                <td><TokenLink tokenAddress={tokenAddr} pair/></td>
+                <td><TokenLink tokenAddress={tokenAddr} tokenIdentifier={tokenIdentifier} pair/></td>
                 <td className={buySellClass}>{side}</td>
                 <td><Round price softZeros>{openOrder.price}</Round></td>
                 <td><Round>{tokenAmountEth}</Round> {tokenName}</td>
