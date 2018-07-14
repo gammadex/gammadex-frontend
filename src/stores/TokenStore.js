@@ -24,7 +24,7 @@ class TokenStore extends EventEmitter {
         this.unlistedTokenCheckError = ""
         this.checkingUnlistedAddress = false
         this.unrecognisedToken = null
-        this.checkingUnrecognisedAddress = false
+        this.checkingUnrecognisedAddress = null
         this.unrecognisedTokenCheckError = null
     }
 

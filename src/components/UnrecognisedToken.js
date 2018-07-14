@@ -69,7 +69,7 @@ export default class UnrecognisedToken extends React.Component {
         const tokenDescription = this.getTokenDescription(unrecognisedToken)
         const selectedTokenSymbol = selectedToken ? selectedToken.symbol : null
 
-        const displayUnrecognised = unrecognisedTokenCheckError || checkingUnrecognisedAddress || (selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address))
+        const displayUnrecognised = unrecognisedTokenCheckError || !!checkingUnrecognisedAddress || (selectedToken && !TokenRepository.isListedOrUserToken(selectedToken.address))
         const displayUnlisted = !displayUnrecognised && selectedToken && !TokenRepository.isListedToken(selectedToken.address)
         const selectedTokenLink = selectedToken ? <EtherScan type="address" address={selectedToken.address} display="truncate"/> : null
 
