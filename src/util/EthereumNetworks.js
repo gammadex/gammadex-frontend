@@ -14,7 +14,7 @@ export function getNetworkDescription(netId) {
     if (networks[netId]) {
         return networks[netId]
     } else {
-        return "Unknown"
+        return `Unknown: ${netId}`
     }
 }
 

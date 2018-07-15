@@ -31,9 +31,13 @@ export function updateWalletStoreProvidedWeb3Details() {
         }
     } else {
         window.web3.version.getNetwork((err, netId) => {
+            if(netId == null) {
+                warnIfMetaMaskDisconnected()
+                return
+            }
             const isMainNet = EthereumNetworks.isMainNet(netId)
             const description = EthereumNetworks.getNetworkDescription(netId)
-            const {isMainNet: currentIsMainNet, netDescription: currentNetDescription} = WalletStore.getProvidedWeb3Info()
+            const { isMainNet: currentIsMainNet, netDescription: currentNetDescription } = WalletStore.getProvidedWeb3Info()
 
             if (isMainNet !== currentIsMainNet || description !== currentNetDescription) {
                 WalletActions.updateProvidedWeb3Net(isMainNet, description)
@@ -70,9 +74,9 @@ export function updateWalletStoreProvidedWeb3Details() {
 }
 
 function warnIfMetaMaskOnWrongNetwork() {
-    if (! WalletStore.isMetamastNetworkWarningSentMessageId()) {
+    if (!WalletStore.isMetamastNetworkWarningSentMessageId()) {
         const providedWeb3 = WalletStore.getProvidedWeb3Info()
-        const {isMainNet, netDescription} = providedWeb3
+        const { isMainNet, netDescription } = providedWeb3
         const mainNetDescription = EthereumNetworks.getMainNetDescription()
 
         if (netDescription && !isMainNet) {
@@ -83,10 +87,18 @@ function warnIfMetaMaskOnWrongNetwork() {
     }
 }
 
+function warnIfMetaMaskDisconnected() {
+    if (!WalletStore.isMetamastNetworkWarningSentMessageId()) {
+        const message = GlobalMessageFormatters.metamaskDisconnectionWarning()
+        const messageId = GlobalMessageActions.sendGlobalMessage(message, "danger")
+        WalletActions.metamaskNetworkWarningSent(messageId)
+    }
+}
+
 function closeMetamaskWarningMessageIfPresent() {
     const messageId = WalletStore.isMetamastNetworkWarningSentMessageId()
 
-    if (! messageId) {
+    if (!messageId) {
         GlobalMessageActions.closeGlobalMessage(messageId)
     }
 }

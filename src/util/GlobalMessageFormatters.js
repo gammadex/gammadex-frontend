@@ -151,3 +151,17 @@ export function metamaskNetworkWarning(netDescription, mainNetDescription) {
         </span>
     )
 }
+
+export function metamaskDisconnectionWarning() {
+    return (
+        <span>
+            <div>
+                <h3><i className="fas fa-exclamation-triangle"/> MetaMask disconnected
+                </h3>
+            </div>
+            <div>
+            Please check your network connection
+            </div>
+        </span>
+    )
+}
