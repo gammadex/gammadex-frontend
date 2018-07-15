@@ -20,6 +20,10 @@ class OrderBookStore extends EventEmitter {
         return this.bids
     }
 
+    getBidsDescending(){
+        return _.reverse(_.sortBy(this.bids, o => Number(o.price)))
+    }
+
     getBidTotal() {
         return _.reduce(this.bids.map(b => b.availableVolume), (sum, n) => BigNumber(sum).plus(BigNumber(n)), 0)
     }
@@ -29,7 +33,7 @@ class OrderBookStore extends EventEmitter {
     }
 
     getOffersDescending(){
-        return _.reverse(_.sortBy(this.offers, o => o.price))
+        return _.reverse(_.sortBy(this.offers, o => Number(o.price)))
     }
 
     getAllTradesSortedByDateAsc() {
