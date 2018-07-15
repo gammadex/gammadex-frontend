@@ -6,10 +6,17 @@ import Tx from 'ethereumjs-tx'
 import OrderFactory from './OrderFactory'
 import { truncate } from './util/FormatUtil'
 import { safeBigNumber } from './EtherConversion'
+import Web3PromiEvent from 'web3-core-promievent'
+import { getFavourite } from './util/FavouritesDao'
+import Favourites from './util/Favourites'
 
 let web3 = window.web3
 
 class EtherDeltaWeb3 {
+    constructor() {
+        this.estimateGas = getFavourite(Favourites.ESTIMATE_GAS) ? Boolean(getFavourite(Favourites.ESTIMATE_GAS)) : true
+    }
+
     initForAnonymous = () => {
         this.web3 = new Web3(new Web3.providers.HttpProvider(Config.getWeb3Url()))
         this.accountProvider = new AccountProvider(this.web3)
@@ -79,12 +86,54 @@ class EtherDeltaWeb3 {
         return this.contractToken.methods.balanceOf(account).call()
     }
 
+    wrapActionWithGasEstimate(estimateAction, gasEstimateSuccessAction, gasEstimateFallbackAction, maxGasLimit) {
+        if (!this.estimateGas) {
+            return gasEstimateFallbackAction()
+        }
+
+        const promiEvent = Web3PromiEvent()
+
+        estimateAction()
+            .then(gasEstimate => {
+                const gasToUse = Math.min(gasEstimate, maxGasLimit)
+                return gasEstimateSuccessAction(gasToUse)
+                    .once('transactionHash', hash => promiEvent.eventEmitter.emit('transactionHash', hash))
+                    .on('error', error => {
+                        promiEvent.eventEmitter.emit('error', error)
+                    })
+                    .then(receipt => {
+                        promiEvent.resolve(receipt)
+                    })
+                    .catch(error => {
+                        promiEvent.reject(error)
+                    })
+            })
+            .catch(estimateError => {
+                return gasEstimateFallbackAction()
+                    .once('transactionHash', hash => promiEvent.eventEmitter.emit('transactionHash', hash))
+                    .on('error', error => promiEvent.eventEmitter.emit('error', error))
+                    .then(receipt => promiEvent.resolve(receipt))
+            })
+
+        return promiEvent.eventEmitter
+    }
+
     promiseDepositEther(account, nonce, amount, gasPriceWei) {
-        return this.accountProvider.promiseDepositEther(account, nonce, amount, gasPriceWei)
+        return this.wrapActionWithGasEstimate(
+            () => this.contractEtherDelta.methods.deposit().estimateGas({ from: account, value: amount }),
+            (gasEstimate) => this.accountProvider.promiseDepositEther(account, nonce, amount, gasPriceWei, gasEstimate),
+            () => this.accountProvider.promiseDepositEther(account, nonce, amount, gasPriceWei),
+            Config.getGasLimit('deposit')
+        )
     }
 
     promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
-        return this.accountProvider.promiseWithdrawEther(account, nonce, amount, gasPriceWei)
+        return this.wrapActionWithGasEstimate(
+            () => this.contractEtherDelta.methods.withdraw(amount).estimateGas({ from: account }),
+            (gasEstimate) => this.accountProvider.promiseWithdrawEther(account, nonce, amount, gasPriceWei, gasEstimate),
+            () => this.accountProvider.promiseWithdrawEther(account, nonce, amount, gasPriceWei),
+            Config.getGasLimit('withdraw')
+        )
     }
 
     promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
@@ -100,7 +149,7 @@ class EtherDeltaWeb3 {
     }
 
     promiseTestTrade(account, order, amount) {
-        if(safeBigNumber(amount).isZero()) {
+        if (safeBigNumber(amount).isZero()) {
             return Promise.resolve(false)
         }
         return this.contractEtherDelta.methods.testTrade(
@@ -159,7 +208,30 @@ class EtherDeltaWeb3 {
     // - if taker is selling TOK (hits bid), maker is buying TOK = tokenGet
     // and therefore maker is selling ETH = tokenGive. AmountGet in units of TOK
     promiseTrade(account, nonce, order, amount, gasPriceWei) {
-        return this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei)
+
+
+        return this.wrapActionWithGasEstimate(
+            () => {
+                return this.contractEtherDelta.methods.trade(
+                    order.tokenGet,
+                    order.amountGet,
+                    order.tokenGive,
+                    order.amountGive,
+                    order.expires,
+                    order.nonce,
+                    order.user,
+                    order.v == null ? 27 : order.v, // on-chain handling
+                    order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+                    order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+                    amount)
+                    .estimateGas({ from: account })
+        
+            },
+            (gasEstimate) => this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei, gasEstimate),
+            () => this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei),
+            Config.getGasLimit('trade')
+        )
+        // return this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei)
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {
@@ -262,11 +334,11 @@ class AccountProvider {
         throw new Error("method not implemented")
     }
 
-    promiseDepositEther(account, nonce, amount, gasPriceWei) {
+    promiseDepositEther(account, nonce, amount, gasPriceWei, gasLimit = Config.getGasLimit('deposit')) {
         throw new Error("method not implemented")
     }
 
-    promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei, gasLimit = Config.getGasLimit('withdraw')) {
         throw new Error("method not implemented")
     }
 
@@ -282,7 +354,7 @@ class AccountProvider {
         throw new Error("method not implemented")
     }
 
-    promiseTrade(account, nonce, order, amount, gasPriceWei) {
+    promiseTrade(account, nonce, order, amount, gasPriceWei, gasLimit = Config.getGasLimit('trade')) {
         throw new Error("method not implemented")
     }
 
@@ -322,14 +394,14 @@ class MetaMaskAccountProvider extends AccountProvider {
         return Promise.resolve(0)
     }
 
-    promiseDepositEther(account, nonce, amount, gasPriceWei) {
+    promiseDepositEther(account, nonce, amount, gasPriceWei, gasLimit = Config.getGasLimit('deposit')) {
         return this.contractEtherDelta.methods.deposit()
-            .send({ from: account, gas: Config.getGasLimit('deposit'), gasPrice: gasPriceWei, value: amount })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei, value: amount })
     }
 
-    promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei, gasLimit = Config.getGasLimit('withdraw')) {
         return this.contractEtherDelta.methods.withdraw(amount)
-            .send({ from: account, gas: Config.getGasLimit('withdraw'), gasPrice: gasPriceWei })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
     promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
@@ -348,7 +420,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             .send({ from: account, gas: Config.getGasLimit('withdrawToken'), gasPrice: gasPriceWei })
     }
 
-    promiseTrade(account, nonce, order, amount, gasPriceWei) {
+    promiseTrade(account, nonce, order, amount, gasPriceWei, gasLimit = Config.getGasLimit('trade')) {
         return this.contractEtherDelta.methods.trade(
             order.tokenGet,
             order.amountGet,
@@ -361,7 +433,8 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
             order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
             amount)
-            .send({ from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei })
+            .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
+            // .send({ from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei })
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {
@@ -440,20 +513,20 @@ class WalletAccountProvider extends AccountProvider {
         return this.web3.eth.sendSignedTransaction('0x' + tx.serialize().toString('hex'))
     }
 
-    promiseDepositEther(account, nonce, amount, gasPriceWei) {
+    promiseDepositEther(account, nonce, amount, gasPriceWei, gasLimit = Config.getGasLimit('deposit')) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(amount),
             this.contractEtherDelta.methods.deposit().encodeABI(),
             gasPriceWei,
-            Config.getGasLimit('deposit'))
+            gasLimit)
     }
 
-    promiseWithdrawEther(account, nonce, amount, gasPriceWei) {
+    promiseWithdrawEther(account, nonce, amount, gasPriceWei, gasLimit = Config.getGasLimit('withdraw')) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.withdraw(amount).encodeABI(),
             gasPriceWei,
-            Config.getGasLimit('withdraw'))
+            gasLimit)
     }
 
     promiseTokenApprove(account, nonce, tokenAddress, amount, gasPriceWei) {
@@ -481,7 +554,7 @@ class WalletAccountProvider extends AccountProvider {
             Config.getGasLimit('withdrawToken'))
     }
 
-    promiseTrade(account, nonce, order, amount, gasPriceWei) {
+    promiseTrade(account, nonce, order, amount, gasPriceWei, gasLimit = Config.getGasLimit('trade')) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.trade(
@@ -497,7 +570,8 @@ class WalletAccountProvider extends AccountProvider {
                 order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling,
                 amount).encodeABI(),
             gasPriceWei,
-            Config.getGasLimit('trade'))
+            gasLimit)
+            // Config.getGasLimit('trade'))
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {

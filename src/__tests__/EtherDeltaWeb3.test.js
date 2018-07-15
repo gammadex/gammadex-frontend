@@ -39,6 +39,7 @@ const feeAccount = web3.eth.accounts.create()
 const defaultGasPrice = web3.utils.toWei('3', 'gwei')
 
 beforeAll(() => {
+    EtherDeltaWeb3.estimateGas = false
     return deployContracts(web3, metamaskAddress, feeAccount, primaryKeyAccount, defaultGasPrice)
         .then(() => {
             const tok = {
@@ -91,13 +92,14 @@ function tokWalletBalanceTest(promiseAction = () => { }, userAddress, weiExpecte
         })
 }
 
-function gasTest(promiseAction = () => { }, weiGasPrice, gasLimit) {
+function gasTest(promiseAction = () => { }, weiGasPrice, gasLimit, postTestEstimateGas = false) {
     return promiseAction()
         .then(receipt => {
             return web3.eth.getTransaction(receipt.transactionHash)
                 .then(tx => {
                     expect(tx.gasPrice).toEqual(weiGasPrice)
                     expect(tx.gas).toEqual(gasLimit)
+                    EtherDeltaWeb3.estimateGas = postTestEstimateGas
                 })
         })
 }
@@ -154,6 +156,16 @@ function testContract(userAddress, userPrivateKey) {
             )
         })
 
+        test('should estimate the gas limit', () => {
+            EtherDeltaWeb3.estimateGas = true
+            const weiGasPrice = web3.utils.toWei('1.131', 'gwei')
+            return gasTest(
+                () => EtherDeltaWeb3.promiseDepositEther(userAddress, nonce, web3.utils.toWei('0.131', 'ether'), weiGasPrice),
+                weiGasPrice,
+                29493
+            )
+        })
+
         test('ETH value sent with transaction should equal the deposit amount', () => {
             const weiDepositAmount = web3.utils.toWei('0.14', 'ether')
             return EtherDeltaWeb3.promiseDepositEther(userAddress, nonce, weiDepositAmount, web3.utils.toWei('1.14', 'gwei'))
@@ -202,6 +214,16 @@ function testContract(userAddress, userPrivateKey) {
             )
         })
 
+        test('should estimate the gas limit', () => {
+            EtherDeltaWeb3.estimateGas = true
+            const weiGasPrice = web3.utils.toWei('1.231', 'gwei')
+            return gasTest(
+                () => EtherDeltaWeb3.promiseWithdrawEther(userAddress, nonce, web3.utils.toWei('0.231', 'ether'), weiGasPrice),
+                weiGasPrice,
+                37964
+            )
+        })        
+
         test('Should generate a Withdraw Event for this user and ETH withdraw amount', () => {
             const weiWithdrawAmount = web3.utils.toWei('0.24', 'ether')
             return EtherDeltaWeb3.promiseWithdrawEther(userAddress, nonce, weiWithdrawAmount, web3.utils.toWei('1.24', 'gwei'))
@@ -242,6 +264,10 @@ function testContract(userAddress, userPrivateKey) {
                 Config.getGasLimit('approveTokenDeposit')
             )
         })
+
+        // gas estimate for token approval does not work very well...
+        // test('should estimate gas limit', () => {
+        // }) 
     })
 
     describe('promiseDepositToken', () => {
@@ -430,6 +456,32 @@ function testContract(userAddress, userPrivateKey) {
                     Config.getGasLimit('trade')
                 )
             })
+            test('should estimate the gas limit', () => {
+                EtherDeltaWeb3.estimateGas = true
+                const weiGasPrice = web3.utils.toWei('1.611', 'gwei')
+                const order = createTestOrder(OrderSide.SELL)
+                return EtherDeltaWeb3.contractEtherDelta.methods.trade(
+                    order.tokenGet,
+                    order.amountGet,
+                    order.tokenGive,
+                    order.amountGive,
+                    order.expires,
+                    order.nonce,
+                    order.user,
+                    order.v == null ? 27 : order.v, // on-chain handling
+                    order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+                    order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+                    order.amountGet)
+                    .estimateGas({ from: userAddress })
+                        .then(gasEstimate => {
+                            return gasTest(
+                                () => EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, weiGasPrice),
+                                weiGasPrice,
+                                gasEstimate
+                            )
+                        })
+
+            })            
             test('Should generate a Trade Event for this user and TEST token withdraw amount', () => {
                 const order = createTestOrder(OrderSide.SELL)
                 return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
@@ -516,6 +568,31 @@ function testContract(userAddress, userPrivateKey) {
                     Config.getGasLimit('trade')
                 )
             })
+            test('should estimate the gas limit', () => {
+                EtherDeltaWeb3.estimateGas = true
+                const weiGasPrice = web3.utils.toWei('1.711', 'gwei')
+                const order = createTestOrder(OrderSide.BUY)
+                return EtherDeltaWeb3.contractEtherDelta.methods.trade(
+                    order.tokenGet,
+                    order.amountGet,
+                    order.tokenGive,
+                    order.amountGive,
+                    order.expires,
+                    order.nonce,
+                    order.user,
+                    order.v == null ? 27 : order.v, // on-chain handling
+                    order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+                    order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+                    order.amountGet)
+                    .estimateGas({ from: userAddress })
+                        .then(gasEstimate => {
+                            return gasTest(
+                                () => EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, weiGasPrice),
+                                weiGasPrice,
+                                gasEstimate
+                            )
+                        })
+            })            
             test('Should generate a Trade Event for this user and TEST token withdraw amount', () => {
                 const order = createTestOrder(OrderSide.BUY)
                 return EtherDeltaWeb3.promiseTrade(userAddress, nonce, order, order.amountGet, defaultGasPrice)
@@ -636,7 +713,7 @@ function testContract(userAddress, userPrivateKey) {
                         return EtherDeltaWeb3.promiseAmountFilled(order)
                             .then(amountFilled => expect(BigNumber(amountFilled).toFixed()).toEqual(BigNumber(order.amountGet).toFixed()))
                     })
-            })            
+            })
         })
     })
 }
