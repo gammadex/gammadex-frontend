@@ -208,8 +208,6 @@ class EtherDeltaWeb3 {
     // - if taker is selling TOK (hits bid), maker is buying TOK = tokenGet
     // and therefore maker is selling ETH = tokenGive. AmountGet in units of TOK
     promiseTrade(account, nonce, order, amount, gasPriceWei) {
-
-
         return this.wrapActionWithGasEstimate(
             () => {
                 return this.contractEtherDelta.methods.trade(
@@ -225,13 +223,12 @@ class EtherDeltaWeb3 {
                     order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
                     amount)
                     .estimateGas({ from: account })
-        
+
             },
             (gasEstimate) => this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei, gasEstimate),
             () => this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei),
             Config.getGasLimit('trade')
         )
-        // return this.accountProvider.promiseTrade(account, nonce, order, amount, gasPriceWei)
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {
@@ -239,7 +236,26 @@ class EtherDeltaWeb3 {
     }
 
     promiseCancelOrder(account, nonce, order, gasPriceWei) {
-        return this.accountProvider.promiseCancelOrder(account, nonce, order, gasPriceWei)
+        return this.wrapActionWithGasEstimate(
+            () => {
+                return this.contractEtherDelta.methods.cancelOrder(
+                    order.tokenGet,
+                    order.amountGet,
+                    order.tokenGive,
+                    order.amountGive,
+                    order.expires,
+                    order.nonce,
+                    order.v == null ? 27 : order.v, // on-chain handling
+                    order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
+                    order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
+                )
+                    .estimateGas({ from: account })
+
+            },
+            (gasEstimate) => this.accountProvider.promiseCancelOrder(account, nonce, order, gasPriceWei, gasEstimate),
+            () => this.accountProvider.promiseCancelOrder(account, nonce, order, gasPriceWei),
+            Config.getGasLimit('cancelOrder')
+        )
     }
 
     promiseTransactionReceipt(txHash) {
@@ -362,7 +378,7 @@ class AccountProvider {
         throw new Error("method not implemented")
     }
 
-    promiseCancelOrder(account, nonce, order, gasPriceWei) {
+    promiseCancelOrder(account, nonce, order, gasPriceWei, gasLimit = Config.getGasLimit('cancelOrder')) {
         throw new Error("method not implemented")
     }
 
@@ -434,7 +450,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
             amount)
             .send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
-            // .send({ from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei })
+        // .send({ from: account, gas: Config.getGasLimit('trade'), gasPrice: gasPriceWei })
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {
@@ -448,7 +464,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             .send({ from: account, gas: Config.getGasLimit('order'), gasPrice: gasPriceWei })
     }
 
-    promiseCancelOrder(account, nonce, order, gasPriceWei) {
+    promiseCancelOrder(account, nonce, order, gasPriceWei, gasLimit = Config.getGasLimit('cancelOrder')) {
         return this.contractEtherDelta.methods.cancelOrder(
             order.tokenGet,
             order.amountGet,
@@ -459,7 +475,7 @@ class MetaMaskAccountProvider extends AccountProvider {
             order.v == null ? 27 : order.v, // on-chain handling
             order.r == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.r, // on-chain handling
             order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
-        ).send({ from: account, gas: Config.getGasLimit('cancelOrder'), gasPrice: gasPriceWei })
+        ).send({ from: account, gas: gasLimit, gasPrice: gasPriceWei })
     }
 
     promiseSignData(data, account) {
@@ -571,7 +587,7 @@ class WalletAccountProvider extends AccountProvider {
                 amount).encodeABI(),
             gasPriceWei,
             gasLimit)
-            // Config.getGasLimit('trade'))
+        // Config.getGasLimit('trade'))
     }
 
     promiseOrder(account, nonce, order, gasPriceWei) {
@@ -589,7 +605,7 @@ class WalletAccountProvider extends AccountProvider {
             Config.getGasLimit('order'))
     }
 
-    promiseCancelOrder(account, nonce, order, gasPriceWei) {
+    promiseCancelOrder(account, nonce, order, gasPriceWei, gasLimit = Config.getGasLimit('cancelOrder')) {
         return this.promiseSendRawTransaction(nonce, Config.getEtherDeltaAddress(),
             this.web3.utils.numberToHex(0),
             this.contractEtherDelta.methods.cancelOrder(
@@ -604,7 +620,7 @@ class WalletAccountProvider extends AccountProvider {
                 order.s == null ? "0x0000000000000000000000000000000000000000000000000000000000000000" : order.s, // on-chain handling
             ).encodeABI(),
             gasPriceWei,
-            Config.getGasLimit('cancelOrder'))
+            gasLimit)
     }
 
     promiseSignData(data, account) {
