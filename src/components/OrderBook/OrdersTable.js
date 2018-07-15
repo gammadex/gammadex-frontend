@@ -5,10 +5,12 @@ import 'react-custom-scroll/dist/customScroll.css'
 
 export default class OrdersTable extends React.Component {
     render() {
-        const {orders, orderType, rowClass, openOrderIds, pendingCancelIds, keepAtBottom} = this.props
-        const rows = orders.map((order) =>
-            <OrdersRow key={order.id} order={order} rowClass={rowClass} isMine={openOrderIds.includes(order.id)}
-                       isPendingCancel={pendingCancelIds.includes(order.id)}/>)
+        const {orders, orderType, rowClass, openOrderIds, pendingCancelIds, keepAtBottom, fillOrder} = this.props
+        const rows = orders.map((order) => {
+            return <OrdersRow key={order.id} order={order} rowClass={rowClass} isMine={openOrderIds.includes(order.id)}
+            isPendingCancel={pendingCancelIds.includes(order.id)}
+            isSelectedFillOrder={(fillOrder == null || fillOrder.order.id != order.id) ? false : true}/>
+        })
         return (
             <CustomScroll heightRelativeToParent="100%" keepAtBottom={keepAtBottom}>
                 <div id={"orders-div-" + orderType}>

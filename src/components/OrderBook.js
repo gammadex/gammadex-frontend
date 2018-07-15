@@ -2,6 +2,7 @@ import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
+import TradeStore from '../stores/TradeStore'
 import {Box} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Conditional from "./CustomComponents/Conditional"
@@ -15,21 +16,26 @@ export default class OrderBook extends React.Component {
             offers: OrderBookStore.getOffersDescending(),
             openOrders: OpenOrdersStore.getOpenOrdersState().openOrders,
             pendingCancelIds: OpenOrdersStore.getOpenOrdersState().pendingCancelIds,
+            fillOrderTakerBuy: null,
+            fillOrderTakerSell: null,
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
         this.saveOpenOrders = this.saveOpenOrders.bind(this)
         this.updateTitleWidths = this.updateTitleWidths.bind(this)
+        this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
     }
 
     componentDidMount() {
         OrderBookStore.on("change", this.saveBidsAndOffers)
         OpenOrdersStore.on("change", this.saveOpenOrders)
+        TradeStore.on("change", this.tradeStoreUpdated)
         window.addEventListener("resize", this.updateTitleWidths)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
         OpenOrdersStore.removeListener("change", this.saveOpenOrders)
+        TradeStore.removeListener("change", this.tradeStoreUpdated)
         window.removeEventListener("resize", this.updateTitleWidths)
     }
 
@@ -53,6 +59,14 @@ export default class OrderBook extends React.Component {
         }
     }
 
+    tradeStoreUpdated() {
+        const { fillOrderTakerBuy, fillOrderTakerSell} = TradeStore.getTradeState()
+        this.setState({
+            fillOrderTakerBuy: fillOrderTakerBuy,
+            fillOrderTakerSell: fillOrderTakerSell,
+        })
+    }
+
     saveBidsAndOffers() {
         this.setState({
             bids: OrderBookStore.getBids(),
@@ -69,7 +83,7 @@ export default class OrderBook extends React.Component {
 
     render() {
         const {token} = this.props
-        const {bids, offers, openOrders, pendingCancelIds, tableWidth} = this.state
+        const {bids, offers, openOrders, pendingCancelIds, tableWidth, fillOrderTakerBuy, fillOrderTakerSell} = this.state
         const tokenSymbol = token ? token.symbol : null
 
         const openOrderIds = openOrders.map(o => o.id)
@@ -77,12 +91,14 @@ export default class OrderBook extends React.Component {
         const bidsContent = <OrdersTable orderType="bid" orders={bids}
                                          openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
                                          rowClass="buy-green"
-                                         keepAtBottom={false}/>
+                                         keepAtBottom={false}
+                                         fillOrder={fillOrderTakerSell}/>
 
         const offersContent = <OrdersTable orderType="offer" orders={offers}
                                            openOrderIds={openOrderIds} pendingCancelIds={pendingCancelIds}
                                            rowClass="sell-red"
-                                           keepAtBottom={true}/>
+                                           keepAtBottom={true}
+                                           fillOrder={fillOrderTakerBuy}/>
 
         return (
             <Box title="Bids and Offers" className="full-height">
