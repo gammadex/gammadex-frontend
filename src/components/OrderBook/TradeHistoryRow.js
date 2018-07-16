@@ -17,7 +17,7 @@ export default class TradeHistoryRow extends React.Component {
 
         return (
             <tr>
-                <td><Round price softZeros>{trade.price}</Round></td>
+                <td><Round price softZeros>{trade.price}</Round>&nbsp;&nbsp;<span className={trade.side === 'buy' ? "fa fa-caret-up buy-green" : "fa fa-caret-down sell-red"}></span></td>
                 <td><Round>{String(trade.amount)}</Round></td>
                 <td><Round>{String(trade.amountBase)}</Round></td>
                 <td className="before-etherscan-column">
