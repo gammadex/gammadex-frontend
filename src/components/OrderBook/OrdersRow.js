@@ -22,14 +22,12 @@ export default class OrdersTableRow extends React.Component {
         if(isMine) {
             myOrderIndicator = <i className="fas fa-user"></i>
         }
-        let price = <Round price softZeros>{order.price}</Round>
-        if(isSelectedFillOrder) {
-            price = <strong>{price}</strong>
-        }
+        
+        const selectedClass = isSelectedFillOrder ? "selected-row" : ""
 
         return (
-            <tr key={order.id} onClick={this.onfillOrder} className="clickable">
-                <td className={rowClass}>{price}&nbsp;&nbsp;&nbsp;{myOrderIndicator}</td>
+            <tr key={order.id} onClick={this.onfillOrder} className={"clickable " + selectedClass}>
+                <td className={rowClass}><Round price softZeros>{order.price}</Round>&nbsp;&nbsp;&nbsp;{myOrderIndicator}</td>
                 <td><Round>{order.ethAvailableVolume}</Round></td>
                 <td><Round>{order.ethAvailableVolumeBase}</Round></td>
             </tr>
