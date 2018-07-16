@@ -61,14 +61,17 @@ export default class GasPriceChooser extends React.Component {
     }
 
     onUseRecommended = event => {
+        event.preventDefault()
         GasActions.gasPricesUseRecommended()
     }
 
     onUseCheapest = event => {
+        event.preventDefault()
         GasActions.gasPricesUseCheapest()
     }
 
     onUseExpensive = event => {
+        event.preventDefault()
         GasActions.gasPricesUseFastest()
     }
 
