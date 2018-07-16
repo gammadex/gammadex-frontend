@@ -58,6 +58,14 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         }
     }
 
+    handleDisconnect = (event) => {
+        event.preventDefault()
+        this.hideModal()
+        WalletDao.forgetStoredWallet()
+        WalletActions.logout()
+        EtherDeltaWeb3.initForAnonymous()
+    }
+
     hideModal = () => {
         WalletActions.hideUnlockPrivateKeyModal()
     }
@@ -90,6 +98,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
 
                 </ModalBody>
                 <ModalFooter>
+                    <input className="btn btn-secondary" type="button" onClick={this.handleDisconnect} value="Disconnect"/>
                     <input className="btn btn-primary" type="submit" value="Unlock"/>
                 </ModalFooter>
             </form>

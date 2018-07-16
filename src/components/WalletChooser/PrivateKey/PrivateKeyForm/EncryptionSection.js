@@ -16,19 +16,6 @@ export default class PrivateKey extends React.Component {
         } = this.props
 
         return <div>
-            <div className="form-group">
-                <div className="custom-control custom-checkbox my-1 mr-sm-2">
-                    <input type="checkbox"
-                           className="custom-control-input"
-                           id="useEncryption"
-                           onChange={onUseEncryptionChange}
-                           value="true"
-                           checked={useEncryption}
-                    />
-                    <label className="custom-control-label" htmlFor="useEncryption">Use a password to encrypt the
-                        private key (recommended)</label>
-                </div>
-            </div>
 
             <Conditional displayCondition={useEncryption}>
                 <PasswordSection
