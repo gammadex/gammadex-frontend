@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {HashRouter} from 'react-router-dom'
 import {Route} from 'react-router-dom'
 import GreetingLoginModals from "../components/GreetingLoginModals"
+import GreetingDisclaimer from "../components/GreetingDisclaimer"
 import TopNavigation from '../components/TopNavigation'
 import Exchange from './Exchange'
 import Wallets from './Wallets'
@@ -60,6 +61,7 @@ class App extends Component {
                 <div className="page-content">
                     <TopNavigation/>
                     {contents}
+                    <GreetingDisclaimer/>
                     <GreetingLoginModals/>
                     <GlobalMessages/>
                 </div>

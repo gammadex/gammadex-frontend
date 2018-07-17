@@ -328,6 +328,15 @@ h1.main-header {
     opacity: 0.7;
 }
 
+.disclaimer-header {
+    font-weight: bold;
+}
+
+.disclaimer-version {
+    opacity: 0.6;
+    font-size: 80%;
+}
+
 .popover-header {
     font-weight: bold;
     text-transform: uppercase;
