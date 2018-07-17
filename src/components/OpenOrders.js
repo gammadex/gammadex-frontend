@@ -42,7 +42,6 @@ export default class OpenOrders extends React.Component {
             showConfirmModal,
             confirmModalOrder,
             gasPriceWei,
-            showAllTokens
         } = OpenOrdersStore.getOpenOrdersState()
         this.state = {
             openOrders: openOrders,
@@ -51,7 +50,6 @@ export default class OpenOrders extends React.Component {
             showConfirmModal: false,
             confirmModalOrder: null,
             gasPriceWei: gasPriceWei,
-            showAllTokens: showAllTokens,
             currentGasPriceWei: null,
             ethereumPriceUsd: null
         }
@@ -71,6 +69,10 @@ export default class OpenOrders extends React.Component {
         this.saveGasPrices()
     }
 
+    componentDidMount() {
+        this.tokenStoreUpdated()
+    }
+
     componentWillUnmount() {
         OpenOrdersStore.removeListener("change", this.updateOpenOrdersState)
         AccountStore.removeListener("change", this.accountStoreUpdated)
@@ -79,15 +81,14 @@ export default class OpenOrders extends React.Component {
     }
 
     updateOpenOrdersState() {
-        const {openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei, showAllTokens} = OpenOrdersStore.getOpenOrdersState()
+        const {openOrders, pendingCancelIds, showConfirmModal, confirmModalOrder, gasPriceWei } = OpenOrdersStore.getOpenOrdersState()
         this.setState(
             {
                 openOrders: openOrders,
                 pendingCancelIds: pendingCancelIds,
                 showConfirmModal: showConfirmModal,
                 confirmModalOrder: confirmModalOrder,
-                gasPriceWei: gasPriceWei,
-                showAllTokens: showAllTokens
+                gasPriceWei: gasPriceWei
             })
     }
 
@@ -122,15 +123,13 @@ export default class OpenOrders extends React.Component {
         OpenOrderApi.hideCancelOrderModal()
     }
 
-    handleShowAll = (event) => {
-        OpenOrderApi.showAllTokensChanged(event.target.checked)
-    }
-
     render() {
         const {
             openOrders, accountRetrieved, pendingCancelIds, showConfirmModal, confirmModalOrder,
-            showAllTokens, currentGasPriceWei, ethereumPriceUsd, currentTokenSymbol, currentTokenAddress
+            currentGasPriceWei, ethereumPriceUsd, currentTokenSymbol, currentTokenAddress
         } = this.state
+
+        const { showAllTokens } = this.props
 
         let filteredOpenOrders = openOrders
         let tokCommited = 0

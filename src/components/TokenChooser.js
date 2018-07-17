@@ -25,7 +25,7 @@ class TokenChooser extends React.Component {
             currentStats: OrderBookStore.getTradeStats(),
             containerHeight: 100,
             favouritesTokens: getFavourite(Favourites.TOKENS) ? getFavourite(Favourites.TOKENS) : [],
-            showFavouritesOnly: getFavourite(Favourites.SHOW_FAVOURITES_ONLY) ? getFavourite(Favourites.SHOW_FAVOURITES_ONLY) : false,
+            showFavouritesOnly: getFavourite(Favourites.SHOW_FAVOURITES_ONLY) == null ? true : getFavourite(Favourites.SHOW_FAVOURITES_ONLY)
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)

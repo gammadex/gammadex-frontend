@@ -11,8 +11,7 @@ export default class OpenOrdersTable extends React.Component {
 
         this.state = {
             currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei(),
-            tokensExist: this.getTokenExistenceMap(props),
-            rows: []
+            tokensExist: this.getTokenExistenceMap(props)
         }
         this.onGasStoreChange = this.onGasStoreChange.bind(this)
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -25,7 +24,7 @@ export default class OpenOrdersTable extends React.Component {
         this.onGasStoreChange()
         this.onTokenStoreChange()
     }
-    
+
     componentWillUnmount() {
         GasPriceStore.removeListener("change", this.onGasStoreChange)
         TokenStore.removeListener("change", this.onTokenStoreChange)
@@ -39,22 +38,9 @@ export default class OpenOrdersTable extends React.Component {
 
     onTokenStoreChange() {
         // this is to avoid adding an event emitter to TokenStore for every table row
-        const { currentGasPriceWei } = this.state
         const tokensExist = this.getTokenExistenceMap(this.props)
-        const { openOrders, pendingCancelIds } = this.props
-        const rows = openOrders.map(o =>
-            <OpenOrdersRow
-                key={o.id}
-                openOrder={o}
-                isPendingCancel={pendingCancelIds.includes(o.id)}
-                currentGasPriceWei={currentGasPriceWei}
-                tokenExists={tokensExist[OrderUtil.tokenAddress(o)]}
-                tokenIdentifier={TokenStore.getTokenIdentifier(OrderUtil.tokenAddress(o))}/>
-        )
-
         this.setState((prevState, props) => ({
-            tokensExist: tokensExist,
-            rows: rows
+            tokensExist: tokensExist
         }))
     }
 
@@ -64,7 +50,17 @@ export default class OpenOrdersTable extends React.Component {
     }
 
     render() {
-        const { rows } = this.state
+        const { currentGasPriceWei, tokensExist } = this.state
+        const { openOrders, pendingCancelIds } = this.props
+        const rows = openOrders.map(o =>
+            <OpenOrdersRow
+                key={o.id}
+                openOrder={o}
+                isPendingCancel={pendingCancelIds.includes(o.id)}
+                currentGasPriceWei={currentGasPriceWei}
+                tokenExists={tokensExist[OrderUtil.tokenAddress(o)]}
+                tokenIdentifier={TokenStore.getTokenIdentifier(OrderUtil.tokenAddress(o))} />
+        )
 
         return (
             <table className="table table-bordered">

@@ -3,6 +3,8 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import OrderState from "../OrderState"
 import _ from "lodash"
+import { getFavourite } from "../util/FavouritesDao"
+import Favourites from "../util/Favourites"
 
 class OpenOrdersStore extends EventEmitter {
     constructor() {
@@ -12,7 +14,7 @@ class OpenOrdersStore extends EventEmitter {
         this.showConfirmModal = false
         this.confirmModalOrder = null
         this.gasPriceWei = 0
-        this.showAllTokens = true
+        this.showAllTokens = getFavourite(Favourites.SHOW_ALL_TOKENS) == null ? true : Boolean(getFavourite(Favourites.SHOW_ALL_TOKENS))
         this.currentBlockNumber = null
     }
 

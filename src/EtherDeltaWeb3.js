@@ -14,7 +14,7 @@ let web3 = window.web3
 
 class EtherDeltaWeb3 {
     constructor() {
-        this.estimateGas = getFavourite(Favourites.ESTIMATE_GAS) ? Boolean(getFavourite(Favourites.ESTIMATE_GAS)) : true
+        this.estimateGas = getFavourite(Favourites.ESTIMATE_GAS) == null ? true : Boolean(getFavourite(Favourites.ESTIMATE_GAS))
     }
 
     initForAnonymous = () => {

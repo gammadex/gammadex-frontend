@@ -11,6 +11,8 @@ import { OperationCosts } from "../ContractOperations"
 import WalletStore from "../stores/WalletStore"
 import AccountStore from "../stores/AccountStore"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import { setFavourite } from "../util/FavouritesDao"
+import Favourites from "../util/Favourites"
 
 export default class GasPriceChooser extends React.Component {
     constructor(props) {
@@ -106,6 +108,7 @@ export default class GasPriceChooser extends React.Component {
     onEstimateGasChange = (event) => {
         const { estimateGas } = this.state
         EtherDeltaWeb3.estimateGas = !estimateGas
+        setFavourite(Favourites.ESTIMATE_GAS, !estimateGas)
         this.setState({
             estimateGas: !estimateGas
         })

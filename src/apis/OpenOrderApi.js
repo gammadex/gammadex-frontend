@@ -10,6 +10,8 @@ import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 import { tokenAddress } from "../OrderUtil"
 import ActionNames from "../actions/ActionNames"
 import dispatcher from "../dispatcher"
+import { setFavourite } from "../util/FavouritesDao"
+import Favourites from "../util/Favourites"
 
 export function requestOrderCancel(openOrder, gasPriceWei) {
     dispatcher.dispatch({
@@ -40,6 +42,7 @@ export function removePendingOrderCancel(id) {
 }
 
 export function showAllTokensChanged(showAll) {
+    setFavourite(Favourites.SHOW_ALL_TOKENS, showAll)
     dispatcher.dispatch({
         type: ActionNames.OPEN_ORDERS_SHOW_ALL_CHANGED,
         showAll
