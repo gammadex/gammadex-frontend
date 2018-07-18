@@ -1,33 +1,20 @@
 import React from "react"
 import { Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap'
 import ReactMarkdown from 'react-markdown'
-import disclaimer from '../../config/disclaimer.md'
+import wording from './DisclaimerWording'
 
-export default class StoredPrivateKeyWalletUnlocker extends React.Component {
+export default class DisclaimerModal extends React.Component {
 
     constructor(props) {
         super(props)
-
+        const lines = wording.split('\n')
+        const fileVersion = lines.splice(0, 1)[0]
+        const accepted = localStorage.acceptedDisclaimerVersion != null && localStorage.acceptedDisclaimerVersion !== "" && Number(localStorage.acceptedDisclaimerVersion) >= Number(fileVersion) ? true : false
         this.state = {
-            showModal: false,
-            disclaimerText: "",
-            disclaimerVersion: ""
+            showModal: !accepted,
+            disclaimerText: wording,
+            disclaimerVersion: fileVersion
         }
-    }
-
-    componentWillMount() {
-        fetch(disclaimer).then((response) => response.text()).then((text) => {
-            const lines = text.split('\n')
-            const fileVersion = lines.splice(0, 1)[0]
-            const accepted = localStorage.acceptedDisclaimerVersion != null && localStorage.acceptedDisclaimerVersion !== "" && Number(localStorage.acceptedDisclaimerVersion) >= Number(fileVersion) ? true : false
-
-            this.setState(
-                {
-                    disclaimerText: text,
-                    showModal: !accepted,
-                    disclaimerVersion: fileVersion
-                })
-        })
     }
 
     handleAgree = (event) => {
@@ -41,8 +28,6 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
 
     render() {
         const { showModal, disclaimerText } = this.state
-
-        const input = '\n# This is a header\n\nAnd this is a paragraph\n\n```this is some code```\nRead usage information and more on [GitHub](//github.com/rexxars/react-markdown)'
 
         const lines = disclaimerText.split('\n')
         const meta = lines.splice(0, 2)
