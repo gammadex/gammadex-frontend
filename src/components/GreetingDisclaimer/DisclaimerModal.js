@@ -54,7 +54,9 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
             </ModalHeader>
             <form onSubmit={this.handleAgree}>
                 <ModalBody>
-                    <ReactMarkdown source={disclaimerTextNoMeta} />
+                    <div className='disclaimer-md'>
+                        <ReactMarkdown source={disclaimerTextNoMeta} />
+                    </div>
                 </ModalBody>
                 <ModalFooter>
                     <input className="btn btn-primary" type="submit" value="I agree" />

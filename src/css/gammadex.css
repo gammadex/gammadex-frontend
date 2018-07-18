@@ -337,6 +337,11 @@ h1.main-header {
     font-size: 80%;
 }
 
+.disclaimer-md p, li {
+    opacity: 0.6;
+    line-height: 1.4em
+}
+
 .popover-header {
     font-weight: bold;
     text-transform: uppercase;
