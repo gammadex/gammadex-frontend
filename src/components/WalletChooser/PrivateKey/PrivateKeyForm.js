@@ -57,7 +57,6 @@ class PrivateKeyForm extends React.Component {
         const enteredPrivateKey = event.target.value
         const {address, isValid, noHexPrefixKey} = KeyUtil.convertPrivateKeyToAddress(enteredPrivateKey)
 
-        // TODO - move into WalletStore
         if (event && event.target) {
             this.setState({
                 enteredPrivateKey,

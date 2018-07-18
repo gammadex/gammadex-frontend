@@ -48,7 +48,7 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
     handleKeyStoreUnlock = (event) => {
         event.preventDefault()
 
-        const {file, fileName} = WalletDao.readWallet().data // TODO - WR- this could be sourced from WalletStore
+        const {file, fileName} = WalletDao.readWallet().data
         WalletActions.selectedKeyStoreFile(file, fileName)
 
         try {

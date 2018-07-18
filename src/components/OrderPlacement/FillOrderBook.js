@@ -70,8 +70,9 @@ export default class FillOrderBook extends React.Component {
         }, () => {
             // this.checkFillOrder() <-- in react-flux you cannot call a dispatcher from within another dispatch loop!
             // perhaps revisit this when we move to redux+thunk
+            //
+            // should really remove fillOrder action if the current fillOrder is no longer present in the order book (e.g. someone else got it) 
         })
-        // TODO trigger remove fillOrder action if the current fillOrder is no longer present in the order book (e.g. someone else got it) 
     }
 
     saveAccountState() {

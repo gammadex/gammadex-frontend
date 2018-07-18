@@ -31,7 +31,7 @@ class WalletStore extends EventEmitter {
         this.completedAccount = null
         this.fileParseError = null
         this.refreshError = null
-        this.passwordError = null // TODO: this is used in three places. Separate into individual variables for each use
+        this.passwordError = null
         this.privateKeyPassword = ""
         this.confirmPrivateKeyPassword = ""
         this.privateKeyUnlockPassword = ""

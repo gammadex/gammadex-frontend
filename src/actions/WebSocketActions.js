@@ -27,7 +27,7 @@ export function connect() {
                     event,
                 })
 
-                getMarket() // TODO - move me TF out of here
+                getMarket()
             },
             disconnect: (reason) => {
                 dispatcher.dispatch({

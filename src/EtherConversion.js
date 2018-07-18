@@ -1,4 +1,3 @@
-// TODO should we migrate to BN.js (https://github.com/indutny/bn.js/) as web3 1.0.0 uses that internally and has removed BigNumber?
 import BigNumber from 'bignumber.js'
 import Config from "./Config"
 import TokenRepository from "./util/TokenRepository"
@@ -28,7 +27,6 @@ export function baseEthToWei(eth) {
     return ethToWei(eth, Config.getBaseDecimals())
 }
 
-// TODO for unlisted token addresses need to think about how we infer/retrieve the correct decimals (e.g. a web3 call)
 export function tokWeiToEth(wei, tokenAddress) {
     return weiToEth(wei, TokenRepository.getTokenDecimalsByAddress(tokenAddress))
 }

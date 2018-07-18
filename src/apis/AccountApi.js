@@ -48,7 +48,7 @@ export function refreshAccount(accountType, history, getMarket = true) {
 
             AccountActions.accountRetrieved(addressNonce, accountType)
 
-            if (history) { // TODO - unfortunate that this has to be passed in here from a component
+            if (history) {
                 history.push(Routes.Exchange)
             }
 
@@ -99,8 +99,6 @@ export function depositEth(account, accountRetrieved, nonce, tokenAddress, amoun
                 GlobalMessageActions.sendGlobalMessage(
                     GlobalMessageFormatters.getTransferComplete(ethAmount, 'deposit', 'ETH'), "success")
             })
-    } else {
-        // TODO dispatch account retrieval failed action
     }
 }
 

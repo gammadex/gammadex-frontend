@@ -26,7 +26,6 @@ class EtherDeltaWeb3 {
 
     initForMetaMask = () => {
         // Use Mist/MetaMask's provider
-        // TODO check whether current metamask is locked
         this.initForMetaMaskWeb3(new Web3(web3.currentProvider))
     }
 

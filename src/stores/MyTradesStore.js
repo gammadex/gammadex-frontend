@@ -9,7 +9,7 @@ import * as TradesDao from "../util/TradesDao"
 class MyTradesStore extends EventEmitter {
     constructor() {
         super()
-        this.accountAddress = AccountStore.getAccount() // TODO - ouch, store depends on a store. Not great. Maybe redux can help here
+        this.accountAddress = AccountStore.getAccount()
         this.clearTrades()
         this.loadFromLocalStorage()
         this.updateAllTrades()
@@ -36,6 +36,7 @@ class MyTradesStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.MESSAGE_REQUESTED_MARKET: {
                 this.refreshInProgress = true
+                break
             }
             case ActionNames.MESSAGE_RECEIVED_TRADES: { // received when trades messages is sent from backend
                 if (action.trades) {

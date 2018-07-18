@@ -9,7 +9,7 @@ import * as TransfersDao from "../util/TransfersDao"
 class TransferStore extends EventEmitter {
     constructor() {
         super()
-        this.accountAddress = AccountStore.getAccount() // TODO - ouch, store depends on a store. Not great. Maybe redux can help here
+        this.accountAddress = AccountStore.getAccount()
         this.clearTransfers()
         this.loadFromLocalStorage()
         this.updateAllTransfers()

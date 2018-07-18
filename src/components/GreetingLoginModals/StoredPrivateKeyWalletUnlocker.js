@@ -44,7 +44,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
     handleUnlock = (event) => {
         event.preventDefault()
 
-        const {key} = WalletDao.readWallet().data // TODO - WR- this could be sourced from WalletStore
+        const {key} = WalletDao.readWallet().data
         const {password} = this.state
 
         try {

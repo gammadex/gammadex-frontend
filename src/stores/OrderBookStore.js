@@ -37,7 +37,7 @@ class OrderBookStore extends EventEmitter {
     }
 
     getAllTradesSortedByDateAsc() {
-        return _.reverse(this.trades.slice()) // TODO _.reverse seems to sort in place?
+        return _.reverse(this.trades.slice())
     }
 
     getTrades() {
@@ -129,7 +129,7 @@ class OrderBookStore extends EventEmitter {
 
     mergeBuysAndSells(message) {
         if (message) {
-            const tokenAddress = TokenStore.getSelectedTokenAddress() // TODO - is it acceptable that this has to know about TokenStore?
+            const tokenAddress = TokenStore.getSelectedTokenAddress()
 
             if (message.buys) {
                 this.bids = OrderMerger.mergeOrders(this.bids, message.buys, tokenAddress, false)
