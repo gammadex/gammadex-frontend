@@ -46,19 +46,19 @@ describe('GasPriceChooser', () => {
     })
     it(`onUseRecommended event callback should update current gas price to the average`, () => {
         const wrapper = mountGasPriceChooser()
-        wrapper.instance().onUseRecommended()
+        wrapper.instance().onUseRecommended( { preventDefault() {} })
         expect(wrapper.text()).toEqual('Gas Price:6 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('6', 'gwei'))
     })
     it(`onUseCheapest event callback should update current gas price to the safe low value`, () => {
         const wrapper = mountGasPriceChooser()
-        wrapper.instance().onUseCheapest()
+        wrapper.instance().onUseCheapest( { preventDefault() {} })
         expect(wrapper.text()).toEqual('Gas Price:4 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('4', 'gwei'))
     })       
     it(`onUseExpensive event callback should update current gas price to the fastest value`, () => {
         const wrapper = mountGasPriceChooser()
-        wrapper.instance().onUseExpensive()
+        wrapper.instance().onUseExpensive( { preventDefault() {} })
         expect(wrapper.text()).toEqual('Gas Price:12 Gwei')
         expect(GasPriceStore.getCurrentGasPriceWei().toString()).toEqual(web3.utils.toWei('12', 'gwei'))
     })         

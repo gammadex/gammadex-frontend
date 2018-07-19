@@ -124,7 +124,7 @@ export default class FillOrderBook extends React.Component {
     }
 
     onOrderAmountChange = (value) => {
-        TradeActions.fillOrderAmountChanged(value, this.state.fillOrder)
+        TradeActions.fillOrderAmountChanged(safeBigNumber(value), this.state.fillOrder)
     }
 
     onOrderTotalChange = (value) => {
