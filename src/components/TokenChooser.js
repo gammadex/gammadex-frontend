@@ -13,6 +13,7 @@ import MarketResponseSpinner from "./MarketResponseSpinner"
 import ReactResizeDetector from 'react-resize-detector'
 import CustomScroll from 'react-custom-scroll'
 import 'react-custom-scroll/dist/customScroll.css'
+import TokenChooserSort from './TokenChooser/TokenChooserSort'
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -24,12 +25,25 @@ class TokenChooser extends React.Component {
             serverTickers: {},
             currentStats: OrderBookStore.getTradeStats(),
             containerHeight: 100,
+            sortType: this.getSortType(),
             favouritesTokens: getFavourite(Favourites.TOKENS) ? getFavourite(Favourites.TOKENS) : [],
             showFavouritesOnly: getFavourite(Favourites.SHOW_FAVOURITES_ONLY) == null ? true : getFavourite(Favourites.SHOW_FAVOURITES_ONLY)
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
         this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
+        this.onHeaderChange = this.onSortTypeChange.bind(this)
+    }
+
+    getSortType() {
+        if (getFavourite(Favourites.TOKEN_CHOOSER_SORT) == null ||
+            ![TokenChooserSort.ASC_SYMBOL, TokenChooserSort.DESC_SYMBOL,
+            TokenChooserSort.ASC_VOLUME, TokenChooserSort.DESC_VOLUME,
+            TokenChooserSort.ASC_CHANGE, TokenChooserSort.DESC_CHANGE].includes(getFavourite(Favourites.TOKEN_CHOOSER_SORT))) {
+            return TokenChooserSort.ASC_SYMBOL
+        } else {
+            return getFavourite(Favourites.TOKEN_CHOOSER_SORT)
+        }
     }
 
     componentWillMount() {
@@ -122,13 +136,60 @@ class TokenChooser extends React.Component {
         })
     }
 
+    onSortTypeChange(sortType, defaultSort, ascendingSort, descendingSort) {
+        let newSort = defaultSort
+        if (sortType === ascendingSort) {
+            newSort = descendingSort
+        } else if (sortType === descendingSort) {
+            newSort = ascendingSort
+        }
+        setFavourite(Favourites.TOKEN_CHOOSER_SORT, newSort)
+        this.setState({
+            sortType: newSort
+        })
+    }
+
+    onSymbolHeader = () => {
+        const { sortType } = this.state
+        this.onSortTypeChange(sortType, TokenChooserSort.ASC_SYMBOL, TokenChooserSort.ASC_SYMBOL, TokenChooserSort.DESC_SYMBOL)
+    }
+
+    onVolumeHeader = () => {
+        const { sortType } = this.state
+        this.onSortTypeChange(sortType, TokenChooserSort.DESC_VOLUME, TokenChooserSort.ASC_VOLUME, TokenChooserSort.DESC_VOLUME)
+    }
+
+    onChangeHeader = () => {
+        const { sortType } = this.state
+        this.onSortTypeChange(sortType, TokenChooserSort.DESC_CHANGE, TokenChooserSort.ASC_CHANGE, TokenChooserSort.DESC_CHANGE)
+    }
+
+    sortTokens(tokens, sortType) {
+        let sortAttribute = t => t.symbol.toLowerCase().replace(/\s/g, "")
+        if (sortType.endsWith('VOLUME')) {
+            sortAttribute = t => t.baseVolume == null ? -1 : t.baseVolume
+        } else if (sortType.endsWith('CHANGE')) {
+            sortAttribute = t => t.percentChange == null ? 0 : t.percentChange
+        }
+        const sorted = _.sortBy(tokens, sortAttribute)
+        return sortType.startsWith('ASC') ? sorted : _.reverse(sorted)
+    }
+
     render() {
-        const { searchedToken, selectedToken, serverTickers, currentStats, containerHeight, favouritesTokens, showFavouritesOnly } = this.state
+        const { searchedToken, selectedToken, serverTickers, currentStats, containerHeight, favouritesTokens, showFavouritesOnly, sortType } = this.state
 
-        const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(), serverTickers, searchedToken, selectedToken, favouritesTokens, showFavouritesOnly)
+        const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(),
+            serverTickers,
+            searchedToken,
+            selectedToken,
+            favouritesTokens,
+            showFavouritesOnly).map(systemToken => {
+                return systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
+            })
 
-        const tokenRows = systemTokens.map(systemToken => {
-            const token = systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
+        const sortedTokens = this.sortTokens(systemTokens, sortType)
+
+        const tokenRows = sortedTokens.map(token => {
 
             return <TokenChooserRow
                 key={token.address}
@@ -139,6 +200,10 @@ class TokenChooser extends React.Component {
                 onFavourite={this.onFavourite} />
         })
 
+        const symbolSortClass = sortType === TokenChooserSort.ASC_SYMBOL ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_SYMBOL ? "fas fa-sort-down" : ""
+        const volumeSortClass = sortType === TokenChooserSort.ASC_VOLUME ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_VOLUME ? "fas fa-sort-down" : ""
+        const changeSortClass = sortType === TokenChooserSort.ASC_CHANGE ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_CHANGE ? "fas fa-sort-down" : ""
+
         return (
             <div id="token-chooser-container" className="token-chooser-component">
                 <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="token-chooser-container" />
@@ -147,7 +212,7 @@ class TokenChooser extends React.Component {
                     <div className="card-header">
                         <div className="card-title">Tokens</div>
                         <div>
-                            <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, systemTokens)}>
+                            <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)}>
                                 <div className="form-check form-check-inline">
                                     <input className="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly} />
                                     <label className="form-check-label" htmlFor="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
@@ -163,10 +228,10 @@ class TokenChooser extends React.Component {
                         <table className="table table-bordered table-hover table-no-bottom-border">
                             <thead>
                                 <tr>
-                                    <th>Symbol</th>
+                                    <th onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
                                     <th><span className="fas fa-star"></span></th>
-                                    <th>Volume ETH</th>
-                                    <th>% Change</th>
+                                    <th onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
+                                    <th onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
                                 </tr>
                             </thead>
                             <tbody>{tokenRows}</tbody>

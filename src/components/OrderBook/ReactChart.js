@@ -112,25 +112,25 @@ class ReactChart extends Component {
                     <div className="form-inline">
 
                         <div className="price-chart-form">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="chartTypeMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button className="btn btn-secondary dropdown-toggle" type="button" id="chartTypeMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {chartType === ReactChartType.CANDLESTICK ? 'Candlestick' : 'Line'}
                             </button>
 
-                            <div class="dropdown-menu" aria-labelledby="chartTypeMenu">
-                                <button class="dropdown-item" type="button" onClick={() => this.toggleChartType(ReactChartType.CANDLESTICK)} >Candlestick</button>
-                                <button class="dropdown-item" type="button" onClick={() => this.toggleChartType(ReactChartType.LINE)}>Line</button>
+                            <div className="dropdown-menu" aria-labelledby="chartTypeMenu">
+                                <button className="dropdown-item" type="button" onClick={() => this.toggleChartType(ReactChartType.CANDLESTICK)} >Candlestick</button>
+                                <button className="dropdown-item" type="button" onClick={() => this.toggleChartType(ReactChartType.LINE)}>Line</button>
                             </div>
 
                         </div>
                         <div className="price-chart-form">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ohlcIntervalMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button className="btn btn-secondary dropdown-toggle" type="button" id="ohlcIntervalMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {ohlcIntervalMins === 60 ? '1h' : ohlcIntervalMins === 360 ? '6h' : '24h'}
                             </button>
 
-                            <div class="dropdown-menu" aria-labelledby="ohlcIntervalMenu">
-                                <button class="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(60)}>1h</button>
-                                <button class="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(360)}>6h</button>
-                                <button class="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(1440)}>24h</button>
+                            <div className="dropdown-menu" aria-labelledby="ohlcIntervalMenu">
+                                <button className="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(60)}>1h</button>
+                                <button className="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(360)}>6h</button>
+                                <button className="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(1440)}>24h</button>
                             </div>
                         </div>
                     </div>

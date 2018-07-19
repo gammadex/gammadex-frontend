@@ -5,5 +5,6 @@ export default {
     ESTIMATE_GAS: "estimate_gas",
     SHOW_ALL_TOKENS: "show_all_tokens",
     CHART_TYPE: "chart_type",
-    CHART_INTERVAL: "chart_interval"
+    CHART_INTERVAL: "chart_interval",
+    TOKEN_CHOOSER_SORT: "token_chooser_sort"
 }
