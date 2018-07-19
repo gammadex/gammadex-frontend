@@ -3,8 +3,7 @@ const Routes = {
     Wallets: "/wallets/",
     NewWallet: "/new-wallet/",
     History: "/history/",
-    Debug: "/debug/",
-    Chart: "/chart/"
+    Debug: "/debug/"
 }
 
 export default Routes

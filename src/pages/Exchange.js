@@ -10,6 +10,7 @@ import {withRouter} from "react-router-dom"
 import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
 import PlotlyPriceChart from "../components/OrderBook/PlotlyPriceChart"
 import PlotlyDepthChart from "../components/OrderBook/PlotlyDepthChart"
+import ReactChart from "../components/OrderBook/ReactChart"
 
 class Exchange extends Component {
     constructor() {
@@ -57,7 +58,8 @@ class Exchange extends Component {
                     <OpenOrdersAndPendingTrades/>
                 </div>
                 <div className="pl-0 col-lg-3 exchange-right-col main-col">
-                    <PlotlyPriceChart token={token}/>
+                    {/* <PlotlyPriceChart token={token}/> */}
+                    <ReactChart />
                     <PlotlyDepthChart/>
                     <TradeHistory token={token}/>
                 </div>

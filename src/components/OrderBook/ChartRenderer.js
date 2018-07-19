@@ -93,12 +93,18 @@ class ChartRenderer extends React.Component {
 
     render() {
         const height = 200
-        const { type, data: initialData, width, ratio, chartType } = this.props
+        const { type, data: initialData, containerWidth, containerHeight, ratio, chartType } = this.props
 
-        const margin = { left: 70, right: 70, top: 20, bottom: 30 }
+        const priceChartHeightPct = 0.55
+        const priceChartHeight = Math.floor(containerHeight * priceChartHeightPct)
+
+        const volumeChartHeightPct = 0.2
+        const volumeChartHeight = Math.floor(containerHeight * volumeChartHeightPct)
+
+        const margin = { left: 20, right: 60, top: 10, bottom: 10 }
 
         const gridHeight = height - margin.top - margin.bottom
-        const gridWidth = width - margin.left - margin.right
+        const gridWidth = containerWidth - margin.left - margin.right
 
         const showGrid = false
         const yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.2 } : {}
@@ -136,8 +142,8 @@ class ChartRenderer extends React.Component {
         }
 
         return (
-            <ChartCanvas height={260}
-                width={width}
+            <ChartCanvas height={containerHeight}
+                width={containerWidth}
                 ratio={ratio}
                 margin={margin}
                 type={type}
@@ -155,7 +161,7 @@ class ChartRenderer extends React.Component {
                 xExtents={xExtents}
             >
 
-                <Chart id={1} height={120}
+                <Chart id={1} height={priceChartHeight}
                     yExtents={[d => [d.high, d.low]]}
                     padding={{ top: 10, bottom: 20 }}
                 >
@@ -167,7 +173,7 @@ class ChartRenderer extends React.Component {
                     {candlestickSeries}
                     {lineSeries}
 
-                    <OHLCTooltip ohlcFormat={format(".8f")} volumeFormat={format(".3f")} textFill={'#C0C0C0'} forChart={1} origin={[-40, -10]} />
+                    {/* <OHLCTooltip ohlcFormat={format(".8f")} volumeFormat={format(".3f")} textFill={'#C0C0C0'} forChart={1} origin={[-40, -10]} /> */}
 
                     <HoverTooltip
                         chartId={1}
@@ -175,23 +181,25 @@ class ChartRenderer extends React.Component {
                         fontSize={15}
                     />
 
-                    <ZoomButtons
-                        size={[30, 24]}
-                        heightFromBase={-90}
-                        onReset={this.handleReset}
-                    />
-
                 </Chart>
                 <Chart id={2}
                     yExtents={d => d.volume}
-                    height={40} origin={(w, h) => [0, h - 50]}>
+                    height={volumeChartHeight} origin={(w, h) => [0, priceChartHeight + 20]}>
                     <YAxis axisAt="right" orient="right" ticks={2} tickFormat={format(".3f")}
                         stroke='#C0C0C0' tickStroke="#C0C0C0" />
                     <BarSeries
                         yAccessor={d => d.volume}
                         fill={volumeBarFill}
                     />
+
+                    <ZoomButtons
+                        size={[30, 24]}
+                        heightFromBase={30}
+                        onReset={this.handleReset}
+                    />
                 </Chart>
+
+
             </ChartCanvas>
         )
     }

@@ -614,8 +614,8 @@ input[type="number"] {
 .price-chart-component {
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 30%;
-    max-height: 30%;
+    flex-basis: 40%;
+    max-height: 40%;
     display: flex;
 }
 
@@ -633,6 +633,10 @@ input[type="number"] {
     border-bottom: 1px solid;
 }
 
+.price-chart-form {
+    margin:5px 0px 5px 3px;
+}
+ 
 .order-depth-chart-component .card-body {
     height: calc(100% - 40px);
     padding-top: 0;

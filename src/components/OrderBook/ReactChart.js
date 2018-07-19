@@ -11,20 +11,41 @@ import * as TokenActions from "../../actions/TokenActions"
 import * as WebSocketActions from "../../actions/WebSocketActions"
 import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import ReactChartType from "./ReactChartType"
-const useDummyTrades = false
+import ReactResizeDetector from 'react-resize-detector'
+import { setFavourite, getFavourite } from "../../util/FavouritesDao"
+import Favourites from "../../util/Favourites"
 
 class ReactChart extends Component {
     constructor(props) {
         super(props)
         this.state = {
             trades: OrderBookStore.getAllTradesSortedByDateAsc(),
-            dummyTrades: JSON.parse('[{"txHash":"0x45225699f6c318dec2c4e393d0563288cca0a9de0b9d1d102698a5cdab8095ea","logIndex":10,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T10:29:15.000Z","price":"0.000822202","side":"sell","amount":"1000","amountBase":"0.822202","buyer":"0xC38A3c739C3a61c7c47d99A2Ba1cB52aD0b49861","seller":"0x114356F6aF1682f1e833bb59ca716BD7d1D10a1A","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"60000000000","gasUsed":108178},{"txHash":"0x13fe9c73b27fd23e904bf7d4b242f854c84c28a8e0f527c9f3d0143cc32d99b1","logIndex":3,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T10:29:23.000Z","price":"0.0008222","side":"sell","amount":"1000","amountBase":"0.8222","buyer":"0x7B768c81353Cd5fF73b74e72dC7409CF789436A3","seller":"0x114356F6aF1682f1e833bb59ca716BD7d1D10a1A","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"60000000000","gasUsed":93178},{"txHash":"0x6b1d59e18e42dae7488d0f51ea349b77719bc4499b15b769214f8e1288b454a4","logIndex":0,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T10:29:37.000Z","price":"0.0008221","side":"sell","amount":"1600","amountBase":"1.31536","buyer":"0x7B768c81353Cd5fF73b74e72dC7409CF789436A3","seller":"0x114356F6aF1682f1e833bb59ca716BD7d1D10a1A","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"60000000000","gasUsed":92986},{"txHash":"0xb68e6337e085b98af092e5c2b500c84661015150a0aa45390320e2c3bd23c2fd","logIndex":33,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T10:33:04.000Z","price":"0.00082578835354669616","side":"sell","amount":"2844.293748798983766016","amountBase":"2.348784651823873","buyer":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","seller":"0xB8b2779178Dbece29DFf68378ffeB00825329869","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"10000000000","gasUsed":93242},{"txHash":"0x969be0e15991f123a185302b6336be602abfaca076edd1e281f7425c589112a6","logIndex":32,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T10:33:04.000Z","price":"0.00083","side":"sell","amount":"1349","amountBase":"1.11967","buyer":"0x0cF990785400A754C205662ceEc143A0778b06F2","seller":"0xB8b2779178Dbece29DFf68378ffeB00825329869","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"10000000000","gasUsed":93114},{"txHash":"0xec61a99bb9f9cc3f1f3627fbd94e7d529a7b0b42e7c4926bbfda3237eeb7728f","logIndex":112,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T10:34:02.000Z","price":"0.00082579661148353611","side":"sell","amount":"381.561","amountBase":"0.315091780874269521","buyer":"0x2A1b37434Aa45B4db71D4c56dE5eb02C43C669F6","seller":"0xB8b2779178Dbece29DFf68378ffeB00825329869","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"10000000000","gasUsed":93242},{"txHash":"0x626d638513e3a2639f0ed0c998bd1d6b4e14abcd6ae327a51d072e3e7eb74dee","logIndex":39,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T11:26:29.000Z","price":"0.000822049","side":"sell","amount":"1000","amountBase":"0.822049","buyer":"0x7B768c81353Cd5fF73b74e72dC7409CF789436A3","seller":"0x4F6B499F57B7809831eA09d589a0F271D0907824","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"13000000000","gasUsed":93114},{"txHash":"0x479ab35d6a694d967a82a1c62c29935c42d44fbd03c298f5f275d63c34263b0a","logIndex":25,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T11:41:20.000Z","price":"0.00082205","side":"sell","amount":"615.434850546460192281","amountBase":"0.505918218891717601","buyer":"0x9838e32a6f183fA2205aB01124afFdEB8141A263","seller":"0x4F6B499F57B7809831eA09d589a0F271D0907824","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"13000000000","gasUsed":78306},{"txHash":"0x31fa74a15abdf77539f6c419ccedf2f14a4c187b90d845944e54e12ae957b0c0","logIndex":53,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T11:42:33.000Z","price":"0.00082212299999999999","side":"sell","amount":"55.602334744494022592","amountBase":"0.045711958247147659","buyer":"0x52CAB5a7c123834a53c3CB898F08c625EadacBf2","seller":"0x4F6B499F57B7809831eA09d589a0F271D0907824","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"13000000000","gasUsed":78370},{"txHash":"0x6fc16d634076fcee15d0e351d427da69389e39448eff525bd9b95d469041600b","logIndex":5,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T12:01:33.000Z","price":"0.0008157399843285687","side":"buy","amount":"3805.38298694709805056","amountBase":"3.1042030581364277","buyer":"0xF0FBE7F55A5387450F9e48dC77D4a2DE05fDA888","seller":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"14300000000","gasUsed":93370},{"txHash":"0xe71cafad8fc8f3d8231d8e2410f25c02af1300c3de268831affd5c59a1873079","logIndex":41,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T12:03:28.000Z","price":"0.00081573898430000007","side":"buy","amount":"2676.324999999999999889","amountBase":"2.18318263715669768","buyer":"0x02817F847D5b4D2D48fFBb297242C4730bEc6f00","seller":"0xfF808624d9b94dfecdae3887d4486F6FDC107CE8","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"12000000000","gasUsed":93626},{"txHash":"0xe0bb0fc02be4857f5a04533b06900bd4d08571fbbe306b30990389f6d5c4e0a6","logIndex":32,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T12:03:28.000Z","price":"0.00082439172940026607","side":"buy","amount":"605","amountBase":"0.49875699628716097","buyer":"0xF0FBE7F55A5387450F9e48dC77D4a2DE05fDA888","seller":"0x2A1b37434Aa45B4db71D4c56dE5eb02C43C669F6","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"14300000000","gasUsed":93306},{"txHash":"0x6fc5f92cffe350f520f668c00690e412a0435770c927fb32ef2b8cde1da50c70","logIndex":42,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T12:10:08.000Z","price":"0.00086","side":"buy","amount":"2000","amountBase":"1.72","buyer":"0xF0FBE7F55A5387450F9e48dC77D4a2DE05fDA888","seller":"0xE1d9Eff2379a18e774A76ad89CD08C5AE3759503","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"14300000000","gasUsed":93050},{"txHash":"0xd21b3c8a3b6e2ecbcfb5f08ba8ede29b3f8e77f3073658932625f24caf3f5dbd","logIndex":74,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T13:48:35.000Z","price":"0.0008234908222","side":"sell","amount":"728.605570122891890605","amountBase":"0.599999999999999995","buyer":"0xBF6D06f10c5fE593a57b75d0C3AFd78Ed4030A39","seller":"0x1088b9b9486Ea74d040a3282729409B11d72bAB4","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"12000000000","gasUsed":108562},{"txHash":"0x105ea51ace7c8e4f869cd719094c0bff52bb55482a2bf17a308f958b3a70802e","logIndex":39,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T13:57:16.000Z","price":"0.00080201","side":"sell","amount":"10300","amountBase":"8.260703","buyer":"0x0F22Cc0dDBAd661691F25e325533dBFb93663948","seller":"0x1088b9b9486Ea74d040a3282729409B11d72bAB4","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"12000000000","gasUsed":108178},{"txHash":"0x9075937a89cb3a161f1780f4b0b7bc89bb9eac494352fa9d5271e1739cf591f7","logIndex":0,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T13:57:27.000Z","price":"0.000857","side":"buy","amount":"4304.212766051827376896","amountBase":"3.688710340506416062","buyer":"0xC131C1B3261b88dD94eB90DC72323f081316BD42","seller":"0x81C660984683ace929e91772306A2C3Ea15793c1","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"99000000000","gasUsed":93306},{"txHash":"0x2d7dd41d3ffa3e5f4948edc60d9020d98eacce015ef1e348bf61bc9941b25de9","logIndex":65,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:04:35.000Z","price":"0.00082348782229587519","side":"sell","amount":"455.895337620117070804","amountBase":"0.375424258771632991","buyer":"0x2A1b37434Aa45B4db71D4c56dE5eb02C43C669F6","seller":"0x1088b9b9486Ea74d040a3282729409B11d72bAB4","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"12000000000","gasUsed":93434},{"txHash":"0xde2531f263410a6f2e5ced6a8d6894106051fb2c46892566250c812b87e2948f","logIndex":25,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:06:14.000Z","price":"0.00082","side":"buy","amount":"242.841714461848180487","amountBase":"0.199130205858715508","buyer":"0x02817F847D5b4D2D48fFBb297242C4730bEc6f00","seller":"0x17F244cB918dfdf8c9475C3643F5b32260194DeB","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"12000000000","gasUsed":108050},{"txHash":"0xb88a0c72cf9b52ca50b0a848a96ad6ca76d37fcaa4e69b21db589272d6dc72d5","logIndex":92,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:09:22.000Z","price":"0.00082","side":"buy","amount":"798.451620081450815853","amountBase":"0.654730328466789669","buyer":"0x7B768c81353Cd5fF73b74e72dC7409CF789436A3","seller":"0x17F244cB918dfdf8c9475C3643F5b32260194DeB","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"8000000000","gasUsed":78114},{"txHash":"0xc51375a86c9eaeb4b0ac900e3e841d59317d8b1f19e7cac9f0505eca3c28c3d8","logIndex":19,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:22:12.000Z","price":"0.00081716675842255755","side":"buy","amount":"3082.157574611582582784","amountBase":"2.518636714192879","buyer":"0xF0FBE7F55A5387450F9e48dC77D4a2DE05fDA888","seller":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"14300000000","gasUsed":93306},{"txHash":"0xbb4ad3d5bd052d6decb263c736dd22b195e120435e9dcef3c183e38984352e90","logIndex":12,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:22:47.000Z","price":"0.00082","side":"buy","amount":"3630.706665456701003658","amountBase":"2.977179465674494823","buyer":"0xF0FBE7F55A5387450F9e48dC77D4a2DE05fDA888","seller":"0x17F244cB918dfdf8c9475C3643F5b32260194DeB","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"14300000000","gasUsed":78114},{"txHash":"0xbc1080f80e309a521e3a7fa57456b54483f3cee0ebec2377bb604d6738962c0d","logIndex":93,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:43:44.000Z","price":"0.000821118","side":"sell","amount":"300","amountBase":"0.2463354","buyer":"0x61fFa27E33516E2A3DF88c59E8e4c60A6fBCd155","seller":"0x4A8Bf50E5ee440b16f802B3D33EdC403afa22307","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"8000000000","gasUsed":93178},{"txHash":"0x4912c8471610b0e44f6b892143cb2fcfacf9ae0fd5470c85bb73dd81c2cc54f7","logIndex":30,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T14:49:16.000Z","price":"0.00081221702530041812","side":"sell","amount":"3008.872453424490748006","amountBase":"2.443857433628810744","buyer":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","seller":"0x4A8Bf50E5ee440b16f802B3D33EdC403afa22307","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"8000000000","gasUsed":93434},{"txHash":"0x5119de51d8cde7f03e8c8cbf47f26f48ebd270a1dfec8a59b2c24d48d09e9550","logIndex":21,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T17:03:03.000Z","price":"0.00083648961098208346","side":"buy","amount":"763.94726958882988526","amountBase":"0.639033954349185146","buyer":"0x5caFf28939aA9AF0774b5c55A99035e5F63aeC6d","seller":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"30000000000","gasUsed":93370},{"txHash":"0x120aed6cf573ad4a2ed492d581d50e6a78ee536dd0a61198a35b054de5ea60fc","logIndex":59,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T17:07:20.000Z","price":"0.00082220822200000022","side":"sell","amount":"151.74980354245558272","amountBase":"0.12476993615949174","buyer":"0x2A1b37434Aa45B4db71D4c56dE5eb02C43C669F6","seller":"0xDB233392BE0CF235071F4C72c7372F2541f4F600","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"7000000000","gasUsed":93114},{"txHash":"0xf8c3e6c4af7466376255dedc412b76b0e3dae5009c5045d38c953c68a9c7533f","logIndex":139,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T17:32:16.000Z","price":"0.00084","side":"buy","amount":"200","amountBase":"0.168","buyer":"0x264d1CF8B46D916e02BE426a0A42f6C2C02BA936","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"8000000000","gasUsed":93050},{"txHash":"0xc2a3827ef1f8c9b09d462d08e9826e3a786559e0e7fda3a488ca7ac34e00dc40","logIndex":3,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T17:35:03.000Z","price":"0.00083","side":"buy","amount":"200","amountBase":"0.166","buyer":"0x5caFf28939aA9AF0774b5c55A99035e5F63aeC6d","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"30000000000","gasUsed":108050},{"txHash":"0x1aec0046c260a9e452d4a09d8c1f30eab21dc5f9ed938dc79061aae7a667f7fd","logIndex":32,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T17:39:13.000Z","price":"0.00085","side":"buy","amount":"39.367259607493145882","amountBase":"0.033462170666369174","buyer":"0x5caFf28939aA9AF0774b5c55A99035e5F63aeC6d","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"30000000000","gasUsed":93050},{"txHash":"0x34f146c74f107a2a823c60a5327995177e2e45f9e90658b6cec4535089d1f5d6","logIndex":13,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T18:43:19.000Z","price":"0.00083728619326254694","side":"buy","amount":"41.708140481573510626","amountBase":"0.034921650171876216","buyer":"0xCDe48c4E2b3b95BA058f17E2993E6C4944557D9b","seller":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"10000000000","gasUsed":93306},{"txHash":"0x18b6723e6905df35042bd474ed0519f28372a09053d4e0896a3e5c23b6eb685a","logIndex":4,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T19:24:40.000Z","price":"0.00083680601048722595","side":"buy","amount":"1199.999999999999999624","amountBase":"1.004167212584671142","buyer":"0x63320e29583D098bc8e9e082A29E7664dE6DA6be","seller":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"150000000000","gasUsed":108242},{"txHash":"0xc888578cc0bbf13f6051f72a82a96811859add5c9f168a0e5530aa74a44963a1","logIndex":12,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T20:18:31.000Z","price":"0.00085999","side":"buy","amount":"3000","amountBase":"2.57997","buyer":"0x52a7a6d5f1C97766dF48286EB0CE350157C217Ce","seller":"0x7B768c81353Cd5fF73b74e72dC7409CF789436A3","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"25000000000","gasUsed":93114},{"txHash":"0x38c9fb82512491c7d425475fb5ebdb6b664829e4d8d871376cb01649973db0c8","logIndex":0,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T20:20:50.000Z","price":"0.000855","side":"buy","amount":"1190","amountBase":"1.01745","buyer":"0x63320e29583D098bc8e9e082A29E7664dE6DA6be","seller":"0xf008944A4eCe209490294c49d8FB7413B33238C5","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"150000000000","gasUsed":108178},{"txHash":"0x50af0a8c8cba22b9e6214d39dbbd1ed0beffca63e2eb5350b71ce036c753da6f","logIndex":2,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T20:21:54.000Z","price":"0.00085399897","side":"buy","amount":"207.476643363312672379","amountBase":"0.177184839731326358","buyer":"0x52a7a6d5f1C97766dF48286EB0CE350157C217Ce","seller":"0xFD73CA65852f29B674DE8A4f048f9CCdEcB2A007","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"25000000000","gasUsed":93306},{"txHash":"0xcedf087e9343b986272d5719de9b5a0beef2a7318550906718ae52898198152a","logIndex":8,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T20:50:47.000Z","price":"0.000855","side":"buy","amount":"304.725","amountBase":"0.260539875","buyer":"0xcc86e83cE01092b706e0539619b7118a4fe0d030","seller":"0xDB233392BE0CF235071F4C72c7372F2541f4F600","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"21000000000","gasUsed":93178},{"txHash":"0x35a2de43447a32567c9f1b1be2a6b216e767c75a118bf821ee039d0fcfd8e3a3","logIndex":3,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T20:52:34.000Z","price":"0.000855","side":"buy","amount":"485","amountBase":"0.414675","buyer":"0xcc86e83cE01092b706e0539619b7118a4fe0d030","seller":"0xf008944A4eCe209490294c49d8FB7413B33238C5","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"21000000000","gasUsed":78178},{"txHash":"0xbe5663bbc4e4dbae72861467b1fd2f826457e73a130131e3df8d23c867a28885","logIndex":2,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T20:52:38.000Z","price":"0.000855","side":"buy","amount":"1675","amountBase":"1.432125","buyer":"0xcc86e83cE01092b706e0539619b7118a4fe0d030","seller":"0xf008944A4eCe209490294c49d8FB7413B33238C5","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"21000000000","gasUsed":93178},{"txHash":"0xe9d7d3d971dc45a9c7d4754d91662fbab4aacd74572fd750ce887010e0946807","logIndex":39,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:00:38.000Z","price":"0.000855","side":"sell","amount":"199.2","amountBase":"0.170316","buyer":"0xcc86e83cE01092b706e0539619b7118a4fe0d030","seller":"0xEB77646a71C07D8Ba9080B32051278CDed873972","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"8300000000","gasUsed":178009},{"txHash":"0xe9d7d3d971dc45a9c7d4754d91662fbab4aacd74572fd750ce887010e0946807","logIndex":38,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:00:38.000Z","price":"0.00084","side":"buy","amount":"200","amountBase":"0.168","buyer":"0xEB77646a71C07D8Ba9080B32051278CDed873972","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"8300000000","gasUsed":178009},{"txHash":"0xe4fbb1f764c26079a59a34eb95eeba4ef64f5a44a0f533af27302c8257cbb69a","logIndex":2,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:07:21.000Z","price":"0.000855","side":"sell","amount":"336.075","amountBase":"0.287344125","buyer":"0xcc86e83cE01092b706e0539619b7118a4fe0d030","seller":"0xe4F6Ef9e8AA6E7C554a0752880D8cB647872D4b0","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"22000000000","gasUsed":93306},{"txHash":"0xfa01de292aef203607983c033deeb149666e23dcde20822f41eb183c699ff5c4","logIndex":7,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:12:55.000Z","price":"0.00081921865098181918","side":"sell","amount":"1130.943578484080690386","amountBase":"0.926490072702279732","buyer":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","seller":"0xe4F6Ef9e8AA6E7C554a0752880D8cB647872D4b0","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"22000000000","gasUsed":93370},{"txHash":"0x47a324e2a73ab5e2e9abdc1e498b2781350e39573e13a87a6498f063a252682c","logIndex":75,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:54:21.000Z","price":"0.00083","side":"buy","amount":"199.396287413683487951","amountBase":"0.165498918553357295","buyer":"0xe8B4087bdb4c146311E14E321A261EBA3e929380","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"6000000000","gasUsed":108178},{"txHash":"0x456543018aa953edd39185df7d520ef6ea747374ec4b55104976faf422f56d10","logIndex":2,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:56:29.000Z","price":"0.00084999899999999994","side":"buy","amount":"728.605570122891890605","amountBase":"0.619314005998887938","buyer":"0xC4d3f360eE7eF590cEcEdfAF0744BA9d9C01023e","seller":"0xBF6D06f10c5fE593a57b75d0C3AFd78Ed4030A39","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"20000000000","gasUsed":78498},{"txHash":"0xa319cdba93fff843ea289ad61804d3e6d4d97b914c88947da7c3b631ca5ec47a","logIndex":16,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:57:13.000Z","price":"0.00085299064638438304","side":"buy","amount":"3201.370754409975775232","amountBase":"2.7307393091202252","buyer":"0xC4d3f360eE7eF590cEcEdfAF0744BA9d9C01023e","seller":"0xd585775CA27E7d537424b99BCa1E73d6815E186B","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"20000000000","gasUsed":93306},{"txHash":"0xa725e0e13794c35faf23ad3bcaa4666fb5e247f7110f1033cf90cb8cd50739cf","logIndex":13,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:57:19.000Z","price":"0.000859","side":"buy","amount":"2500","amountBase":"2.1475","buyer":"0xC4d3f360eE7eF590cEcEdfAF0744BA9d9C01023e","seller":"0xC8648B952c877757e8Ae7AD66511d7147882388f","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"20000000000","gasUsed":108178},{"txHash":"0xbef2a0c49528da4972baa9414f22b88ae2e7acdd481ee06d0ca9661bd30d9932","logIndex":7,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T21:57:54.000Z","price":"0.00086","side":"buy","amount":"1000","amountBase":"0.86","buyer":"0xC4d3f360eE7eF590cEcEdfAF0744BA9d9C01023e","seller":"0xC38A3c739C3a61c7c47d99A2Ba1cB52aD0b49861","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"20000000000","gasUsed":77986},{"txHash":"0xc486f48e61b96ecea05714d2dc5e3732010b8d6c17fbccf1cbdc49fd07125f28","logIndex":43,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T22:09:12.000Z","price":"0.00083","side":"buy","amount":"0.601906865719353012","amountBase":"0.000499582698547063","buyer":"0x49414047e00AAbb4291c9395A2f822Dc5acfECFF","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"5000000000","gasUsed":213064},{"txHash":"0x4c328f98085bbc679b1cb7096bbe35cd3e79b431b1c9e45d0cb62ad7f67067dd","logIndex":4,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T22:37:46.000Z","price":"0.00088","side":"buy","amount":"12.533535453191954545","amountBase":"0.01102951119880892","buyer":"0xE7e4dF577f3cbD90D38b32D42A62a7c3768304f6","seller":"0x61fFa27E33516E2A3DF88c59E8e4c60A6fBCd155","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"40000000000","gasUsed":93114},{"txHash":"0xa4f04c6fbf42e7e750e6b4fd603182a8b629c9447ca615ee28b4cd7144f412be","logIndex":27,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T22:43:43.000Z","price":"0.0008555555","side":"buy","amount":"19.44091468824314495","amountBase":"0.016632781486557208","buyer":"0x49414047e00AAbb4291c9395A2f822Dc5acfECFF","seller":"0x0cF990785400A754C205662ceEc143A0778b06F2","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"5000000000","gasUsed":206353},{"txHash":"0xd58bb8ef29d27c6c6f30bfc53b73cad1534dbb946d4ec4b478acc7dc7062fe5a","logIndex":36,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T22:46:20.000Z","price":"0.00085","side":"sell","amount":"160","amountBase":"0.136","buyer":"0xC4d3f360eE7eF590cEcEdfAF0744BA9d9C01023e","seller":"0x29e4130740Ee1439013a21b65F571A7f46A2B2E7","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"6000000000","gasUsed":93242},{"txHash":"0x8fd0a33485d4286e0afa84897b3c92f7cd85ae4b080589ead9d3407f123ae37f","logIndex":192,"contractAddr":"0x8d12A197cB00D4747a1fe03395095ce2A5CC6819","date":"2018-06-08T23:03:15.000Z","price":"0.0008555555","side":"buy","amount":"10","amountBase":"0.008555555","buyer":"0x8Fb83a6A6963CE83E1408141Ba33d3e15333C9d3","seller":"0x0cF990785400A754C205662ceEc143A0778b06F2","tokenAddr":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0","gasPrice":"5000000000","gasUsed":93050}]'),
-            ohlcIntervalMins: 60,
-            chartType: ReactChartType.CANDLESTICK,
-            chartData: []
+            ohlcIntervalMins: this.getOhlcInterval(),
+            chartType: this.getChartType(),
+            chartData: [],
+            chartContainerWidth: null,
+            chartContainerHeight: null
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
         this.getChartData = this.getChartData.bind(this)
+        this.toggleChartType = this.toggleChartType.bind(this)
+        this.toggleOhlcInterval = this.toggleOhlcInterval.bind(this)
+    }
+
+    getOhlcInterval() {
+        if(getFavourite(Favourites.CHART_INTERVAL) == null || ![60, 360, 1440].includes(Number(getFavourite(Favourites.CHART_INTERVAL)))) {
+            return 60
+        } else {
+            return Number(getFavourite(Favourites.CHART_INTERVAL))
+        }
+    }
+
+    getChartType() {
+        if(getFavourite(Favourites.CHART_TYPE) == null || ![ReactChartType.CANDLESTICK, ReactChartType.LINE].includes(getFavourite(Favourites.CHART_TYPE))) {
+            return ReactChartType.CANDLESTICK
+        } else {
+            return getFavourite(Favourites.CHART_TYPE)
+        }
     }
 
     componentWillMount() {
@@ -46,22 +67,30 @@ class ReactChart extends Component {
         })
     }
 
-    getChartData(trades, ohlcIntervalMins ) {
-        const { dummyTrades } = this.state
-        if (useDummyTrades) {
-            return convertToOhlcReactStockChart(dummyTrades, ohlcIntervalMins)
-        } else {
-            const data = convertToOhlcReactStockChart(trades, ohlcIntervalMins)
-            return data
-        }
+    getChartData(trades, ohlcIntervalMins) {
+        return convertToOhlcReactStockChart(trades, ohlcIntervalMins)
     }
 
-    onOhlcSpanChange = (event) => {
-        const mins = parseInt(event.target.value, 10)
+    onResize = (width, height) => {
+        this.setState({
+            chartContainerWidth: width,
+            chartContainerHeight: height
+        })
+    }
+
+    toggleChartType(chartType) {
+        setFavourite(Favourites.CHART_TYPE, chartType)
+        this.setState({
+            chartType: chartType
+        })
+    }
+
+    toggleOhlcInterval(ohlcIntervalMins) {
+        setFavourite(Favourites.CHART_INTERVAL, String(ohlcIntervalMins))
+        const mins = parseInt(ohlcIntervalMins, 10)
 
         const orderbookTrades = OrderBookStore.getAllTradesSortedByDateAsc()
         const tradeChartData = this.getChartData(orderbookTrades, mins)
-
         this.setState({
             ohlcIntervalMins: mins,
             trades: orderbookTrades,
@@ -69,75 +98,46 @@ class ReactChart extends Component {
         })
     }
 
-    onChartTypeChange = (event) => {
-        const chartType = event.target.value
-        this.setState({
-            chartType: chartType
-        })
-    }
-
     render() {
-        const {ohlcIntervalMins, chartType, chartData } = this.state
+        const { ohlcIntervalMins, chartType, chartData, chartContainerHeight, chartContainerWidth } = this.state
 
         let chart = <EmptyTableMessage>Not enough data points</EmptyTableMessage>
-        if (chartData && chartData.length > 1) {
-            chart = <ChartRenderer chartType={chartType} data={chartData} width={350} />
+        if (chartData && chartData.length > 1 && chartContainerHeight && chartContainerWidth) {
+            chart = <ChartRenderer chartType={chartType} data={chartData} containerHeight={chartContainerHeight} containerWidth={chartContainerWidth} />
         }
 
         return (
-            <Box title="React Stock Chart">
-            <BoxSection>
-                <div className="float-left ohlc-interval">
-                    <span className="ohlc-interval-description">OHLC interval</span>
+            <Box title="Price Chart" className="chart-component price-chart-component">
+                <div className="float-left">
+                    <div className="form-inline">
 
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan1"
-                            value="60"
-                            onChange={this.onOhlcSpanChange}
-                            checked={ohlcIntervalMins === 60}
-                        />
-                        <label className="form-check-label" htmlFor="ohlcSpan1">1 hour</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan2"
-                            value="360"
-                            onChange={this.onOhlcSpanChange}
-                            checked={ohlcIntervalMins === 360}
-                        />
-                        <label className="form-check-label" htmlFor="ohlcSpan2">6 hours</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="ohlcSpan" id="ohlcSpan3"
-                            value="1440"
-                            onChange={this.onOhlcSpanChange}
-                            checked={ohlcIntervalMins === 1440}
-                        />
-                        <label className="form-check-label" htmlFor="ohlcSpan3">1 day</label>
+                        <div className="price-chart-form">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="chartTypeMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {chartType === ReactChartType.CANDLESTICK ? 'Candlestick' : 'Line'}
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="chartTypeMenu">
+                                <button class="dropdown-item" type="button" onClick={() => this.toggleChartType(ReactChartType.CANDLESTICK)} >Candlestick</button>
+                                <button class="dropdown-item" type="button" onClick={() => this.toggleChartType(ReactChartType.LINE)}>Line</button>
+                            </div>
+
+                        </div>
+                        <div className="price-chart-form">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="ohlcIntervalMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {ohlcIntervalMins === 60 ? '1h' : ohlcIntervalMins === 360 ? '6h' : '24h'}
+                            </button>
+
+                            <div class="dropdown-menu" aria-labelledby="ohlcIntervalMenu">
+                                <button class="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(60)}>1h</button>
+                                <button class="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(360)}>6h</button>
+                                <button class="dropdown-item" type="button" onClick={() => this.toggleOhlcInterval(1440)}>24h</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div className="float-right ohlc-interval">
-                    <span className="ohlc-interval-description">Chart</span>
-
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="chartType" id="chartTypeCandlestick"
-                            value={ReactChartType.CANDLESTICK}
-                            onChange={this.onChartTypeChange}
-                            checked={chartType === ReactChartType.CANDLESTICK}
-                        />
-                        <label className="form-check-label" htmlFor="chartTypeCandlestick">Candlestick</label>
-                    </div>
-                    <div className="form-check form-check-inline">
-                        <input className="form-check-input" type="radio" name="chartType" id="chartTypeLine"
-                            value={ReactChartType.LINE}
-                            onChange={this.onChartTypeChange}
-                            checked={chartType === ReactChartType.LINE}
-                        />
-                        <label className="form-check-label" htmlFor="chartTypeLine">Line</label>
-                    </div>
-                </div>                
-                </BoxSection>
-                <BoxSection>
+                <BoxSection id="price-chart-resize-container">
+                    <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="price-chart-resize-container" />
                     {chart}
                 </BoxSection>
             </Box>

@@ -3,5 +3,7 @@ export default {
     TOKENS: "tokens",
     SHOW_FAVOURITES_ONLY: "show_favourites_only",
     ESTIMATE_GAS: "estimate_gas",
-    SHOW_ALL_TOKENS: "show_all_tokens"
+    SHOW_ALL_TOKENS: "show_all_tokens",
+    CHART_TYPE: "chart_type",
+    CHART_INTERVAL: "chart_interval"
 }
