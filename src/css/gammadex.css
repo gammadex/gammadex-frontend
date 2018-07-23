@@ -487,6 +487,7 @@ input[type="number"] {
 
 .upper-header .navbar {
     padding: 0;
+    z-index: 1;
 }
 
 .page-content {

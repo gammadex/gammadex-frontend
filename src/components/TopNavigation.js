@@ -53,6 +53,14 @@ class TopNavigation extends Component {
                                 <li className="nav-item">
                                     <Link to={Routes.History} className="nav-link">History</Link>
                                 </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarSupportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Support</a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarSupportDropdown">
+                                        <a class="dropdown-item" a target="_blank" rel="noopener noreferrer" href="https://discord.gg/YzwgA9R"><i class="fab fa-discord"></i>&nbsp;discord chat</a>
+                                        <a class="dropdown-item" a target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i class="fab fa-twitter"></i>&nbsp;twitter</a>
+                                        <a class="dropdown-item" a target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i class="fab fa-reddit-alien"></i>&nbsp;reddit</a>
+                                    </div>
+                                </li>
                             </ul>
                         </nav>
                     </div>
