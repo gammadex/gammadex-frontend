@@ -216,6 +216,7 @@ export function fillOrderTotalChanged(totalEthControlled, fillOrder) {
 
 function fillOrderChanged(order, fillAmountControlled, weiFillAmount, weiTotalEth, totalEthControlled) {
     const {fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField} = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    const isBestExecution = orderIsBestExecution(order)
     const updatedFillOrder = {
         order,
         weiFillAmount,
@@ -225,7 +226,7 @@ function fillOrderChanged(order, fillAmountControlled, weiFillAmount, weiTotalEt
         fillAmountValid,
         fillAmountInvalidReason,
         fillAmountInvalidField,
-        isBestExecution: true // TODO
+        isBestExecution
     }
     dispatcher.dispatch({
         type: ActionNames.FILL_ORDER_CHANGED,
