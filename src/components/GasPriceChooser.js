@@ -5,7 +5,7 @@ import GasPriceStore from '../stores/GasPriceStore'
 import * as GasActions from "../actions/GasActions"
 import { Box, BoxSection } from "./CustomComponents/Box"
 import { Popover, PopoverBody } from 'reactstrap'
-import { gweiToWei, weiToGwei, gweiToEth } from "../EtherConversion"
+import { gweiToWei, weiToGwei, gweiToEth, baseWeiToEth, safeBigNumber } from "../EtherConversion"
 import * as _ from "lodash"
 import { OperationCosts } from "../ContractOperations"
 import WalletStore from "../stores/WalletStore"
@@ -13,14 +13,18 @@ import AccountStore from "../stores/AccountStore"
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import { setFavourite } from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
+import Round from "./CustomComponents/Round"
+import BigNumber from 'bignumber.js'
 
 export default class GasPriceChooser extends React.Component {
     constructor(props) {
         super(props)
 
         this.saveGasPrices = this.saveGasPrices.bind(this)
+        this.onAccountChange = this.onAccountChange.bind(this)
 
         this.state = {
+            accountState: null,
             safeLowWei: null,
             averageWei: null,
             fastWei: null,
@@ -36,11 +40,20 @@ export default class GasPriceChooser extends React.Component {
 
     componentDidMount() {
         GasPriceStore.on("change", this.saveGasPrices)
+        AccountStore.on("change", this.onAccountChange)
         this.saveGasPrices()
+        this.onAccountChange()
     }
 
     componentWillUnmount() {
         GasPriceStore.removeListener("change", this.saveGasPrices)
+        AccountStore.removeListener("change", this.onAccountChange)
+    }
+
+    onAccountChange() {
+        this.setState({
+            accountState: AccountStore.getAccountState()
+        })
     }
 
     saveGasPrices() {
@@ -115,7 +128,8 @@ export default class GasPriceChooser extends React.Component {
     }
 
     render() {
-        const { popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei, estimateGas } = this.state
+        const { popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei, estimateGas, accountState} = this.state
+
 
         const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
         const currentGasPriceGwei = GasPriceChooser.safeWeiToGwei(currentGasPriceWei)
@@ -124,11 +138,30 @@ export default class GasPriceChooser extends React.Component {
         const gasCostsUsd = _.mapValues(gasCostsEth, e => (e * ethereumPriceUsd).toFixed(2))
         const timeDescription = this.getTimeDescription()
 
+        let availableQty = null
+        let availableUnit = "ETH"
+        if(accountState) {
+            const { walletBalanceEthWei } = accountState
+            const walletBalanceEth = baseWeiToEth(walletBalanceEthWei).toString()
+            if(popoverOpen && safeBigNumber(gasCostsEth.TAKE_ORDER).isGreaterThan(BigNumber(0))) {
+                availableQty = `~${Number(safeBigNumber(walletBalanceEth).div(safeBigNumber(gasCostsEth.TAKE_ORDER)).dp(0, BigNumber.ROUND_FLOOR))}`
+                availableUnit = "Trades"
+            } else {
+                availableQty = <Round fallback="-">{walletBalanceEth}</Round>
+            }
+        }
+
         return (
             <div>
-                <button className="btn" id="gasPrice" type="button" onClick={this.toggleGasPrice}>
+                {/* <button className="btn" id="gasPrice" type="button" onClick={this.toggleGasPrice}>
                     <i className="fas fa-gas-pump mr-2"></i>Gas Price:<span style={{ "width": "20px", "display": "inline-block", "textAlign": "right" }}>{currentGasPriceGwei}</span>&nbsp;Gwei
-                </button>
+                </button> */}
+
+                <button className="btn btn-lg" style={{ "text-align": "left", "width": "150px", "height": "36px", "position": "relative" }} id="gasPrice" onClick={this.toggleGasPrice}>
+                    <span style={{ "position": "absolute", "right": "2px", "top": "50%", "transform": "translateY(-50%)", "font-size": "100%" }} className="fas fa-gas-pump mr-2">&nbsp;</span>
+                    <span style={{ "font-size": "80%","position": "absolute", "top": "2px"}}>Gas Price: {currentGasPriceGwei} Gwei</span>
+                    <span style={{ "font-size": "65%", "position": "absolute", "bottom": "2px" }}>Wallet: {availableQty} {availableUnit}</span>
+                    </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
                     <div className="shadow gas-prices">
@@ -138,7 +171,7 @@ export default class GasPriceChooser extends React.Component {
                                     <div className="row">
                                         <div className="col-lg-4">
                                             <div><a href="#" onClick={this.onUseCheapest}>Cheapest</a></div>
-                                            <div>Slowest</div>
+                                            <div>Slower</div>
                                         </div>
                                         <div className="col-lg-4 txt-center">
                                             <div><a href="#" onClick={this.onUseRecommended}>Average</a></div>
@@ -146,11 +179,11 @@ export default class GasPriceChooser extends React.Component {
                                         <div className="col-lg-4">
                                             <div className="float-right"><a href="#" onClick={this.onUseExpensive}>Expensive</a></div>
                                             <br />
-                                            <div className="float-right">Fastest</div>
+                                            <div className="float-right">Faster</div>
                                         </div>
                                     </div>
 
-                                    <Slider min={1} max={100} defaultValue={averageGwei} onChange={this.onSliderChange} value={currentGasPriceGwei} />
+                                    <Slider min={1} max={200} defaultValue={averageGwei} onChange={this.onSliderChange} value={currentGasPriceGwei} />
 
                                     <div className="row">
                                         <div className="col-lg-12 text-center">
@@ -208,6 +241,8 @@ export default class GasPriceChooser extends React.Component {
                                         </table>
 
                                         <strong>The above costs are a rough guideline only</strong>. Actual gas cost can vary depending on a number of factors, including the token being operated on.
+                                        <hr/>
+
                                         <form className="form-inline">
                                             <div className="form-check form-check-inline">
                                                 <input className="form-check-input" type="checkbox" id="estimateGasCheckbox" onChange={this.onEstimateGasChange} value={"true"} checked={estimateGas} />

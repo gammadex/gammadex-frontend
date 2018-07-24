@@ -92,7 +92,7 @@ class Account extends React.Component {
         const accountImage = account == null ? null : <img width="16" height="16" src={toDataUrl(account)} className="mr-2" />
         return (
             <div id="accountTop" className="form-group ml-1">
-                <button className="btn" onClick={this.toggerPopover} value={truncatedAccount}>{accountImage}{truncatedAccount}</button>
+                <button className="btn" style={{ "height": "36px"}} onClick={this.toggerPopover} value={truncatedAccount}>{accountImage}{truncatedAccount}</button>
 
                 <Popover placement="bottom" isOpen={accountPopoverOpen} target="accountTop" toggle={this.toggerPopover}>
                     <div className="shadow gas-prices">

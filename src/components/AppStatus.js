@@ -154,7 +154,7 @@ export default class AppStatus extends React.Component {
 
         return (
             <div>
-                <button className="btn" id="appStatus" type="button" onClick={this.toggleShowStatus}>
+                <button className="btn" id="appStatus" type="button" onClick={this.toggleShowStatus} style={{ "height": "36px"}}>
                     <div>
                         <span className={"fas fa-lg " + overall.class}></span>
                         <span className="ml-2">Status</span>
