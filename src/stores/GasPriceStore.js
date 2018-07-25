@@ -84,19 +84,19 @@ class GasPriceStore extends EventEmitter {
             }
             case ActionNames.GAS_PRICES_USE_RECOMMENDED: {
                 this.currentGasPriceWei = this.prices.averageWei
-                localStorage.currentGasPriceWei = ""
+                localStorage.currentGasPriceWei = String(this.currentGasPriceWei)
                 this.emitChange()
                 break
             }
             case ActionNames.GAS_PRICES_USE_CHEAPEST: {
                 this.currentGasPriceWei = this.prices.safeLowWei
-                localStorage.currentGasPriceWei = ""
+                localStorage.currentGasPriceWei = String(this.currentGasPriceWei)
                 this.emitChange()
                 break
             }
             case ActionNames.GAS_PRICES_USE_FASTEST: {
                 this.currentGasPriceWei = this.prices.fastestWei
-                localStorage.currentGasPriceWei = ""
+                localStorage.currentGasPriceWei = String(this.currentGasPriceWei)
                 this.emitChange()
                 break
             }
