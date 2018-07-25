@@ -134,7 +134,7 @@ export default class OpenOrders extends React.Component {
         let filteredOpenOrders = openOrders
         let tokCommited = 0
         if (!showAllTokens) {
-            filteredOpenOrders = openOrders.filter(o => tokenAddress(o) === currentTokenAddress)
+            filteredOpenOrders = openOrders.filter(o => tokenAddress(o).toLowerCase() === currentTokenAddress.toLowerCase())
             tokCommited = _.sum(filteredOpenOrders.filter(o => makerSide(o) === OrderSide.SELL).map(o => Number(o.ethAvailableVolume)))
         }
 
