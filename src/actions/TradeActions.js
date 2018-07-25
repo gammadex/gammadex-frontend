@@ -30,7 +30,7 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     let fillAmountInvalidField = OrderEntryField.AMOUNT
     if (weiFillAmount.isZero()) {
         fillAmountValid = false
-        fillAmountInvalidReason = "Token amount must be greater than zero"
+        // fillAmountInvalidReason = "Token amount must be greater than zero"
     } else if (weiFillAmount.isGreaterThan(BigNumber(order.availableVolume))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Token amount greater than max order amount (${order.ethAvailableVolume})`
