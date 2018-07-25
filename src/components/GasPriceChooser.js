@@ -158,10 +158,10 @@ export default class GasPriceChooser extends React.Component {
                     <i className="fas fa-gas-pump mr-2"></i>Gas Price:<span style={{ "width": "20px", "display": "inline-block", "textAlign": "right" }}>{currentGasPriceGwei}</span>&nbsp;Gwei
                 </button> */}
 
-                <button className="btn btn-lg" style={{ "text-align": "left", "width": "160px", "height": "36px", "position": "relative" }} id="gasPrice" onClick={this.toggleGasPrice}>
-                    <span style={{ "position": "absolute", "right": "2px", "top": "50%", "transform": "translateY(-50%)", "font-size": "100%" }} className="fas fa-gas-pump mr-2">&nbsp;</span>
-                    <span style={{ "font-size": "80%","position": "absolute", "top": "2px"}}>GAS Price: {currentGasPriceGwei} Gwei</span>
-                    <span style={{ "font-size": "65%", "position": "absolute", "bottom": "2px" }}>Remaining Gas: {availableQty} {availableUnit}</span>
+                <button className="btn btn-lg" style={{ "textAlign": "left", "width": "160px", "height": "36px", "position": "relative" }} id="gasPrice" onClick={this.toggleGasPrice}>
+                    <span style={{ "position": "absolute", "right": "2px", "top": "50%", "transform": "translateY(-50%)", "fontSize": "100%" }} className="fas fa-gas-pump mr-2">&nbsp;</span>
+                    <span style={{ "fontSize": "80%","position": "absolute", "top": "2px"}}>GAS Price: {currentGasPriceGwei} Gwei</span>
+                    <span style={{ "fontSize": "65%", "position": "absolute", "bottom": "2px" }}>Remaining Gas: {availableQty} {availableUnit}</span>
                     </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
