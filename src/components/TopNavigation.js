@@ -56,7 +56,7 @@ class TopNavigation extends Component {
                                 <li className="nav-item dropdown">
                                     <a className="nav-link dropdown-toggle" href="#" id="navbarSupportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Support</a>
                                     <div className="dropdown-menu" aria-labelledby="navbarSupportDropdown">
-                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/YzwgA9R"><i className="fab fa-discord"></i>&nbsp;discord chat</a>
+                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/RANPVZ5"><i className="fab fa-discord"></i>&nbsp;discord chat</a>
                                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i>&nbsp;twitter</a>
                                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i>&nbsp;reddit</a>
                                     </div>
