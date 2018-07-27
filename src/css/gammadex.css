@@ -937,6 +937,10 @@ body {
     border-color: var(--gray);
 }
 
+.rc-slider-disabled {
+    background: var(--gray-dark);
+}
+
 .rc-slider-handle {
     background: var(--gray-dark);
     border-color: var(--gray);
@@ -994,6 +998,10 @@ body {
 
 .unlisted-tokens-component .card .table tr th {
     border-top: 1px solid var(--secondary);
+}
+
+.fair-value-list {
+    padding-left: 20px;
 }
 
 .order-box {

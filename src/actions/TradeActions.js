@@ -183,15 +183,16 @@ export function orderIsBestExecution(order) {
     if (OrderUtil.isMakerBuy(order)) {
         const orderIndex = (_.findIndex(OrderBookStore.getBids(), {id: order.id}))
         const bestOrderIndex = _.findIndex(OrderBookStore.getBids(), (o) => {
-            return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
-                OrderUtil.priceOf(o).isGreaterThanOrEqualTo(OrderUtil.priceOf(order))
+            // The amount check is buggy, commented out as part of #165
+            //return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
+            return OrderUtil.priceOf(o).isGreaterThanOrEqualTo(OrderUtil.priceOf(order))
         })
         return orderIndex <= bestOrderIndex
     } else {
         const orderIndex = (_.findIndex(OrderBookStore.getOffers(), {id: order.id}))
         const bestOrderIndex = _.findIndex(OrderBookStore.getOffers(), (o) => {
-            return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
-                OrderUtil.priceOf(o).isLessThanOrEqualTo(OrderUtil.priceOf(order))
+            //return BigNumber(o.availableVolume).isGreaterThanOrEqualTo(BigNumber(order.availableVolume)) &&
+            return OrderUtil.priceOf(o).isLessThanOrEqualTo(OrderUtil.priceOf(order))
         })
         return orderIndex <= bestOrderIndex
     }

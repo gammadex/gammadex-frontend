@@ -40,6 +40,9 @@ export default class FillOrderBook extends React.Component {
         this.checkFillOrder = this.checkFillOrder.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
         this.onConfirm = this.onConfirm.bind(this)
+
+        // to avoid the ui flooring/snapping the amount, when the user changes the amount manually to overfill the order
+        this.ignoreNextSliderChange = false
     }
 
     componentDidMount() {
@@ -124,6 +127,7 @@ export default class FillOrderBook extends React.Component {
     }
 
     onOrderAmountChange = (value) => {
+        this.ignoreNextSliderChange = true
         TradeActions.fillOrderAmountChanged(value, this.state.fillOrder)
     }
 
@@ -171,6 +175,10 @@ export default class FillOrderBook extends React.Component {
     }
 
     onSliderChange = (value) => {
+        if(this.ignoreNextSliderChange) {
+            this.ignoreNextSliderChange = false
+            return
+        }
         if (this.isTakerBuyComponent()) {
             this.onOrderTotalChange(value)
         } else {
@@ -232,21 +240,21 @@ export default class FillOrderBook extends React.Component {
                 const orderMaxVolumeEth = safeBigNumber(fillOrder.order.ethAvailableVolumeBase)
                 const addendum= (
                     <div>
-                        <div>ETH balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(balanceEth))}>{balanceEth.toFixed(3).toString()}</span></div>
-                        <div className="mt-2">ETH volume available: <span className="clickable" onClick={() => this.onOrderTotalChange(orderMaxVolumeEth)}>{orderMaxVolumeEth.toFixed(3).toString()}</span></div>
+                        <div>Your ETH balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(balanceEth))}>{balanceEth.toFixed(3).toString()}</span></div>
+                        <div className="mt-2">ETH remaining on order: <span className="clickable" onClick={() => this.onOrderTotalChange(orderMaxVolumeEth)}>{orderMaxVolumeEth.toFixed(3).toString()}</span></div>
                     </div>
                 )
-                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={orderMaxVolumeEth} addendum={addendum} />
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={balanceEth} addendum={addendum} />
             } else {
                 const balanceTok = tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
                 const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
                 const addendum= (
                     <div>
-                        <div>{tokenSymbol} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(balanceTok))}>{balanceTok.toFixed(3).toString()}</span></div>
-                        <div className="mt-2">{tokenSymbol} volume available: <span className="clickable" onClick={() => this.onOrderAmountChange(orderMaxVolumeTok)}>{orderMaxVolumeTok.toFixed(3).toString()}</span></div>
+                        <div>Your {tokenSymbol} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(balanceTok))}>{balanceTok.toFixed(3).toString()}</span></div>
+                        <div className="mt-2">{tokenSymbol} remaining on order: <span className="clickable" onClick={() => this.onOrderAmountChange(orderMaxVolumeTok)}>{orderMaxVolumeTok.toFixed(3).toString()}</span></div>
                     </div>
                 )
-                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={orderMaxVolumeTok} addendum={addendum} />
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={balanceTok} addendum={addendum} />
             }
 
             body =
@@ -282,10 +290,10 @@ export default class FillOrderBook extends React.Component {
                                     <br/>{usdExchangeCost} USD
                                 </td>
                                 <td>
-                                    <span id={"ExchangeFeePopover"} onClick={this.toggleExchangeFeePopOver}>
+                                    <span id={type + "ExchangeFeePopover"} onClick={this.toggleExchangeFeePopOver}>
                                         <i className="fas fa-question-circle"></i>
                                     </span>
-                                    <Popover placement="bottom" isOpen={this.state.popOverOpenExchangeFee} target={"ExchangeFeePopover"} toggle={this.toggleExchangeFeePopOver}>
+                                    <Popover placement="bottom" isOpen={this.state.popOverOpenExchangeFee} target={type + "ExchangeFeePopover"} toggle={this.toggleExchangeFeePopOver}>
                                         <PopoverBody>
                                             0.3% fee deducted by the EtherDelta smart contract
                                         </PopoverBody>

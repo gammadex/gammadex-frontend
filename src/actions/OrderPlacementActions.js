@@ -384,8 +384,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
 
         let noMarketTrades = null
         let priceAwayFromLastTraded = null
-        let noOffers = null
-        let noBids = null
+        let noOrders = null
         let crossedSpread = null
 
         if(OrderBookStore.getTrades().length === 0) {
@@ -404,24 +403,29 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
 
         if(OrderBookStore.getOffers().length === 0) {
             hasPriceWarning = true
-            noOffers = <li>There are no offers to SELL {tokenName} on the order book</li>            
+            noOrders = <li>There are no orders to SELL {tokenName}</li>            
         } else if (orderSide === OrderSide.BUY) {
             const bestOffer = safeBigNumber(OrderBookStore.getOffers()[0].price)
             if(safeBigNumber(priceControlled).isGreaterThan(bestOffer)) {
                 hasPriceWarning = true
-                crossedSpread = <li>Your order price of {priceControlled} is greater than the best offer ({bestOffer.toString()})</li>
+                crossedSpread = <li>Your order price of {priceControlled} is greater than the best offer ({bestOffer.toFixed(8)})</li>
             }
         }
 
         if(OrderBookStore.getBids().length === 0) {
             hasPriceWarning = true
-            noBids = <li>There are no offers to BUY {tokenName} on the order book</li>            
+            noOrders = <li>There are no orders to BUY {tokenName}</li>            
         } else if (orderSide === OrderSide.SELL) {
             const bestBid = safeBigNumber(OrderBookStore.getBids()[0].price)
             if(safeBigNumber(priceControlled).isLessThan(bestBid)) {
                 hasPriceWarning = true
-                crossedSpread = <li>Your order price of {priceControlled} is less than the best bid ({bestBid.toString()})</li>
+                crossedSpread = <li>Your order price of {priceControlled} is less than the best bid ({bestBid.toFixed(8)})</li>
             }
+        }
+
+        if(OrderBookStore.getOffers().length === 0 && OrderBookStore.getBids().length === 0) {
+            hasPriceWarning = true
+            noOrders = <li>There are no orders for {tokenName}</li>  
         }
 
         const side = orderSide === OrderSide.BUY ? "BUY" : "SELL"
@@ -430,16 +434,14 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
                 <div>
                     <div><i className="fas fa-exclamation-triangle" /> Fair value warning</div>
                     <br />
-                    <ul>
+                    <ul className="fair-value-list">
                         {noMarketTrades}
                         {priceAwayFromLastTraded}
-                        {noOffers}
+                        {noOrders}
                         {crossedSpread}
-                        {noBids}
                     </ul>
                     <div>Dismiss this warning if you intend to:</div>
                     <div><strong>{side} {amountControlled} {tokenName} and {orderSide === OrderSide.BUY ? "PAY" : "RECEIVE"} {totalEthControlled} ETH</strong></div>
-                    <div><strong>Price: {priceControlled} ETH/{tokenName}</strong></div>
                 </div>
         }
     }

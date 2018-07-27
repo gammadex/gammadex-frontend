@@ -39,6 +39,9 @@ export default class MakeOrder extends React.Component {
         this.saveOrderPlacementState = this.saveOrderPlacementState.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
         this.onDismissPriceWarningAlert = this.onDismissPriceWarningAlert.bind(this)
+
+        // to avoid the ui flooring/snapping the amount, when the user changes the amount manually to overfill the order
+        this.ignoreNextSliderChange = false
     }
 
     isMakerBuyComponent() {
@@ -67,6 +70,7 @@ export default class MakeOrder extends React.Component {
     }
 
     onOrderAmountChange = (value) => {
+        this.ignoreNextSliderChange = true
         if (this.isMakerBuyComponent()) {
             OrderPlacementActions.buyOrderAmountChanged(value)
         } else {
@@ -185,6 +189,10 @@ export default class MakeOrder extends React.Component {
     }
 
     onSliderChange = (value) => {
+        if(this.ignoreNextSliderChange) {
+            this.ignoreNextSliderChange = false
+            return
+        }
         if (this.isMakerBuyComponent()) {
             this.onOrderTotalChange(value)
         } else {
@@ -247,13 +255,14 @@ export default class MakeOrder extends React.Component {
 
         const balanceUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
 
+        const sliderDisabled = price ==null || price === "" || safeBigNumber(price).isZero() ? true : false
         let slider = null
         if (type === OrderSide.BUY) {
-            const addendum = <span>{balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(available))}>{available.toFixed(3).toString()}</span></span>
-            slider = <OrderPercentageSlider onChange={this.onSliderChange} value={total} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
+            const addendum = <span>Your {balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(available))}>{available.toFixed(3).toString()}</span></span>
+            slider = <OrderPercentageSlider disabled={sliderDisabled} onChange={this.onSliderChange} value={total} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
         } else {
-            const addendum = <span>{balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(available))}>{available.toFixed(3).toString()}</span></span>
-            slider = <OrderPercentageSlider onChange={this.onSliderChange} value={amount} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
+            const addendum = <span>Your {balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(available))}>{available.toFixed(3).toString()}</span></span>
+            slider = <OrderPercentageSlider disabled={sliderDisabled} onChange={this.onSliderChange} value={amount} minValue={safeBigNumber(0)} maxValue={available} addendum={addendum} />
         }
 
         const body = (

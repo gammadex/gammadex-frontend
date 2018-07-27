@@ -99,7 +99,7 @@ class OrderPercentageSlider extends React.Component {
 
     createSlider() {
         const {sliderValue} = this.state
-
+        const {disabled} = this.props
         let sliderComponent = null
         if (_.isNumber(sliderValue)) {
             const marks = {
@@ -111,7 +111,7 @@ class OrderPercentageSlider extends React.Component {
             }
 
             sliderComponent = <div className="percentage-slider">
-                <Slider min={0} max={100} defaultValue={sliderValue} value={sliderValue} marks={marks} included={false} onChange={this.onChangeByPercentage}/>
+                <Slider disabled={disabled} min={0} max={100} defaultValue={sliderValue} value={sliderValue} marks={marks} included={false} onChange={this.onChangeByPercentage}/>
             </div>
         }
 
