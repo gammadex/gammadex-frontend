@@ -337,7 +337,7 @@ h1.main-header {
     font-size: 80%;
 }
 
-.disclaimer-md p, li {
+.disclaimer-md p, .disclaimer-md li {
     opacity: 0.6;
     line-height: 1.4em
 }
@@ -815,6 +815,11 @@ input[type="number"] {
     vertical-align: top;
     padding: 6px;
     opacity: 0.5;
+}
+
+.order-hash-label {
+    padding-left: 15px;
+    padding-top: 6px;
 }
 
 .best-execution-warning {
