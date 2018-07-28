@@ -1,12 +1,12 @@
 import React from "react"
 import _ from "lodash"
-import {TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, Label, Input, FormText} from 'reactstrap'
-import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
+import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, Label, Input, FormText } from 'reactstrap'
+import { Box, BoxSection, BoxHeader } from "../CustomComponents/Box"
 import NumericInput from "./NumericInput.js"
 import OrderSide from "../../OrderSide"
 import OrderPlacementStore from "../../stores/OrderPlacementStore"
 import AccountStore from "../../stores/AccountStore"
-import {safeBigNumber, baseWeiToEth, tokWeiToEth} from "../../EtherConversion"
+import { safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
 import * as OrderPlacementActions from "../../actions/OrderPlacementActions"
 import OrderEntryField from "../../OrderEntryField"
 import ExpiryType from "../../ExpiryType"
@@ -15,6 +15,10 @@ import AccountType from "../../AccountType"
 import OrderFactory from "../../OrderFactory"
 import TokenRepository from "../../util/TokenRepository"
 import OrderPercentageSlider from "./OrderPercentageSlider"
+import { Popover, PopoverBody } from "reactstrap/dist/reactstrap"
+import { truncate } from "../../util/FormatUtil"
+import ReactMarkdown from 'react-markdown'
+import wording from './OrderHashWording'
 
 export default class MakeOrder extends React.Component {
     constructor(props) {
@@ -34,7 +38,10 @@ export default class MakeOrder extends React.Component {
             orderHash: null,
             selectedAccountType: null,
             exchangeBalanceEthWei: 0,
-            exchangeBalanceTokWei: 0
+            exchangeBalanceTokWei: 0,
+            popOverOpenOrderHash: false,
+            orderHashText: wording,
+            orderUnsigned: null
         }
         this.saveOrderPlacementState = this.saveOrderPlacementState.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
@@ -45,7 +52,7 @@ export default class MakeOrder extends React.Component {
     }
 
     isMakerBuyComponent() {
-        const {type} = this.props
+        const { type } = this.props
         return type === OrderSide.BUY
     }
 
@@ -118,7 +125,8 @@ export default class MakeOrder extends React.Component {
                 expiryType: orderPlacementState.buyOrderExpiryType,
                 expireAfterBlocks: orderPlacementState.buyOrderExpireAfterBlocks,
                 expireAfterHumanReadableString: orderPlacementState.buyOrderExpireHumanReadableString,
-                orderHash: orderPlacementState.buyOrderHash
+                orderHash: orderPlacementState.buyOrderHash,
+                orderUnsigned: orderPlacementState.buyOrderUnsigned
             })
         } else {
             this.setState({
@@ -133,17 +141,24 @@ export default class MakeOrder extends React.Component {
                 expiryType: orderPlacementState.sellOrderExpiryType,
                 expireAfterBlocks: orderPlacementState.sellOrderExpireAfterBlocks,
                 expireAfterHumanReadableString: orderPlacementState.sellOrderExpireHumanReadableString,
-                orderHash: orderPlacementState.sellOrderHash
+                orderHash: orderPlacementState.sellOrderHash,
+                orderUnsigned: orderPlacementState.sellOrderUnsigned
             })
         }
     }
 
     saveAccountState() {
-        const {selectedAccountType, exchangeBalanceEthWei, exchangeBalanceTokWei} = AccountStore.getAccountState()
+        const { selectedAccountType, exchangeBalanceEthWei, exchangeBalanceTokWei } = AccountStore.getAccountState()
         this.setState({
             selectedAccountType: selectedAccountType,
             exchangeBalanceEthWei: exchangeBalanceEthWei,
             exchangeBalanceTokWei: exchangeBalanceTokWei
+        })
+    }
+
+    toggleOrderHashPopOver = () => {
+        this.setState({
+            popOverOpenOrderHash: !this.state.popOverOpenOrderHash
         })
     }
 
@@ -170,7 +185,7 @@ export default class MakeOrder extends React.Component {
     }
 
     isSubmitDisabled = () => {
-        const {balanceRetrieved} = this.props
+        const { balanceRetrieved } = this.props
 
         const {
             total,
@@ -189,7 +204,7 @@ export default class MakeOrder extends React.Component {
     }
 
     onSliderChange = (value) => {
-        if(this.ignoreNextSliderChange) {
+        if (this.ignoreNextSliderChange) {
             this.ignoreNextSliderChange = false
             return
         }
@@ -220,7 +235,9 @@ export default class MakeOrder extends React.Component {
             orderHash,
             selectedAccountType,
             exchangeBalanceEthWei,
-            exchangeBalanceTokWei
+            exchangeBalanceTokWei,
+            orderHashText,
+            orderUnsigned
         } = this.state
 
         let available = safeBigNumber(0)
@@ -249,13 +266,28 @@ export default class MakeOrder extends React.Component {
         }
 
         let prefixedOrderHash = ""
-        if (orderHash != null) {
-            prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
-        }
+        let injectedOrderHashText = ""
 
         const balanceUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
 
-        const sliderDisabled = price ==null || price === "" || safeBigNumber(price).isZero() ? true : false
+        if (orderHash != null && orderUnsigned != null) {
+            const tokenGetUnitName = type === OrderSide.BUY ? tokenSymbol : 'ETH'
+            const tokenGiveUnitName = type === OrderSide.BUY ? 'ETH' : tokenSymbol
+            prefixedOrderHash = OrderFactory.prefixMessage(orderHash)
+            injectedOrderHashText = orderHashText
+                .replace('INSERT-ORDER-HASH', prefixedOrderHash)
+                .replace('INSERT-CONTRACT-ADDR', orderUnsigned.contractAddr)
+                .replace('INSERT-TOKEN-GET', orderUnsigned.tokenGet)
+                .replace(/INSERT-TOKEN-GET-NAME/g, tokenGetUnitName)
+                .replace('INSERT-AMOUNT-GET', orderUnsigned.amountGet.toFixed())
+                .replace('INSERT-TOKEN-GIVE', orderUnsigned.tokenGive)
+                .replace(/INSERT-TOKEN-GIVE-NAME/g, tokenGiveUnitName)
+                .replace('INSERT-AMOUNT-GIVE', orderUnsigned.amountGive.toFixed())
+                .replace('INSERT-EXPIRES', orderUnsigned.expires.toFixed())
+                .replace('INSERT-NONCE', orderUnsigned.nonce)
+        }
+
+        const sliderDisabled = price == null || price === "" || safeBigNumber(price).isZero() ? true : false
         let slider = null
         if (type === OrderSide.BUY) {
             const addendum = <span>Your {balanceUnitName} balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(available))}>{available.toFixed(3).toString()}</span></span>
@@ -269,29 +301,29 @@ export default class MakeOrder extends React.Component {
             <BoxSection className={"order-box"}>
                 <form onSubmit={this.onSubmit}>
                     <NumericInput name="Price" value={price} unitName="ETH"
-                                  onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"}/>
+                        onChange={this.onOrderPriceChange} fieldName={type + "OrderPrice"} />
 
                     <NumericInput name="Amount" value={amount} unitName={tokenSymbol}
-                                  onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
-                                  valid={amountFieldValid} errorMessage={amountFieldErrorMessage}/>
+                        onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
+                        valid={amountFieldValid} errorMessage={amountFieldErrorMessage} />
 
                     <Row>
-                        <Col sm={3}/>
+                        <Col sm={3} />
                         <Col sm={9}>
                             {slider}
                         </Col>
                     </Row>
 
                     <NumericInput name="Total" value={total} unitName="ETH"
-                                  onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
-                                  valid={totalFieldValid} errorMessage={totalFieldErrorMessage}/>
+                        onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
+                        valid={totalFieldValid} errorMessage={totalFieldErrorMessage} />
 
                     <FormGroup row>
                         <Label for={type + "ExpiryType"} sm={3}>Expiry</Label>
                         <Col sm={9}>
                             <Input type="select" id={type + "ExpiryType"}
-                                   value={expiryType === ExpiryType.GOOD_TILL_CANCEL ? "Good Till Cancel" : "Expire After"}
-                                   onChange={this.onExpiryTypeChange}>
+                                value={expiryType === ExpiryType.GOOD_TILL_CANCEL ? "Good Till Cancel" : "Expire After"}
+                                onChange={this.onExpiryTypeChange}>
                                 <option>Good Till Cancel</option>
                                 <option>Expire After</option>
                             </Input>
@@ -301,8 +333,8 @@ export default class MakeOrder extends React.Component {
 
                     <Conditional displayCondition={expiryType === ExpiryType.BLOCKS}>
                         <NumericInput name="" value={expireAfterBlocks} unitName="Blocks"
-                                      forceInteger={true} placeholder="0"
-                                      onChange={this.onExpireAfterBlocksChange} fieldName={type + "ExpireAfterBlocks"}/>
+                            forceInteger={true} placeholder="0"
+                            onChange={this.onExpireAfterBlocksChange} fieldName={type + "ExpireAfterBlocks"} />
                         {/* helpMessage={expireAfterHumanReadableString} /> */}
                         <FormGroup row>
                             <Label for={type + "ExpiryType"} sm={3}></Label>
@@ -313,28 +345,42 @@ export default class MakeOrder extends React.Component {
 
                     </Conditional>
 
-                    <Conditional displayCondition={orderValid && orderHash != null && selectedAccountType && selectedAccountType === AccountType.METAMASK}>
-                        <hr/>
-                        <FormGroup row>
-                            <Label for={type + "MetaMaskHash"} sm={3}>MetaMask Order Hash</Label>
+                    <Conditional displayCondition={orderValid && orderHash != null}>
+                        <Row>
+                            <Col sm={3} className="order-hash-label">Hash</Col>
                             <Col sm={9}>
-                                <Input id={type + "MetaMaskHash"}
-                                       disabled={true}
-                                       value={prefixedOrderHash}/>
-                                <FormText color="muted">
-                                    This hex-encoded hash represents the above Order details in compressed form and is used by the EtherDelta Smart Contract.
-                                    Please ensure it is this message you sign in MetaMask when prompted.
-                                </FormText>
+                                <div className="trading-fees">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>{truncate(prefixedOrderHash, { left: 10, right: 5 })}</td>
+                                                <td>
+                                                    <span id={type + "OrderHashPopover"} onClick={this.toggleOrderHashPopOver}>
+                                                        <i className="fas fa-question-circle"></i>
+                                                    </span>
+                                                    <Popover className="order-hash-popover" placement="bottom" isOpen={this.state.popOverOpenOrderHash} target={type + "OrderHashPopover"} toggle={this.toggleOrderHashPopOver}>
+                                                        <PopoverBody>
+                                                            <div className='order-hash-md'>
+                                                                <ReactMarkdown source={injectedOrderHashText} />
+                                                            </div>
+                                                        </PopoverBody>
+                                                    </Popover>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </Col>
-                        </FormGroup>
+                        </Row>
+
                     </Conditional>
 
                     {priceWarningAlert}
                     <FormGroup row className="hdr-stretch-ctr">
                         <Col sm={9}>
                             <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
-                                    hidden={orderHasPriceWarning && orderValid}
-                                    onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
+                                hidden={orderHasPriceWarning && orderValid}
+                                onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
                             <Conditional displayCondition={!balanceRetrieved}>
                                 <FormText color="muted">{`Please unlock a wallet to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
                             </Conditional>

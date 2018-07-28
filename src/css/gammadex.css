@@ -822,6 +822,10 @@ input[type="number"] {
     padding-top: 6px;
 }
 
+.order-hash-popover {
+    max-width: 40%;
+}
+
 .best-execution-warning {
     margin-top: 10px;
 }
