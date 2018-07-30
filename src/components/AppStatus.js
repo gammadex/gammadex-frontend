@@ -153,12 +153,11 @@ export default class AppStatus extends React.Component {
         const ethereumNetworkState = _.maxBy([accountState, web3State], st => st.index)
 
         return (
-            <div>
-                <button className="btn" id="appStatus" type="button" onClick={this.toggleShowStatus} style={{ "height": "36px"}}>
-                    <div>
-                        <span className={"fas fa-lg " + overall.class}></span>
-                        <span className="ml-2">Status</span>
-                    </div>
+            <li className="nav-item dropdown">
+
+                <button className="nav-link dropdown-toggle btn btn-link" style={{ "height": "36px" }} id="appStatus" aria-haspopup="true" aria-expanded="false" onClick={this.toggleShowStatus}>
+                <span className={"fas fa-lg " + overall.class}></span>&nbsp;
+                    Status&nbsp;&nbsp;
                 </button>
 
                 <Popover target="appStatus" isOpen={this.state.popoverOpen} placement="bottom" toggle={this.toggleShowStatus}>
@@ -178,7 +177,7 @@ export default class AppStatus extends React.Component {
                                             </Conditional>
                                         </AppStatusRow>
                                     </div>
-                                    <Conditional displayCondition={accountType !=null && gasState != States.OK}>
+                                    <Conditional displayCondition={accountType != null && gasState != States.OK}>
                                         <div className="sub-card">
                                             <AppStatusRow title="Gas" state={gasState} message={gasDescription} />
                                         </div>
@@ -188,7 +187,7 @@ export default class AppStatus extends React.Component {
                         </PopoverBody>
                     </div>
                 </Popover>
-            </div>
+            </li>
         )
     }
 }

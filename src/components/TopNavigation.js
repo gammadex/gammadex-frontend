@@ -67,20 +67,12 @@ class TopNavigation extends Component {
 
                     <TokenSummary token={token} />
 
-                    <form className="form-inline">
-                        <div className="form-group top-spinner mr-1">
-                            <MarketResponseSpinner />
-                        </div>
-                        <div className="form-group mr-1">
-                            <AppStatus />
-                        </div>
-                    </form>
-
                     <div className="full-height">
+                        <MarketResponseSpinner />
                         <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
                             <ul className="navbar-nav navbar-right mr-auto">
-                            <GasPriceChooser />
-
+                                <AppStatus />
+                                <GasPriceChooser />
                                 <AccountDropdown/>
                             </ul>
                         </nav>
