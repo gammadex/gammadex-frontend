@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import TokenSummary from '../components/TokenSummary'
-import Account from '../components/Account'
 import Routes from '../Routes'
 import GasPriceChooser from "../components/GasPriceChooser"
 import AppStatus from "./AppStatus"
@@ -9,6 +8,7 @@ import * as TokenApi from "../apis/TokenApi"
 import TokenStore from "../stores/TokenStore"
 import TokenStats from "./TokenStats"
 import MarketResponseSpinner from "./MarketResponseSpinner"
+import AccountDropdown from "./AccountDropdown"
 
 class TopNavigation extends Component {
     constructor() {
@@ -77,10 +77,15 @@ class TopNavigation extends Component {
                         <div className="form-group mr-1">
                             <GasPriceChooser />
                         </div>
-                        <div className="form-group mr-1">
-                            <Account />
-                        </div>
                     </form>
+
+                    <div className="full-height">
+                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                            <ul className="navbar-nav navbar-right mr-auto">
+                                <AccountDropdown/>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
                 <div className="lower-header">
                     <TokenStats token={token} />
