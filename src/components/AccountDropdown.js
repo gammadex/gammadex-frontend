@@ -105,11 +105,11 @@ class AccountDropdown extends React.Component {
                             <div class="dropdown-divider"></div>
                         </form>
                     </Conditional>
-                    <button class="dropdown-item" type="button" onClick={this.unlockWallet}><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;Unlock Wallet</button>
-                    <button class="dropdown-item" type="button" onClick={this.createNewWallet}><i class="fas fa-plus"></i>&nbsp;&nbsp;Create Wallet</button>
+                    <button class="dropdown-item" type="button" onClick={this.unlockWallet}><i class="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;Unlock Wallet</button>
+                    <button class="dropdown-item" type="button" onClick={this.createNewWallet}><i class="fas fa-plus text-muted"></i>&nbsp;&nbsp;Create Wallet</button>
                     <Conditional displayCondition={account != null}>
                         <div class="dropdown-divider"></div>
-                        <button class="dropdown-item" type="button" onClick={this.disconnectWallet}><i class="fas fa-sign-out-alt"></i>&nbsp;&nbsp;Disconnect</button>
+                        <button class="dropdown-item" type="button" onClick={this.disconnectWallet}><i class="fas fa-sign-out-alt text-muted"></i>&nbsp;&nbsp;Disconnect</button>
                     </Conditional>
                 </div>
             </li>
