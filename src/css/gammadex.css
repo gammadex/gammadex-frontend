@@ -609,14 +609,15 @@ input[type="number"] {
 .order-depth-chart-component {
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 30%;
+    flex-basis: 25%;
+    max-height: 25%;
 }
 
 .price-chart-component {
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 40%;
-    max-height: 40%;
+    flex-basis: 35%;
+    max-height: 35%;
     display: flex;
 }
 
