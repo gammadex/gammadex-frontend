@@ -161,7 +161,7 @@ export default class GasPriceChooser extends React.Component {
             <li className="nav-item dropdown" style={{ "width": "240px" }}>
 
                 <button className="nav-link dropdown-toggle btn btn-link" style={{ "height": "36px" }} id="gasPrice" aria-haspopup="true" aria-expanded="false" onClick={this.toggleGasPrice}>
-                    <span style={{ "fontSize": "160%", "verticalAlign": "middle" }} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
+                    <span style={{ "fontSize": "140%", "verticalAlign": "middle" }} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
                     Gas Price: {currentGasPriceGwei} Gwei
                     &nbsp;
                     <span class={"badge " + badgeType} style={{ "fontSize": "105%", "verticalAlign": "middle" }}>{availableQty} {availableUnit}</span>
