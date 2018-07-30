@@ -129,7 +129,7 @@ export default class GasPriceChooser extends React.Component {
     }
 
     render() {
-        const { popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei, estimateGas, accountState} = this.state
+        const { popoverOpen, currentGasPriceWei, ethereumPriceUsd, fastWei, averageWei, estimateGas, accountState } = this.state
 
 
         const averageGwei = GasPriceChooser.safeWeiToGwei(averageWei)
@@ -141,28 +141,32 @@ export default class GasPriceChooser extends React.Component {
 
         let availableQty = null
         let availableUnit = "ETH"
-        if(accountState) {
+        let badgeType = "badge-info"
+        if (accountState) {
             const { walletBalanceEthWei } = accountState
             const walletBalanceEth = baseWeiToEth(walletBalanceEthWei).toString()
-            if(popoverOpen && safeBigNumber(gasCostsEth.TAKE_ORDER).isGreaterThan(BigNumber(0))) {
+            if (popoverOpen && safeBigNumber(gasCostsEth.TAKE_ORDER).isGreaterThan(BigNumber(0))) {
                 availableQty = `~${Number(safeBigNumber(walletBalanceEth).div(safeBigNumber(gasCostsEth.TAKE_ORDER)).dp(0, BigNumber.ROUND_FLOOR))}`
                 availableUnit = "Trades"
             } else {
                 availableQty = <Round fallback="-">{walletBalanceEth}</Round>
             }
+
+            if (safeBigNumber(walletBalanceEth).isZero()) {
+                badgeType = "badge-danger"
+            }
         }
 
         return (
-            <div>
-                {/* <button className="btn" id="gasPrice" type="button" onClick={this.toggleGasPrice}>
-                    <i className="fas fa-gas-pump mr-2"></i>Gas Price:<span style={{ "width": "20px", "display": "inline-block", "textAlign": "right" }}>{currentGasPriceGwei}</span>&nbsp;Gwei
-                </button> */}
+            <li className="nav-item dropdown" style={{ "width": "240px" }}>
 
-                <button className="btn btn-lg" style={{ "textAlign": "left", "width": "180px", "height": "36px", "position": "relative" }} id="gasPrice" onClick={this.toggleGasPrice}>
-                    <span style={{ "position": "absolute", "right": "2px", "top": "50%", "transform": "translateY(-50%)", "fontSize": "100%" }} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
-                    <span style={{ "fontSize": "80%","position": "absolute", "top": "2px"}}>GAS Price: {currentGasPriceGwei} Gwei</span>
-                    <span style={{ "fontSize": "65%", "position": "absolute", "bottom": "2px" }}>Remaining Gas: {availableQty} {availableUnit}</span>
-                    </button>
+                <button className="nav-link dropdown-toggle btn btn-link" style={{ "height": "36px" }} id="gasPrice" aria-haspopup="true" aria-expanded="false" onClick={this.toggleGasPrice}>
+                    <span style={{ "fontSize": "160%", "verticalAlign": "middle" }} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
+                    Gas Price: {currentGasPriceGwei} Gwei
+                    &nbsp;
+                    <span class={"badge " + badgeType} style={{ "fontSize": "105%", "verticalAlign": "middle" }}>{availableQty} {availableUnit}</span>
+                    &nbsp;&nbsp;
+                </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
                     <div className="shadow gas-prices">
@@ -242,7 +246,7 @@ export default class GasPriceChooser extends React.Component {
                                         </table>
 
                                         <strong>The above costs are a rough guideline only</strong>. Actual gas cost can vary depending on a number of factors, including the token being operated on.
-                                        <hr/>
+                                        <hr />
 
                                         <form className="form-inline">
                                             <div className="form-check form-check-inline">
@@ -256,7 +260,7 @@ export default class GasPriceChooser extends React.Component {
                         </PopoverBody>
                     </div>
                 </Popover>
-            </div>
+            </li>
         )
     }
 }

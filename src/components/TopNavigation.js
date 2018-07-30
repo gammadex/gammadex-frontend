@@ -74,14 +74,13 @@ class TopNavigation extends Component {
                         <div className="form-group mr-1">
                             <AppStatus />
                         </div>
-                        <div className="form-group mr-1">
-                            <GasPriceChooser />
-                        </div>
                     </form>
 
                     <div className="full-height">
                         <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
                             <ul className="navbar-nav navbar-right mr-auto">
+                            <GasPriceChooser />
+
                                 <AccountDropdown/>
                             </ul>
                         </nav>
