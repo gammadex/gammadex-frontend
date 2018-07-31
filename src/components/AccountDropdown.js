@@ -99,7 +99,7 @@ class AccountDropdown extends React.Component {
                     <Conditional displayCondition={account != null}>
                         <form>
                             <div class="dropdown-item disabled">
-                                <h6>Wallet: {account}&nbsp;&nbsp;<Etherscan type="address" address={account} display="icon" /></h6>
+                                <h6><strong>Address</strong> {account}&nbsp;&nbsp;<Etherscan type="address" address={account} display="icon" /></h6>
                                 <h5><span class="badge badge-info">{selectedAccountType}</span></h5>
                             </div>
                             <div class="dropdown-divider"></div>
