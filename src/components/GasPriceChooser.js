@@ -141,7 +141,7 @@ export default class GasPriceChooser extends React.Component {
 
         let availableQty = null
         let availableUnit = "ETH"
-        let badgeType = "badge-info"
+        let badgeType = "badge-success"
         if (accountState) {
             const { walletBalanceEthWei } = accountState
             const walletBalanceEth = baseWeiToEth(walletBalanceEthWei).toString()
