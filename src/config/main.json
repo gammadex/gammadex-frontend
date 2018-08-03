@@ -67,6 +67,37 @@
       }
     }
   },
+  "prodlocal": {
+    "ethereumNetworkId": 1,
+    "web3": "https://mainnet.infura.io",
+    "etherscan": "https://etherscan.io",
+    "sockets": {
+      "etherdelta1": "https://socket01.etherdelta.com",
+      "etherdelta2": "https://socket02.etherdelta.com",
+      "etherdelta3": "https://socket03.etherdelta.com",
+      "etherdelta4": "https://socket04.etherdelta.com",
+      "etherdelta5": "https://socket05.etherdelta.com",
+      "etherdelta6": "https://socket06.etherdelta.com",
+      "forkdelta": "https://api.forkdelta.com",
+      "default": "http://localhost:4300"
+    },
+    "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+    "defaultPair": {
+      "token": {
+        "symbol": "VEN",
+        "name": "VeChain Token",
+        "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
+        "decimals": 18,
+        "isListed": true
+      },
+      "base": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "decimals": 18
+      }
+    }
+  },  
   "production": {
     "ethereumNetworkId": 1,
     "web3": "https://mainnet.infura.io",
