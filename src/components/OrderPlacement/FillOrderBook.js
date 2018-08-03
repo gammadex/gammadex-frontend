@@ -8,7 +8,7 @@ import TradeStore from "../../stores/TradeStore"
 import GasPriceStore from "../../stores/GasPriceStore"
 import AccountStore from "../../stores/AccountStore"
 import NumericInput from "./NumericInput.js"
-import { priceOf, isTakerSell } from "../../OrderUtil.js"
+import { priceOf, isTakerSell, isTakerBuy } from "../../OrderUtil.js"
 import OrderSide from "../../OrderSide"
 import OrderEntryField from "../../OrderEntryField"
 import * as TradeActions from "../../actions/TradeActions"
@@ -211,7 +211,7 @@ export default class FillOrderBook extends React.Component {
             const exchangeCostUnits = isTakerSell(fillOrder.order) ? tokenSymbol : "ETH"
 
             let usdExchangeCost = ""
-            if (exchangeCost) {
+            if (exchangeCost && isTakerBuy(fillOrder.order)) {
                 if (exchangeCostUnits === 'ETH') {
                     usdExchangeCost = exchangeCost.times(safeBigNumber(ethereumPriceUsd))
                 } else {
@@ -286,7 +286,7 @@ export default class FillOrderBook extends React.Component {
                                 <td>0.3% Exchange Fee</td>
                                 <td>
                                     {exchangeCost.toFixed(5)} {exchangeCostUnits}
-                                    <br/>{usdExchangeCost} USD
+                                    <br/>{usdExchangeCost === "" ? "" : usdExchangeCost + " USD"}
                                 </td>
                                 <td>
                                     <span id={type + "ExchangeFeePopover"} onClick={this.toggleExchangeFeePopOver}>
