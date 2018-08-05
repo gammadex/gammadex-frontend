@@ -164,7 +164,7 @@ export default class GasPriceChooser extends React.Component {
                     <span style={{ "fontSize": "140%", "verticalAlign": "middle" }} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
                     Gas Price: {currentGasPriceGwei} Gwei
                     &nbsp;
-                    <span class={"badge " + badgeType} style={{ "fontSize": "105%", "verticalAlign": "middle" }}>{availableQty} {availableUnit}</span>
+                    <span className={"badge " + badgeType} style={{ "fontSize": "105%", "verticalAlign": "middle" }}>{availableQty} {availableUnit}</span>
                     &nbsp;&nbsp;
                 </button>
 
