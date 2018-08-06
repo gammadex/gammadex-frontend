@@ -79,9 +79,9 @@ class PrivateKeyForm extends React.Component {
             if (this.state.rememberKey) {
                 if (this.state.useEncryption) {
                     const encryptedPrivateKey = Encryption.encrypt(privateKey, password)
-                    WalletDao.savePrimaryKeyWallet(encryptedPrivateKey, true)
+                    WalletDao.savePrimaryKeyWallet(privateKeyAddress, encryptedPrivateKey, true)
                 } else {
-                    WalletDao.savePrimaryKeyWallet(privateKey, false)
+                    WalletDao.savePrimaryKeyWallet(privateKeyAddress, privateKey, false)
                 }
             } else {
                 WalletDao.forgetStoredWallet()
@@ -124,6 +124,7 @@ class PrivateKeyForm extends React.Component {
             confirmPassword,
             passwordError,
             confirmPasswordError,
+            privateKeyAddress
         } = this.state
 
         const privateKeyClassName = this.getKeyInputClassName(enteredPrivateKey, isValidKey)
@@ -154,6 +155,7 @@ class PrivateKeyForm extends React.Component {
 
                 <Conditional displayCondition={rememberKey}>
                     <EncryptionSection
+                        privateKeyAddress={privateKeyAddress}
                         useEncryption={useEncryption}
                         password={password}
                         confirmPassword={confirmPassword}

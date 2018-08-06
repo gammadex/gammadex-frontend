@@ -3,6 +3,7 @@ import React from "react"
 export default class PrivateKey extends React.Component {
     render() {
         const {
+            privateKeyAddress,
             password,
             confirmPassword,
             passwordError,
@@ -22,6 +23,14 @@ export default class PrivateKey extends React.Component {
         }
 
         return <div>
+
+            <div className="form-group">
+                <input type="text"
+                       name="username"
+                       hidden={true}
+                       value={privateKeyAddress ? privateKeyAddress : ""}/>
+            </div>
+
             <div className="form-group">
                 <input type="password"
                        name="password"

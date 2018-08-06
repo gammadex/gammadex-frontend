@@ -238,17 +238,23 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.ACCOUNT_CREATED: {
                 this.newAccount = action.account
+                this.emitChange()
+                break
+            }    
+            case ActionNames.KEYSTORE_CREATED: {
                 this.newAccountKeyStore = action.keyStore
                 this.newAccountKeyStoreFileName = action.keyStoreFileName
                 this.emitChange()
                 break
-            }    
+            }              
             case ActionNames.NEW_ACCOUNT_SHOW_PRIVATE_KEY_UPDATED: {
                 this.newAccountShowPrivateKey = action.newAccountShowPrivateKey
                 this.emitChange()
                 break
             }     
             case ActionNames.RESET_NEW_ACCOUNT_WORKFLOW: {
+                this.privateKeyPassword = ""
+                this.confirmPrivateKeyPassword = ""
                 this.newAccount = null
                 this.newAccountKeyStore = null
                 this.newAccountKeyStoreFileName = null

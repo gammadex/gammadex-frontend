@@ -10,13 +10,16 @@ import {Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import * as Encryption from "../../util/Encryption"
 import Conditional from "../CustomComponents/Conditional"
 import * as AccountApi from "../../apis/AccountApi"
+import { toDataUrl } from '../../lib/blockies.js'
 
 export default class StoredPrivateKeyWalletUnlocker extends React.Component {
     constructor(props) {
         super(props)
 
+        const storedWallet = WalletDao.readWallet()
         this.state = {
             showModal: WalletStore.isDisplayUnlockPrivateKeyModal(),
+            address: storedWallet ? storedWallet.data.address : "",
             password: null,
             passwordError: null,
         }
@@ -75,13 +78,23 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
     }
 
     render() {
-        const {showModal, passwordError} = this.state
+        const {showModal, passwordError, address} = this.state
         const passwordErrorClass = passwordError ? " is-invalid" : ""
 
+        const walletImg = address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
+
         return <Modal isOpen={showModal} toggle={this.hideModal} keyboard>
-            <ModalHeader toggle={this.hideModal}>Unlock saved private key</ModalHeader>
+            <ModalHeader toggle={this.hideModal}><h5 className="text-muted">Unlock saved wallet</h5>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>
             <form onSubmit={this.handleUnlock}>
                 <ModalBody>
+
+                    <div className="form-group">
+                        <input type="text"
+                            name="username"
+                            hidden={true}
+                            value={address}/>
+                    </div>
+
                     <div className="form-group">
                         <input type="password"
                                name="password"

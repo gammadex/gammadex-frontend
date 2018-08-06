@@ -101,10 +101,16 @@ export function changeUsePrivateKeyEncryption(isUseEncryption) {
     })
 }
 
-export function accountCreated(account, keyStore, keyStoreFileName) {
+export function accountCreated(account) {
     dispatcher.dispatch({
         type: ActionNames.ACCOUNT_CREATED,
-        account,
+        account
+    })
+}
+
+export function keyStoreCreated(keyStore, keyStoreFileName) {
+    dispatcher.dispatch({
+        type: ActionNames.KEYSTORE_CREATED,
         keyStore,
         keyStoreFileName
     })

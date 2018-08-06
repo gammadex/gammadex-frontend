@@ -24,10 +24,11 @@ export function saveKeyStoreWallet(keyStoreFile, keyStoreFileName) {
     localStorage.wallet = JSON.stringify(wallet)
 }
 
-export function savePrimaryKeyWallet(key, encrypted) {
+export function savePrimaryKeyWallet(address, key, encrypted) {
     const wallet = {
         type: AccountType.PRIVATE_KEY,
         data: {
+            address: address,
             key: key,
             encrypted: encrypted
         }

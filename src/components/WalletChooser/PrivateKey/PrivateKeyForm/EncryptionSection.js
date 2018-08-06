@@ -5,6 +5,7 @@ import Conditional from "../../../CustomComponents/Conditional"
 export default class PrivateKey extends React.Component {
     render() {
         const {
+            privateKeyAddress,
             useEncryption,
             password,
             confirmPassword,
@@ -19,6 +20,7 @@ export default class PrivateKey extends React.Component {
 
             <Conditional displayCondition={useEncryption}>
                 <PasswordSection
+                    privateKeyAddress={privateKeyAddress}
                     password={password}
                     confirmPassword={confirmPassword}
                     passwordError={passwordError}

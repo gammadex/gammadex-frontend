@@ -11,10 +11,11 @@ import PasswordSection from "./WalletChooser/PrivateKey/PrivateKeyForm/PasswordS
 import EtherDeltaWeb3 from '../EtherDeltaWeb3'
 import Conditional from "./CustomComponents/Conditional"
 import Download from "./CustomComponents/Download"
-import {withRouter} from "react-router-dom"
+import { withRouter } from "react-router-dom"
 import * as AccountApi from "../apis/AccountApi"
 import * as Encryption from "../util/Encryption"
 import * as WalletDao from "../util/WalletDao"
+import { toDataUrl } from '../lib/blockies.js'
 
 class WalletCreator extends Component {
     constructor(props) {
@@ -79,16 +80,15 @@ class WalletCreator extends Component {
 
     createNewWallet = (event) => {
         event.preventDefault()
-        const { password } = this.state
-        const account = EtherDeltaWeb3.createNewAccount()
-        const keyStore = EtherDeltaWeb3.encryptToKeyStore(account.privateKey, password)
+        const { password, newAccount } = this.state
+        const keyStore = EtherDeltaWeb3.encryptToKeyStore(newAccount.privateKey, password)
         const keyStoreFileName = `UTC--${new Date().toISOString().replace(':', '-')}--${keyStore.id}`
-        WalletActions.accountCreated(account, keyStore, keyStoreFileName)
+        WalletActions.keyStoreCreated(keyStore, keyStoreFileName)
 
-        EtherDeltaWeb3.initForPrivateKey(account.address, account.privateKey)
+        EtherDeltaWeb3.initForPrivateKey(newAccount.address, newAccount.privateKey)
         AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY)
-        const encryptedPrivateKey = Encryption.encrypt(account.privateKey, password)
-        WalletDao.savePrimaryKeyWallet(encryptedPrivateKey, true)
+        const encryptedPrivateKey = Encryption.encrypt(newAccount.privateKey, password)
+        WalletDao.savePrimaryKeyWallet(newAccount.address, encryptedPrivateKey, true)
     }
 
     showPrivateKey = (event) => {
@@ -98,6 +98,7 @@ class WalletCreator extends Component {
 
     goToExchange = (event) => {
         event.preventDefault()
+        WalletActions.resetNewAccountWorkflow()
         this.props.history.push("/")
     }
 
@@ -116,11 +117,25 @@ class WalletCreator extends Component {
         const createWalletDisabled = this.getCreateWalletDisabled()
         const createWalletDisabledClass = createWalletDisabled ? "" : "disabled"
         const privateKey = newAccount == null ? "" : newAccount.privateKey
+        const address = newAccount == null ? "" : newAccount.address
+        const walletImg = address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
+
         return (
             <Box title="Create New Wallet">
+
                 <Conditional displayCondition={newAccount == null}>
                     <BoxSection>
-                        <h3>Enter a Strong Password</h3>
+                        <h4 className="text-muted">Creating New Wallet...</h4>
+                    </BoxSection>
+                </Conditional>
+
+                <Conditional displayCondition={newAccount != null && newAccountKeyStore == null}>
+                    <BoxSection>
+                        <h4 className="text-muted">Wallet Created!</h4>
+                        <h3>{walletImg}&nbsp;{address}</h3>
+                        <br/>
+                        <br/>
+                        <h4>Enter a Strong Password</h4>
                         <br />
                         <div className="row">
                             <div className="col-lg-12">
@@ -128,6 +143,7 @@ class WalletCreator extends Component {
                                     <h5>Save this password! If lost it cannot be recovered or reset. GammaDex does not store your password and cannot recover or reset it.</h5>
                                     <br />
                                     <PasswordSection
+                                        privateKeyAddress={address}
                                         password={password}
                                         confirmPassword={confirmPassword}
                                         passwordError={passwordError}
@@ -135,7 +151,7 @@ class WalletCreator extends Component {
                                         onPasswordChange={this.handlePrivateKeyPasswordChange}
                                         onConfirmPasswordChange={this.handleConfirmPrivateKeyPasswordChange} />
                                     <div className="form-group">
-                                        <input className={"btn btn-primary " + createWalletDisabledClass} disabled={!createWalletDisabled} type="submit" value="Create New Wallet" />
+                                        <input className={"btn btn-primary " + createWalletDisabledClass} disabled={!createWalletDisabled} type="submit" value="Encrypt Wallet" />
                                     </div>
                                 </form>
                             </div>
@@ -143,8 +159,9 @@ class WalletCreator extends Component {
                     </BoxSection>
                 </Conditional>
 
-                <Conditional displayCondition={newAccount != null && !newAccountShowPrivateKey}>
+                <Conditional displayCondition={newAccountKeyStore != null && !newAccountShowPrivateKey}>
                     <BoxSection>
+                        <h3>{walletImg}&nbsp;{address}</h3>
                         <h3>Save Your Keystore File</h3>
                         <br />
                         <div className="row">
@@ -167,8 +184,9 @@ class WalletCreator extends Component {
                     </BoxSection>
                 </Conditional>
 
-                <Conditional displayCondition={newAccount != null && newAccountShowPrivateKey}>
+                <Conditional displayCondition={newAccountKeyStore != null && newAccountShowPrivateKey}>
                     <BoxSection>
+                        <h3>{walletImg}&nbsp;{address}</h3>
                         <h3>Save Your Private Key</h3>
                         <br />
                         <div className="row">

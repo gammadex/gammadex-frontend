@@ -74,13 +74,19 @@ class AccountDropdown extends React.Component {
     }
 
     unlockWallet() {
-        this.props.history.push(Routes.Wallets)
+        if (Routes.Wallets !== this.props.history.location.pathname) {
+            this.props.history.push(Routes.Wallets)
+        }
     }
 
     createNewWallet() {
-        this.props.history.push(Routes.NewWallet)
+        if (Routes.NewWallet !== this.props.history.location.pathname) {
+            const account = EtherDeltaWeb3.createNewAccount()
+            WalletActions.accountCreated(account)
+            this.props.history.push(Routes.NewWallet)
+        }
     }
-
+    
     render() {
         const { account, accountPopoverOpen, selectedAccountType, providedWeb3 } = this.state
         const { available, isMainNet, netDescription, accountAvailable } = providedWeb3
