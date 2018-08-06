@@ -67,7 +67,7 @@ class TopNavigation extends Component {
 
                     <TokenSummary token={token} />
 
-                    <div className="full-height">
+                    <div className="user-buttons full-height">
                         <MarketResponseSpinner />
                         <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
                             <ul className="navbar-nav navbar-right mr-auto">

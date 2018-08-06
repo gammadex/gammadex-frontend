@@ -473,6 +473,17 @@ input[type="number"] {
 .upper-header > div {
     display: flex;
     align-items: center;
+    justify-content: end;
+    flex-basis:33%;
+}
+
+.upper-header > div.token-summary {
+    justify-content: center;
+}
+
+.upper-header > div.user-buttons {
+    flex-basis:34%;
+    justify-content: flex-end;
 }
 
 .lower-header {
