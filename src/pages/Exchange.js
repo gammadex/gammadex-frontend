@@ -8,7 +8,6 @@ import Trading from "../components/Trading"
 import AccountDetail from '../components/AccountDetail'
 import {withRouter} from "react-router-dom"
 import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
-import PlotlyPriceChart from "../components/OrderBook/PlotlyPriceChart"
 import PlotlyDepthChart from "../components/OrderBook/PlotlyDepthChart"
 import ReactChart from "../components/OrderBook/ReactChart"
 
