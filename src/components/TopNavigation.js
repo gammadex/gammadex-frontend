@@ -41,9 +41,9 @@ class TopNavigation extends Component {
             <header className="bg-primary text-light header">
                 <div className="upper-header">
                     <div className="full-height">
-                        <img src={require("../images/eth-logo.png")} style={{ "height": "28px" }} className="mr-2" />
 
-                        <Link to={Routes.Exchange} className="navbar-brand mb-0 h1">GammaDEX</Link>
+
+                        <Link to={Routes.Exchange} className="navbar-brand mb-0"><img src={require("../images/gammadex_logo.svg")} style={{ "height": "28px" }} /></Link>
 
                         <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
                             <ul className="navbar-nav mr-auto">
