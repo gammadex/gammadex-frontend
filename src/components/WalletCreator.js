@@ -35,6 +35,8 @@ class WalletCreator extends Component {
     }
 
     componentWillMount() {
+        const account = EtherDeltaWeb3.createNewAccount()
+        WalletActions.accountCreated(account)
         WalletStore.on("change", this.onWalletStoreChange)
     }
 

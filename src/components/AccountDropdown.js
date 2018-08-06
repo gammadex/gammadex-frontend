@@ -81,8 +81,6 @@ class AccountDropdown extends React.Component {
 
     createNewWallet() {
         if (Routes.NewWallet !== this.props.history.location.pathname) {
-            const account = EtherDeltaWeb3.createNewAccount()
-            WalletActions.accountCreated(account)
             this.props.history.push(Routes.NewWallet)
         }
     }
