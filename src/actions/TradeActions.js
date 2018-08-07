@@ -138,16 +138,22 @@ export function fillOrder(order) {
 
     const {exchangeBalanceEthWei, exchangeBalanceTokWei} = AccountStore.getAccountState()
 
+    const feeEthWei = safeBigNumber(exchangeBalanceEthWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
+    const exchangeBalanceEthWeiMinusFee = safeBigNumber(exchangeBalanceEthWei).minus(feeEthWei)
+
+    const feeTokWei = safeBigNumber(exchangeBalanceTokWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
+    const exchangeBalanceTokWeiMinusFee = safeBigNumber(exchangeBalanceTokWei).minus(feeTokWei)
+
     const availableVolumeBase = BigNumber(order.availableVolumeBase)
     const availableVolume = BigNumber(order.availableVolume)
     let weiFillAmount = null
     let weiTotalEth = null
     if (OrderUtil.isTakerBuy(order)) {
-        weiTotalEth = BigNumber.min(exchangeBalanceEthWei, availableVolumeBase)
+        weiTotalEth = BigNumber.min(exchangeBalanceEthWeiMinusFee, availableVolumeBase)
         const fillRatio = weiTotalEth.div(availableVolumeBase)
         weiFillAmount = fillRatio.times(availableVolume)
     } else {
-        weiFillAmount = BigNumber.min(exchangeBalanceTokWei, availableVolume)
+        weiFillAmount = BigNumber.min(exchangeBalanceTokWeiMinusFee, availableVolume)
         const fillRatio = weiFillAmount.div(availableVolume)
         weiTotalEth = fillRatio.times(availableVolumeBase)
     }

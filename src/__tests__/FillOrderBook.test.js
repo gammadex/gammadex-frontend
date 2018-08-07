@@ -182,7 +182,7 @@ describe('FillOrderBook', () => {
                 expect(buyOrderPriceInput.value).toEqual('0.02000000')
                 expect(buyOrderPriceInput.disabled).toEqual(true)
             })
-            it('should display the full amount of the order (the current default, TODO change to max user amount)', () => {
+            it('should display the amount of the order the user can fill', () => {
                 const buyOrderAmountInput = wrapper.find('#buyOrderAmount').hostNodes().instance()
                 expect(buyOrderAmountInput.value).toEqual('0.4')
             })
@@ -329,7 +329,7 @@ describe('FillOrderBook', () => {
                 .then(() => {
                     const expiry = 100000
                     const price = 0.4 // ETH per ABC token
-                    const amount = 0.8 // ABC tokens
+                    const amount = 10.2 // ABC tokens
                     const order = OrderFactory.createSignedOrder(
                         OrderSide.BUY,
                         expiry,
@@ -346,19 +346,19 @@ describe('FillOrderBook', () => {
                         })
                 })
         })
-        describe('By default the trade component will be populated to fully fill the order', () => {
+        describe('By default the trade component will be populated to fill min(user balance - 0.3% exchange fee, order amount)', () => {
             it('should display the (read-only) price of the taker sell order', () => {
                 const sellOrderPriceInput = wrapper.find('#sellOrderPrice').hostNodes().instance()
                 expect(sellOrderPriceInput.value).toEqual('0.40000000')
                 expect(sellOrderPriceInput.disabled).toEqual(true)
             })
-            it('should display the full amount of the order (the current default, TODO change to max user amount)', () => {
+            it('should display the maximum amount of the order the user can fill', () => {
                 const sellOrderAmountInput = wrapper.find('#sellOrderAmount').hostNodes().instance()
-                expect(sellOrderAmountInput.value).toEqual('0.8')
+                expect(sellOrderAmountInput.value).toEqual('4.985')
             })
-            it('should display the (read-only) eth total for the order amount', () => {
+            it('should display the (read-only) eth total for the trade amount', () => {
                 const sellOrderTotalInput = wrapper.find('#sellOrderTotal').hostNodes().instance()
-                expect(sellOrderTotalInput.value).toEqual('0.320')
+                expect(sellOrderTotalInput.value).toEqual('1.994')
             })
             it('the SELL button should be enabled', () => {
                 const sellOrderButton = wrapper.find('#sellButton').hostNodes().instance()
@@ -367,7 +367,7 @@ describe('FillOrderBook', () => {
             it('should display a SELL confirmation modal (only for private key accounts) when the user clicks SELL', () => {
                 wrapper.find('#sellButton').hostNodes().simulate('click')
                 expect(wrapper.find(Modal).instance().props.isOpen).toEqual(true)
-                expect(wrapper.find('#sellFillOrderModal').hostNodes().text()).toEqual(`SELL 0.8 ABC?`)
+                expect(wrapper.find('#sellFillOrderModal').hostNodes().text()).toEqual(`SELL 4.985 ABC?`)
             })
             describe('should execute the SELL when the user confirms the modal', () => {
                 beforeEach(() => {
@@ -385,7 +385,7 @@ describe('FillOrderBook', () => {
                             expect(promiseTestTradeMock).toHaveBeenCalledWith(
                                 primaryKeyAccount.address,
                                 wrapper.state().fillOrder.order,
-                                BigNumber(web3.utils.toWei('0.8', 'ether')))
+                                BigNumber(web3.utils.toWei('4.985', 'ether')))
                             promiseTradeMock.mockRestore()
                             done()
                         } catch (err) {
@@ -404,7 +404,7 @@ describe('FillOrderBook', () => {
                                 primaryKeyAccount.address,
                                 5,
                                 wrapper.state().fillOrder.order,
-                                BigNumber(web3.utils.toWei('0.8', 'ether')),
+                                BigNumber(web3.utils.toWei('4.985', 'ether')),
                                 BigNumber(web3.utils.toWei('6', 'gwei')))
                             promiseTradeMock.mockRestore()
                             done()
@@ -454,14 +454,14 @@ describe('FillOrderBook', () => {
 
         describe('User attempts to overfill the order', () => {
             beforeEach(() => {
-                const value = '1.6'
+                const value = '11.2'
                 wrapper.find('#sellOrderAmount').hostNodes().simulate('change', { target: { value } })
             })
             it('should display the new fill amount', () => {
-                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('1.6')
+                expect(wrapper.find('#sellOrderAmount').hostNodes().instance().value).toEqual('11.2')
             })
             it('should display the (read-only) eth total for the fill amount', () => {
-                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('0.640')
+                expect(wrapper.find('#sellOrderTotal').hostNodes().instance().value).toEqual('4.480')
             })
             it('the SELL button should be disabled', () => {
                 const sellOrderButton = wrapper.find('#sellButton').hostNodes().instance()
@@ -469,7 +469,7 @@ describe('FillOrderBook', () => {
                 const { fillAmountValid, fillAmountInvalidField, fillAmountInvalidReason } = wrapper.state().fillOrder
                 expect(fillAmountValid).toEqual(false)
                 expect(fillAmountInvalidField).toEqual(OrderEntryField.AMOUNT)
-                expect(fillAmountInvalidReason).toEqual("Token amount greater than max order amount (0.8)")
+                expect(fillAmountInvalidReason).toEqual("Token amount greater than max order amount (10.2)")
             })
         })
     }) 
@@ -523,7 +523,7 @@ describe('FillOrderBook', () => {
                 expect(buyOrderPriceInput.value).toEqual('0.50000000')
                 expect(buyOrderPriceInput.disabled).toEqual(true)
             })
-            it('should display the full amount of the order (the current default, TODO change to max user amount)', () => {
+            it('should display the amount of the order the user can fill', () => {
                 const buyOrderAmountInput = wrapper.find('#buyOrderAmount').hostNodes().instance()
                 expect(buyOrderAmountInput.value).toEqual('0.2')
             })
@@ -693,7 +693,7 @@ describe('FillOrderBook', () => {
                 expect(sellOrderPriceInput.value).toEqual('0.75000000')
                 expect(sellOrderPriceInput.disabled).toEqual(true)
             })
-            it('should display the full amount of the order (the current default, TODO change to max user amount)', () => {
+            it('should display the amount of the order the user can fill', () => {
                 const sellOrderAmountInput = wrapper.find('#sellOrderAmount').hostNodes().instance()
                 expect(sellOrderAmountInput.value).toEqual('2.5')
             })

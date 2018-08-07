@@ -18,6 +18,7 @@ import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../Ether
 import AccountType from "../../AccountType"
 import {Popover, PopoverBody} from "reactstrap/dist/reactstrap"
 import OrderPercentageSlider from "./OrderPercentageSlider"
+import BigNumber from 'bignumber.js'
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
@@ -200,6 +201,13 @@ export default class FillOrderBook extends React.Component {
             confirmTradeModalSide
         } = this.state
 
+        const feeEthWei = safeBigNumber(exchangeBalanceEthWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
+        const exchangeBalanceEthWeiMinusFee = safeBigNumber(exchangeBalanceEthWei).minus(feeEthWei)
+        
+        const feeTokWei = safeBigNumber(exchangeBalanceTokWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
+        const exchangeBalanceTokWeiMinusFee = safeBigNumber(exchangeBalanceTokWei).minus(feeTokWei)
+
+
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
             // https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/SMART_CONTRACT.md
@@ -235,17 +243,17 @@ export default class FillOrderBook extends React.Component {
 
             let slider = null
             if (type === OrderSide.BUY) {
-                const balanceEth = baseWeiToEth(exchangeBalanceEthWei)
+                const balanceEth = baseWeiToEth(exchangeBalanceEthWeiMinusFee)
                 const orderMaxVolumeEth = safeBigNumber(fillOrder.order.ethAvailableVolumeBase)
                 const addendum= (
                     <div>
-                        <div>Your ETH balance: <span className="clickable" onClick={() => this.onOrderTotalChange(String(balanceEth))}>{balanceEth.toFixed(3).toString()}</span></div>
+                        <div>Your ETH balance (minus fee): <span className="clickable" onClick={() => this.onOrderTotalChange(String(balanceEth))}>{balanceEth.toFixed(3).toString()}</span></div>
                         <div className="mt-2">ETH remaining on order: <span className="clickable" onClick={() => this.onOrderTotalChange(orderMaxVolumeEth)}>{orderMaxVolumeEth.toFixed(3).toString()}</span></div>
                     </div>
                 )
                 slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={balanceEth} addendum={addendum} />
             } else {
-                const balanceTok = tokWeiToEth(exchangeBalanceTokWei, tokenAddress)
+                const balanceTok = tokWeiToEth(exchangeBalanceTokWeiMinusFee, tokenAddress)
                 const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
                 const addendum= (
                     <div>
