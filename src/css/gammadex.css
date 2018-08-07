@@ -1156,3 +1156,7 @@ body {
     padding-left:6px;
     padding-right:6px;
 }
+
+.token-search-input {
+    width:34%;
+}
