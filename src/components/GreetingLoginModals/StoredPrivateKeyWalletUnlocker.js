@@ -19,7 +19,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         const storedWallet = WalletDao.readWallet()
         this.state = {
             showModal: WalletStore.isDisplayUnlockPrivateKeyModal(),
-            address: storedWallet ? storedWallet.data.address : "",
+            address: storedWallet && storedWallet.type === AccountType.PRIVATE_KEY ? storedWallet.data.address : "",
             password: null,
             passwordError: null,
         }
