@@ -161,7 +161,7 @@ export default class GasPriceChooser extends React.Component {
                     <span style={{"fontSize": "140%", "verticalAlign": "middle"}} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
                     Gas Price:
                     <div style={{"width": "20px", "display": "inline-block", "text-align": "right"}}>{currentGasPriceGwei}</div>
-                    Gwei&nbsp;
+                    &nbsp;Gwei&nbsp;
                 </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
