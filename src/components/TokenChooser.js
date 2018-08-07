@@ -200,9 +200,9 @@ class TokenChooser extends React.Component {
                 onFavourite={this.onFavourite} />
         })
 
-        const symbolSortClass = sortType === TokenChooserSort.ASC_SYMBOL ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_SYMBOL ? "fas fa-sort-down" : ""
-        const volumeSortClass = sortType === TokenChooserSort.ASC_VOLUME ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_VOLUME ? "fas fa-sort-down" : ""
-        const changeSortClass = sortType === TokenChooserSort.ASC_CHANGE ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_CHANGE ? "fas fa-sort-down" : ""
+        const symbolSortClass = sortType === TokenChooserSort.ASC_SYMBOL ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_SYMBOL ? "fas fa-sort-down" : "fas fa-sort"
+        const volumeSortClass = sortType === TokenChooserSort.ASC_VOLUME ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_VOLUME ? "fas fa-sort-down" : "fas fa-sort"
+        const changeSortClass = sortType === TokenChooserSort.ASC_CHANGE ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_CHANGE ? "fas fa-sort-down" : "fas fa-sort"
 
         return (
             <div id="token-chooser-container" className="token-chooser-component">
@@ -217,21 +217,20 @@ class TokenChooser extends React.Component {
                                     <input className="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly} />
                                     <label className="form-check-label" htmlFor="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
                                 </div>
-
-                                <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                                    placeholder="Search" className="form-control" />
                             </form>
                         </div>
+                        <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                               placeholder="Search" className="form-control token-search-input" />
                     </div>
 
                     <CustomScroll heightRelativeToParent="100%">
                         <table className="table table-bordered table-hover table-no-bottom-border">
                             <thead>
                                 <tr>
-                                    <th onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
-                                    <th><span className="fas fa-star"></span></th>
-                                    <th onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
-                                    <th onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
+                                    <th className="clickable" onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
+                                    <th className="clickable"><span className="fas fa-star"></span></th>
+                                    <th className="clickable" onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
+                                    <th className="clickable" onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
                                 </tr>
                             </thead>
                             <tbody>{tokenRows}</tbody>

@@ -466,14 +466,14 @@ input[type="number"] {
     align-items: center;
     height: var(--upper-header-height);
     box-sizing: border-box;
-    padding-left: 10px;
+    padding-left: 4px;
     border-bottom: 1px solid var(--gray-dark);
 }
 
 .upper-header > div {
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: start;
     flex-basis:33%;
 }
 
@@ -1155,4 +1155,8 @@ body {
 .card-header .alert {
     padding-left:6px;
     padding-right:6px;
+}
+
+.token-search-input {
+    width:34%;
 }
