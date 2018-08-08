@@ -1029,19 +1029,17 @@ body {
 }
 
 .trading-buy-sell-nav {
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
 }
 
 .trading-nav-buy-selected {
-    border-bottom: 1px solid var(--green);
     transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
 
 .trading-nav-sell-selected {
-    border-bottom: 1px solid var(--sell-red);
     transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
@@ -1086,12 +1084,23 @@ body {
     border-width: 0;
 }
 
-.nav-trading-types  {
-    border-bottom-width:0;
-}
-
 .nav-link.active.nav-trading-type  {
     background:inherit;
+}
+
+.nav-link:not(.active).nav-trading-type  {
+    background:inherit;
+    color: grey;
+}
+
+.nav-link.active.buyActive.nav-trading-type  {
+    background:inherit;
+    border-bottom: 2px solid var(--green) !important;
+}
+
+.nav-link:not(.buyActive).active.nav-trading-type  {
+    background:inherit;
+    border-bottom: 2px solid var(--red) !important;
 }
 
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {

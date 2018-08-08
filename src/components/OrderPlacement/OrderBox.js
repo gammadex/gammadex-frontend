@@ -123,10 +123,10 @@ export default class OrderBox extends React.Component {
                         </NavItem>
                     </Nav>
                         <div className="trading-types">
-                            <Nav tabs fill className="nav-trading-types">
+                            <Nav tabs fill className={"nav-trading-types-" + (buyActive ? "buy" : "sell")}>
                                 <NavItem>
                                     <NavLink
-                                        className={"nav-trading-type " + classnames({active: orderActive})}
+                                        className={"nav-trading-type " + classnames({active: orderActive, buyActive: buyActive})}
                                         onClick={() => this.toggleType(OrderBoxType.ORDER)}>
                                         <strong>ORDER</strong> &nbsp;
                                         <span id={"MakePopOver"} onClick={this.toggleMakePopOver}>
@@ -145,7 +145,7 @@ export default class OrderBox extends React.Component {
                                 </NavItem>
                                 <NavItem>
                                     <NavLink
-                                        className={"nav-trading-type " + classnames({active: tradeActive})}
+                                        className={"nav-trading-type " + classnames({active: tradeActive, buyActive: buyActive})}
                                         onClick={() => this.toggleType(OrderBoxType.TRADE)}>
                                         <strong>TRADE</strong> &nbsp;
                                         <span id={"TakePopOver"} onClick={this.toggleTakePopOver}>
