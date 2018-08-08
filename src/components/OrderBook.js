@@ -54,7 +54,7 @@ export default class OrderBook extends React.Component {
         }
 
         const offersDiv = document.getElementById("orders-div-offer")
-        if (offersDiv && this.state.bids && this.state.bids.length > 0 && !this.scrolled) {
+        if (offersDiv && this.state.offers && this.state.offers.length > 0 && !this.scrolled) {
             this.scrollOffers()
         }
     }
