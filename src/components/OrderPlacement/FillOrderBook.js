@@ -228,7 +228,7 @@ export default class FillOrderBook extends React.Component {
                 usdExchangeCost = usdExchangeCost.toFixed(3).toString()
             }
 
-            const amountFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountValid : true
+            const amountFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? (safeBigNumber(fillOrder.weiFillAmount).isZero() ? true : fillOrder.fillAmountValid) : true
             const amountFieldErrorMessage = fillOrder.fillAmountInvalidField === OrderEntryField.AMOUNT ? fillOrder.fillAmountInvalidReason : ""
             const totalFieldValid = fillOrder.fillAmountInvalidField === OrderEntryField.TOTAL ? fillOrder.fillAmountValid : true
             const totalFieldErrorMessage = fillOrder.fillAmountInvalidField === OrderEntryField.TOTAL ? fillOrder.fillAmountInvalidReason : ""
