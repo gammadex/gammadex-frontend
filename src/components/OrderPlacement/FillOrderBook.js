@@ -312,8 +312,8 @@ export default class FillOrderBook extends React.Component {
                         </div>
 
                         <FormGroup row className="hdr-stretch-ctr">
-                            <Col sm={7}/>
-                            <Col sm={5}>
+                            <Col sm={3}/>
+                            <Col sm={9}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
                                     onClick={this.onSubmit}>{buySell}</Button>
                                 <Conditional displayCondition={!balanceRetrieved}>
