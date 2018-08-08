@@ -63,7 +63,7 @@ export default class AppStatus extends React.Component {
 
     updateAccountState() {
         const { selectedAccountType, walletBalanceEthWei } = AccountStore.getAccountState()
-        const accountState = selectedAccountType != null ? States.OK : States.ERROR
+        const accountState = States.OK
 
         // web3Info will only be populated when using metamask
         const web3Info = WalletStore.getProvidedWeb3Info()
@@ -75,7 +75,7 @@ export default class AppStatus extends React.Component {
             web3Description = "Cannot establish connection"
         }
         else if (selectedAccountType == null) {
-            web3State = States.ERROR
+            web3State = States.OK
             web3Description = "Please unlock a wallet"
         } else {
             if (selectedAccountType === AccountType.METAMASK) {
@@ -97,10 +97,10 @@ export default class AppStatus extends React.Component {
 
         let gasState = States.OK
         let gasDescription = ""
-        if (safeBigNumber(walletBalanceEthWei).isZero()) {
+        if (selectedAccountType != null && safeBigNumber(walletBalanceEthWei).isZero()) {
             gasState = States.WARN
             gasDescription = "Wallet has no ETH for gas fees"
-        } else if (safeLowWei && averageWei && fastWei && currentGasPriceWei && currentGasPriceWei.isLessThan(safeLowWei)) {
+        } else if (selectedAccountType != null && safeLowWei && averageWei && fastWei && currentGasPriceWei && currentGasPriceWei.isLessThan(safeLowWei)) {
             gasState = States.WARN
             gasDescription = "Very low gas price (30+ mins)"
         }
@@ -135,6 +135,7 @@ export default class AppStatus extends React.Component {
 
     getAccountMessage = () => {
         const { accountState, accountType } = this.state
+        if(accountType == null) return null
         switch (accountState) {
             case States.OK:
                 return `Provided by ${accountType === AccountType.METAMASK ? accountType : "INFURA"}`
@@ -172,7 +173,7 @@ export default class AppStatus extends React.Component {
                                             <Conditional displayCondition={this.getAccountMessage() != null}>
                                                 <span>{this.getAccountMessage()}<br /></span>
                                             </Conditional>
-                                            <Conditional displayCondition={ethereumNetworkState != States.ERROR}>
+                                            <Conditional displayCondition={accountType != null && ethereumNetworkState != States.ERROR}>
                                                 <BlockNumberDetail />
                                             </Conditional>
                                         </AppStatusRow>
