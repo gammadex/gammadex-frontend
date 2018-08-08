@@ -257,7 +257,7 @@ export default class FillOrderBook extends React.Component {
                 const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
                 const addendum= (
                     <div>
-                        <div>Your {tokenSymbol} balance: <span className="clickable" onClick={() => this.onOrderAmountChange(String(balanceTok))}>{balanceTok.toFixed(3).toString()}</span></div>
+                        <div>Your {tokenSymbol} balance (minus fee): <span className="clickable" onClick={() => this.onOrderAmountChange(String(balanceTok))}>{balanceTok.toFixed(3).toString()}</span></div>
                         <div className="mt-2">{tokenSymbol} remaining on order: <span className="clickable" onClick={() => this.onOrderAmountChange(orderMaxVolumeTok)}>{orderMaxVolumeTok.toFixed(3).toString()}</span></div>
                     </div>
                 )
@@ -312,7 +312,8 @@ export default class FillOrderBook extends React.Component {
                         </div>
 
                         <FormGroup row className="hdr-stretch-ctr">
-                            <Col sm={6}>
+                            <Col sm={7}/>
+                            <Col sm={5}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
                                     onClick={this.onSubmit}>{buySell}</Button>
                                 <Conditional displayCondition={!balanceRetrieved}>
