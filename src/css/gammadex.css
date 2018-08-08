@@ -863,8 +863,17 @@ input[type="number"] {
 }
 
 /*scrollbars*/
-.custom-scroll .inner-handle {
+.custom-scrollbar {
     background-color: var(--primary);
+    border-color: var(--primary);
+    border-width: 10px 0;
+    border-radius: .25rem;
+    opacity: 0.7;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.custom-scrollbar:hover {
+    opacity: 1;
 }
 
 .price-chart-component .ohlc-interval {

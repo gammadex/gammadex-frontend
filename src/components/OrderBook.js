@@ -23,6 +23,8 @@ export default class OrderBook extends React.Component {
         this.saveOpenOrders = this.saveOpenOrders.bind(this)
         this.updateTitleWidths = this.updateTitleWidths.bind(this)
         this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
+        this.scrollOffers = this.scrollOffers.bind(this)
+        this.scrolled = false
     }
 
     componentDidMount() {
@@ -46,6 +48,15 @@ export default class OrderBook extends React.Component {
                 this.updateTitleWidths()
             }
         }
+
+        if (prevProps.token !== this.props.token) {
+            this.scrolled = false
+        }
+
+        const offersDiv = document.getElementById("orders-div-offer")
+        if (offersDiv && this.state.bids && this.state.bids.length > 0 && !this.scrolled) {
+            this.scrollOffers()
+        }
     }
 
     updateTitleWidths() {
@@ -56,6 +67,15 @@ export default class OrderBook extends React.Component {
                     return {tableWidth: offersTable.clientWidth}
                 }
             })
+        }
+    }
+
+    scrollOffers() {
+        const offersDiv = document.getElementById("orders-div-offer")
+        if (offersDiv) {
+            offersDiv.parentNode.scrollTop = offersDiv.parentNode.scrollHeight
+
+            this.scrolled = true
         }
     }
 

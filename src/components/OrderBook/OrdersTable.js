@@ -1,7 +1,6 @@
 import React from "react"
 import OrdersRow from './OrdersRow'
-import CustomScroll from 'react-custom-scroll'
-import 'react-custom-scroll/dist/customScroll.css'
+import Scroll from "../CustomComponents/Scroll"
 
 export default class OrdersTable extends React.Component {
     render() {
@@ -11,8 +10,9 @@ export default class OrdersTable extends React.Component {
             isPendingCancel={pendingCancelIds.includes(order.id)}
             isSelectedFillOrder={(fillOrder == null || fillOrder.order.id != order.id) ? false : true}/>
         })
+
         return (
-            <CustomScroll heightRelativeToParent="100%" keepAtBottom={keepAtBottom}>
+            <Scroll>
                 <div id={"orders-div-" + orderType}>
                 <table id={"order-table-" + orderType}
                        className="table table-bordered table-hover numbers-table orders-table">
@@ -21,7 +21,7 @@ export default class OrdersTable extends React.Component {
                     </tbody>
                 </table>
                 </div>
-            </CustomScroll>
+            </Scroll>
         )
     }
 }

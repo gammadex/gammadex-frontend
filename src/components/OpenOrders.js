@@ -30,8 +30,7 @@ import Round from "./CustomComponents/Round"
 import MarketResponseSpinner from "./MarketResponseSpinner"
 import GasPriceChooser from "./GasPriceChooser"
 import {OperationCosts} from "../ContractOperations"
-import CustomScroll from 'react-custom-scroll'
-import 'react-custom-scroll/dist/customScroll.css'
+import Scroll from "./CustomComponents/Scroll"
 
 export default class OpenOrders extends React.Component {
     constructor(props) {
@@ -170,9 +169,9 @@ export default class OpenOrders extends React.Component {
 
         return (
             <div className="open-orders-component">
-                <CustomScroll heightRelativeToParent="100%">
+                <Scroll>
                 {content}
-                </CustomScroll>
+                </Scroll>
 
                 <Modal isOpen={showConfirmModal} toggle={this.abortCancel} className={this.props.className} keyboard>
                     <ModalBody>{modalText}<br/>

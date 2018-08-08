@@ -5,13 +5,12 @@ import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
 import {Box, BoxSection} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
-import { setFavourite } from "../util/FavouritesDao"
+import {setFavourite} from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
 import ReactResizeDetector from 'react-resize-detector'
-import CustomScroll from 'react-custom-scroll'
-import 'react-custom-scroll/dist/customScroll.css'
+import Scroll from "./CustomComponents/Scroll"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -98,19 +97,19 @@ class TokenChooser extends React.Component {
                         </BoxSection>
 
                         <Conditional displayCondition={tokenRows.length > 0}>
-                                <CustomScroll heightRelativeToParent="100%">
-                                    <table className="table table-striped table-hover table-bordered" style={{"borderTopWidth":"1px"}}>
-                                        <thead>
-                                        <tr>
-                                            <th>Symbol</th>
-                                            <th>Name</th>
-                                            <th>Smart Contract</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>{tokenRows}</tbody>
-                                    </table>
-                                </CustomScroll>
+                            <Scroll>
+                                <table className="table table-striped table-hover table-bordered" style={{"borderTopWidth": "1px"}}>
+                                    <thead>
+                                    <tr>
+                                        <th>Symbol</th>
+                                        <th>Name</th>
+                                        <th>Smart Contract</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>{tokenRows}</tbody>
+                                </table>
+                            </Scroll>
                         </Conditional>
                     </Box>
                 </div>

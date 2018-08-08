@@ -8,8 +8,7 @@ import * as TransferDisplayUtil from "../util/TransferDisplayUtil"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import MyTradesStore from "../stores/MyTradesStore"
 import RefreshButton from "./CustomComponents/RefreshButton"
-import CustomScroll from 'react-custom-scroll'
-import 'react-custom-scroll/dist/customScroll.css'
+import Scroll from "./CustomComponents/Scroll"
 
 export default class Transfers extends React.Component {
     constructor(props) {
@@ -94,9 +93,9 @@ export default class Transfers extends React.Component {
                                            disabled={!account || refreshInProgress}/>
                         </div>
                     </div>
-                    <CustomScroll heightRelativeToParent="100%">
+                    <Scroll>
                     {content}
-                    </CustomScroll>
+                    </Scroll>
                 </div>
             </div>
         )

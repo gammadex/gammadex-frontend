@@ -11,9 +11,8 @@ import TokenChooserRow from "./TokenChooser/TokenChooserRow"
 import OrderBookStore from "../stores/OrderBookStore"
 import MarketResponseSpinner from "./MarketResponseSpinner"
 import ReactResizeDetector from 'react-resize-detector'
-import CustomScroll from 'react-custom-scroll'
-import 'react-custom-scroll/dist/customScroll.css'
 import TokenChooserSort from './TokenChooser/TokenChooserSort'
+import Scroll from "./CustomComponents/Scroll"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -223,7 +222,7 @@ class TokenChooser extends React.Component {
                                placeholder="Search" className="form-control token-search-input" />
                     </div>
 
-                    <CustomScroll heightRelativeToParent="100%">
+                    <Scroll>
                         <table className="table table-bordered table-hover table-no-bottom-border">
                             <thead>
                                 <tr>
@@ -235,7 +234,7 @@ class TokenChooser extends React.Component {
                             </thead>
                             <tbody>{tokenRows}</tbody>
                         </table>
-                    </CustomScroll>
+                    </Scroll>
                 </div>
             </div>
         )
