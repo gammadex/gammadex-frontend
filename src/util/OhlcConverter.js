@@ -11,7 +11,14 @@ export function convertDateToTimestamp(data) {
 
 export function convertToOhlc(data, periodMins, dateFormat, useAmountBase = false) {
     if (data.length === 0) {
-        return []
+        return {
+            open: [],
+            high: [],
+            low: [],
+            close: [],
+            volume: [],
+            date: []
+        }
     }
 
     const dataWithTimestamps = convertDateToTimestamp(data)

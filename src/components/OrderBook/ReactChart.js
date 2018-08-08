@@ -101,7 +101,7 @@ class ReactChart extends Component {
     render() {
         const { ohlcIntervalMins, chartType, chartData, chartContainerHeight, chartContainerWidth } = this.state
 
-        let chart = <EmptyTableMessage>Not enough data points</EmptyTableMessage>
+        let chart = <EmptyTableMessage>No Chart Data</EmptyTableMessage>
         if (chartData && chartData.length > 1 && chartContainerHeight && chartContainerWidth) {
             chart = <ChartRenderer chartType={chartType} data={chartData} containerHeight={chartContainerHeight} containerWidth={chartContainerWidth} />
         }
