@@ -9,13 +9,16 @@ import * as WalletDao from "../../util/WalletDao"
 import {Modal, ModalHeader, ModalBody, ModalFooter, Alert} from 'reactstrap'
 import Conditional from "../CustomComponents/Conditional"
 import * as AccountApi from "../../apis/AccountApi"
+import { toDataUrl } from '../../lib/blockies.js'
 
 export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
     constructor(props) {
         super(props)
 
+        const storedWallet = WalletDao.readWallet()
         this.state = {
             showModal: WalletStore.isDisplayUnlockKeyStoreModal(),
+            address: storedWallet && storedWallet.type === AccountType.KEY_STORE_FILE ? storedWallet.data.address : "",
             keyStorePassword: null,
             fileName: "",
             passwordError: null,
@@ -61,6 +64,14 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
         }
     }
 
+    handleDisconnect = (event) => {
+        event.preventDefault()
+        this.hideModal()
+        WalletDao.forgetStoredWallet()
+        WalletActions.logout()
+        EtherDeltaWeb3.initForAnonymous()
+    }
+
     hideModal = () => {
         WalletActions.hideUnlockKeyStoreModal()
     }
@@ -70,13 +81,24 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
     }
 
     render() {
-        const {showModal, passwordError, fileName} = this.state
+        const {showModal, passwordError, fileName, address} = this.state
         const passwordErrorClass = passwordError ? " is-invalid" : ""
 
+        const walletImg = address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
+
         return <Modal isOpen={showModal} toggle={this.hideModal} keyboard>
-            <ModalHeader toggle={this.hideModal}>Unlock saved keystore file {fileName}</ModalHeader>
+            <ModalHeader toggle={this.hideModal}><h5 className="text-muted">Unlock saved keystore file {fileName}</h5>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>
+
             <form onSubmit={this.handleKeyStoreUnlock}>
                 <ModalBody>
+
+                    <div className="form-group">
+                        <input type="text"
+                            name="username"
+                            hidden={true}
+                            value={address}/>
+                    </div>
+
                     <div className="form-group">
                         <input type="password"
                                name="password"
@@ -93,6 +115,7 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
 
                 </ModalBody>
                 <ModalFooter>
+                    <input className="btn btn-secondary" type="button" onClick={this.handleDisconnect} value="Disconnect"/>
                     <input className="btn btn-primary" type="submit" value="Unlock"/>
                 </ModalFooter>
             </form>

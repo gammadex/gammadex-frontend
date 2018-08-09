@@ -94,7 +94,7 @@ class KeyStoreFile extends React.Component {
     }
 
     render() {
-        const {keyStoreFileName, fileParseError, passwordError, rememberKeyStoreFile} = this.state
+        const {keyStoreFileName, selectedKeyStoreFile, fileParseError, passwordError, rememberKeyStoreFile} = this.state
 
         const validFile = keyStoreFileName && !fileParseError
 
@@ -112,6 +112,7 @@ class KeyStoreFile extends React.Component {
 
                     <Conditional displayCondition={validFile}>
                         <PasswordSection
+                            address={selectedKeyStoreFile ? WalletDao.prefixWith0x(selectedKeyStoreFile.address) : null}
                             passwordError={passwordError}
                             rememberKeyStoreFile={rememberKeyStoreFile}
                             onRememberChange={this.handleRemember}

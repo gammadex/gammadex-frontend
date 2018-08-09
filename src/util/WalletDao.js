@@ -1,4 +1,9 @@
 import AccountType from "../AccountType"
+import _ from "lodash"
+
+export function prefixWith0x(address) {
+    return (_.isString(address) && address.startsWith('0x')) ? address : `0x${address}`
+}
 
 export function forgetStoredWallet() {
     localStorage.removeItem("wallet")
@@ -16,6 +21,7 @@ export function saveKeyStoreWallet(keyStoreFile, keyStoreFileName) {
     const wallet = {
         type: AccountType.KEY_STORE_FILE,
         data: {
+            address: prefixWith0x(keyStoreFile.address),
             file: keyStoreFile,
             fileName: keyStoreFileName
         }
