@@ -76,6 +76,8 @@ class AccountDropdown extends React.Component {
     unlockWallet() {
         if (Routes.Wallets !== this.props.history.location.pathname) {
             this.props.history.push(Routes.Wallets)
+        } else {
+            WalletActions.clearSelectedWalletType()
         }
     }
 

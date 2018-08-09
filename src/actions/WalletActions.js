@@ -8,6 +8,12 @@ export function selectWallet(accountType) {
     })
 }
 
+export function clearSelectedWalletType() {
+    dispatcher.dispatch({
+        type: ActionNames.CLEAR_SELECTED_WALLET_TYPE
+    })
+}
+
 export function selectedKeyStoreFile(keyStoreFile, keyStoreFileName) {
     dispatcher.dispatch({
         type: ActionNames.WALLET_SELECTED_KEYSTORE_FILE,
@@ -157,10 +163,11 @@ export function updateProvidedWeb3Net(isMainNet, description) {
     })
 }
 
-export function updateProvidedWeb3AccountAvailable(isAvailable) {
+export function updateProvidedWeb3AccountAvailable(isAvailable, accountAddress = null) {
     dispatcher.dispatch({
         type: ActionNames.WALLET_UPDATE_PROVIDED_WEB3_ACCOUNT_AVAILABLE,
         isAvailable,
+        accountAddress
     })
 }
 

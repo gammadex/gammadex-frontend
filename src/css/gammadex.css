@@ -992,6 +992,17 @@ body {
     font-size: 0.7203125rem;
 }
 
+.btn-wallet-type {
+    width: 240px;
+    height: 120px;
+}
+
+.img-wallet-type {
+    height: 70px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+}
+
 .button-row {
     padding: 3px;
 }

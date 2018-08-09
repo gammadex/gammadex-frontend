@@ -57,7 +57,8 @@ class WalletStore extends EventEmitter {
             available: null,
             isMainNet: null,
             netDescription: null,
-            accountAvailable: null
+            accountAvailable: null,
+            accountAddress: null
         }
 
         this.resetLedgerValues()
@@ -209,6 +210,26 @@ class WalletStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.CLEAR_SELECTED_WALLET_TYPE: {
+                this.selectedAccountType = null
+                this.completedAccount = null
+                this.keyStoreFile = null
+                this.keyStoreFileName = null
+                this.fileParseError = null
+                this.refreshError = null
+                this.privateKeyPassword = ""
+                this.confirmPrivateKeyPassword = ""
+                this.privateKeyUnlockPassword = ""
+                this.privateKeyPasswordError = null
+                this.confirmPrivateKeyPasswordError = null
+                this.keyStorePasswordError = null
+                this.rememberKeyStoreFile = false
+                this.rememberPrivateKey = false
+                this.rememberMetamask = false
+                this.resetLedgerValues()
+                this.emitChange()
+                break
+            }            
             case ActionNames.WALLET_SELECTED_KEYSTORE_FILE: {
                 this.keyStoreFile = action.keyStoreFile
                 this.keyStoreFileName = action.keyStoreFileName
@@ -356,6 +377,7 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.WALLET_UPDATE_PROVIDED_WEB3_ACCOUNT_AVAILABLE: {
                 this.providedWeb3.accountAvailable = action.isAvailable
+                this.providedWeb3.accountAddress = action.accountAddress
                 this.emitChange()
                 break
             }
