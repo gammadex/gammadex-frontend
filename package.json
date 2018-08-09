@@ -38,6 +38,7 @@
     "dev": "REACT_APP_ENV=development HTTPS=true react-scripts start",
     "prod": "REACT_APP_ENV=production HTTPS=true react-scripts start",
     "prodlocal": "REACT_APP_ENV=prodlocal HTTPS=true react-scripts start",
+    "prodlocal_i": "REACT_APP_ENV=prodlocal HTTPS=false react-scripts start",
     "int": "REACT_APP_ENV=integration HTTPS=true react-scripts start",
     "dev_i": "REACT_APP_ENV=development HTTPS=false react-scripts start",
     "prod_i": "REACT_APP_ENV=prodlocal HTTPS=false react-scripts start",
