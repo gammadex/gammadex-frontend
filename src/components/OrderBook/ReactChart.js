@@ -107,7 +107,7 @@ class ReactChart extends Component {
         }
 
         return (
-            <Box title="Price Chart" className="chart-component price-chart-component">
+            <Box title="Price Chart" className="chart-component price-chart-component no-mobile">
                 <div className="float-left">
                     <div className="form-inline">
 

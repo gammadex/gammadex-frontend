@@ -157,8 +157,7 @@ export default class AppStatus extends React.Component {
             <li className="nav-item dropdown">
 
                 <button className="nav-link dropdown-toggle btn btn-link" style={{ "height": "36px" }} id="appStatus" aria-haspopup="true" aria-expanded="false" onClick={this.toggleShowStatus}>
-                <span className={"fas fa-lg " + overall.class}></span>&nbsp;
-                    Status&nbsp;&nbsp;
+                    <span className={"mr-2 fas fa-lg " + overall.class}></span><span className="no-mobile">Status</span>
                 </button>
 
                 <Popover target="appStatus" isOpen={this.state.popoverOpen} placement="bottom" toggle={this.toggleShowStatus}>

@@ -158,10 +158,9 @@ export default class GasPriceChooser extends React.Component {
             <li className="nav-item dropdown">
 
                 <button className="nav-link dropdown-toggle btn btn-link" style={{ "height": "36px" }} id="gasPrice" aria-haspopup="true" aria-expanded="false" onClick={this.toggleGasPrice}>
-                    <span style={{ "fontSize": "140%", "verticalAlign": "middle" }} className="fas fa-tachometer-alt mr-2">&nbsp;</span>
-                    Gas Price:
-                    <div style={{ "width": "20px", "display": "inline-block", "text-align": "right" }}>{currentGasPriceGwei}</div>
-                    &nbsp;Gwei&nbsp;
+                    <span style={{ "verticalAlign": "middle" }} className="fas fa-lg  fa-tachometer-alt mr-2"></span><span className="no-mobile">Gas Price:</span>
+                    <div className="no-mobile" style={{ "width": "20px", "display": "inline-block", "text-align": "right" }}>{currentGasPriceGwei}</div>
+                    <span className="no-mobile">&nbsp;Gwei&nbsp;</span>
                 </button>
 
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
@@ -171,8 +170,6 @@ export default class GasPriceChooser extends React.Component {
                                 <BoxSection>
 
                                     <span className={"badge " + badgeType} style={{ "padding": "7px", "width": "100%", "fontSize": "100%", "verticalAlign": "middle" }}>Balance: {availableEth} ETH <br />Enough gas for {walletBalanceEth !== "0" ? 'approx.' : ''} {availableTrades} trades</span>
-
-
                                     &nbsp;&nbsp;
 
                                     <div className="row">

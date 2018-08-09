@@ -92,7 +92,7 @@ class AccountDropdown extends React.Component {
         const accountOrEmpty = account ? account : ""
         const accountLink = <small><a target="_blank" rel="noopener noreferrer" href={`${Config.getEtherscanUrl()}/address/${accountOrEmpty}`}>{accountOrEmpty}</a></small>
         const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
-        const accountImage = account == null ? <i className="fas fa-user"></i> : <img width="20" height="20" src={toDataUrl(account)} className="mr-2" />
+        const accountImage = account == null ? <i className="fas fa-lg fa-user"></i> : <img width="20" height="20" src={toDataUrl(account)} className="mr-2" />
         return (
             <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle btn btn-link" id="navbarAccountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{ "height": "36px" }} value={truncatedAccount}>
