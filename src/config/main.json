@@ -79,7 +79,7 @@
       "etherdelta5": "https://socket05.etherdelta.com",
       "etherdelta6": "https://socket06.etherdelta.com",
       "forkdelta": "https://api.forkdelta.com",
-      "default": "https://api.gammadex.com"
+      "default": "http://localhost:4300"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "defaultPair": {
