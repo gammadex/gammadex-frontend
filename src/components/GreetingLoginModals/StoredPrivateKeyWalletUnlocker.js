@@ -81,7 +81,7 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         const {showModal, passwordError, address} = this.state
         const passwordErrorClass = passwordError ? " is-invalid" : ""
 
-        const walletImg = address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
+        const walletImg = (!address || address === "") ? null : <img width="20" height="20" src={toDataUrl(address)}/>
 
         return <Modal isOpen={showModal} toggle={this.hideModal} keyboard>
             <ModalHeader toggle={this.hideModal}><h5 className="text-muted">Unlock saved wallet</h5>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>

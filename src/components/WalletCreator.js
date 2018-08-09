@@ -120,7 +120,7 @@ class WalletCreator extends Component {
         const createWalletDisabledClass = createWalletDisabled ? "" : "disabled"
         const privateKey = newAccount == null ? "" : newAccount.privateKey
         const address = newAccount == null ? "" : newAccount.address
-        const walletImg = address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
+        const walletImg = !address || address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
 
         return (
             <Box title="Create New Wallet">
