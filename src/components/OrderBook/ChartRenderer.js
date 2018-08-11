@@ -192,11 +192,11 @@ class ChartRenderer extends React.Component {
                         fill={volumeBarFill}
                     />
 
-                    <ZoomButtons
+                    {/* <ZoomButtons
                         size={[30, 24]}
                         heightFromBase={30}
                         onReset={this.handleReset}
-                    />
+                    /> */}
                 </Chart>
 
 
