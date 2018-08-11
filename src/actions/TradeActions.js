@@ -156,8 +156,14 @@ export function fillOrder(order) {
     const fillAmountControlled = tokWeiToEth(weiFillAmount, TokenStore.getSelectedToken().address)
     const totalEthControlled = baseWeiToEth(weiTotalEth)
     const {fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField} = validateFillAmount(weiFillAmount, weiTotalEth, order)
+    // remove scientific notation
+    const safeOrder = Object.assign({}, order, {
+        amountGet: safeBigNumber(order.amountGet).toFixed(),
+        amountGive: safeBigNumber(order.amountGive).toFixed(),
+        expires: safeBigNumber(order.expires).toFixed()
+    })
     const fillOrder = {
-        order,
+        order: safeOrder,
         weiFillAmount,
         fillAmountControlled,
         weiTotalEth,
