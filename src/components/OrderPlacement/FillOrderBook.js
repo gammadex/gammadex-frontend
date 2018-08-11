@@ -28,8 +28,8 @@ export default class FillOrderBook extends React.Component {
             fillOrder: null,
             currentGasPriceWei: null,
             ethereumPriceUsd: null,
-            exchangeBalanceEthWei: 0,
-            exchangeBalanceTokWei: 0,
+            tradableBalanceEthWei: 0,
+            tradableBalanceTokWei: 0,
             selectedAccountType: null,
             confirmTradeModalSide: null,
             popOverOpenExchangeFee: false,
@@ -80,10 +80,10 @@ export default class FillOrderBook extends React.Component {
     }
 
     saveAccountState() {
-        const { exchangeBalanceEthWei, exchangeBalanceTokWei, selectedAccountType } = AccountStore.getAccountState()
+        const { tradableBalanceEthWei, tradableBalanceTokWei, selectedAccountType } = AccountStore.getAccountState()
         this.setState({
-            exchangeBalanceEthWei: exchangeBalanceEthWei,
-            exchangeBalanceTokWei: exchangeBalanceTokWei,
+            tradableBalanceEthWei: tradableBalanceEthWei,
+            tradableBalanceTokWei: tradableBalanceTokWei,
             selectedAccountType: selectedAccountType
         })
     }
@@ -196,17 +196,10 @@ export default class FillOrderBook extends React.Component {
             orders,
             fillOrder,
             ethereumPriceUsd,
-            exchangeBalanceEthWei,
-            exchangeBalanceTokWei,
+            tradableBalanceEthWei,
+            tradableBalanceTokWei,
             confirmTradeModalSide
         } = this.state
-
-        const feeEthWei = safeBigNumber(exchangeBalanceEthWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
-        const exchangeBalanceEthWeiMinusFee = safeBigNumber(exchangeBalanceEthWei).minus(feeEthWei)
-        
-        const feeTokWei = safeBigNumber(exchangeBalanceTokWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
-        const exchangeBalanceTokWeiMinusFee = safeBigNumber(exchangeBalanceTokWei).minus(feeTokWei)
-
 
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
@@ -243,7 +236,7 @@ export default class FillOrderBook extends React.Component {
 
             let slider = null
             if (type === OrderSide.BUY) {
-                const balanceEth = baseWeiToEth(exchangeBalanceEthWeiMinusFee)
+                const balanceEth = baseWeiToEth(tradableBalanceEthWei)
                 const orderMaxVolumeEth = safeBigNumber(fillOrder.order.ethAvailableVolumeBase)
                 const addendum= (
                     <div>
@@ -253,7 +246,7 @@ export default class FillOrderBook extends React.Component {
                 )
                 slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={balanceEth} addendum={addendum} />
             } else {
-                const balanceTok = tokWeiToEth(exchangeBalanceTokWeiMinusFee, tokenAddress)
+                const balanceTok = tokWeiToEth(tradableBalanceTokWei, tokenAddress)
                 const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
                 const addendum= (
                     <div>

@@ -1,6 +1,9 @@
 import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
+import { safeBigNumber } from "../EtherConversion"
+import BigNumber from 'bignumber.js'
+import Config from "../Config"
 
 class AccountStore extends EventEmitter {
     constructor() {
@@ -18,6 +21,8 @@ class AccountStore extends EventEmitter {
         this.walletBalanceTokWei = 0
         this.exchangeBalanceEthWei = 0
         this.exchangeBalanceTokWei = 0
+        this.tradableBalanceEthWei = 0 // exchange balance minus fee
+        this.tradableBalanceTokWei = 0
         this.accountSequenceNum = 0 // number of times an account has been set up
         this.balanceRetrieved = false
         this.retrievingBalance = false
@@ -37,6 +42,8 @@ class AccountStore extends EventEmitter {
             walletBalanceTokWei: this.walletBalanceTokWei,
             exchangeBalanceEthWei: this.exchangeBalanceEthWei,
             exchangeBalanceTokWei: this.exchangeBalanceTokWei,
+            tradableBalanceEthWei: this.tradableBalanceEthWei,
+            tradableBalanceTokWei: this.tradableBalanceTokWei,
             accountSequenceNum: this.accountSequenceNum,
             balanceRetrieved: this.balanceRetrieved,
             retrievingBalance: this.retrievingBalance,
@@ -108,6 +115,12 @@ class AccountStore extends EventEmitter {
                 this.walletBalanceTokWei = action.balance[1]
                 this.exchangeBalanceEthWei = action.balance[2]
                 this.exchangeBalanceTokWei = action.balance[3]
+                const feeEthWei = safeBigNumber(this.exchangeBalanceEthWei).times(BigNumber(Config.getExchangeFeePercent())).dp(0, BigNumber.ROUND_CEIL)
+                this.tradableBalanceEthWei = safeBigNumber(this.exchangeBalanceEthWei).minus(feeEthWei)
+
+                const feeTokWei = safeBigNumber(this.exchangeBalanceTokWei).times(BigNumber(Config.getExchangeFeePercent())).dp(0, BigNumber.ROUND_CEIL)
+                this.tradableBalanceTokWei = safeBigNumber(this.exchangeBalanceTokWei).minus(feeTokWei)
+
                 this.retrievedTokenAddress = action.tokenAddress
                 if (action.notify) {
                     this.balanceRetrieved = true
@@ -121,6 +134,8 @@ class AccountStore extends EventEmitter {
                 this.walletBalanceTokWei = 0
                 this.exchangeBalanceEthWei = 0
                 this.exchangeBalanceTokWei = 0
+                this.tradableBalanceEthWei = 0
+                this.tradableBalanceTokWei = 0
                 if (action.notify) {
                     this.retrievingBalance = false
                     this.balanceRetrievalFailed = true

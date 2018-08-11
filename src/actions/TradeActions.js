@@ -24,7 +24,7 @@ import TokenRepository from "../util/TokenRepository"
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
-    const {exchangeBalanceTokWei, exchangeBalanceEthWei} = AccountStore.getAccountState()
+    const {tradableBalanceTokWei, tradableBalanceEthWei} = AccountStore.getAccountState()
     let fillAmountValid = true
     let fillAmountInvalidReason = ""
     let fillAmountInvalidField = OrderEntryField.AMOUNT
@@ -34,12 +34,12 @@ export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
     } else if (weiFillAmount.isGreaterThan(BigNumber(order.availableVolume))) {
         fillAmountValid = false
         fillAmountInvalidReason = `Token amount greater than max order amount (${order.ethAvailableVolume})`
-    } else if (OrderUtil.isTakerSell(order) && weiFillAmount.isGreaterThan(BigNumber(exchangeBalanceTokWei))) {
+    } else if (OrderUtil.isTakerSell(order) && weiFillAmount.isGreaterThan(BigNumber(tradableBalanceTokWei))) {
         fillAmountValid = false
-        fillAmountInvalidReason = `Token amount greater than wallet balance (${tokWeiToEth(exchangeBalanceTokWei, TokenStore.getSelectedToken().address)})`
-    } else if (OrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(exchangeBalanceEthWei))) {
+        fillAmountInvalidReason = `Token amount greater than tradable balance (minus fee) (${tokWeiToEth(tradableBalanceTokWei, TokenStore.getSelectedToken().address)})`
+    } else if (OrderUtil.isTakerBuy(order) && weiTotalEth.isGreaterThan(BigNumber(tradableBalanceEthWei))) {
         fillAmountValid = false
-        fillAmountInvalidReason = `Total ETH amount greater than wallet balance (${baseWeiToEth(exchangeBalanceEthWei)} ETH)`
+        fillAmountInvalidReason = `Total ETH amount greater than tradable balance (minus fee) (${baseWeiToEth(tradableBalanceEthWei)} ETH)`
         fillAmountInvalidField = OrderEntryField.TOTAL
     }
     return {fillAmountValid, fillAmountInvalidReason, fillAmountInvalidField}
@@ -136,24 +136,18 @@ export function fillOrder(order) {
     // accessing stores from action creator, good practice? Yes, it's ok if just reading.
     // https://discuss.reactjs.org/t/is-accessing-flux-store-from-action-creator-a-good-practice/1717
 
-    const {exchangeBalanceEthWei, exchangeBalanceTokWei} = AccountStore.getAccountState()
-
-    const feeEthWei = safeBigNumber(exchangeBalanceEthWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
-    const exchangeBalanceEthWeiMinusFee = safeBigNumber(exchangeBalanceEthWei).minus(feeEthWei)
-
-    const feeTokWei = safeBigNumber(exchangeBalanceTokWei).times(BigNumber("0.003")).dp(0, BigNumber.ROUND_CEIL)
-    const exchangeBalanceTokWeiMinusFee = safeBigNumber(exchangeBalanceTokWei).minus(feeTokWei)
+    const {tradableBalanceEthWei, tradableBalanceTokWei} = AccountStore.getAccountState()
 
     const availableVolumeBase = BigNumber(order.availableVolumeBase)
     const availableVolume = BigNumber(order.availableVolume)
     let weiFillAmount = null
     let weiTotalEth = null
     if (OrderUtil.isTakerBuy(order)) {
-        weiTotalEth = BigNumber.min(exchangeBalanceEthWeiMinusFee, availableVolumeBase)
+        weiTotalEth = BigNumber.min(tradableBalanceEthWei, availableVolumeBase)
         const fillRatio = weiTotalEth.div(availableVolumeBase)
         weiFillAmount = fillRatio.times(availableVolume)
     } else {
-        weiFillAmount = BigNumber.min(exchangeBalanceTokWeiMinusFee, availableVolume)
+        weiFillAmount = BigNumber.min(tradableBalanceTokWei, availableVolume)
         const fillRatio = weiFillAmount.div(availableVolume)
         weiTotalEth = fillRatio.times(availableVolumeBase)
     }
@@ -249,11 +243,11 @@ export function maxFillOrder(fillOrder) {
 // MAX ( order_available_volume, TOK/ETH_balance)
 export function getMaximumFillAmountWei(order) {
     if (OrderUtil.isTakerSell(order)) {
-        const {exchangeBalanceTokWei} = AccountStore.getAccountState()
-        return BigNumber.min(BigNumber(order.availableVolume), BigNumber(exchangeBalanceTokWei))
+        const {tradableBalanceTokWei} = AccountStore.getAccountState()
+        return BigNumber.min(BigNumber(order.availableVolume), BigNumber(tradableBalanceTokWei))
     } else {
-        const {exchangeBalanceEthWei} = AccountStore.getAccountState()
-        const exchangeBalanceEth = baseWeiToEth(exchangeBalanceEthWei)
+        const {tradableBalanceEthWei} = AccountStore.getAccountState()
+        const exchangeBalanceEth = baseWeiToEth(tradableBalanceEthWei)
         const tokenAmountEth = exchangeBalanceEth.div(OrderUtil.priceOf(order))
         return BigNumber.min(BigNumber(order.availableVolume), tokEthToWei(tokenAmountEth, TokenStore.getSelectedToken().address))
     }

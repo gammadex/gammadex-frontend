@@ -51,9 +51,12 @@ class OrderPercentageSlider extends React.Component {
         const {minValue, maxValue} = this.props
 
         let value = minValue.plus(maxValue.times(safeBigNumber(sliderValue).div(safeBigNumber(100))))
-        if (sliderValue < 100) {
-            value = value.toFixed(2)
-        }
+        // This causes the slider to round and snap around small values, e.g. 0.0097 ETH becomes 0.01 which may be greater
+        // than the user's balance
+        //
+        // if (sliderValue < 100) {
+        //     value = value.toFixed(2)
+        // }
         value = this.cleanValue(value.toString())
 
         this.props.onChange(value)
