@@ -16,6 +16,7 @@ import * as AccountApi from "../apis/AccountApi"
 import * as Encryption from "../util/Encryption"
 import * as WalletDao from "../util/WalletDao"
 import { toDataUrl } from '../lib/blockies.js'
+import { removeHexPrefix } from "../util/KeyUtil"
 
 class WalletCreator extends Component {
     constructor(props) {
@@ -83,13 +84,14 @@ class WalletCreator extends Component {
     createNewWallet = (event) => {
         event.preventDefault()
         const { password, newAccount } = this.state
-        const keyStore = EtherDeltaWeb3.encryptToKeyStore(newAccount.privateKey, password)
+        const noHexPrivateKey = removeHexPrefix(newAccount.privateKey)
+        const keyStore = EtherDeltaWeb3.encryptToKeyStore(noHexPrivateKey, password)
         const keyStoreFileName = `UTC--${new Date().toISOString().replace(':', '-')}--${keyStore.id}`
         WalletActions.keyStoreCreated(keyStore, keyStoreFileName)
 
-        EtherDeltaWeb3.initForPrivateKey(newAccount.address, newAccount.privateKey)
+        EtherDeltaWeb3.initForPrivateKey(newAccount.address, noHexPrivateKey)
         AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY)
-        const encryptedPrivateKey = Encryption.encrypt(newAccount.privateKey, password)
+        const encryptedPrivateKey = Encryption.encrypt(noHexPrivateKey, password)
         WalletDao.savePrimaryKeyWallet(newAccount.address, encryptedPrivateKey, true)
     }
 
@@ -118,7 +120,7 @@ class WalletCreator extends Component {
 
         const createWalletDisabled = this.getCreateWalletDisabled()
         const createWalletDisabledClass = createWalletDisabled ? "" : "disabled"
-        const privateKey = newAccount == null ? "" : newAccount.privateKey
+        const privateKey = newAccount == null ? "" : removeHexPrefix(newAccount.privateKey)
         const address = newAccount == null ? "" : newAccount.address
         const walletImg = !address || address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
 
