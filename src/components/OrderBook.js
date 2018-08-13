@@ -121,7 +121,7 @@ export default class OrderBook extends React.Component {
                                            fillOrder={fillOrderTakerBuy}/>
 
         return (
-            <Box title="Bids and Offers" className="full-height">
+            <Box title="Bids and Offers" className="full-height bids-and-offers-component">
 
                 <Conditional displayCondition={!token}>
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>

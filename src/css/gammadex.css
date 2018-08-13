@@ -582,7 +582,6 @@ input[type="number"] {
 .token-chooser-component {
     flex-grow: 1;
     flex-shrink: 1;
-    min-height: 100px;
 }
 
 .unlisted-tokens-component {
@@ -789,14 +788,14 @@ input[type="number"] {
     position: absolute;
     bottom: 34px;
     left: 0;
-    z-index:20;
+    z-index: 20;
 }
 
 .feedback-below {
     position: absolute;
     top: 34px;
     left: 0;
-    z-index:20;
+    z-index: 20;
 }
 
 .trading-fees {
@@ -1198,6 +1197,14 @@ body {
     }
 }
 
+@media (min-width: 992px) {
+    .full-height-lg {
+        height: 100% !important;
+        max-height: 100%;
+        min-height: 100%;
+    }
+}
+
 @media (max-width: 992px) {
     .header {
         height: auto;
@@ -1213,7 +1220,7 @@ body {
     }
 
     .logo-and-main-nav .nav-item {
-        border-right: 1px solid white;
+        border-right: 1px solid #CCCCEE;
     }
 
     .logo-and-main-nav .nav-item:last-child {
@@ -1222,6 +1229,8 @@ body {
 
     .logo-and-main-nav .nav-link {
         font-size: 120%;
+        padding-top: 3px;
+        padding-bottom: 3px;
     }
 
     .token-summary {
@@ -1248,7 +1257,8 @@ body {
     }
 
     .logo {
-        width: 100%;
+        margin-left:10px;
+        width: 95%;
         height: auto;
     }
 
@@ -1266,11 +1276,30 @@ body {
         flex-grow: 1;
         flex-basis: auto;
     }
-}
 
-.red {
-    background:red;
-    flex-basis: 100%;
+    .open-orders-and-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
+    .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component {
+        height: 40vh !important;
+        min-height: 40vh !important;
+        max-height: 40vh !important;
+    }
+
+    .exchange {
+        display: block;
+        flex-direction: column;
+    }
+
+    .exchange-bottom {
+        display: block;
+        height: inherit;
+        max-height: inherit;
+    }
+
+    .exchange-top {
+        display: block;
+        height: auto;
+        max-height: inherit;
+    }
 }
 
 .children-are-header-and-body {
@@ -1291,5 +1320,5 @@ body {
 }
 
 .limited-padding {
-    padding:4px 2px 2px 2px;
+    padding: 4px 2px 2px 2px;
 }
