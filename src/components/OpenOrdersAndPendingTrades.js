@@ -53,15 +53,17 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
         const title = openOrdersActive ? 'Open Orders' : 'Pending Trades'
 
         return (
-            <Box className="open-orders-and-pending-trades-component last-card">
+            <Box className="open-orders-and-pending-trades-component last-card full-height">
                 <BoxHeader>
                     <div className="card-title">{title}</div>
+
                     <Conditional displayCondition={openOrdersActive}>
                         <div className="form-check form-check-inline">
                             <input className="form-check-input" type="checkbox" id="showAllTokensCheckbox" onChange={this.handleShowAll} value={"true"} checked={showAllTokens} />
-                            <label className="form-check-label" htmlFor="showAllTokensCheckbox">Show All Tokens</label>
+                            <label className="form-check-label" htmlFor="showAllTokensCheckbox">Show All</label>
                         </div>
                     </Conditional>
+
                     <div>
                         <ul className="nav navbar-dark navbar-card">
                             <li className="nav-item">

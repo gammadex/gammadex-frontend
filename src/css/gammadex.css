@@ -166,7 +166,10 @@
 body, html {
     font-size: 12px;
     font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.125em
+    line-height: 1.125em;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 .table td, .table th {
@@ -452,6 +455,7 @@ input[type="number"] {
 #app {
     height: 100vh;
     max-height: 100vh;
+    width: 100%;
 }
 
 .header {
@@ -474,7 +478,7 @@ input[type="number"] {
     display: flex;
     align-items: center;
     justify-content: start;
-    flex-basis:33%;
+    flex-basis: 33%;
 }
 
 .upper-header > div.token-summary {
@@ -482,7 +486,7 @@ input[type="number"] {
 }
 
 .upper-header > div.user-buttons {
-    flex-basis:34%;
+    flex-basis: 34%;
     justify-content: flex-end;
 }
 
@@ -511,7 +515,7 @@ input[type="number"] {
 
 .main-warning {
     margin: var(--main-padding);
-    margin-right:-4px;
+    margin-right: -4px;
 }
 
 .route-content > div {
@@ -533,14 +537,6 @@ input[type="number"] {
 
 .main-col {
     padding: 0px var(--main-padding);
-}
-
-.middle-left-col {
-    padding: 0 var(--half-main-padding) 0 0;
-}
-
-.middle-right-col {
-    padding: 0 0 0 var(--half-main-padding);
 }
 
 /* history page layout */
@@ -576,8 +572,6 @@ input[type="number"] {
 .exchange-left-col {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-height: 100%;
 }
 
 .balances-component {
@@ -592,12 +586,7 @@ input[type="number"] {
 }
 
 .unlisted-tokens-component {
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: 30%;
-    max-height: 30%;
-    min-height: 30%;
-    flex-basis: 30%;
+    height: 100%;
 }
 
 .unlisted-tokens-component .card {
@@ -611,23 +600,14 @@ input[type="number"] {
 .exchange-right-col {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-height: 100%;
-    padding-right: var(--main-padding);
-}
-
-.order-depth-chart-component {
-    flex-grow: 0;
-    flex-shrink: 0;
-    flex-basis: 25%;
-    max-height: 25%;
 }
 
 .price-chart-component {
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 35%;
-    max-height: 35%;
+    flex-basis: 60%;
+    max-height: 60%;
+    height: 60%;
     display: flex;
 }
 
@@ -646,9 +626,17 @@ input[type="number"] {
 }
 
 .price-chart-form {
-    margin:5px 0px 5px 3px;
+    margin: 5px 0px 5px 3px;
 }
- 
+
+.order-depth-chart-component {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 40%;
+    max-height: 40%;
+    height: 40%;
+}
+
 .order-depth-chart-component .card-body {
     height: calc(100% - 40px);
     padding-top: 0;
@@ -660,12 +648,7 @@ input[type="number"] {
 }
 
 .market-trades-component {
-    flex-grow: 0;
-    flex-shrink: 0;
-    overflow-x: hidden;
-    flex-basis: calc(40% - 2 * var(--main-padding));
-    max-height: calc(40% - 2 * var(--main-padding));
-    height: calc(40% - 2 * var(--main-padding));
+    height: 100%
 }
 
 .exchange-middle-col {
@@ -673,7 +656,7 @@ input[type="number"] {
     flex-direction: column;
 }
 
-.trading-and-orderbook-component {
+.exchange-top {
     padding-bottom: var(--main-padding);
     flex-shrink: 0;
     flex-grow: 0;
@@ -690,9 +673,15 @@ input[type="number"] {
 }
 
 .open-orders-and-pending-trades-component {
+
+}
+
+.exchange-bottom {
     flex-shrink: 0;
     flex-grow: 0;
     flex-basis: 25%;
+    height: 25%;
+    max-height: 25%;
 }
 
 .trading-and-orderbook-component .card {
@@ -757,7 +746,7 @@ input[type="number"] {
 }
 
 .full-height {
-    height: 100%;
+    height: 100% !important;
     max-height: 100%;
     min-height: 100%;
 }
@@ -800,12 +789,14 @@ input[type="number"] {
     position: absolute;
     bottom: 34px;
     left: 0;
+    z-index:20;
 }
 
 .feedback-below {
     position: absolute;
     top: 34px;
     left: 0;
+    z-index:20;
 }
 
 .trading-fees {
@@ -1051,7 +1042,6 @@ body {
 
 .trading-buy-sell-nav {
     padding-bottom: 8px;
-    margin-bottom: 8px;
 }
 
 .trading-nav-buy-selected {
@@ -1105,22 +1095,22 @@ body {
     border-width: 0;
 }
 
-.nav-link.active.nav-trading-type  {
-    background:inherit;
+.nav-link.active.nav-trading-type {
+    background: inherit;
 }
 
-.nav-link:not(.active).nav-trading-type  {
-    background:inherit;
+.nav-link:not(.active).nav-trading-type {
+    background: inherit;
     color: grey;
 }
 
-.nav-link.active.buyActive.nav-trading-type  {
-    background:inherit;
+.nav-link.active.buyActive.nav-trading-type {
+    background: inherit;
     border-bottom: 2px solid var(--green) !important;
 }
 
-.nav-link:not(.buyActive).active.nav-trading-type  {
-    background:inherit;
+.nav-link:not(.buyActive).active.nav-trading-type {
+    background: inherit;
     border-bottom: 2px solid var(--red) !important;
 }
 
@@ -1128,13 +1118,13 @@ body {
     color: inherit;
 }
 
-.nav-link.nav-trading-type:not(.active)  {
-    background:inherit;
+.nav-link.nav-trading-type:not(.active) {
+    background: inherit;
     border-bottom: 1px solid #444444;
 }
 
-.trading-and-orderbook-component .card-body  {
-    display:flex;
+.trading-and-orderbook-component .card-body {
+    display: flex;
     flex-direction: column;
 }
 
@@ -1150,7 +1140,7 @@ body {
 }
 
 .trading-types {
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
@@ -1159,34 +1149,146 @@ body {
     flex-shrink: 0;
 }
 
-.trading-types  > div {
+.trading-types > div {
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 100%;
 }
 
 .trading-types .tab-content {
-    height:100%;
-    border:1px solid #444444;
+    height: 100%;
+    border: 1px solid #444444;
     border-top-width: 0;
 }
 
 .padded-popover .popover-inner {
-    margin:8px;
+    margin: 8px;
 }
 
 .middle {
     display: flex;
-    width:100%;
+    width: 100%;
     justify-content: center;
     align-items: center;
 }
 
 .card-header .alert {
-    padding-left:6px;
-    padding-right:6px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .token-search-input {
-    width:34%;
+    width: 34%;
+}
+
+.logo {
+    height: 28px;
+}
+
+@media (max-width: 992px) {
+    .no-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 992px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .header {
+        height: auto;
+    }
+
+    .upper-header {
+        padding-left: 0;
+        height: auto;
+    }
+
+    .logo-and-main-nav {
+        order: 1;
+    }
+
+    .logo-and-main-nav .nav-item {
+        border-right: 1px solid white;
+    }
+
+    .logo-and-main-nav .nav-item:last-child {
+        border-right: 0;
+    }
+
+    .logo-and-main-nav .nav-link {
+        font-size: 120%;
+    }
+
+    .token-summary {
+        order: 3;
+        padding: 10px;
+        border-top: 1px solid var(--gray-dark);
+        width: 100%;
+    }
+
+    .user-buttons {
+        order: 2;
+    }
+
+    .lower-header {
+        height: auto;
+    }
+
+    .upper-header {
+        flex-direction: column;
+    }
+
+    .upper-header > div:first-child {
+        flex-direction: column;
+    }
+
+    .logo {
+        width: 100%;
+        height: auto;
+    }
+
+    .lower-header {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .trading-and-orderbook-component {
+        flex-direction: column;
+    }
+
+    .trading-and-orderbook-component > div {
+        flex-shrink: 0;
+        flex-grow: 1;
+        flex-basis: auto;
+    }
+}
+
+.red {
+    background:red;
+    flex-basis: 100%;
+}
+
+.children-are-header-and-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.children-are-header-and-body > div:first-child {
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: auto;
+}
+
+.children-are-header-and-body > div:last-child {
+    flex-shrink: 0;
+    flex-grow: 1;
+    flex-basis: auto;
+}
+
+.limited-padding {
+    padding:4px 2px 2px 2px;
 }

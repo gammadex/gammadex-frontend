@@ -98,13 +98,13 @@ export default class OrderBox extends React.Component {
         const buySellClass = buyActive ? "trading-nav-buy-selected" : "trading-nav-sell-selected"
 
         return (
-            <div className="card">
+            <div className="card full-height">
                 <div className="card-header">
                     <div><strong className="card-title">Trade{tokenTitlePart}</strong></div>
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                 </div>
-                <BoxSection>
+                <BoxSection className="children-are-header-and-body limited-padding">
                     <Conditional displayCondition={!!token} fallbackMessage="Please select a token to enable trading">
                     <Nav fill className={"trading-buy-sell-nav " + buySellClass}>
                         <NavItem>

@@ -10,6 +10,8 @@ import {withRouter} from "react-router-dom"
 import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
 import PlotlyDepthChart from "../components/OrderBook/PlotlyDepthChart"
 import ReactChart from "../components/OrderBook/ReactChart"
+import OrderBox from "../components/OrderPlacement/OrderBox"
+import OrderBook from "../components/OrderBook"
 
 class Exchange extends Component {
     constructor() {
@@ -46,21 +48,33 @@ class Exchange extends Component {
         const {token} = this.state
 
         return (
-            <div className="row">
-                <div className="col-lg-3 exchange-left-col main-col">
-                    <AccountDetail token={token}/>
-                    <TokenChooser/>
-                    <UnlistedTokens/>
+            <div>
+                <div className="row exchange-top">
+                    <div className="col-lg-3 exchange-left-col main-col">
+                        <AccountDetail token={token}/>
+                        <TokenChooser/>
+                    </div>
+                    <div className="col-lg-3 main-col full-height">
+                        <OrderBox token={token}/>
+                    </div>
+                    <div className="col-lg-3 main-col full-height">
+                        <OrderBook token={token}/>
+                    </div>
+                    <div className="pl-0 col-lg-3 exchange-right-col main-col">
+                        <ReactChart/>
+                        <PlotlyDepthChart/>
+                    </div>
                 </div>
-                <div className="pl-0 col-lg-6 exchange-middle-col main-col full-height">
-                    <Trading token={token}/>
-                    <OpenOrdersAndPendingTrades/>
-                </div>
-                <div className="pl-0 col-lg-3 exchange-right-col main-col">
-                    {/* <PlotlyPriceChart token={token}/> */}
-                    <ReactChart />
-                    <PlotlyDepthChart/>
-                    <TradeHistory token={token}/>
+                <div className="row exchange-bottom">
+                    <div className="col-lg-3 full-height main-col">
+                        <UnlistedTokens/>
+                    </div>
+                    <div className="col-lg-6 full-height main-col">
+                        <OpenOrdersAndPendingTrades/>
+                    </div>
+                    <div className="col-lg-3 full-height main-col">
+                        <TradeHistory token={token}/>
+                    </div>
                 </div>
             </div>
         )

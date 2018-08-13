@@ -40,26 +40,16 @@ class TopNavigation extends Component {
         return (
             <header className="bg-primary text-light header">
                 <div className="upper-header">
-                    <div className="full-height">
+                    <div className="logo-and-main-nav full-height">
+                        <Link to={Routes.Exchange} className="navbar-brand mb-0"><img className="logo" src={require("../images/gammadex_logo.svg")} /></Link>
 
-
-                        <Link to={Routes.Exchange} className="navbar-brand mb-0"><img src={require("../images/gammadex_logo.svg")} style={{ "height": "28px" }} /></Link>
-
-                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                        <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav mr-auto">
                                 <li className="nav-item">
                                     <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
                                 </li>
                                 <li className="nav-item">
                                     <Link to={Routes.History} className="nav-link">History</Link>
-                                </li>
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link dropdown-toggle" href="#" id="navbarSupportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Support</a>
-                                    <div className="dropdown-menu" aria-labelledby="navbarSupportDropdown">
-                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/RANPVZ5"><i className="fab fa-discord"></i>&nbsp;discord chat</a>
-                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i>&nbsp;twitter</a>
-                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i>&nbsp;reddit</a>
-                                    </div>
                                 </li>
                             </ul>
                         </nav>
@@ -69,8 +59,19 @@ class TopNavigation extends Component {
 
                     <div className="user-buttons full-height">
                         <MarketResponseSpinner />
-                        <nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+                        <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav navbar-right mr-auto">
+                                <li className="nav-item dropdown">
+                                    <button className="nav-link dropdown-toggle btn btn-link" style={{ "height": "36px" }} id="navbarSupportDropdown" aria-haspopup="true" aria-expanded="false" onClick={this.toggleShowStatus}>
+                                        <span style={{ "verticalAlign": "middle" }} className="fas fa-lg  fa-hands-helping mr-2"></span><span className="no-mobile">Support</span>
+                                    </button>
+
+                                    <div className="dropdown-menu" aria-labelledby="navbarSupportDropdown">
+                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/RANPVZ5"><i className="fab fa-discord"></i>&nbsp;discord chat</a>
+                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i>&nbsp;twitter</a>
+                                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i>&nbsp;reddit</a>
+                                    </div>
+                                </li>
                                 <AppStatus />
                                 <GasPriceChooser />
                                 <AccountDropdown/>
