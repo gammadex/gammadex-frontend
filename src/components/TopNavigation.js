@@ -64,7 +64,7 @@ class TopNavigation extends Component {
                                 <li className="nav-item dropdown">
                                     <button className="nav-link dropdown-toggle btn btn-link"
                                             style={{ "height": "36px" }} id="navbarSupportDropdown"
-                                            aria-haspopup="true" aria-expanded="false">
+                                            aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">
                                         <span style={{ "verticalAlign": "middle" }} className="fas fa-lg  fa-hands-helping mr-2"></span><span className="no-mobile">Support</span>
                                     </button>
 
