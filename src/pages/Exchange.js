@@ -48,16 +48,16 @@ class Exchange extends Component {
         const {token} = this.state
 
         return (
-            <div>
+            <div className="exchange">
                 <div className="row exchange-top">
                     <div className="col-lg-3 exchange-left-col main-col">
                         <AccountDetail token={token}/>
                         <TokenChooser/>
                     </div>
-                    <div className="col-lg-3 main-col full-height">
+                    <div className="col-lg-3 main-col full-height-lg">
                         <OrderBox token={token}/>
                     </div>
-                    <div className="col-lg-3 main-col full-height">
+                    <div className="col-lg-3 main-col full-height-lg">
                         <OrderBook token={token}/>
                     </div>
                     <div className="pl-0 col-lg-3 exchange-right-col main-col">
@@ -66,13 +66,13 @@ class Exchange extends Component {
                     </div>
                 </div>
                 <div className="row exchange-bottom">
-                    <div className="col-lg-3 full-height main-col">
+                    <div className="col-lg-3 full-height-lg main-col">
                         <UnlistedTokens/>
                     </div>
-                    <div className="col-lg-6 full-height main-col">
+                    <div className="col-lg-6 full-height-lg main-col">
                         <OpenOrdersAndPendingTrades/>
                     </div>
-                    <div className="col-lg-3 full-height main-col">
+                    <div className="col-lg-3 full-height-lg main-col">
                         <TradeHistory token={token}/>
                     </div>
                 </div>
