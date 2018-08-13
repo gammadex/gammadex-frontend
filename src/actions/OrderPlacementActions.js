@@ -397,7 +397,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
     
             if (Math.abs(change) > Config.getAwayFromLastTradeThreshold()) {
                 hasPriceWarning = true
-                priceAwayFromLastTraded = <li>Your order price of {priceControlled} represents a {(change * 100.0).toFixed(0)}% change to the last traded price of {lastTradedPrice.toFixed(8)}</li>
+                priceAwayFromLastTraded = <li>Your Price {priceControlled} is {(change * 100.0).toFixed(0)}% away from Last Market Trade {lastTradedPrice.toFixed(8)}</li>
             }
         }
 
@@ -408,7 +408,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
             const bestOffer = safeBigNumber(OrderBookStore.getOffers()[0].price)
             if(safeBigNumber(priceControlled).isGreaterThan(bestOffer)) {
                 hasPriceWarning = true
-                crossedSpread = <li>Your order price of {priceControlled} is greater than the best offer ({bestOffer.toFixed(8)})</li>
+                crossedSpread = <li>Your Price {priceControlled} is > Best Offer Price ({bestOffer.toFixed(8)})</li>
             }
         }
 
@@ -419,7 +419,7 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
             const bestBid = safeBigNumber(OrderBookStore.getBids()[0].price)
             if(safeBigNumber(priceControlled).isLessThan(bestBid)) {
                 hasPriceWarning = true
-                crossedSpread = <li>Your order price of {priceControlled} is less than the best bid ({bestBid.toFixed(8)})</li>
+                crossedSpread = <li>Your Price {priceControlled} is &lt; Best Bid Price ({bestBid.toFixed(8)})</li>
             }
         }
 
@@ -432,8 +432,8 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
         if(hasPriceWarning) {
             priceWarning =
                 <div>
-                    <div><i className="fas fa-exclamation-triangle" /> Fair value warning</div>
-                    <br />
+                    <div><i className="fas fa-exclamation-triangle" /> Fat Finger Warning</div>
+                    <br/>
                     <ul className="fair-value-list">
                         {noMarketTrades}
                         {priceAwayFromLastTraded}

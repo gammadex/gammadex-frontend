@@ -262,7 +262,11 @@ export default class MakeOrder extends React.Component {
 
         let priceWarningAlert = null
         if (orderHasPriceWarning && orderValid) {
-            priceWarningAlert = <Alert color="danger" isOpen={orderHasPriceWarning} toggle={this.onDismissPriceWarningAlert}>{orderPriceWarning}</Alert>
+            priceWarningAlert = <Row>
+                <Col>
+                    <Alert color="danger" isOpen={orderHasPriceWarning} toggle={this.onDismissPriceWarningAlert}>{orderPriceWarning}</Alert>
+                </Col>
+            </Row>
         }
 
         let prefixedOrderHash = ""
@@ -318,6 +322,7 @@ export default class MakeOrder extends React.Component {
                         onChange={this.onOrderTotalChange} fieldName={type + "OrderTotal"}
                         valid={totalFieldValid} errorMessage={totalFieldErrorMessage} />
 
+                    <Conditional displayCondition={!orderHasPriceWarning}>
                     <FormGroup row>
                         <Label for={type + "ExpiryType"} sm={3}>Expiry</Label>
                         <Col sm={9}>
@@ -330,8 +335,9 @@ export default class MakeOrder extends React.Component {
                             <FormText color="muted">{expiryTypeText}</FormText>
                         </Col>
                     </FormGroup>
+                    </Conditional>
 
-                    <Conditional displayCondition={expiryType === ExpiryType.BLOCKS}>
+                    <Conditional displayCondition={!orderHasPriceWarning && expiryType === ExpiryType.BLOCKS}>
                         <NumericInput name="" value={expireAfterBlocks} unitName="Blocks"
                             forceInteger={true} placeholder="0"
                             onChange={this.onExpireAfterBlocksChange} fieldName={type + "ExpireAfterBlocks"} />
@@ -345,7 +351,7 @@ export default class MakeOrder extends React.Component {
 
                     </Conditional>
 
-                    <Conditional displayCondition={orderValid && orderHash != null}>
+                    <Conditional displayCondition={!orderHasPriceWarning && orderValid && orderHash != null}>
                         <Row>
                             <Col sm={3} className="order-hash-label">Hash</Col>
                             <Col sm={9}>
@@ -376,18 +382,18 @@ export default class MakeOrder extends React.Component {
                     </Conditional>
 
                     {priceWarningAlert}
-                    <br/>
-                    <FormGroup row className="hdr-stretch-ctr">
-                        <Col sm={3} />
-                        <Col sm={9}>
-                            <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
-                                hidden={orderHasPriceWarning && orderValid}
-                                onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
-                            <Conditional displayCondition={!balanceRetrieved}>
-                                <FormText color="muted">{`Please unlock a wallet to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
-                            </Conditional>
-                        </Col>
-                    </FormGroup>
+                    <Conditional displayCondition={orderValid && !orderHasPriceWarning}>
+                        <FormGroup row className="hdr-stretch-ctr">
+                            <Col sm={3} />
+                            <Col sm={9}>
+                                <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
+                                    onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
+                                <Conditional displayCondition={!balanceRetrieved}>
+                                    <FormText color="muted">{`Please unlock a wallet to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
+                                </Conditional>
+                            </Col>
+                        </FormGroup>
+                    </Conditional>
                 </form>
             </BoxSection>
         )

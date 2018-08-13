@@ -90,10 +90,10 @@ export function blocksToHumanReadableExpiry(blocks) {
     seconds = Math.floor(seconds)
 
     const strYears = years === 0 ? "" : ` ${years} years`
-    const strDays = days === 0 ? "" : ` ${days} days`
+    const strDays = days === 0 ? "" : ` ${days} day${days === 1 ? "" : "s"}`
     const strHours = hours === 0 ? "" : ` ${hours} hours`
     const strMinutes = minutes === 0 ? "" : ` ${minutes} minutes`
     const strSeconds = seconds === 0 ? "" : ` ${seconds} seconds`
 
-    return `Order will expire in approximately${strYears}${strDays}${strHours}${strMinutes}${strSeconds} (based on ${blockTime.toFixed(1)}s block time)`
+    return `Expire in approx.${strYears}${strDays}${strHours}${strMinutes}`
 }

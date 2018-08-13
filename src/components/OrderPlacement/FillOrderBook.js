@@ -228,7 +228,7 @@ export default class FillOrderBook extends React.Component {
 
             let bestExecutionWarning = null
             if (!fillOrder.isBestExecution) {
-                bestExecutionWarning = <Alert color="warning" className="best-execution-warning">You have not selected the best price in the {type === OrderSide.BUY ? 'OFFERS' : 'BIDS'} book.</Alert>
+                bestExecutionWarning = <Alert color="warning" className="best-execution-warning"><span className="fas fa-exclamation-circle"/>&nbsp;You have not selected the best {type === OrderSide.BUY ? 'OFFER' : 'BID'} price</Alert>
             }
 
             const submitDisabled = this.isSubmitDisabled()
