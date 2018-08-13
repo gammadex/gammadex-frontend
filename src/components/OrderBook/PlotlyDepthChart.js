@@ -120,7 +120,7 @@ export default class PlotlyDepthChart extends React.Component {
 
     render() {
         return (
-            <Box title="Order Depth Chart" className="chart-component order-depth-chart-component no-mobile">
+            <Box title="Order Depth Chart" className="chart-component order-depth-chart-component">
                 <BoxSection id="depth-chart-resize-container">
                     <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="depth-chart-resize-container"/>
                     <div id="depthChart"/>
