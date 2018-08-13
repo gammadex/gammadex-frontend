@@ -97,7 +97,7 @@ export class BoxTitle extends React.Component {
 
         const extraClassName = this.props.className || ''
         const title = this.props.title || ''
-        const icon = expanded ? 'fa-minus-circle' : 'fa-plus-circle'
+        const icon = expanded ? 'fa-minus' : 'fa-plus'
 
         return (
             <div className={"box-title-container " + extraClassName}>
