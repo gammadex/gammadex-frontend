@@ -1,9 +1,9 @@
 import React from "react"
 import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
-import { withRouter } from "react-router-dom"
+import {withRouter} from "react-router-dom"
 import TokenRepository from "../util/TokenRepository"
-import { getFavourite, setFavourite } from "../util/FavouritesDao"
+import {getFavourite, setFavourite} from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
 import Config from "../Config"
 import _ from "lodash"
@@ -13,6 +13,7 @@ import MarketResponseSpinner from "./MarketResponseSpinner"
 import ReactResizeDetector from 'react-resize-detector'
 import TokenChooserSort from './TokenChooser/TokenChooserSort'
 import Scroll from "./CustomComponents/Scroll"
+import {BoxTitle} from "./CustomComponents/Box"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -37,8 +38,8 @@ class TokenChooser extends React.Component {
     getSortType() {
         if (getFavourite(Favourites.TOKEN_CHOOSER_SORT) == null ||
             ![TokenChooserSort.ASC_SYMBOL, TokenChooserSort.DESC_SYMBOL,
-            TokenChooserSort.ASC_VOLUME, TokenChooserSort.DESC_VOLUME,
-            TokenChooserSort.ASC_CHANGE, TokenChooserSort.DESC_CHANGE].includes(getFavourite(Favourites.TOKEN_CHOOSER_SORT))) {
+                TokenChooserSort.ASC_VOLUME, TokenChooserSort.DESC_VOLUME,
+                TokenChooserSort.ASC_CHANGE, TokenChooserSort.DESC_CHANGE].includes(getFavourite(Favourites.TOKEN_CHOOSER_SORT))) {
             return TokenChooserSort.ASC_SYMBOL
         } else {
             return getFavourite(Favourites.TOKEN_CHOOSER_SORT)
@@ -78,7 +79,7 @@ class TokenChooser extends React.Component {
     }
 
     onTokenSelect = (tokenName, tokenAddress) => {
-        const { onTokenSelectOverride } = this.props
+        const {onTokenSelectOverride} = this.props
         if (onTokenSelectOverride != null && typeof (onTokenSelectOverride) === 'function') {
             onTokenSelectOverride(tokenName)
         } else {
@@ -91,7 +92,7 @@ class TokenChooser extends React.Component {
     }
 
     onFavourite = (tokenAddress) => {
-        const { favouritesTokens } = this.state
+        const {favouritesTokens} = this.state
         const copyFavouritesTokens = favouritesTokens.slice()
         if (copyFavouritesTokens.includes(tokenAddress.toLowerCase())) {
             _.remove(copyFavouritesTokens, t => t === tokenAddress.toLowerCase())
@@ -128,7 +129,7 @@ class TokenChooser extends React.Component {
     }
 
     onShowFavouritesOnlyChange = (event) => {
-        const { showFavouritesOnly } = this.state
+        const {showFavouritesOnly} = this.state
         setFavourite(Favourites.SHOW_FAVOURITES_ONLY, !showFavouritesOnly)
         this.setState({
             showFavouritesOnly: !showFavouritesOnly
@@ -149,17 +150,17 @@ class TokenChooser extends React.Component {
     }
 
     onSymbolHeader = () => {
-        const { sortType } = this.state
+        const {sortType} = this.state
         this.onSortTypeChange(sortType, TokenChooserSort.ASC_SYMBOL, TokenChooserSort.ASC_SYMBOL, TokenChooserSort.DESC_SYMBOL)
     }
 
     onVolumeHeader = () => {
-        const { sortType } = this.state
+        const {sortType} = this.state
         this.onSortTypeChange(sortType, TokenChooserSort.DESC_VOLUME, TokenChooserSort.ASC_VOLUME, TokenChooserSort.DESC_VOLUME)
     }
 
     onChangeHeader = () => {
-        const { sortType } = this.state
+        const {sortType} = this.state
         this.onSortTypeChange(sortType, TokenChooserSort.DESC_CHANGE, TokenChooserSort.ASC_CHANGE, TokenChooserSort.DESC_CHANGE)
     }
 
@@ -175,7 +176,7 @@ class TokenChooser extends React.Component {
     }
 
     render() {
-        const { searchedToken, selectedToken, serverTickers, currentStats, containerHeight, favouritesTokens, showFavouritesOnly, sortType } = this.state
+        const {searchedToken, selectedToken, serverTickers, currentStats, containerHeight, favouritesTokens, showFavouritesOnly, sortType} = this.state
 
         const systemTokens = TokenChooser.getTokensToDisplay(TokenRepository.getSystemTokens(),
             serverTickers,
@@ -183,8 +184,8 @@ class TokenChooser extends React.Component {
             selectedToken,
             favouritesTokens,
             showFavouritesOnly).map(systemToken => {
-                return systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
-            })
+            return systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
+        })
 
         const sortedTokens = this.sortTokens(systemTokens, sortType)
 
@@ -196,7 +197,7 @@ class TokenChooser extends React.Component {
                 isSelected={selectedToken && token.address === selectedToken.address}
                 isFavourite={favouritesTokens.includes(token.address.toLowerCase())}
                 onTokenSelect={this.onTokenSelect}
-                onFavourite={this.onFavourite} />
+                onFavourite={this.onFavourite}/>
         })
 
         const symbolSortClass = sortType === TokenChooserSort.ASC_SYMBOL ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_SYMBOL ? "fas fa-sort-down" : "fas fa-sort"
@@ -205,32 +206,38 @@ class TokenChooser extends React.Component {
 
         return (
             <div id="token-chooser-container" className="token-chooser-component">
-                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="token-chooser-container" />
+                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="token-chooser-container"/>
 
-                <div className="card " style={{ "height": containerHeight }}>
+                <div className="card " style={{"height": containerHeight}}>
                     <div className="card-header">
-                        <div className="card-title">Tokens</div>
-                        <div>
+
+                        <BoxTitle title="Tokens"
+                                  ids={{'token-chooser-body': 'block', 'token-show-selected-only': 'block', 'token-search-input': 'block'}}
+                                  componentId="token-chooser-container"
+                        />
+
+                        <div id="token-show-selected-only" className="mobile-toggle">
                             <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)}>
                                 <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly} />
+                                    <input className="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly}/>
                                     <label className="form-check-label" htmlFor="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
                                 </div>
                             </form>
                         </div>
-                        <input onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                               placeholder="Search" className="form-control token-search-input" />
+
+                        <input id="token-search-input" onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                               placeholder="Search" className="form-control mobile-toggle"/>
                     </div>
 
-                    <Scroll>
+                    <Scroll id="token-chooser-body" className="mobile-toggle">
                         <table className="table table-bordered table-hover table-no-bottom-border">
                             <thead>
-                                <tr>
-                                    <th className="clickable" onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
-                                    <th className="clickable"><span className="fas fa-star"></span></th>
-                                    <th className="clickable" onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
-                                    <th className="clickable" onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
-                                </tr>
+                            <tr>
+                                <th className="clickable" onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
+                                <th className="clickable"><span className="fas fa-star"></span></th>
+                                <th className="clickable" onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
+                                <th className="clickable" onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
+                            </tr>
                             </thead>
                             <tbody>{tokenRows}</tbody>
                         </table>

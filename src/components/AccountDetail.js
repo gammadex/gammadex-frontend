@@ -90,9 +90,11 @@ export default class AccountDetail extends React.Component {
         }
 
         return (
-            <div className="card balances-component">
+            <div id="balances-container" className="card balances-component">
                 <div className="card-header with-button">
-                    <BoxTitle title="Balances" ids={{'balance-body':'block', 'balances-refresh': 'block'}}/>
+                    <BoxTitle title="Balances"
+                              ids={{'balance-body':'block', 'balances-refresh': 'block'}}
+                    />
 
                     <div id="balances-refresh" className="mobile-toggle">
                         <RefreshButton onClick={this.refreshBalances}

@@ -9,6 +9,7 @@
     --gray-light: #ced2d5;
     --sell-red: #dd6565;
     --sell-green: #65dd65;
+    --mobile-component-height: 40vh;
 }
 
 #chart {
@@ -1177,7 +1178,7 @@ body {
     padding-right: 6px;
 }
 
-.token-search-input {
+#token-search-input {
     width: 34%;
 }
 
@@ -1250,6 +1251,7 @@ body {
 
     .lower-header {
         height: auto;
+        border-bottom: 1px solid var(--gray-dark);
     }
 
     .upper-header {
@@ -1261,7 +1263,7 @@ body {
     }
 
     .logo {
-        margin-left:10px;
+        margin-left: 10px;
         width: 95%;
         height: auto;
     }
@@ -1282,11 +1284,16 @@ body {
     }
 
     .open-orders-and-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
-    .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component {
-        height: 40vh !important;
-        min-height: 40vh !important;
-        max-height: 40vh !important;
+    .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component
+    {
+        height: 42px;
+        min-height: 42px;
+        max-height: 42px;
     }
+
+    /*
+     .balances-component
+     */
 
     .exchange {
         display: block;
@@ -1328,16 +1335,16 @@ body {
 }
 
 .box-title-container {
-    display:flex;
+    display: flex;
     flex-direction: row;
     align-items: center;
 }
 
 .box-title-container > div {
-    padding-right:6px;
+    padding-right: 6px;
 }
 
 .box-title-container .fas {
-    font-size:120%;
+    font-size: 120%;
     opacity: 0.8;
 }
