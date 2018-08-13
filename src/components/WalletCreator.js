@@ -121,29 +121,22 @@ class WalletCreator extends Component {
         const walletImg = !address || address === "" ? null : <img width="20" height="20" src={toDataUrl(address)}/>
 
         return (
-            <Box title="Create New Wallet">
-
-                <Conditional displayCondition={newAccount == null}>
-                    <BoxSection>
-                        <h4 className="text-muted">Creating New Wallet...</h4>
-                    </BoxSection>
-                </Conditional>
+            <Box title={newAccount == null ? "Creating New Wallet..." : "New Wallet Created"}>
 
                 <Conditional displayCondition={newAccount != null && newAccountKeyStore == null}>
                     <BoxSection>
-                        <h4 className="text-muted">Wallet Created!</h4>
                         <h3>{walletImg}&nbsp;{address}</h3>
                         <br/>
                         <br/>
-                        <h4>Enter a Strong Password</h4>
+                        <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;Enter a Strong Password</h5>
                         <br />
                         <div className="row">
                             <div className="col-lg-12">
                                 <form onSubmit={this.createNewWallet}>
-                                    <h5>Save this password! If lost it cannot be recovered or reset. GammaDex does not store your password and cannot recover or reset it.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;Save this password. If lost it cannot be recovered or reset. GammaDex does not store your password and cannot recover or reset it.</h5>
                                     <br />
                                     <small class="form-text text-muted">
-                            Your selected wallet details will be stored in your browser's local storage. Your Private Key will be <strong>encrypted</strong> using a separate password of your choice. You will be prompted for this password each time you visit GammaDEX. No sensitive wallet data is transmitted to or stored on GammaDEX servers, encrypted or otherwise.
+                            Your selected wallet details will be stored in your browser's local storage. Your Private Key and JSON Keystore File will be <strong>encrypted</strong> using a password of your choice. You will be prompted for this password each time you visit GammaDEX. No sensitive wallet data is transmitted to or stored on GammaDEX servers, encrypted or otherwise.
                         </small>                                    
                                     <PasswordSection
                                         privateKeyAddress={address}
@@ -174,9 +167,10 @@ class WalletCreator extends Component {
                                         className={"btn btn-primary mr-2"}>Download Keystore File (UTC / JSON)</Download>
                                     <br />
                                     <br />
-                                    <h5>**Do not lose it!** It cannot be recovered if you lose it.</h5>
-                                    <h5>**Do not share it!** Your funds will be stolen if you use this file on a malicious/phishing site.</h5>
-                                    <h5>**Make a backup!**</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO NOT lose this file. It cannot be recovered if you lose it.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO NOT share it. Your funds will be stolen if you use this file on a malicious/phishing site.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO make a backup.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO consider using a Hardware Wallet or MetaMask instead.</h5>
                                     <br />
                                     <div className="form-group">
                                         <input className="btn btn-primary" type="submit" value="Understood. Get My Private Key" />
@@ -189,18 +183,18 @@ class WalletCreator extends Component {
 
                 <Conditional displayCondition={newAccountKeyStore != null && newAccountShowPrivateKey}>
                     <BoxSection>
-                        <h3>{walletImg}&nbsp;{address}</h3>
                         <h3>Save Your Private Key</h3>
                         <br />
                         <div className="row">
                             <div className="col-lg-12">
                                 <form onSubmit={this.goToExchange}>
-                                    <pre>{privateKey}</pre>
+                                    <pre><h3 className="text-success">{privateKey}</h3></pre>
                                     <br />
                                     <br />
-                                    <h5>**Do not lose it!** It cannot be recovered if you lose it.</h5>
-                                    <h5>**Do not share it!** Your funds will be stolen if you use this file on a malicious/phishing site.</h5>
-                                    <h5>**Make a backup!**</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO NOT lose your Private Key. It cannot be recovered if you lose it.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO NOT share it. Your funds will be stolen if you enter your Private Key on a malicious/phishing site.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO Make a backup.</h5>
+                                    <h5><span className="fas fa-exclamation-circle text-muted"/>&nbsp;DO consider using a Hardware Wallet or MetaMask instead.</h5>
                                     <br />
                                     <div className="form-group">
                                         <input className="btn btn-primary" type="submit" value="Understood. Go to Exchange" />
