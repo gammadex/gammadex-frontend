@@ -761,7 +761,7 @@ input[type="number"] {
 
 .numeric-input-slider, .percentage-slider {
     margin-bottom: 12px;
-    margin-top: 10px;
+    margin-top: 6px;
     padding-left: 10px;
     padding-right: 20px;
 }
@@ -1102,6 +1102,7 @@ body {
 .nav-link:not(.active).nav-trading-type {
     background: inherit;
     color: grey;
+    transition: border-color 0.15s ease-in-out;
 }
 
 .nav-link.active.buyActive.nav-trading-type {
