@@ -9,7 +9,6 @@ import {setFavourite} from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
 import UnlistedTokenRow from "./UnlistedTokens/UnlistedTokenRow"
 import Conditional from "./CustomComponents/Conditional"
-import ReactResizeDetector from 'react-resize-detector'
 import Scroll from "./CustomComponents/Scroll"
 
 class TokenChooser extends React.Component {
@@ -89,8 +88,7 @@ class TokenChooser extends React.Component {
 
         return (
             <div id="unlisted-tokens-container" className="unlisted-tokens-component">
-                <ReactResizeDetector handleHeight onResize={this.onResize} resizableElementId="unlisted-tokens-container"/>
-                <div style={{"height": containerHeight}}>
+                <div className="full-height">
                     <Box title="My Unlisted Tokens" className="last-card">
                         <BoxSection className="with-bottom-border">
                             <TokenCreator selectToken={this.onTokenSelect}/>

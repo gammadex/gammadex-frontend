@@ -539,14 +539,6 @@ input[type="number"] {
     padding: 0px var(--main-padding);
 }
 
-.middle-left-col {
-    padding: 0 var(--half-main-padding) 0 0;
-}
-
-.middle-right-col {
-    padding: 0 0 0 var(--half-main-padding);
-}
-
 /* history page layout */
 
 .history-row {
@@ -580,8 +572,6 @@ input[type="number"] {
 .exchange-left-col {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-height: 100%;
 }
 
 .balances-component {
@@ -596,12 +586,7 @@ input[type="number"] {
 }
 
 .unlisted-tokens-component {
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: 30%;
-    max-height: 30%;
-    min-height: 30%;
-    flex-basis: 30%;
+    height: 100%;
 }
 
 .unlisted-tokens-component .card {
@@ -615,23 +600,14 @@ input[type="number"] {
 .exchange-right-col {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    max-height: 100%;
-    padding-right: var(--main-padding);
-}
-
-.order-depth-chart-component {
-    flex-grow: 0;
-    flex-shrink: 0;
-    flex-basis: 25%;
-    max-height: 25%;
 }
 
 .price-chart-component {
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: 35%;
-    max-height: 35%;
+    flex-basis: 60%;
+    max-height: 60%;
+    height: 60%;
     display: flex;
 }
 
@@ -653,6 +629,14 @@ input[type="number"] {
     margin: 5px 0px 5px 3px;
 }
 
+.order-depth-chart-component {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 40%;
+    max-height: 40%;
+    height: 40%;
+}
+
 .order-depth-chart-component .card-body {
     height: calc(100% - 40px);
     padding-top: 0;
@@ -664,12 +648,7 @@ input[type="number"] {
 }
 
 .market-trades-component {
-    flex-grow: 0;
-    flex-shrink: 0;
-    overflow-x: hidden;
-    flex-basis: calc(40% - 2 * var(--main-padding));
-    max-height: calc(40% - 2 * var(--main-padding));
-    height: calc(40% - 2 * var(--main-padding));
+    height: 100%
 }
 
 .exchange-middle-col {
@@ -677,7 +656,7 @@ input[type="number"] {
     flex-direction: column;
 }
 
-.trading-and-orderbook-component {
+.exchange-top {
     padding-bottom: var(--main-padding);
     flex-shrink: 0;
     flex-grow: 0;
@@ -694,9 +673,15 @@ input[type="number"] {
 }
 
 .open-orders-and-pending-trades-component {
+
+}
+
+.exchange-bottom {
     flex-shrink: 0;
     flex-grow: 0;
     flex-basis: 25%;
+    height: 25%;
+    max-height: 25%;
 }
 
 .trading-and-orderbook-component .card {
@@ -804,12 +789,14 @@ input[type="number"] {
     position: absolute;
     bottom: 34px;
     left: 0;
+    z-index:20;
 }
 
 .feedback-below {
     position: absolute;
     top: 34px;
     left: 0;
+    z-index:20;
 }
 
 .trading-fees {
@@ -1043,7 +1030,6 @@ body {
 
 .trading-buy-sell-nav {
     padding-bottom: 8px;
-    margin-bottom: 8px;
 }
 
 .trading-nav-buy-selected {
@@ -1272,4 +1258,25 @@ body {
 .red {
     background:red;
     flex-basis: 100%;
+}
+
+.children-are-header-and-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.children-are-header-and-body > div:first-child {
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-basis: auto;
+}
+
+.children-are-header-and-body > div:last-child {
+    flex-shrink: 0;
+    flex-grow: 1;
+    flex-basis: auto;
+}
+
+.limited-padding {
+    padding:4px 2px 2px 2px;
 }

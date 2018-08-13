@@ -136,7 +136,7 @@ class ReactChart extends Component {
                     </div>
                 </div>
 
-                <BoxSection id="price-chart-resize-container">
+                <BoxSection id="price-chart-resize-container" className="p-0">
                     <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="price-chart-resize-container" />
                     {chart}
                 </BoxSection>

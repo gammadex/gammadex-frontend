@@ -81,17 +81,16 @@ export default class TokenCreator extends React.Component {
                     </Conditional>
 
                     <div className="form-group">
-                        <label className="col-form-label" htmlFor="address">Address of token to add</label>
                         <div className="token-creator-form">
                             <div className="mr-2 token-creator-address">
                                 <input className={"form-control" + (this.state.checkError ? " is-invalid" : "")}
-                                       id="address" placeholder="0x12345..."
+                                       id="address" placeholder=" Address of token to add 0x12345..."
                                        onChange={this.onAddressChange} value={this.state.token.address}/>
 
-                                <div className="invalid-feedback feedback-below">{this.state.checkError}</div>
+                                <div className="invalid-feedback feedback-above">{this.state.checkError}</div>
 
                                 <Conditional displayCondition={this.state.token.symbol !== ""}>
-                                    <div className="alert alert-success feedback-below unlisted-token-valid">
+                                    <div className="alert alert-success feedback-above unlisted-token-valid">
                                         Token is valid: <b>{this.state.token.symbol} - {this.state.token.name}</b>
                                     </div>
                                 </Conditional>

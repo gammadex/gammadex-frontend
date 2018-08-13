@@ -53,7 +53,7 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
         const title = openOrdersActive ? 'Open Orders' : 'Pending Trades'
 
         return (
-            <Box className="open-orders-and-pending-trades-component last-card">
+            <Box className="open-orders-and-pending-trades-component last-card full-height">
                 <BoxHeader>
                     <div className="card-title">{title}</div>
 
