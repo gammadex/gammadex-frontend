@@ -11,6 +11,7 @@ import FileChooser from "./KeyStoreForm/FileChooser"
 import Conditional from "../../CustomComponents/Conditional"
 import {withRouter} from "react-router-dom"
 import * as AccountApi from "../../../apis/AccountApi"
+import SafetyWarning from "../SafetyWarning"
 
 class KeyStoreFile extends React.Component {
     constructor(props) {
@@ -100,7 +101,8 @@ class KeyStoreFile extends React.Component {
 
         return (
             <div>
-                <h4>Use Wallet File</h4>
+                <SafetyWarning/>
+                <h4>Select Your Wallet File (JSON)</h4>
 
                 <form onSubmit={this.handleKeyStoreUnlock}>
 

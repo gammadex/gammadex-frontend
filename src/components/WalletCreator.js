@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import * as WalletActions from "../actions/WalletActions"
 import WalletStore from "../stores/WalletStore"
-import KeyStoreFile from "./WalletChooser/KeyStore"
 import AccountType from "../AccountType"
-import PrivateKey from "./WalletChooser/PrivateKey"
-import MetaMask from "./WalletChooser/MetaMask"
-import Ledger from "./WalletChooser/Ledger"
 import { Box, BoxSection } from "./CustomComponents/Box"
 import PasswordSection from "./WalletChooser/PrivateKey/PrivateKeyForm/PasswordSection"
 import EtherDeltaWeb3 from '../EtherDeltaWeb3'
@@ -146,6 +142,9 @@ class WalletCreator extends Component {
                                 <form onSubmit={this.createNewWallet}>
                                     <h5>Save this password! If lost it cannot be recovered or reset. GammaDex does not store your password and cannot recover or reset it.</h5>
                                     <br />
+                                    <small class="form-text text-muted">
+                            Your selected wallet details will be stored in your browser's local storage. Your Private Key will be <strong>encrypted</strong> using a separate password of your choice. You will be prompted for this password each time you visit GammaDEX. No sensitive wallet data is transmitted to or stored on GammaDEX servers, encrypted or otherwise.
+                        </small>                                    
                                     <PasswordSection
                                         privateKeyAddress={address}
                                         password={password}

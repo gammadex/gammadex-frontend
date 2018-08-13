@@ -9,8 +9,9 @@ import * as WalletActions from "../../../actions/WalletActions"
 import * as WalletDao from "../../../util/WalletDao"
 import EncryptionSection from "./PrivateKeyForm/EncryptionSection"
 import Conditional from "../../CustomComponents/Conditional"
-import {withRouter} from "react-router-dom"
+import { withRouter } from "react-router-dom"
 import * as AccountApi from "../../../apis/AccountApi"
+import SafetyWarning from "../SafetyWarning"
 
 class PrivateKeyForm extends React.Component {
     constructor(props) {
@@ -55,7 +56,7 @@ class PrivateKeyForm extends React.Component {
 
     privateKeyChanged = (event) => {
         const enteredPrivateKey = event.target.value
-        const {address, isValid, noHexPrefixKey} = KeyUtil.convertPrivateKeyToAddress(enteredPrivateKey)
+        const { address, isValid, noHexPrefixKey } = KeyUtil.convertPrivateKeyToAddress(enteredPrivateKey)
 
         if (event && event.target) {
             this.setState({
@@ -70,7 +71,7 @@ class PrivateKeyForm extends React.Component {
     selectPrivateKey = (event) => {
         event.preventDefault()
 
-        const {isValidKey, privateKey, privateKeyAddress, password} = this.state
+        const { isValidKey, privateKey, privateKeyAddress, password } = this.state
 
         if (isValidKey) {
             EtherDeltaWeb3.initForPrivateKey(privateKeyAddress, privateKey)
@@ -132,24 +133,29 @@ class PrivateKeyForm extends React.Component {
         const privateKeySubmitDisabledClass = this.getSubmitButtonClassName(isValidKey, rememberKey, useEncryption)
 
         return <div>
-            <h4>Use Private Key</h4>
+            <SafetyWarning />
+            <h4>Paste Your Private Key</h4>
             <form onSubmit={this.selectPrivateKey}>
                 <div className="form-group">
-                        <textarea className={"form-control " + privateKeyClassName}
-                                  onChange={this.privateKeyChanged}
-                                  value={enteredPrivateKey}/>
+                    <textarea className={"form-control " + privateKeyClassName}
+                        onChange={this.privateKeyChanged}
+                        value={enteredPrivateKey} />
                 </div>
 
                 <div className="form-group">
                     <div className="custom-control custom-checkbox my-1 mr-sm-2">
                         <input type="checkbox"
-                               className="custom-control-input"
-                               id="rememberKey"
-                               onChange={this.handleRemember}
-                               value="true"
-                               checked={rememberKey}
+                            className="custom-control-input"
+                            id="rememberKey"
+                            onChange={this.handleRemember}
+                            value="true"
+                            checked={rememberKey}
                         />
-                        <label className="custom-control-label" htmlFor="rememberKey">Remember for next time</label>
+                        <label className="custom-control-label" htmlFor="rememberKey">Remember for next visit</label>
+                        <small class="form-text text-muted">
+                            Your selected wallet details will be stored in your browser's local storage. Your Private Key will be <strong>encrypted</strong> using a separate password of your choice. You will be prompted for this password each time you visit GammaDEX.
+                            <br /><br />No sensitive wallet data is transmitted to or stored on GammaDEX servers, encrypted or otherwise.
+                        </small>
                     </div>
                 </div>
 
@@ -168,14 +174,14 @@ class PrivateKeyForm extends React.Component {
                 </Conditional>
 
                 <div className="form-group">
-                    <input className={"btn btn-primary " + privateKeySubmitDisabledClass} type="submit"  value="Unlock" />
+                    <input className={"btn btn-primary " + privateKeySubmitDisabledClass} type="submit" value="Unlock" />
                 </div>
             </form>
         </div>
     }
 
     getSubmitButtonClassName() {
-        const {isValidKey, rememberKey, useEncryption, password, confirmPassword, minPasswordLength} = this.state
+        const { isValidKey, rememberKey, useEncryption, password, confirmPassword, minPasswordLength } = this.state
 
         const bothPasswordsValid = password.length >= minPasswordLength && password === confirmPassword
 

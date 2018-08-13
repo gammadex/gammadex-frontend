@@ -258,7 +258,7 @@ export default class GasPriceChooser extends React.Component {
                                             </div>
                                             <br />
                                             <small class="form-text text-muted">
-                                                Uncheck to use a default gas limit of 250000 for all transactions, which is excessive for most actions.
+                                                Uncheck to use a default gas limit of 250000 for all transactions, which is excessive for most operations.
                                             </small>
                                         </form>
                                     </div>

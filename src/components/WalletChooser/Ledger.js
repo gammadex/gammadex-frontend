@@ -11,7 +11,6 @@ class Ledger extends React.Component {
         super(props)
 
         this.state = {
-            completedAccount: null,
             refreshError: null,
             errorName: null,
             errorMessage: null,
@@ -40,7 +39,6 @@ class Ledger extends React.Component {
             } = WalletStore.getLedger()
 
             return {
-                completedAccount: WalletStore.getCompletedAccount(),
                 refreshError: WalletStore.getRefreshError(),
                 accounts: accounts,
                 errorName: errorName,
@@ -87,21 +85,7 @@ class Ledger extends React.Component {
     }
 
     render() {
-        const {completedAccount} = this.state
-
-        if (completedAccount) {
-            return this.getUnlockedMessage()
-        } else {
-            return this.getLedgerForm()
-        }
-    }
-
-    getUnlockedMessage() {
-        return <div>
-            <div className="alert alert-success">
-                You are now logged in with a ledger wallet
-            </div>
-        </div>
+        return this.getLedgerForm()
     }
 
     getLedgerForm() {

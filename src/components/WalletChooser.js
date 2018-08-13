@@ -1,16 +1,23 @@
 import React, { Component } from 'react'
 import * as WalletActions from "../actions/WalletActions"
 import WalletStore from "../stores/WalletStore"
-import KeyStoreFile from "./WalletChooser/KeyStore"
 import AccountType from "../AccountType"
-import PrivateKey from "./WalletChooser/PrivateKey"
-import MetaMask from "./WalletChooser/MetaMask"
 import Ledger from "./WalletChooser/Ledger"
 import { Box, BoxSection } from "./CustomComponents/Box"
 import Conditional from "./CustomComponents/Conditional"
 import * as EthereumNetworks from "../util/EthereumNetworks"
 import { toDataUrl } from '../lib/blockies.js'
 import { truncate } from "../util/FormatUtil"
+import KeyStoreForm from "./WalletChooser/KeyStore/KeyStoreForm"
+import PrivateKeyForm from "./WalletChooser/PrivateKey/PrivateKeyForm"
+import MetaMaskForm from "./WalletChooser/MetaMask/MetaMaskForm"
+
+import EtherDeltaWeb3 from "../EtherDeltaWeb3"
+import * as WalletDao from "../util/WalletDao"
+import * as AccountApi from "../apis/AccountApi"
+
+import { withRouter } from "react-router-dom"
+import Routes from '../Routes'
 
 class WalletChooser extends Component {
     constructor(props) {
@@ -42,6 +49,17 @@ class WalletChooser extends Component {
 
     walletChanged = (type, event) => {
         WalletActions.selectWallet(type)
+
+        if(type === AccountType.METAMASK) {
+            const { providedWeb3 } = this.state
+            const { accountAvailable } = providedWeb3
+    
+            if (accountAvailable) {
+                EtherDeltaWeb3.initForMetaMask()
+                WalletDao.saveMetamaskWallet()
+                AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
+            }
+        }
     }
 
     onBack = (event) => {
@@ -59,7 +77,7 @@ class WalletChooser extends Component {
                 break
             case AccountType.METAMASK:
                 str = "MetaMask"
-                break
+                break                
             case AccountType.LEDGER:
                 str = "Ledger Wallet"
                 break
@@ -137,7 +155,7 @@ class WalletChooser extends Component {
                 <Conditional displayCondition={selectedAccountType != null}>
                     <BoxSection>
                         <div className="card-header with-button">
-                            <div className="card-title">Unlock {this.accountTypeString(selectedAccountType)}</div>
+                            <div className="card-title">Unlock Wallet using {this.accountTypeString(selectedAccountType)}</div>
                             <div>
                                 <button className="btn btn-primary" onClick={this.onBack}>Unlock a different wallet</button>
                             </div>
@@ -159,11 +177,9 @@ class WalletChooser extends Component {
         if (!selectedAccountType) {
             panel = <div>&nbsp;</div>
         } else if (selectedAccountType === AccountType.KEY_STORE_FILE) {
-            panel = <KeyStoreFile />
+            panel = <KeyStoreForm />
         } else if (selectedAccountType === AccountType.PRIVATE_KEY) {
-            panel = <PrivateKey />
-        } else if (selectedAccountType === AccountType.METAMASK) {
-            panel = <MetaMask />
+            panel = <PrivateKeyForm />
         } else if (selectedAccountType === AccountType.LEDGER) {
             panel = <Ledger />
         }
@@ -172,4 +188,4 @@ class WalletChooser extends Component {
     }
 }
 
-export default WalletChooser
+export default withRouter(WalletChooser)

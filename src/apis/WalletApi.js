@@ -47,9 +47,7 @@ export function updateWalletStoreProvidedWeb3Details() {
                 closeMetamaskWarningMessageIfPresent()
                 window.web3.eth.getAccounts((e, accounts) => {
                     if (accounts.length > 0) {
-                        if (!WalletStore.isProvidedWeb3AccountAvailable()) {
-                            WalletActions.updateProvidedWeb3AccountAvailable(true, accounts[0])
-                        }
+                        WalletActions.updateProvidedWeb3AccountAvailable(true, accounts[0])
                         if (AccountStore.getSelectedAccountType()
                             && AccountStore.getSelectedAccountType() === AccountType.METAMASK
                             && _.toLower(accounts[0]) !== _.toLower(AccountStore.getAccount())) {

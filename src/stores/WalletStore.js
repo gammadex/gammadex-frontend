@@ -28,7 +28,6 @@ class WalletStore extends EventEmitter {
         this.rememberKeyStoreFile = false
         this.rememberPrivateKey = true
         this.unlocked = false
-        this.completedAccount = null
         this.fileParseError = null
         this.refreshError = null
         this.passwordError = null
@@ -82,10 +81,6 @@ class WalletStore extends EventEmitter {
 
     getKeyStorePassword() {
         return this.keyStorePassword
-    }
-
-    getCompletedAccount() {
-        return this.completedAccount
     }
 
     getFileParseError() {
@@ -192,7 +187,6 @@ class WalletStore extends EventEmitter {
         switch (action.type) {
             case ActionNames.WALLET_TYPE_SELECTED: {
                 this.selectedAccountType = action.selectedAccountType
-                this.completedAccount = null
                 this.keyStoreFile = null
                 this.keyStoreFileName = null
                 this.fileParseError = null
@@ -212,7 +206,6 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.CLEAR_SELECTED_WALLET_TYPE: {
                 this.selectedAccountType = null
-                this.completedAccount = null
                 this.keyStoreFile = null
                 this.keyStoreFileName = null
                 this.fileParseError = null
@@ -238,7 +231,6 @@ class WalletStore extends EventEmitter {
                 break
             }
             case ActionNames.WALLET_CHANGE_KEYSTORE_FILE: {
-                this.completedAccount = null
                 this.keyStoreFile = null
                 this.keyStoreFileName = null
                 this.fileParseError = null
@@ -284,7 +276,6 @@ class WalletStore extends EventEmitter {
                 break
             }                                    
             case ActionNames.ACCOUNT_RETRIEVED: {
-                this.completedAccount = action.addressNonce.address
                 this.displayUnlockKeyStoreModal = false
                 this.displayUnlockPrivateKeyModal = false
                 this.unlocked = true
@@ -356,11 +347,6 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.WALLET_KEYSTORE_PASSWORD_ERROR: {
                 this.keyStorePasswordError = action.error
-                this.emitChange()
-                break
-            }
-            case ActionNames.WALLET_LOGOUT: {
-                this.completedAccount = null
                 this.emitChange()
                 break
             }

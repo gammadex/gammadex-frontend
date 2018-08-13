@@ -51,10 +51,6 @@ export default class PrivateKey extends React.Component {
 
             <div className="form-group">
                 <div>
-                    <small>You will be prompted for your password next time you visit</small>
-                </div>
-
-                <div>
                     <small>Password must be at least 8 characters long</small>
                 </div>
             </div>
