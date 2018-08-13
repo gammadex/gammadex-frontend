@@ -3,7 +3,7 @@ import TokenStore from '../stores/TokenStore'
 import AccountStore from '../stores/AccountStore'
 import GasPriceStore from '../stores/GasPriceStore'
 import Funding from '../components/Account/Funding'
-import {Box, BoxFooter, BoxSection} from "./CustomComponents/Box"
+import {Box, BoxFooter, BoxSection, BoxTitle} from "./CustomComponents/Box"
 import {baseEthToWei, tokEthToWei, baseWeiToEth, tokWeiToEth} from "../EtherConversion"
 import * as AccountApi from "../apis/AccountApi"
 import Conditional from "./CustomComponents/Conditional"
@@ -92,8 +92,9 @@ export default class AccountDetail extends React.Component {
         return (
             <div className="card balances-component">
                 <div className="card-header with-button">
-                    <div className="card-title">Balances</div>
-                    <div>
+                    <BoxTitle title="Balances" ids={{'balance-body':'block', 'balances-refresh': 'block'}}/>
+
+                    <div id="balances-refresh" className="mobile-toggle">
                         <RefreshButton onClick={this.refreshBalances}
                                        disabled={!accountRetrieved || retrievingBalance}
                                        updating={retrievingBalance}/>

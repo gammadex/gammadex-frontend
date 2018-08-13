@@ -342,7 +342,7 @@ export default class Funding extends React.Component {
                     </Alert>
                 </ModalBody>
         }
-        return <BoxSection>
+        return <BoxSection id="balance-body" className="mobile-toggle">
 
             <table className="table table-borderless">
                 <tbody>

@@ -1189,6 +1189,10 @@ body {
     .no-mobile {
         display: none !important;
     }
+
+    .mobile-toggle {
+        display: none;
+    }
 }
 
 @media (min-width: 992px) {
@@ -1321,4 +1325,19 @@ body {
 
 .limited-padding {
     padding: 4px 2px 2px 2px;
+}
+
+.box-title-container {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.box-title-container > div {
+    padding-right:6px;
+}
+
+.box-title-container .fas {
+    font-size:120%;
+    opacity: 0.8;
 }
