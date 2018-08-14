@@ -672,10 +672,6 @@ input[type="number"] {
     flex-basis: 50%;
 }
 
-.open-orders-and-pending-trades-component {
-
-}
-
 .exchange-bottom {
     flex-shrink: 0;
     flex-grow: 0;
@@ -836,8 +832,12 @@ input[type="number"] {
     vertical-align: middle;
 }
 
-.open-orders-component, .pending-trades-component {
+#open-orders-pending-trades-body {
     height: calc(100% - var(--card-header-height));
+}
+
+.open-orders-component, .pending-trades-component {
+    height:100%;
 }
 
 /*
@@ -1283,7 +1283,7 @@ body {
         flex-basis: auto;
     }
 
-    .open-orders-and-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
+    .open-orders-pending-trades-componentXXXXXXXXXX, .token-chooser-component, .unlisted-tokens-component,
     .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component
     {
         height: 42px;
@@ -1349,6 +1349,11 @@ body {
     opacity: 0.8;
 }
 
+
 .card-body-height {
     height: calc(100% - 40px);
+}
+
+.red {
+    background:red;
 }

@@ -168,8 +168,8 @@ export default class OpenOrders extends React.Component {
         }
 
         return (
-            <div className="open-orders-component">
-                <Scroll>
+            <div className="open-orders-component full-height">
+                <Scroll className=" full-height">
                 {content}
                 </Scroll>
 
