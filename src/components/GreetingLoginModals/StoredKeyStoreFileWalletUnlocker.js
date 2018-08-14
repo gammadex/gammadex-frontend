@@ -108,7 +108,7 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
                                onChange={this.handleKeyStoreFilePasswordChange}/>
                     </div>
 
-                    <Conditional displayCondition={passwordError}>
+                    <Conditional displayCondition={passwordError != null}>
                         <Alert color="danger">
                             Sorry, wrong password. Please try again.
                         </Alert>
