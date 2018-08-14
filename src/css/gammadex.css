@@ -1273,6 +1273,10 @@ body {
         padding: 10px;
     }
 
+    .route-content {
+        height: auto;
+    }
+
     .trading-and-orderbook-component {
         flex-direction: column;
     }
@@ -1302,8 +1306,8 @@ body {
 
     .exchange-bottom {
         display: block;
-        height: inherit;
-        max-height: inherit;
+        height: auto;
+        max-height: fit-content;
     }
 
     .exchange-top {
