@@ -94,14 +94,14 @@ export class BoxTitle extends React.Component {
             const component = document.getElementById(this.props.componentId)
 
             if (component) {
-                if (component.style.height === '40vh') {
+                if (component.style.height === '50vh') {
                     component.style.minHeight = "42px"
                     component.style.height = "42px"
                     component.style.maxHeight = "42px"
                 } else {
-                    component.style.height = "40vh"
-                    component.style.minHeight = "40vh"
-                    component.style.maxHeight = "40vh"
+                    component.style.height = "50vh"
+                    component.style.minHeight = "50vh"
+                    component.style.maxHeight = "50vh"
                     expanded = true
                 }
             }
