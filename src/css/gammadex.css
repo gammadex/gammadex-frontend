@@ -1348,3 +1348,7 @@ body {
     font-size: 120%;
     opacity: 0.8;
 }
+
+.card-body-height {
+    height: calc(100% - 40px);
+}

@@ -13,7 +13,7 @@ import MarketResponseSpinner from "./MarketResponseSpinner"
 import ReactResizeDetector from 'react-resize-detector'
 import TokenChooserSort from './TokenChooser/TokenChooserSort'
 import Scroll from "./CustomComponents/Scroll"
-import {BoxTitle} from "./CustomComponents/Box"
+import {BoxSection, BoxTitle} from "./CustomComponents/Box"
 
 class TokenChooser extends React.Component {
     constructor(props) {
@@ -123,6 +123,7 @@ class TokenChooser extends React.Component {
     }
 
     onResize = (width, height) => {
+        console.log(`resize ${width}x${height}`)
         this.setState({
             containerHeight: height
         })
@@ -229,19 +230,21 @@ class TokenChooser extends React.Component {
                                placeholder="Search" className="form-control mobile-toggle"/>
                     </div>
 
-                    <Scroll id="token-chooser-body" className="mobile-toggle">
-                        <table className="table table-bordered table-hover table-no-bottom-border">
-                            <thead>
-                            <tr>
-                                <th className="clickable" onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
-                                <th className="clickable"><span className="fas fa-star"></span></th>
-                                <th className="clickable" onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
-                                <th className="clickable" onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
-                            </tr>
-                            </thead>
-                            <tbody>{tokenRows}</tbody>
-                        </table>
-                    </Scroll>
+                    <BoxSection id="token-chooser-body" className="mobile-toggle card-body-height">
+                        <Scroll>
+                            <table className="table table-bordered table-hover table-no-bottom-border">
+                                <thead>
+                                <tr>
+                                    <th className="clickable" onClick={this.onSymbolHeader}>Symbol&nbsp;&nbsp;{<span className={symbolSortClass}></span>}</th>
+                                    <th className="clickable"><span className="fas fa-star"></span></th>
+                                    <th className="clickable" onClick={this.onVolumeHeader}>Volume ETH&nbsp;&nbsp;{<span className={volumeSortClass}></span>}</th>
+                                    <th className="clickable" onClick={this.onChangeHeader}>% Change&nbsp;&nbsp;{<span className={changeSortClass}></span>}</th>
+                                </tr>
+                                </thead>
+                                <tbody>{tokenRows}</tbody>
+                            </table>
+                        </Scroll>
+                    </BoxSection>
                 </div>
             </div>
         )
