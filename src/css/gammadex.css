@@ -1323,6 +1323,17 @@ body {
     .balances-component {
         order:1;
     }
+
+    .market-response-spinner .fas {
+        font-size:40px;
+        margin:5px;
+    }
+
+    .market-response-spinner {
+        position: absolute;
+        top: calc(100vh - 50px);
+        right: 0;
+    }
 }
 
 .children-are-header-and-body {
