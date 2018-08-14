@@ -1291,9 +1291,9 @@ body {
         max-height: 42px;
     }
 
-    /*
-     .balances-component
-     */
+    #order-box-body {
+        display:none;
+    }
 
     .exchange {
         display: block;

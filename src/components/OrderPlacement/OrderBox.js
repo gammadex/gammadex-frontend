@@ -1,5 +1,5 @@
 import React from "react"
-import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
+import {Box, BoxSection, BoxHeader, BoxTitle} from "../CustomComponents/Box"
 import {TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, UncontrolledTooltip, Popover, PopoverHeader, PopoverBody} from 'reactstrap'
 import classnames from 'classnames'
 import FillOrderBook from './FillOrderBook'
@@ -100,11 +100,14 @@ export default class OrderBox extends React.Component {
         return (
             <div className="card full-height">
                 <div className="card-header">
-                    <div><strong className="card-title">Trade{tokenTitlePart}</strong></div>
+                    <BoxTitle title={"Trade" + tokenTitlePart}
+                              ids={{'order-box-body':'flex'}}
+                    />
+
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                 </div>
-                <BoxSection className="children-are-header-and-body limited-padding">
+                <BoxSection id="order-box-body" className="children-are-header-and-body limited-padding mobile-toggle">
                     <Conditional displayCondition={!!token} fallbackMessage="Please select a token to enable trading">
                     <Nav fill className={"trading-buy-sell-nav " + buySellClass}>
                         <NavItem>

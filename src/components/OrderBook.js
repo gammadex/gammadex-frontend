@@ -3,7 +3,7 @@ import OrderBookStore from '../stores/OrderBookStore'
 import OpenOrdersStore from '../stores/OpenOrdersStore'
 import OrdersTable from '../components/OrderBook/OrdersTable'
 import TradeStore from '../stores/TradeStore'
-import {Box} from "./CustomComponents/Box"
+import {Box, BoxTitle} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Conditional from "./CustomComponents/Conditional"
 
@@ -80,7 +80,7 @@ export default class OrderBook extends React.Component {
     }
 
     tradeStoreUpdated() {
-        const { fillOrderTakerBuy, fillOrderTakerSell} = TradeStore.getTradeState()
+        const {fillOrderTakerBuy, fillOrderTakerSell} = TradeStore.getTradeState()
         this.setState({
             fillOrderTakerBuy: fillOrderTakerBuy,
             fillOrderTakerSell: fillOrderTakerSell,
@@ -121,13 +121,19 @@ export default class OrderBook extends React.Component {
                                            fillOrder={fillOrderTakerBuy}/>
 
         return (
-            <Box title="Bids and Offers" className="full-height bids-and-offers-component">
+            <Box id="bids-and-offers-container" className="bids-and-offers-component">
+                <div className="card-header">
+                    <BoxTitle title={"Bids and Offers"}
+                              ids={{'bids-and-offers-body': 'flex'}}
+                              componentId="bids-and-offers-container"
+                    />
+                </div>
 
                 <Conditional displayCondition={!token}>
                     <EmptyTableMessage>Please select a token to enable trading</EmptyTableMessage>
                 </Conditional>
                 <Conditional displayCondition={!!token}>
-                    <div className="bids-and-offers">
+                    <div id="bids-and-offers-body" className="bids-and-offers mobile-toggle">
                         <div className="bids-and-offers-offers">
                             {offersContent}
                         </div>
