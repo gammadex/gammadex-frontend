@@ -107,7 +107,7 @@ export default class OrderBox extends React.Component {
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                 </div>
-                <BoxSection id="order-box-body" className="children-are-header-and-body limited-padding mobile-toggle">
+                <BoxSection id="order-box-body" className="children-are-header-and-body limited-padding-lg mobile-toggle">
                     <Conditional displayCondition={!!token} fallbackMessage="Please select a token to enable trading">
                     <Nav fill className={"trading-buy-sell-nav " + buySellClass}>
                         <NavItem>
