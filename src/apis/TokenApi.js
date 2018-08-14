@@ -13,7 +13,7 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
 
     const prevUrlToken = getUrlTokenFromProps(prevProps)
     let currUrlToken = getUrlTokenFromProps(currProps)
-
+    
     if (!currUrlToken) {
         const favouriteAddress = getFavourite(Favourites.RECENT_TOKEN)
         if(favouriteAddress) {
@@ -49,8 +49,8 @@ export function ensureCorrectToken(prevProps, currProps, currentStateToken) {
 function processToken(token, currentStateToken) {
     const currentStateTokenName = currentStateToken ? currentStateToken.symbol : null
 
-    TokenActions.selectToken(token)
     if (token.symbol !== currentStateTokenName) {
+        TokenActions.selectToken(token)
         WebSocketActions.getMarket()
     }
 }
