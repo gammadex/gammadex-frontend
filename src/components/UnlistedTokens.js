@@ -3,7 +3,7 @@ import TokenStore from "../stores/TokenStore"
 import * as TokenActions from "../actions/TokenActions"
 import {withRouter} from "react-router-dom"
 import TokenCreator from "./UnlistedTokens/TokenCreator"
-import {Box, BoxSection} from "./CustomComponents/Box"
+import {Box, BoxSection, BoxTitle} from "./CustomComponents/Box"
 import TokenRepository from "../util/TokenRepository"
 import {setFavourite} from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
@@ -89,14 +89,21 @@ class TokenChooser extends React.Component {
         return (
             <div id="unlisted-tokens-container" className="unlisted-tokens-component">
                 <div className="full-height">
-                    <Box title="My Unlisted Tokens" className="last-card">
+                    <Box className="last-card">
+                        <div className="card-header">
+                            <BoxTitle title="My Unlisted Tokens"
+                                      ids={{'token-chooser-table': 'table'}}
+                                      componentId="unlisted-tokens-container"
+                            />
+                        </div>
+
                         <BoxSection className="with-bottom-border">
                             <TokenCreator selectToken={this.onTokenSelect}/>
                         </BoxSection>
 
                         <Conditional displayCondition={tokenRows.length > 0}>
                             <Scroll>
-                                <table className="table table-striped table-hover table-bordered" style={{"borderTopWidth": "1px"}}>
+                                <table id="token-chooser-table" className="table table-striped table-hover table-bordered mobile-toggle" style={{"borderTopWidth": "1px"}}>
                                     <thead>
                                     <tr>
                                         <th>Symbol</th>
