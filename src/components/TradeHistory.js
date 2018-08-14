@@ -1,5 +1,5 @@
 import React from "react"
-import {Box, BoxSection} from "./CustomComponents/Box"
+import {Box, BoxSection, BoxTitle} from "./CustomComponents/Box"
 import OrderBookStore from "../stores/OrderBookStore"
 import Conditional from "./CustomComponents/Conditional"
 import TradeHistoryTable from "./OrderBook/TradeHistoryTable"
@@ -34,8 +34,15 @@ export default class TradeHistory extends React.Component {
         const tokenSymbol = token ? token.symbol : null
 
         return (
-            <Box title="Market Trades" className="market-trades-component last-card">
-                <Scroll>
+            <Box id="market-trades-container" className="market-trades-component last-card">
+                <div className="card-header">
+                    <BoxTitle title="Market Trades"
+                              ids={{'market-trades-body': 'block'}}
+                              componentId="market-trades-container"
+                    />
+                </div>
+
+                <Scroll id="market-trades-body" className="mobile-toggle">
                     <BoxSection className="nopad">
                         <Conditional displayCondition={trades && trades.length > 0}
                                      fallbackMessage={'There is no trade history for ' + tokenSymbol}>
