@@ -1336,23 +1336,23 @@ body {
         1px -1px 0 var(--primary),
         -1px 1px 0 var(--primary),
         1px 1px 0 var(--primary);
-        opacity:0.9;
+        opacity: 0.9;
     }
 
     .market-response-spinner {
         position: fixed;
         top: 10px;
         right: 5px;
-        z-index:100;
+        z-index: 100;
     }
 
     .history-search {
-        display:flex;
+        display: flex;
         justify-content: flex-end;
     }
 
     .history-search input {
-        width:20vw;
+        width: 20vw;
     }
 }
 
@@ -1394,4 +1394,24 @@ body {
 
 .red {
     background: red;
+}
+
+.wallet-buttons {
+    margin:20px;
+}
+
+.wallet-button-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 992px) {
+    .wallet-button-row {
+        flex-direction: column;
+    }
+}
+
+.wallet-button-row button {
+    margin: 6px 3px 0 3px;
 }

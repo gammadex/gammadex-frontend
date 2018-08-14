@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import * as WalletActions from "../actions/WalletActions"
 import WalletStore from "../stores/WalletStore"
 import AccountType from "../AccountType"
 import Ledger from "./WalletChooser/Ledger"
-import { Box, BoxSection } from "./CustomComponents/Box"
+import {Box, BoxSection} from "./CustomComponents/Box"
 import Conditional from "./CustomComponents/Conditional"
 import * as EthereumNetworks from "../util/EthereumNetworks"
-import { toDataUrl } from '../lib/blockies.js'
-import { truncate } from "../util/FormatUtil"
+import {toDataUrl} from '../lib/blockies.js'
+import {truncate} from "../util/FormatUtil"
 import KeyStoreForm from "./WalletChooser/KeyStore/KeyStoreForm"
 import PrivateKeyForm from "./WalletChooser/PrivateKey/PrivateKeyForm"
 import MetaMaskForm from "./WalletChooser/MetaMask/MetaMaskForm"
@@ -16,7 +16,7 @@ import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as WalletDao from "../util/WalletDao"
 import * as AccountApi from "../apis/AccountApi"
 
-import { withRouter } from "react-router-dom"
+import {withRouter} from "react-router-dom"
 import Routes from '../Routes'
 
 class WalletChooser extends Component {
@@ -50,10 +50,10 @@ class WalletChooser extends Component {
     walletChanged = (type, event) => {
         WalletActions.selectWallet(type)
 
-        if(type === AccountType.METAMASK) {
-            const { providedWeb3 } = this.state
-            const { accountAvailable } = providedWeb3
-    
+        if (type === AccountType.METAMASK) {
+            const {providedWeb3} = this.state
+            const {accountAvailable} = providedWeb3
+
             if (accountAvailable) {
                 EtherDeltaWeb3.initForMetaMask()
                 WalletDao.saveMetamaskWallet()
@@ -77,7 +77,7 @@ class WalletChooser extends Component {
                 break
             case AccountType.METAMASK:
                 str = "MetaMask"
-                break                
+                break
             case AccountType.LEDGER:
                 str = "Ledger Wallet"
                 break
@@ -87,7 +87,7 @@ class WalletChooser extends Component {
     }
 
     render() {
-        const { selectedAccountType, providedWeb3 } = this.state
+        const {selectedAccountType, providedWeb3} = this.state
 
         const metaMaskDisabled = providedWeb3 == null || !providedWeb3.isMainNet || !providedWeb3.accountAvailable
         let panel = this.getPanelContents()
@@ -101,7 +101,7 @@ class WalletChooser extends Component {
             } else if (!providedWeb3.accountAvailable) {
                 metaMaskInfo = <span className="text-danger">Please unlock MetaMask</span>
             } else if (providedWeb3.accountAddress) {
-                metaMaskInfo = <span className="text-muted"><img width="14" height="14" src={toDataUrl(providedWeb3.accountAddress)} />&nbsp;{truncate(providedWeb3.accountAddress, { left: 7, right: 5 })}</span>
+                metaMaskInfo = <span className="text-muted"><img width="14" height="14" src={toDataUrl(providedWeb3.accountAddress)}/>&nbsp;{truncate(providedWeb3.accountAddress, {left: 7, right: 5})}</span>
             }
         }
 
@@ -112,41 +112,31 @@ class WalletChooser extends Component {
                         <div className="card-header">
                             <div className="card-title">Choose a wallet type to unlock</div>
                         </div>
-                        <br />
 
-                        <div className="row">
-                            <div className="col-lg-3" />
-                            <div className="col-lg-3">
-                                <button onClick={this.walletChanged.bind(this, AccountType.KEY_STORE_FILE)} className="btn btn-secondary btn-wallet-type">
-                                    <img src={require("../images/wallets/file.svg")} className="img-wallet-type" /><br />
-                                    <h5>JSON Keystore File</h5>
-                                </button>
-                            </div>
-                            <div className="col-lg-3">
-                                <button onClick={this.walletChanged.bind(this, AccountType.PRIVATE_KEY)} className="btn btn-secondary btn-wallet-type">
-                                    <img src={require("../images/wallets/key.svg")} className="img-wallet-type" /><br />
-                                    <h5>Private Key</h5>
-                                </button>
-                            </div>
-                            <div className="col-lg-3" />
-                        </div>
-                        <div className="row mt-3">
-                            <div className="col-lg-3" />
-                            <div className="col-lg-3">
+                        <div className="wallet-buttons">
+                            <div className="wallet-button-row">
                                 <button disabled={metaMaskDisabled} onClick={this.walletChanged.bind(this, AccountType.METAMASK)} className="btn btn-secondary btn-wallet-type">
-                                    <img src={require("../images/wallets/metamask_less_detail.svg")} className="img-wallet-type" /><br />
+                                    <img src={require("../images/wallets/metamask_less_detail.svg")} className="img-wallet-type"/><br/>
                                     <h5>MetaMask</h5>
                                     {metaMaskInfo}
                                 </button>
-                            </div>
-                            <div className="col-lg-3">
+
                                 <button onClick={this.walletChanged.bind(this, AccountType.LEDGER)} className="btn btn-secondary btn-wallet-type">
-                                    <img src={require("../images/wallets/ledger.svg")} className="img-wallet-type" /><br />
+                                    <img src={require("../images/wallets/ledger.svg")} className="img-wallet-type"/><br/>
                                     <h5>Ledger Hardware Wallet</h5>
                                 </button>
                             </div>
-                            <div className="col-lg-3" />
+                            <div className="wallet-button-row">
+                                <button onClick={this.walletChanged.bind(this, AccountType.KEY_STORE_FILE)} className="btn btn-secondary btn-wallet-type">
+                                    <img src={require("../images/wallets/file.svg")} className="img-wallet-type"/><br/>
+                                    <h5>JSON Keystore File</h5>
+                                </button>
 
+                                <button onClick={this.walletChanged.bind(this, AccountType.PRIVATE_KEY)} className="btn btn-secondary btn-wallet-type">
+                                    <img src={require("../images/wallets/key.svg")} className="img-wallet-type"/><br/>
+                                    <h5>Private Key</h5>
+                                </button>
+                            </div>
                         </div>
 
                     </BoxSection>
@@ -160,7 +150,7 @@ class WalletChooser extends Component {
                                 <button className="btn btn-primary" onClick={this.onBack}>Unlock a different wallet</button>
                             </div>
                         </div>
-                        <br />
+                        <br/>
                         <div className="col-lg-10">
                             {panel}
                         </div>
@@ -171,17 +161,17 @@ class WalletChooser extends Component {
     }
 
     getPanelContents() {
-        const { selectedAccountType } = this.state
+        const {selectedAccountType} = this.state
 
         let panel
         if (!selectedAccountType) {
             panel = <div>&nbsp;</div>
         } else if (selectedAccountType === AccountType.KEY_STORE_FILE) {
-            panel = <KeyStoreForm />
+            panel = <KeyStoreForm/>
         } else if (selectedAccountType === AccountType.PRIVATE_KEY) {
-            panel = <PrivateKeyForm />
+            panel = <PrivateKeyForm/>
         } else if (selectedAccountType === AccountType.LEDGER) {
-            panel = <Ledger />
+            panel = <Ledger/>
         }
 
         return panel
