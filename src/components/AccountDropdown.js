@@ -95,6 +95,7 @@ class AccountDropdown extends React.Component {
         const accountLink = <small><a target="_blank" rel="noopener noreferrer" href={`${Config.getEtherscanUrl()}/address/${accountOrEmpty}`}>{accountOrEmpty}</a></small>
         const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
         const accountImage = account == null ? <i className="fas fa-lg fa-user"></i> : <img width="20" height="20" src={toDataUrl(account)} className="mr-2" />
+        const unlockText = account == null ? "Unlock Wallet" : "Unlock A Different Wallet"
         return (
             <li className="nav-item dropdown">
                 <button className="nav-link dropdown-toggle btn btn-link" id="navbarAccountDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style={{ "height": "36px" }} value={truncatedAccount}>
@@ -105,14 +106,14 @@ class AccountDropdown extends React.Component {
                     <Conditional displayCondition={account != null}>
                         <form>
                             <div className="dropdown-item disabled">
-                                <h6><strong>Address</strong> {account}&nbsp;&nbsp;<Etherscan type="address" address={account} display="icon" /></h6>
-                                <h5><span className="badge badge-info">{selectedAccountType}</span></h5>
+                                <h6><strong>Current wallet address:</strong></h6>
+                                <div className="mb-1"><small>{account}</small>&nbsp;<Etherscan type="address" address={account} display="icon" /></div>
                             </div>
                             <div className="dropdown-divider"></div>
                         </form>
                     </Conditional>
-                    <button className="dropdown-item" type="button" onClick={this.unlockWallet}><i className="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;Unlock Wallet</button>
-                    <button className="dropdown-item" type="button" onClick={this.createNewWallet}><i className="fas fa-plus text-muted"></i>&nbsp;&nbsp;Create Wallet</button>
+                    <button className="dropdown-item" type="button" onClick={this.unlockWallet}><i className="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;{unlockText}</button>
+                    <button className="dropdown-item" type="button" onClick={this.createNewWallet}><i className="fas fa-plus text-muted"></i>&nbsp;&nbsp;Create New Wallet</button>
                     <Conditional displayCondition={account != null}>
                         <div className="dropdown-divider"></div>
                         <button className="dropdown-item" type="button" onClick={this.disconnectWallet}><i className="fas fa-sign-out-alt text-muted"></i>&nbsp;&nbsp;Disconnect</button>
