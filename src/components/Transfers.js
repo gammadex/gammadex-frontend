@@ -9,6 +9,7 @@ import * as WebSocketActions from "../actions/WebSocketActions"
 import MyTradesStore from "../stores/MyTradesStore"
 import RefreshButton from "./CustomComponents/RefreshButton"
 import Scroll from "./CustomComponents/Scroll"
+import {BoxTitle} from "./CustomComponents/Box"
 
 export default class Transfers extends React.Component {
     constructor(props) {
@@ -61,7 +62,7 @@ export default class Transfers extends React.Component {
 
     render() {
         const {transfers, filter, account, refreshInProgress} = this.state
-        const {title, type} = this.props
+        const {title, type, id} = this.props
 
         const displayTransfers = TransferDisplayUtil.toDisplayableTransfers(transfers)
         const csvContent = TransferDisplayUtil.transfersToCsv(displayTransfers)
@@ -78,11 +79,14 @@ export default class Transfers extends React.Component {
         }
 
         return (
-            <div className="history-component">
+            <div id={id} className="history-component">
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">{title}</div>
-                        <div className="form-inline">
+                        <BoxTitle title={title}
+                                  componentId={id}
+                        />
+
+                        <div className="form-inline history-search">
                             <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
                                    onChange={this.filterChanged}/>
                             <Download fileName="transfers.csv" contents={csvContent} mimeType="text/csv"
@@ -93,8 +97,9 @@ export default class Transfers extends React.Component {
                                            disabled={!account || refreshInProgress}/>
                         </div>
                     </div>
+
                     <Scroll>
-                    {content}
+                        {content}
                     </Scroll>
                 </div>
             </div>

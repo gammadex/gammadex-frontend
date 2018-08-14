@@ -1288,7 +1288,8 @@ body {
     }
 
     .open-orders-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
-    .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component {
+    .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component,
+    .history-component {
         height: 42px;
         min-height: 42px;
         max-height: 42px;
@@ -1339,6 +1340,15 @@ body {
         top: 10px;
         right: 5px;
         z-index:100;
+    }
+
+    .history-search {
+        display:flex;
+        justify-content: flex-end;
+    }
+
+    .history-search input {
+        width:20vw;
     }
 }
 

@@ -10,6 +10,7 @@ import _ from "lodash"
 import RefreshButton from "./CustomComponents/RefreshButton"
 import TradeRole from "../TradeRole"
 import Scroll from "./CustomComponents/Scroll"
+import {BoxTitle} from "./CustomComponents/Box"
 
 export default class MyTrades extends React.Component {
     constructor(props) {
@@ -94,12 +95,15 @@ export default class MyTrades extends React.Component {
         }
 
         return (
-            <div className="history-component">
+            <div id="history-container" className="history-component">
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">Trade History</div>
-                        <div className="float-right form-inline">
-                            <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
+                        <BoxTitle title="Trade History"
+                                  componentId="history-container"
+                        />
+
+                        <div className="form-inline history-search">
+                            <input placeholder="Search" className={"form-control  mr-2 " + disabledClass}
                                    onChange={this.filterChanged}/>
                             <Download fileName="trades.csv" contents={csvContent} mimeType="text/csv"
                                       className={"btn btn-primary btn-sm mr-2 " + disabledClass}><i

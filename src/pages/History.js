@@ -8,10 +8,10 @@ class History extends Component {
             <div>
                 <div className="row history-row">
                     <div className="col-lg-6 deposit-history-container">
-                        <Transfers type="Deposit" title="Deposit History"/>
+                        <Transfers type="Deposit" title="Deposit History" id="deposit-history-container"/>
                     </div>
                     <div className="col-lg-6 withdraw-history-container">
-                        <Transfers type="Withdraw" title="Withdraw History"/>
+                        <Transfers type="Withdraw" title="Withdraw History" id="withdraw-history-container"/>
                     </div>
                 </div>
                 <div className="row history-row">
