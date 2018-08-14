@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { BoxSection } from "../CustomComponents/Box"
+import {BoxSection, BoxTitle} from "../CustomComponents/Box"
 import { withRouter } from "react-router-dom"
 import OrderBookStore from '../../stores/OrderBookStore'
 import { Box } from "../CustomComponents/Box"
@@ -107,7 +107,13 @@ class ReactChart extends Component {
         }
 
         return (
-            <Box title="Price Chart" className="chart-component price-chart-component">
+            <Box id="price-chart-container" className="chart-component price-chart-component">
+                <div className="card-header">
+                    <BoxTitle  title="Price Chart"
+                              componentId="price-chart-container"
+                    />
+                </div>
+
                 <div className="float-left">
                     <div className="form-inline">
 
