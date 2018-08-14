@@ -117,12 +117,13 @@ describe('AccountDetail', () => {
             expect(fundingWrapper.instance().ethDepositInputProps().ethDepositValid).toEqual(true)
         })
 
-        it('should set the maximum eth deposit amount (accounting for the gas fee)', () => {
+        it('should set the maximum eth deposit amount (accounting for the gas fee and minimum recommended Wallet ETH)', () => {
             // simulate user clicking on "MAX"
             wrapper.find('#ethDepositAmountMaxButton').hostNodes().simulate('click')
 
             const depositMaxFeeWei = BigNumber(Web3.utils.toWei('6', 'gwei')).times(BigNumber(Config.getGasLimit('deposit')))
-            const maxDepositAmount = BigNumber(Web3.utils.toWei('10', 'ether')).minus(depositMaxFeeWei)
+            const minRecommendedWalletGasWei = BigNumber(Web3.utils.toWei(String(Config.getMinRecommendedWalletGasEth()), 'ether'))
+            const maxDepositAmount = BigNumber(Web3.utils.toWei('10', 'ether')).minus(depositMaxFeeWei).minus(minRecommendedWalletGasWei)
 
             const { ethDepositAmountControlled, ethDepositAmountWei } = FundingStore.getFundingState()
             expect(ethDepositAmountControlled.toString()).toEqual(Web3.utils.fromWei(maxDepositAmount.toString()))
@@ -133,10 +134,8 @@ describe('AccountDetail', () => {
 
             // depositing the maximum leaves 0 ETH for further transactions, which is a warning
             const fundingWrapper = wrapper.find(Funding)
-            expect(FundingStore.getFundingState().ethDepositState).toEqual(FundingState.WARNING)
-            expect(fundingWrapper.instance().ethDepositInputProps().ethDepositErrorText)
-                .toEqual('0 ETH remaining after this deposit + max gas fee. This leaves insufficient gas to submit additional Trade transactions.')
-            expect(fundingWrapper.instance().ethDepositInputProps().ethDepositValid).toEqual(false)
+            expect(FundingStore.getFundingState().ethDepositState).toEqual(FundingState.OK)
+            expect(fundingWrapper.instance().ethDepositInputProps().ethDepositValid).toEqual(true)
         })
 
         it('should display a confirmation modal when the user submits an eth deposit', () => {

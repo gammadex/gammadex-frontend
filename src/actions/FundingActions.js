@@ -26,21 +26,18 @@ export function ethDepositAmountWeiChanged(ethDepositAmountWei, ethDepositAmount
     let fundingText = ""
     if (!safeBigNumber(ethDepositAmountWei).isZero()) {
         if (remainingWalletBalanceWei.isGreaterThanOrEqualTo(BigNumber(0))) {
-            const tradeMaxFeeWei = safeBigNumber(GasPriceStore.getCurrentGasPriceWei()).times(safeBigNumber(Config.getGasLimit('trade')))
-            const remaining = `${remainingWalletBalanceEth} ETH remaining after this deposit + max gas fee.`
-            const numberOfTrades = remainingWalletBalanceWei.div(tradeMaxFeeWei).dp(0, BigNumber.ROUND_FLOOR)
-            if (numberOfTrades.isZero()) {
+
+            const minRecommendedWalletGasWei = baseEthToWei(Config.getMinRecommendedWalletGasEth())
+            if(remainingWalletBalanceWei.isLessThan(minRecommendedWalletGasWei)) {
                 fundingState = FundingState.WARNING
-                fundingText = `${remaining} This leaves insufficient gas to submit additional Trade transactions.`
-            } else if (numberOfTrades.isGreaterThan(BigNumber(20))) {
-                fundingState = FundingState.OK
+                fundingText = `Deposit will leave ${remainingWalletBalanceEth.isZero() ? "0" : remainingWalletBalanceEth.toFixed(6)} ETH in your Wallet. We recommended you keep at least ${Config.getMinRecommendedWalletGasEth()} ETH in your Wallet to pay for Gas Fees.`
             } else {
                 fundingState = FundingState.OK
             }
 
         } else {
             fundingState = FundingState.ERROR
-            fundingText = `You cannot deposit more than your wallet ETH balance (${baseWeiToEth(walletBalanceEthWei)})`
+            fundingText = `You cannot deposit more than your Wallet Balance minus Gas Fee (${baseWeiToEth(walletBalanceEthWei.minus(depositMaxFeeWei)).toFixed(6)} ETH)`
         }
     }
 
@@ -59,7 +56,12 @@ export function ethDepositMaxAmount() {
     const maxDepositAmountWei = walletBalanceEthWei.minus(depositMaxFeeWei)
 
     if (maxDepositAmountWei.isGreaterThan(BigNumber(0))) {
-        ethDepositAmountWeiChanged(maxDepositAmountWei)
+        const minRecommendedWalletGasWei = baseEthToWei(Config.getMinRecommendedWalletGasEth())
+        if(maxDepositAmountWei.isGreaterThan(minRecommendedWalletGasWei)) {
+            ethDepositAmountWeiChanged(maxDepositAmountWei.minus(minRecommendedWalletGasWei))
+        } else {
+            ethDepositAmountWeiChanged(maxDepositAmountWei)
+        }
     } else {
         ethDepositAmountWeiChanged(BigNumber(0), "")
     }

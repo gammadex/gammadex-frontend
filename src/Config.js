@@ -36,6 +36,10 @@ class Config {
         return config.awayFromLastTradeThreshold
     }
 
+    getMinRecommendedWalletGasEth() {
+        return config.minRecommendedWalletGasEth
+    }
+
     getDefaultPageSize() {
         return 10
     }

@@ -3,6 +3,7 @@
   "baseDecimals": 18,
   "smallOrderThreshold": 0.001,
   "awayFromLastTradeThreshold": 0.25,
+  "minRecommendedWalletGasEth": 0.01,
   "blocksGoodTillCancel": "2000000000",
   "gasLimit": {
     "deposit": 250000,
