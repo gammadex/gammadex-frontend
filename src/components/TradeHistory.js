@@ -42,14 +42,14 @@ export default class TradeHistory extends React.Component {
                     />
                 </div>
 
-                <Scroll id="market-trades-body" className="mobile-toggle">
-                    <BoxSection className="nopad">
+                <div id="market-trades-body" className="mobile-toggle card-body-height">
+                    <Scroll>
                         <Conditional displayCondition={trades && trades.length > 0}
                                      fallbackMessage={'There is no trade history for ' + tokenSymbol}>
                             <TradeHistoryTable base="ETH" token={tokenSymbol} trades={trades}/>
                         </Conditional>
-                    </BoxSection>
-                </Scroll>
+                    </Scroll>
+                </div>
             </Box>
         )
     }
