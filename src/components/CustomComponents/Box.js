@@ -2,6 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import MarketResponseSpinner from "../MarketResponseSpinner"
 import _ from 'lodash'
+import {scrollOffersToBottom} from "../../util/OffersScroller"
 
 export class Box extends React.Component {
     render() {
@@ -104,6 +105,10 @@ export class BoxTitle extends React.Component {
                     expanded = true
                 }
             }
+        }
+
+        if (expanded && _.isFunction(this.props.onExpand)) {
+            this.props.onExpand()
         }
 
         this.setState({expanded})

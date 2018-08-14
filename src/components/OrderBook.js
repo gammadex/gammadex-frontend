@@ -6,6 +6,7 @@ import TradeStore from '../stores/TradeStore'
 import {Box, BoxTitle} from "./CustomComponents/Box"
 import EmptyTableMessage from "./CustomComponents/EmptyTableMessage"
 import Conditional from "./CustomComponents/Conditional"
+import {scrollOffersToBottom} from "../util/OffersScroller"
 
 export default class OrderBook extends React.Component {
     constructor(props) {
@@ -71,12 +72,7 @@ export default class OrderBook extends React.Component {
     }
 
     scrollOffers() {
-        const offersDiv = document.getElementById("orders-div-offer")
-        if (offersDiv) {
-            offersDiv.parentNode.scrollTop = offersDiv.parentNode.scrollHeight
-
-            this.scrolled = true
-        }
+        this.scrolled = scrollOffersToBottom()
     }
 
     tradeStoreUpdated() {
@@ -126,6 +122,7 @@ export default class OrderBook extends React.Component {
                     <BoxTitle title={"Bids and Offers"}
                               ids={{'bids-and-offers-body': 'flex'}}
                               componentId="bids-and-offers-container"
+                              onExpand={scrollOffersToBottom}
                     />
                 </div>
 

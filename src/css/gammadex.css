@@ -1287,7 +1287,7 @@ body {
         flex-basis: auto;
     }
 
-    .open-orders-pending-trades-componentXXXXXXXXXX, .token-chooser-component, .unlisted-tokens-component,
+    .open-orders-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
     .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component
     {
         height: 42px;
