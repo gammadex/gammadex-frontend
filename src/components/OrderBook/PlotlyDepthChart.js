@@ -1,7 +1,7 @@
 import React from "react"
 import Plotly from 'plotly.js/dist/plotly-finance'
 import {cumulativeAdd} from "../../util/CumulativeOrderVolumeAdder"
-import {Box, BoxSection} from "../CustomComponents/Box"
+import {Box, BoxSection, BoxTitle} from "../CustomComponents/Box"
 import OrderBookStore from "../../stores/OrderBookStore"
 import ReactResizeDetector from 'react-resize-detector'
 
@@ -76,20 +76,20 @@ export default class PlotlyDepthChart extends React.Component {
         const data = [buyTrace, sellTrace]
 
         const layout = {
-            plot_bgcolor:'transparent',
+            plot_bgcolor: 'transparent',
             grid: {
-                color:'blue'
+                color: 'blue'
             },
             dragmode: 'zoom',
             showlegend: false,
             xaxis: {
-                color:'#999',
+                color: '#999',
                 gridcolor: '#999',
                 showline: false,
                 //title: 'Price',
             },
             yaxis: {
-                color:'#999',
+                color: '#999',
                 gridcolor: '#999',
                 showline: false,
                 //title: 'Cumulative Volume',
@@ -120,7 +120,13 @@ export default class PlotlyDepthChart extends React.Component {
 
     render() {
         return (
-            <Box title="Order Depth Chart" className="chart-component order-depth-chart-component">
+            <Box id="order-depth-chart-container" className="chart-component order-depth-chart-component">
+                <div className="card-header">
+                    <BoxTitle title="Order Depth Chart"
+                              componentId="order-depth-chart-container"
+                    />
+                </div>
+
                 <BoxSection id="depth-chart-resize-container">
                     <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="depth-chart-resize-container"/>
                     <div id="depthChart"/>

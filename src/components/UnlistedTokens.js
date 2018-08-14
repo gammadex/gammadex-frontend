@@ -92,7 +92,6 @@ class TokenChooser extends React.Component {
                     <Box className="last-card">
                         <div className="card-header">
                             <BoxTitle title="My Unlisted Tokens"
-                                      ids={{'token-chooser-table': 'table'}}
                                       componentId="unlisted-tokens-container"
                             />
                         </div>
@@ -103,7 +102,7 @@ class TokenChooser extends React.Component {
 
                         <Conditional displayCondition={tokenRows.length > 0}>
                             <Scroll>
-                                <table id="token-chooser-table" className="table table-striped table-hover table-bordered mobile-toggle" style={{"borderTopWidth": "1px"}}>
+                                <table className="table table-striped table-hover table-bordered" style={{"borderTopWidth": "1px"}}>
                                     <thead>
                                     <tr>
                                         <th>Symbol</th>
