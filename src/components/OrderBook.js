@@ -96,7 +96,7 @@ export default class OrderBook extends React.Component {
                                            fillOrder={fillOrderTakerBuy}/>
 
         return (
-            <Box id="bids-and-offers-container" className="bids-and-offers-component">
+            <Box id="bids-and-offers-container" className="bids-and-offers-component full-height-lg">
                 <div className="card-header">
                     <BoxTitle title={"Bids and Offers"}
                               ids={{'bids-and-offers-body': 'flex'}}
