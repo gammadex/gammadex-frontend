@@ -22,7 +22,6 @@ export default class OrderBook extends React.Component {
         }
         this.saveBidsAndOffers = this.saveBidsAndOffers.bind(this)
         this.saveOpenOrders = this.saveOpenOrders.bind(this)
-        this.updateTitleWidths = this.updateTitleWidths.bind(this)
         this.tradeStoreUpdated = this.tradeStoreUpdated.bind(this)
         this.scrollOffers = this.scrollOffers.bind(this)
         this.scrolled = false
@@ -32,24 +31,15 @@ export default class OrderBook extends React.Component {
         OrderBookStore.on("change", this.saveBidsAndOffers)
         OpenOrdersStore.on("change", this.saveOpenOrders)
         TradeStore.on("change", this.tradeStoreUpdated)
-        window.addEventListener("resize", this.updateTitleWidths)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveBidsAndOffers)
         OpenOrdersStore.removeListener("change", this.saveOpenOrders)
         TradeStore.removeListener("change", this.tradeStoreUpdated)
-        window.removeEventListener("resize", this.updateTitleWidths)
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const offersTable = document.getElementById("order-table-offer")
-        if (offersTable) {
-            if (prevState.tableWidth !== offersTable.clientWidth) {
-                this.updateTitleWidths()
-            }
-        }
-
         if (prevProps.token !== this.props.token) {
             this.scrolled = false
         }
@@ -57,17 +47,6 @@ export default class OrderBook extends React.Component {
         const offersDiv = document.getElementById("orders-div-offer")
         if (offersDiv && this.state.offers && this.state.offers.length > 0 && !this.scrolled) {
             this.scrollOffers()
-        }
-    }
-
-    updateTitleWidths() {
-        const offersTable = document.getElementById("order-table-offer")
-        if (offersTable) {
-            this.setState((prevState) => {
-                if (prevState.tableWidth !== offersTable.clientWidth) {
-                    return {tableWidth: offersTable.clientWidth}
-                }
-            })
         }
     }
 
@@ -99,7 +78,7 @@ export default class OrderBook extends React.Component {
 
     render() {
         const {token} = this.props
-        const {bids, offers, openOrders, pendingCancelIds, tableWidth, fillOrderTakerBuy, fillOrderTakerSell} = this.state
+        const {bids, offers, openOrders, pendingCancelIds, fillOrderTakerBuy, fillOrderTakerSell} = this.state
         const tokenSymbol = token ? token.symbol : null
 
         const openOrderIds = openOrders.map(o => o.id)
@@ -136,7 +115,7 @@ export default class OrderBook extends React.Component {
                         </div>
 
                         <div className="orders-col-border bids-and-offers-spacer">
-                            <div className="orders-colnames" style={{"width": `${tableWidth}px`}}>
+                            <div className="orders-colnames">
                                 <table className="table-bordered">
                                     <tbody>
                                     <tr>
