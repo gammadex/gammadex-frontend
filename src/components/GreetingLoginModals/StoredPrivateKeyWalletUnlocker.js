@@ -84,12 +84,13 @@ export default class StoredPrivateKeyWalletUnlocker extends React.Component {
         const walletImg = (!address || address === "") ? null : <img width="20" height="20" src={toDataUrl(address)}/>
 
         return <Modal isOpen={showModal} toggle={this.hideModal} keyboard>
-            <ModalHeader toggle={this.hideModal}><h5 className="text-muted">Unlock saved wallet</h5>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>
+            <ModalHeader toggle={this.hideModal}><p className="text-muted">Unlock saved wallet</p>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>
             <form onSubmit={this.handleUnlock}>
                 <ModalBody>
 
                     <div className="form-group">
                         <input type="text"
+                            readOnly
                             name="username"
                             hidden={true}
                             value={address}/>

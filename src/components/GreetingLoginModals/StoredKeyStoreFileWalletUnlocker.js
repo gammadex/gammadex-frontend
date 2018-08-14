@@ -87,13 +87,14 @@ export default class StoredKeyStoreFileWalletUnlocker extends React.Component {
         const walletImg = (!address || address === "") ? null : <img width="20" height="20" src={toDataUrl(address)}/>
 
         return <Modal isOpen={showModal} toggle={this.hideModal} keyboard>
-            <ModalHeader toggle={this.hideModal}><h5 className="text-muted">Unlock saved keystore file {fileName}</h5>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>
+            <ModalHeader toggle={this.hideModal}><p className="text-muted">Unlock saved keystore file {fileName}</p>{walletImg}&nbsp;&nbsp;{address}</ModalHeader>
 
             <form onSubmit={this.handleKeyStoreUnlock}>
                 <ModalBody>
 
                     <div className="form-group">
                         <input type="text"
+                            readOnly
                             name="username"
                             hidden={true}
                             value={address}/>
