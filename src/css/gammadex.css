@@ -1315,6 +1315,14 @@ body {
         height: auto;
         max-height: inherit;
     }
+
+    .token-chooser-component {
+        order:0;
+    }
+
+    .balances-component {
+        order:1;
+    }
 }
 
 .children-are-header-and-body {
