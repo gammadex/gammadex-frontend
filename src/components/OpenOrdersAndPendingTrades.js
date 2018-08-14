@@ -85,7 +85,7 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
                     </div>
                 </BoxHeader>
 
-                <BoxSection id="open-orders-pending-trades-body" className="mobile-toggle">
+                <BoxSection id="open-orders-pending-trades-body" className="p-0 mobile-toggle">
                     {content}
                 </BoxSection>
             </Box>

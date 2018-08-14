@@ -230,7 +230,7 @@ class TokenChooser extends React.Component {
                                placeholder="Search" className="form-control mobile-toggle"/>
                     </div>
 
-                    <BoxSection id="token-chooser-body" className="mobile-toggle card-body-height">
+                    <BoxSection id="token-chooser-body" className="p-0 mobile-toggle card-body-height">
                         <Scroll>
                             <table className="table table-bordered table-hover table-no-bottom-border">
                                 <thead>
