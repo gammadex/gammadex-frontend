@@ -118,11 +118,11 @@ class OrderBookStore extends EventEmitter {
 
             if (orders.buys) {
                 window.buys = orders.buys
-                this.bids = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.buys, false)
+                this.bids = OrderMerger.sortByDateThenPriceRemovingDuplicates(orders.buys, false)
             }
             if (orders.sells) {
                 window.sells = orders.sells
-                this.offers = OrderMerger.sortByPriceAndIdRemovingDuplicates(orders.sells, true)
+                this.offers = OrderMerger.sortByDateThenPriceRemovingDuplicates(orders.sells, true)
             }
         }
     }

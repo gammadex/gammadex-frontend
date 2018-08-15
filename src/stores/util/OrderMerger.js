@@ -11,17 +11,17 @@ export function mergeOrders(existing, incoming, tokenAddress, ascendingPriceOrde
         const incomingChangedOrders = _.filter(incoming, o => !isDelete(o) && withinSmallOrderThreshold(o))
         const updatedOrdersUnsorted = unchangedCurrentOrders.concat(incomingChangedOrders)
         
-        return sortByPriceAndIdRemovingDuplicates(updatedOrdersUnsorted, ascendingPriceOrder) // sort by id then price so always deterministic order
+        return sortByDateThenPriceRemovingDuplicates(updatedOrdersUnsorted, ascendingPriceOrder) // sort by id then price so always deterministic order
     } else {
         return existing
     }
 }
 
-export function sortByPriceAndIdRemovingDuplicates(orders, ascendingPriceOrder) {
+export function sortByDateThenPriceRemovingDuplicates(orders, ascendingPriceOrder) {
     const deDupedOrders = MessageUtils.removeDups(orders, 'id')
         .filter(o => !isDelete(o) && withinSmallOrderThreshold(o))
 
-    const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.id), o => o.price)
+    const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.date), o => o.price)
 
     if (ascendingPriceOrder) {
         return sorted
