@@ -185,7 +185,9 @@ class TokenChooser extends React.Component {
             selectedToken,
             favouritesTokens,
             showFavouritesOnly).map(systemToken => {
-            return systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
+            //return systemToken.address === currentStats.tokenAddress ? this.copyStats(systemToken, currentStats) : systemToken
+            // unify stats #173
+            return systemToken
         })
 
         const sortedTokens = this.sortTokens(systemTokens, sortType)

@@ -1,28 +1,40 @@
 import React from "react"
 import OrderBookStore from '../stores/OrderBookStore'
+import TokenStore from '../stores/TokenStore'
 import Round from "./CustomComponents/Round"
 import EtherScan from "../components/CustomComponents/Etherscan"
 import MarketResponseSpinner from "./MarketResponseSpinner"
 import {withRouter} from "react-router-dom"
 import Conditional from "./CustomComponents/Conditional"
+import _ from "lodash"
 
 class TokenStats extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            tradeStats: OrderBookStore.getTradeStats()
+            tradeStats: OrderBookStore.getTradeStats(),
+            serverTickers: {},
         }
 
         this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
+        this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
     }
 
     componentWillMount() {
         OrderBookStore.on("change", this.saveCurrentPrices)
+        TokenStore.on("change", this.onTokenStoreChange)
     }
 
     componentWillUnmount() {
         OrderBookStore.removeListener("change", this.saveCurrentPrices)
+        TokenStore.removeListener("change", this.onTokenStoreChange)
+    }
+
+    onTokenStoreChange() {
+        this.setState({
+            serverTickers: TokenStore.getServerTickers(),
+        })
     }
 
     saveCurrentPrices() {
@@ -36,7 +48,9 @@ class TokenStats extends React.Component {
         const inExchange = path.includes('/exchange/')
 
         const {token} = this.props
-        const {low, high, tokenVolume, ethVolume, last, percentChange} = this.state.tradeStats
+        const {serverTickers} = this.state
+        const percentChange = token ? _.pick(serverTickers[token.address.toLowerCase()], ['percentChange'])['percentChange'] : 0.0
+        const {low, high, tokenVolume, ethVolume, last } = this.state.tradeStats
         const [title, contract, name, longName] = token ? [
             `${token.symbol}/ETH`,
             <EtherScan type="address" address={token.address} display="truncate"/>,

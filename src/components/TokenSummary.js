@@ -10,26 +10,6 @@ import TokenStats from "./TokenStats"
 class TokenSummary extends React.Component {
     constructor(props) {
         super(props)
-
-        this.state = {
-            tradeStats: OrderBookStore.getTradeStats()
-        }
-
-        this.saveCurrentPrices = this.saveCurrentPrices.bind(this)
-    }
-
-    componentWillMount() {
-        OrderBookStore.on("change", this.saveCurrentPrices)
-    }
-
-    componentWillUnmount() {
-        OrderBookStore.removeListener("change", this.saveCurrentPrices)
-    }
-
-    saveCurrentPrices() {
-        this.setState({
-            tradeStats: OrderBookStore.getTradeStats()
-        })
     }
 
     isTruncated(str) {
