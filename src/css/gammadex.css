@@ -248,12 +248,20 @@ body, html {
     border-width: 0 1px 0 0;
 }
 
-.orders-table td, .orders-table th {
-    width: 33%;
+.orders-table, .bids-and-offers-spacer table {
+    table-layout: fixed;
 }
 
-.orders-table td:first-child, .orders-table th:first-child {
+.orders-table td, .orders-table th, .bids-and-offers-spacer td, .bids-and-offers-spacer th {
+    width: 33%;
+    max-width: 33%;
+    min-width: 33%;
+}
+
+.orders-table td:first-child, .orders-table th:first-child, .bids-and-offers-spacer td, .bids-and-offers-spacer th {
     width: 34%;
+    max-width: 33%;
+    min-width: 33%;
 }
 
 .orders-table tr:first-child td {
