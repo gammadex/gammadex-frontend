@@ -40,7 +40,7 @@ class TopNavigation extends Component {
         return (
             <header className="bg-primary text-light header">
                 <div className="upper-header">
-                    <div className="logo-and-main-nav full-height">
+                    <div className="logo-and-main-nav full-height-lg">
                         <Link to={Routes.Exchange} className="navbar-brand mb-0"><img className="logo" src={require("../images/gammadex_logo.svg")} /></Link>
 
                         <nav className="navbar navbar-dark bg-primary navbar-expand">
@@ -57,7 +57,7 @@ class TopNavigation extends Component {
 
                     <TokenSummary token={token} />
 
-                    <div className="user-buttons full-height">
+                    <div className="user-buttons full-height-lg">
                         <MarketResponseSpinner />
                         <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav navbar-right mr-auto">
