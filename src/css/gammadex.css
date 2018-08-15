@@ -1463,3 +1463,7 @@ body {
 .custom-file-label:active, .custom-file-label:focus , .custom-file-input:active, .custom-file-input:focus {
     border-color: #222 !important;
 }
+
+.center-label {
+    padding-top:2px;
+}

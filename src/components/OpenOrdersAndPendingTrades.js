@@ -63,9 +63,15 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
                     />
 
                     <Conditional displayCondition={openOrdersActive}>
-                        <div className="form-check form-check-inline no-mobile">
-                            <input className="form-check-input" type="checkbox" id="showAllTokensCheckbox" onChange={this.handleShowAll} value={"true"} checked={showAllTokens}/>
-                            <label className="form-check-label" htmlFor="showAllTokensCheckbox">Show All</label>
+                        <div className="custom-control custom-checkbox my-1 mr-sm-2">
+                            <input type="checkbox"
+                                   className="custom-control-input"
+                                   id="showAllTokensCheckbox"
+                                   onChange={this.handleShowAll}
+                                   value="true"
+                                   checked={showAllTokens}
+                            />
+                            <label className="custom-control-label center-label" htmlFor="showAllTokensCheckbox">Show All</label>
                         </div>
                     </Conditional>
 

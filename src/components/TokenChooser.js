@@ -203,7 +203,8 @@ class TokenChooser extends React.Component {
 
         const symbolSortClass = sortType === TokenChooserSort.ASC_SYMBOL ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_SYMBOL ? "fas fa-sort-down" : "fas fa-sort"
         const volumeSortClass = sortType === TokenChooserSort.ASC_VOLUME ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_VOLUME ? "fas fa-sort-down" : "fas fa-sort"
-        const changeSortClass = sortType === TokenChooserSort.ASC_CHANGE ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_CHANGE ? "fas fa-sort-down" : "fas fa-sort"
+        const changeSortClass
+            = sortType === TokenChooserSort.ASC_CHANGE ? "fas fa-sort-up" : sortType === TokenChooserSort.DESC_CHANGE ? "fas fa-sort-down" : "fas fa-sort"
 
         return (
             <div id="token-chooser-container" className="token-chooser-component">
@@ -219,9 +220,15 @@ class TokenChooser extends React.Component {
 
                         <div id="token-show-selected-only" className="mobile-toggle">
                             <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)}>
-                                <div className="form-check form-check-inline">
-                                    <input className="form-check-input" type="checkbox" id="showFavouritesOnlyCheckbox" onChange={this.onShowFavouritesOnlyChange} value={"true"} checked={showFavouritesOnly}/>
-                                    <label className="form-check-label" htmlFor="showFavouritesOnlyCheckbox">&nbsp;Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
+                                <div className="custom-control custom-checkbox my-1 mr-sm-2">
+                                    <input type="checkbox"
+                                           className="custom-control-input"
+                                           id="showFavouritesOnlyCheckbox"
+                                           onChange={this.onShowFavouritesOnlyChange}
+                                           value="true"
+                                           checked={showFavouritesOnly}
+                                    />
+                                    <label className="custom-control-label center-label" htmlFor="showFavouritesOnlyCheckbox">Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
                                 </div>
                             </form>
                         </div>

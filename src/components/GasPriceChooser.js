@@ -248,10 +248,15 @@ export default class GasPriceChooser extends React.Component {
                                         <hr />
 
                                         <form className="form-inline">
-                                            <div className="form-check form-check-inline">
-                                                <input className="form-check-input" type="checkbox" id="estimateGasCheckbox" onChange={this.onEstimateGasChange} value={"true"} checked={estimateGas} />
-                                                <label className="form-check-label" htmlFor="estimateGasCheckbox">&nbsp;Estimate gas limit</label>
-
+                                            <div className="custom-control custom-checkbox my-1 mr-sm-2">
+                                                <input type="checkbox"
+                                                       className="custom-control-input"
+                                                       id="estimateGasCheckbox"
+                                                       onChange={this.onEstimateGasChange}
+                                                       value="true"
+                                                       checked={estimateGas}
+                                                />
+                                                <label className="custom-control-label" htmlFor="estimateGasCheckbox">&nbsp;Estimate gas limit</label>
                                             </div>
                                             <br />
                                             <small className="form-text text-muted">
