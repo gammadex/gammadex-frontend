@@ -1454,3 +1454,12 @@ body {
 .support-text {
     margin-left:10px;
 }
+
+.custom-file-label  {
+    color: var(--gray-light) !important;
+    background-color: #333;
+}
+
+.custom-file-label:active, .custom-file-label:focus , .custom-file-input:active, .custom-file-input:focus {
+    border-color: #222 !important;
+}
