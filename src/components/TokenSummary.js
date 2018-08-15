@@ -32,6 +32,14 @@ class TokenSummary extends React.Component {
         })
     }
 
+    isTruncated(str) {
+        return str && str.startsWith('0x') && str.includes('...')
+    }
+
+    hideTruncated(str) {
+        return this.isTruncated(str) ? "" : str
+    }
+
     render() {
         const path = this.props.location ? this.props.location.pathname : ''
         const inExchange = path.includes('/exchange/')
@@ -40,8 +48,8 @@ class TokenSummary extends React.Component {
         const [title, contract, name, longName] = token ? [
             `${token.symbol}/ETH`,
             <EtherScan type="address" address={token.address} display="truncate"/>,
-            token.symbol,
-            token.name ? token.name : token.symbol
+            this.hideTruncated(token.symbol),
+            token.name ? this.hideTruncated(token.name) : this.hideTruncated(token.symbol)
         ] : [
             '', '', '', ''
         ]

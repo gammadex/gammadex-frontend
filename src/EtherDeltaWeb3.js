@@ -317,8 +317,8 @@ class EtherDeltaWeb3 {
             }).then(res => {
                 return {
                     address: address,
-                    name: res[0].result || truncate(address, { left: 7, right: 5 }),
-                    symbol: res[1].result || truncate(address, { left: 7, right: 5 }),
+                    name: res[0].result || truncate(address, { left: "6", right: "0" }),
+                    symbol: res[1].result || truncate(address, { left: "6", right: "0" }),
                     decimals: res[2]
                 }
             })
