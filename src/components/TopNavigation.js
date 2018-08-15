@@ -61,7 +61,7 @@ class TopNavigation extends Component {
                         <MarketResponseSpinner />
                         <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav navbar-right mr-auto">
-                                <li className="nav-item dropdown">
+                                <li className="nav-item dropdown ">
                                     <button className="nav-link dropdown-toggle btn btn-link"
                                             style={{ "height": "36px" }} id="navbarSupportDropdown"
                                             aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">

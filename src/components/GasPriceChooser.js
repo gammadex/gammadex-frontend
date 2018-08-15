@@ -166,7 +166,7 @@ export default class GasPriceChooser extends React.Component {
                 <Popover target="gasPrice" isOpen={popoverOpen} placement="bottom" toggle={this.toggleGasPrice}>
                     <div className="shadow gas-prices">
                         <PopoverBody>
-                            <Box title="Gas Price Per Unit">
+                            <Box>
                                 <BoxSection>
 
                                     <span className={"badge " + badgeType} style={{ "padding": "7px", "width": "100%", "fontSize": "100%", "verticalAlign": "middle" }}>Balance: {availableEth} ETH <br />Enough gas for {walletBalanceEth !== "0" ? 'approx.' : ''} {availableTrades} trades</span>

@@ -948,7 +948,7 @@ body {
 }
 
 .popover {
-    border: 1px solid var(--gray);
+    border: 1px solid #444;
     border-radius: 0;
 }
 
@@ -1430,4 +1430,12 @@ body {
 
 .wallet-button-row button {
     margin: 6px 3px 0 3px;
+}
+
+.bs-popover-bottom {
+    margin-top:1.5px !important;
+}
+
+.dropdown-item {
+    color:var(--gray-light);
 }

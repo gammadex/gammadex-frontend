@@ -163,7 +163,7 @@ export default class AppStatus extends React.Component {
                 <Popover target="appStatus" isOpen={this.state.popoverOpen} placement="bottom" toggle={this.toggleShowStatus}>
                     <div className="shadow gas-prices">
                         <PopoverBody>
-                            <Box title="Status">
+                            <Box>
                                 <BoxSection>
                                     <AppStatusRow title="GammaDex Websocket" state={webSocketState} message={this.getWebsocketMessage()} />
 
