@@ -729,6 +729,10 @@ input[type="number"] {
 
 /* end layout bits and pieces */
 
+.bids-and-offers-spacer table {
+    border: var(--secondary);
+}
+
 .etherscan-column {
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -966,7 +970,7 @@ body {
 }
 
 .rc-slider-disabled {
-    background: var(--gray-dark);
+    background: var(--background);
 }
 
 .rc-slider-handle {
@@ -1409,7 +1413,7 @@ body {
 }
 
 .wallet-buttons {
-    margin:20px;
+    margin: 20px;
 }
 
 .wallet-button-row {

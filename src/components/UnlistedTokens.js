@@ -102,7 +102,7 @@ class TokenChooser extends React.Component {
 
                         <Conditional displayCondition={tokenRows.length > 0}>
                             <Scroll>
-                                <table className="table table-striped table-hover table-bordered" style={{"borderTopWidth": "1px"}}>
+                                <table className="table table-hover table-bordered" style={{"borderTopWidth": "1px"}}>
                                     <thead>
                                     <tr>
                                         <th>Symbol</th>

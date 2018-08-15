@@ -40,7 +40,7 @@ export default class TransfersTable extends React.Component {
 
         return (
             <div className="table-responsive deposit-history">
-                <table className="table table-striped table-bordered">
+                <table className="table table-bordered">
                     <thead>
                     <tr>
                         <th>Asset</th>

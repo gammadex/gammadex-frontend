@@ -15,7 +15,7 @@ export default class TradeHistoryTable extends React.Component {
         const emptyRows = JsxUtils.emptyRows(numEmptyRows, 4)
 
         return (
-                <table className="table table-striped table-bordered table-no-bottom-border numbers-table">
+                <table className="table table-bordered table-no-bottom-border numbers-table">
                     <thead>
                         <tr>
                             <th>Price</th>
