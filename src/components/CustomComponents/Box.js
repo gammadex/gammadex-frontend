@@ -124,7 +124,7 @@ export class BoxTitle extends React.Component {
         return (
             <div className={"box-title-container " + extraClassName}>
                 <div className="mobile-only">
-                    <button className="btn" onClick={() => this.toggle()}><i className={"fas " + icon}/></button>
+                    <button className="btn btn-expand-mobile" onClick={() => this.toggle()}><i className={"fas " + icon}/></button>
                 </div>
                 <div className="card-title">{title}</div>
             </div>
