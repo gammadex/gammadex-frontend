@@ -1428,6 +1428,12 @@ body {
     }
 }
 
+.popover {
+    background-color: var(--background);
+    border-width: 1px;
+    border-color: #666666;
+}
+
 .wallet-button-row button {
     margin: 6px 3px 0 3px;
 }
@@ -1438,4 +1444,8 @@ body {
 
 .dropdown-item {
     color:var(--gray-light);
+}
+
+.support-text {
+    margin-left:10px;
 }
