@@ -6,7 +6,7 @@
     --half-main-padding: 0px;
     --card-header-height: 40px;
     --bids-and-offers-spacer-height: 30px;
-    --gray-light: #ced2d5;
+    --gray-fairly-light: #bec2d5;
     --sell-red: #dd6565;
     --sell-green: #65dd65;
     --mobile-component-height: 50vh;
@@ -1070,7 +1070,7 @@ body {
 }
 
 .trading-nav-buy {
-    background: var(--dark);
+    background: var(--background);
     border: 1px solid var(--green) !important;
     color: var(--green) !important;
     cursor: pointer;
@@ -1082,7 +1082,7 @@ body {
 }
 
 .trading-nav-sell {
-    background: var(--dark);
+    background: var(--background);
     border: 1px solid var(--sell-red) !important;
     color: var(--sell-red) !important;
     cursor: pointer;
@@ -1094,7 +1094,7 @@ body {
 }
 
 .trading-nav-buy:not(.active), .trading-nav-sell:not(.active) {
-    background: var(--dark);
+    background: var(--background);
     border: 1px solid var(--gray-light) !important;
     color: var(--gray-light) !important;
 }
@@ -1108,24 +1108,26 @@ body {
     border-width: 0;
 }
 
-.nav-link.active.nav-trading-type {
+.nav-link.active.nav-trading-type, .nav-link.active.nav-trading-type:hover {
     background: inherit;
+    color: var(--gray-light);
+    transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
 .nav-link:not(.active).nav-trading-type {
     background: inherit;
     color: grey;
-    transition: border-color 0.15s ease-in-out;
+    transition: color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
 .nav-link.active.buyActive.nav-trading-type {
     background: inherit;
-    border-bottom: 2px solid var(--green) !important;
+    border-bottom: 1px solid var(--green) !important;
 }
 
 .nav-link:not(.buyActive).active.nav-trading-type {
     background: inherit;
-    border-bottom: 2px solid var(--red) !important;
+    border-bottom: 1px solid var(--red) !important;
 }
 
 .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:focus {
@@ -1173,6 +1175,8 @@ body {
     height: 100%;
     border: 1px solid #444444;
     border-top-width: 0;
+    border-bottom-left-radius: 0.25em;
+    border-bottom-right-radius: 0.25em;
 }
 
 .padded-popover .popover-inner {
