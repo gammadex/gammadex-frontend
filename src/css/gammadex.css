@@ -471,6 +471,9 @@ input[type="number"] {
     display: flex;
     flex-direction: column;
     height: var(--header-height);
+    border-style: solid;
+    border-width:0 1px;
+    border-color: var(--background);
 }
 
 .upper-header {
@@ -521,6 +524,7 @@ input[type="number"] {
 .route-content {
     height: calc(100% - var(--header-height));
     padding: var(--main-padding) 0;
+    background: var(--background);
 }
 
 .main-warning {
@@ -892,7 +896,7 @@ input[type="number"] {
 }
 
 body {
-    background: #2d2e2f;
+    background: #444;
 }
 
 .card {
@@ -1470,4 +1474,9 @@ body {
 
 .center-label {
     padding-top:2px;
+}
+
+#app {
+    max-width:1480px;
+    margin:auto;
 }
