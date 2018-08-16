@@ -63,6 +63,7 @@ class AccountDropdown extends React.Component {
         WalletDao.forgetStoredWallet()
         WalletActions.logout()
         EtherDeltaWeb3.initForAnonymous()
+        this.closePopover()
     }
 
     unlockWallet() {
@@ -71,18 +72,26 @@ class AccountDropdown extends React.Component {
         } else {
             WalletActions.clearSelectedWalletType()
         }
+        this.closePopover()
     }
 
     createNewWallet() {
         if (Routes.NewWallet !== this.props.history.location.pathname) {
             this.props.history.push(Routes.NewWallet)
         }
+        this.closePopover()
     }
 
     togglePopover = (event) => {
         event.preventDefault()
         this.setState({
             popoverOpen: !this.state.popoverOpen
+        })
+    }
+
+    closePopover = () => {
+        this.setState({
+            popoverOpen: false
         })
     }
 

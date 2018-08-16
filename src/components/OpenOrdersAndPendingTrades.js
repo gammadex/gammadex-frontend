@@ -52,8 +52,6 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
         const content = openOrdersActive ? <OpenOrders showAllTokens={showAllTokens}/> : <PendingTrades/>
         const title = openOrdersActive ? 'Open Orders' : 'Pending Trades'
 
-        //
-
         return (
             <Box id="open-orders-pending-trades-container" className="open-orders-and-pending-trades-component last-card full-height-lg">
                 <BoxHeader>
@@ -63,7 +61,7 @@ export default class OpenOrdersAndPendingTrades extends React.Component {
                     />
 
                     <Conditional displayCondition={openOrdersActive}>
-                        <div className="custom-control custom-checkbox my-1 mr-sm-2">
+                        <div className="custom-control custom-checkbox my-1 mr-sm-2 no-mobile">
                             <input type="checkbox"
                                    className="custom-control-input"
                                    id="showAllTokensCheckbox"
