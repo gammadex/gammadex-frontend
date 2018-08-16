@@ -1,4 +1,4 @@
-import {EventEmitter} from "events"
+import { EventEmitter } from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import * as _ from "lodash"
@@ -42,9 +42,13 @@ class MyTradesStore extends EventEmitter {
                 if (action.trades) {
                     const incomingTxIds = action.trades.map(t => t.txHash)
                     this.pendingTrades = this.pendingTrades.filter(t => !incomingTxIds.includes(t.txHash))
-
                     const completedExcludingIncoming = this.completedTrades.filter(t => !incomingTxIds.includes(t.txHash))
-                    this.completedTrades = [...completedExcludingIncoming, ...action.trades]
+                    const myTradesOnly = action.trades.filter(t => {
+                        return this.accountAddress &&
+                            (t.buyer.toLowerCase() === this.accountAddress.toLowerCase() ||
+                                t.seller.toLowerCase() === this.accountAddress.toLowerCase())
+                    })
+                    this.completedTrades = [...completedExcludingIncoming, ...myTradesOnly]
                 }
                 this.updateAllTrades()
                 this.persistToLocalStorage()
@@ -121,9 +125,9 @@ class MyTradesStore extends EventEmitter {
     }
 
     updateAllTrades() {
-        const completed = this.completedTrades.map(t => Object.assign(t, {status: TransactionStatus.COMPLETE}))
-        const pending = this.pendingTrades.map(t => Object.assign(t, {status: TransactionStatus.PENDING}))
-        const failed = this.failedTrades.map(t => Object.assign(t, {status: TransactionStatus.FAILED}))
+        const completed = this.completedTrades.map(t => Object.assign(t, { status: TransactionStatus.COMPLETE }))
+        const pending = this.pendingTrades.map(t => Object.assign(t, { status: TransactionStatus.PENDING }))
+        const failed = this.failedTrades.map(t => Object.assign(t, { status: TransactionStatus.FAILED }))
 
         this.allTrades = _.reverse(_.sortBy([...completed, ...pending, ...failed], d => d.date))
     }
