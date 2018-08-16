@@ -214,14 +214,13 @@ class TokenChooser extends React.Component {
 
                 <div className="card " style={{"height": containerHeight}}>
                     <div className="card-header">
+                        <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)} style={{"justify-content": "space-between"}}>
+                            <BoxTitle title="Tokens"
+                                      ids={{'token-chooser-body': 'block', 'token-show-selected-only': 'block', 'token-search-input': 'block'}}
+                                      componentId="token-chooser-container"
+                            />
 
-                        <BoxTitle title="Tokens"
-                                  ids={{'token-chooser-body': 'block', 'token-show-selected-only': 'block', 'token-search-input': 'block'}}
-                                  componentId="token-chooser-container"
-                        />
-
-                        <div id="token-show-selected-only" className="mobile-toggle">
-                            <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)}>
+                            <div id="token-show-selected-only" className="mobile-toggle mr-2">
                                 <div className="custom-control custom-checkbox my-1 mr-sm-2">
                                     <input type="checkbox"
                                            className="custom-control-input"
@@ -232,11 +231,11 @@ class TokenChooser extends React.Component {
                                     />
                                     <label className="custom-control-label center-label" htmlFor="showFavouritesOnlyCheckbox">Show&nbsp;{<span className="fas fa-star"></span>}&nbsp;only</label>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
 
-                        <input id="token-search-input" onChange={this.onSearchTokenChange} value={this.state.searchedToken}
-                               placeholder="Search" className="form-control mobile-toggle"/>
+                            <input id="token-search-input" onChange={this.onSearchTokenChange} value={this.state.searchedToken}
+                                   placeholder="Search" className="form-control mobile-toggle"/>
+                        </form>
                     </div>
 
                     <BoxSection id="token-chooser-body" className="p-0 mobile-toggle card-body-height">
