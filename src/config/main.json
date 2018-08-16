@@ -85,9 +85,8 @@
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "defaultPair": {
       "token": {
-        "symbol": "VEN",
-        "name": "VeChain Token",
-        "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
+        "symbol": "DAI",
+        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
         "decimals": 18,
         "isListed": true
       },
@@ -116,9 +115,8 @@
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "defaultPair": {
       "token": {
-        "symbol": "VEN",
-        "name": "VeChain Token",
-        "address": "0xd850942ef8811f2a866692a623011bde52a462c1",
+        "symbol": "DAI",
+        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
         "decimals": 18,
         "isListed": true
       },
@@ -140,9 +138,8 @@
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "defaultPair": {
       "token": {
-        "symbol": "VEN",
-        "name": "VeChain Token",
-        "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
+        "symbol": "DAI",
+        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
         "decimals": 18,
         "isListed": true
       },
@@ -164,9 +161,8 @@
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "defaultPair": {
       "token": {
-        "symbol": "VEN",
-        "name": "VeChain Token",
-        "address": "0xD884F9881e0aeABad79BE8A69122Cf998d067FfF",
+        "symbol": "DAI",
+        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
         "decimals": 18,
         "isListed": true
       },
