@@ -204,7 +204,7 @@ body, html {
 }
 
 .orders-colnames td {
-    text-align: center;
+    text-align: left;
     padding: 6px;
     width: 33%;
     border-top: 0;
@@ -910,6 +910,10 @@ body {
 
 .text-muted {
     color: grey
+}
+
+.text-underline {
+    text-decoration: underline;
 }
 
 .clr-warn {

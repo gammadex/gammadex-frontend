@@ -101,7 +101,7 @@ class KeyStoreFile extends React.Component {
 
         return (
             <div>
-                <SafetyWarning/>
+                <SafetyWarning isPrivateKey={false}/>
                 <h4>Select Your Wallet File (JSON)</h4>
 
                 <form onSubmit={this.handleKeyStoreUnlock}>

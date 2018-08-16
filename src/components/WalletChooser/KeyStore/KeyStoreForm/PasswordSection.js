@@ -41,7 +41,6 @@ export default class PasswordSection extends React.Component {
                     <label className="custom-control-label" htmlFor="rememberKeyFile">Remember for next visit</label>
                     <small class="form-text text-muted">
                         Your Wallet File will be stored in your browser's local storage. You will be prompted for your Keystore password each time you visit GammaDEX.
-                            <br /><br />No sensitive wallet data is transmitted to or stored on GammaDEX servers, encrypted or otherwise.
                     </small>
                 </div>
             </div>

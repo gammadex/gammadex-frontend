@@ -244,7 +244,7 @@ export default class GasPriceChooser extends React.Component {
                                             </tbody>
                                         </table>
 
-                                        <strong>The above costs are a rough guideline only</strong>. Actual gas cost can vary depending on a number of factors, including the token being operated on.
+                                        <strong>The above costs are a rough guideline only</strong>. Actual gas cost can vary depending on the traded Token.
                                         <hr />
 
                                         <form className="form-inline">

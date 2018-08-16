@@ -154,7 +154,6 @@ class PrivateKeyForm extends React.Component {
                         <label className="custom-control-label" htmlFor="rememberKey">Remember for next visit</label>
                         <small class="form-text text-muted">
                             Your selected wallet details will be stored in your browser's local storage. Your Private Key will be <strong>encrypted</strong> using a separate password of your choice. You will be prompted for this password each time you visit GammaDEX.
-                            <br /><br />No sensitive wallet data is transmitted to or stored on GammaDEX servers, encrypted or otherwise.
                         </small>
                     </div>
                 </div>
