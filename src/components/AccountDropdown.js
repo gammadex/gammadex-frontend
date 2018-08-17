@@ -28,6 +28,7 @@ class AccountDropdown extends React.Component {
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
         this.createNewWallet = this.createNewWallet.bind(this)
         this.unlockWallet = this.unlockWallet.bind(this)
+        this.disconnectWallet = this.disconnectWallet.bind(this)
     }
 
     state = {
