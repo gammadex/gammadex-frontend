@@ -18,6 +18,8 @@ import * as EthereumNetworks from "../util/EthereumNetworks"
 import {withRouter} from "react-router-dom"
 import Routes from '../Routes'
 import Etherscan from "../components/CustomComponents/Etherscan"
+import {copyToClipboard} from "../util/Clipboard"
+import Truncated from "./CustomComponents/Truncated"
 
 class AccountDropdown extends React.Component {
     constructor(props) {
@@ -95,13 +97,30 @@ class AccountDropdown extends React.Component {
         })
     }
 
+    getAccountTypeName = (accountType) => {
+        switch (accountType) {
+            case AccountType.METAMASK:
+                return 'Metamask'
+            case AccountType.PRIVATE_KEY:
+                return 'Private key'
+            case AccountType.KEY_STORE_FILE:
+                return 'Key file'
+            case AccountType.LEDGER:
+                return 'Ledger'
+            case AccountType.DEBUG:
+                return 'Debug'
+        }
+
+        return ""
+    }
+
     render() {
         const {account, popoverOpen, selectedAccountType, providedWeb3} = this.state
         const {available, isMainNet, netDescription, accountAvailable} = providedWeb3
         const truncatedAccount = account ? truncate(account, {left: 7, right: 5}) : ""
         const accountOrEmpty = account ? account : ""
         const accountLink = <small><a target="_blank" rel="noopener noreferrer" href={`${Config.getEtherscanUrl()}/address/${accountOrEmpty}`}>{accountOrEmpty}</a></small>
-        const accountTypeName = (selectedAccountType === AccountType.METAMASK ? "MetaMask" : "Wallet")
+        const accountTypeName = this.getAccountTypeName(selectedAccountType)
         const accountImage = account == null ? <i className="fas fa-lg fa-user"></i> : <img width="20" height="20" src={toDataUrl(account)} className="mr-2"/>
         const unlockText = account == null ? "Unlock Wallet" : "Unlock A Different Wallet"
         return (
@@ -115,11 +134,14 @@ class AccountDropdown extends React.Component {
                         <Conditional displayCondition={account != null}>
                             <form>
                                 <div className="dropdown-item disabled">
-                                    <h6><strong>Current wallet address:</strong></h6>
+                                    <div><strong>{accountTypeName} wallet address:</strong></div>
                                     <div className="mb-1">
-                                        <small>{account}</small>
+                                        <Truncated left="7" right="5">{account}</Truncated>
                                         &nbsp;<Etherscan type="address" address={account} display="icon"/></div>
+
+                                    <button className="btn btn-primary btn-sm" onClick={(e) => copyToClipboard(account, e)}><i className="fas fa-copy"></i> Copy address</button>
                                 </div>
+
                                 <div className="dropdown-divider"></div>
                             </form>
                         </Conditional>

@@ -29,6 +29,8 @@ export default class Etherscan extends React.Component {
 
             if (this.props.display === 'truncate') {
                 return <TruncatedAddress>{text}</TruncatedAddress>
+            } else if (this.props.display === 'long-truncate') {
+                return <TruncatedAddress bothSides>{text}</TruncatedAddress>
             }
 
             return text
