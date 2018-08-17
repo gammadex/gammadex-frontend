@@ -4,7 +4,6 @@ import TokenStore from '../stores/TokenStore'
 import TradeHistory from '../components/TradeHistory'
 import * as TokenApi from "../apis/TokenApi"
 import UnlistedTokens from "../components/UnlistedTokens"
-import Trading from "../components/Trading"
 import AccountDetail from '../components/AccountDetail'
 import {withRouter} from "react-router-dom"
 import OpenOrdersAndPendingTrades from "../components/OpenOrdersAndPendingTrades"
@@ -12,6 +11,7 @@ import PlotlyDepthChart from "../components/OrderBook/PlotlyDepthChart"
 import ReactChart from "../components/OrderBook/ReactChart"
 import OrderBox from "../components/OrderPlacement/OrderBox"
 import OrderBook from "../components/OrderBook"
+import Title from "../components/Title"
 
 class Exchange extends Component {
     constructor() {
@@ -49,6 +49,8 @@ class Exchange extends Component {
 
         return (
             <div className="exchange">
+                <Title token={token}/>
+
                 <div className="row exchange-top">
                     <div className="col-lg-3 exchange-left-col main-col">
                         <AccountDetail token={token}/>
