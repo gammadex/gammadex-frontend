@@ -93,5 +93,15 @@ The Services of GammaDEX are provided as is and without any representation of wa
 
 You are responsible for your own account, funds, digital asset wallets, keystore files and private keys. You are responsible for your own trading decisions and the details, mechanics and authenticity of the tokens you trade. GammaDEX is not responsible for your decisions, actions, injury, loss of business, monetary loss or loss of Ether, Ethereum Tokens, other Digital Assets or Tokens that result from using GammaDEX. GammaDEX makes no guarantee about the tokens that you trade using GammaDEX. GammaDEX does not hold your funds, have access to your funds without your authorization and will not offer reimbursement for any losses incurred either directly or indirectly using the Service. While the information contained on GammaDEX is periodically updated, no guarantee is given that the information provided on GammaDEX is correct, complete, or up-to-date. By using GammaDEX, you acknowledge this and agree to these terms. **If you do not want to agree to these Terms of Use, you must stop using the service immediately.**
 
+#### Privacy Policy
+
+Your privacy is very important to us. We will not sell, share, or rent your personal information to any third party, unless required by extraordinary and rare circumstances such as being compelled by law enforcement.
+
+Through using the GammaDEX service or it's Application Programming Interface ("API") either directly or through a third party, we collect information sent to us from your device, computer or any apparatus for accessing the GammaDEX service. This information may include (but is not limited to) your IP address, device specific information, identity information from your device, operating system, location and standard web logging information, such as (but not limited to) your browser type, the pages you view on the website, the actions you perform on the website and the inbound and outbound traffic to and from our website. When you access or use GammaDEX, you must be at least 18 years old. GammaDEX does not intentionally collect information from or about any individual who is under 13 years old.
+
+GammaDEX may update this Privacy Policy at any time and the published or revised date will be shown at the top of this page. You acknowledge and agree that it is your responsibility to review this Privacy Policy periodically and become aware of modifications. Your continued use of the Site following the posting of changes to this policy will be deemed your acceptance of those changes.
+
+By using this service, you understand, acknowledge and accept this Privacy Policy. If you do not agree to this policy, please do not use this service.
+
 `
 export default wording
