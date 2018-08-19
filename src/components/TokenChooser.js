@@ -214,7 +214,7 @@ class TokenChooser extends React.Component {
 
                 <div className="card " style={{"height": containerHeight}}>
                     <div className="card-header">
-                        <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)} style={{"justify-content": "space-between", "width":"100%"}}>
+                        <form className="form-inline" onSubmit={(event) => this.selectTokenIfOnlyOne(event, sortedTokens)} style={{"justifyContent": "space-between", "width":"100%"}}>
                             <BoxTitle title="Tokens"
                                       ids={{'token-chooser-body': 'block', 'token-show-selected-only': 'block', 'token-search-input': 'block'}}
                                       componentId="token-chooser-container"
