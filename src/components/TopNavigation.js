@@ -38,7 +38,7 @@ class TopNavigation extends Component {
         const {token} = this.state
 
         return (
-            <header className="bg-primary text-light header">
+            <header className="text-light header">
                 <div className="upper-header">
                     <div className="logo-and-main-nav full-height-lg">
                         <Link to={Routes.Exchange} className="navbar-brand mb-0"><img className="logo" src={require("../images/gammadex_logo.svg")}/></Link>
