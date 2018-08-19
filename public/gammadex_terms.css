@@ -1,0 +1,59 @@
+:root {
+    --blue: #375a7f;
+    --gray: #999;
+    --gray-dark: #303030;
+    --primary: #375a7f;
+    --secondary: #333;
+    --light: #303030;;
+    --dark: #303030;
+    --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --gray-light: #ced2d5;
+    --background: #222;
+}
+
+body {
+    background:var(--gray-dark);
+    color: var(--gray-light);
+}
+
+#terms {
+    margin: 0 auto;
+    max-width: 66%;
+    font-family: var(--font-family-sans-serif);
+}
+
+#logo {
+    height: 42px;
+}
+
+h1, .h1 {
+    font-size: 2.34375rem;
+  }
+  
+  h2, .h2 {
+    font-size: 1.875rem;
+  }
+  
+  h3, .h3 {
+    font-size: 1.640625rem;
+  }
+  
+  h4, .h4 {
+    font-size: 1.40625rem;
+  }
+  
+  h5, .h5 {
+    font-size: 1.171875rem;
+  }
+  
+  h6, .h6 {
+    font-size: 0.9375rem;
+  }
+
+  .header {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    padding: 4px 6px;
+  }

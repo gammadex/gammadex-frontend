@@ -358,6 +358,26 @@ h1.main-header {
     line-height: 1.4em
 }
 
+.disclaimer {
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 20px;
+    display: block;
+    text-align: center;
+}
+
+#disclaimer-logo {
+    height: 36px;
+}
+
+#disclaimer-content {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    font-size: 120%;
+    line-height: 1.4em;
+}
+
 .popover-header {
     font-weight: bold;
     text-transform: uppercase;

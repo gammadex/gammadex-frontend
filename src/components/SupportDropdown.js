@@ -46,6 +46,8 @@ export default class SupportDropdown extends React.Component {
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/RANPVZ5"><i className="fab fa-discord"></i><span className="support-text">Discord chat</span></a>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i><span className="support-text">Twitter</span></a>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i><span className="support-text">Reddit</span></a>
+                        <div className="dropdown-divider"></div>
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="/terms.html"><i className="fas fa-pen-nib"></i><span className="support-text">Terms of Use</span></a>
                     </PopoverBody>
                 </Popover>
             </li>
