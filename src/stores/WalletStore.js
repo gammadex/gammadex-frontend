@@ -12,7 +12,8 @@ class WalletStore extends EventEmitter {
         selectedDerivationPathSource: "default", // default or custom
         customDerivationPath: "",
         addressPage: 0,
-        addressOffset: null
+        addressOffset: null,
+        connecting: false
     }
 
     constructor() {
@@ -377,6 +378,7 @@ class WalletStore extends EventEmitter {
                 this.ledger.errorName = null
                 this.ledger.errorMessage = null
                 this.ledger.addressOffset = null
+                this.ledger.connecting = true
                 this.emitChange()
                 break
             }
@@ -384,12 +386,14 @@ class WalletStore extends EventEmitter {
                 this.ledger.errorMessage = action.errorMessage
                 this.ledger.errorName = action.errorName
                 this.ledger.accounts = []
+                this.ledger.connecting = false
                 this.emitChange()
                 break
             }
             case ActionNames.WALLET_LEDGER_ACCOUNTS_RETRIEVED: {
                 this.ledger.accounts = action.accounts
                 this.ledger.addressPage = action.page
+                this.ledger.connecting = false
                 this.emitChange()
                 break
             }
