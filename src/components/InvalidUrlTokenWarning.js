@@ -10,6 +10,7 @@ export default class InvalidUrlTokenWarning extends React.Component {
         this.state = {
             invalidTokenIdentifierInUrl: TokenStore.getInvalidTokenIdentifierInUrl(),
             invalidPopoverOpen: false,
+            tokensLoaded: TokenStore.areTokensLoaded(),
         }
 
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
@@ -26,6 +27,7 @@ export default class InvalidUrlTokenWarning extends React.Component {
     onTokenStoreChange() {
         this.setState({
             invalidTokenIdentifierInUrl: TokenStore.getInvalidTokenIdentifierInUrl(),
+            tokensLoaded: TokenStore.areTokensLoaded(),
         })
     }
 
@@ -36,10 +38,10 @@ export default class InvalidUrlTokenWarning extends React.Component {
     }
 
     render() {
-        const {invalidTokenIdentifierInUrl} = this.state
+        const {invalidTokenIdentifierInUrl, tokensLoaded} = this.state
 
         return (
-            <Conditional displayCondition={!!invalidTokenIdentifierInUrl}>
+            <Conditional displayCondition={tokensLoaded && !!invalidTokenIdentifierInUrl}>
                 <div className="alert alert-danger main-warning">Invalid token <span id="unlisted-popover-target" onClick={this.toggleInvalidPopover}><i className="fas fa-question-circle"></i></span></div>
 
                 <Popover className="padded-popover" placement="bottom" isOpen={this.state.invalidPopoverOpen} target={"unlisted-popover-target"} toggle={this.toggleInvalidPopover}>

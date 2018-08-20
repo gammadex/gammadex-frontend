@@ -28,6 +28,10 @@ class TokenStore extends EventEmitter {
         this.unrecognisedTokenCheckError = null
     }
 
+    areTokensLoaded() {
+        return (this.listedTokens || []).length > 2
+    }
+
     getListedTokens() {
         return this.listedTokens
     }
