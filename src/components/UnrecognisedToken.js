@@ -23,7 +23,7 @@ export default class UnrecognisedToken extends React.Component {
         this.onTokenStoreChange = this.onTokenStoreChange.bind(this)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         TokenStore.on("change", this.onTokenStoreChange)
     }
 
@@ -44,6 +44,10 @@ export default class UnrecognisedToken extends React.Component {
     addUnlistedToken = () => {
         const {unrecognisedToken} = this.state
         const tokenToRegister = Object.assign({}, unrecognisedToken, {isUnrecognised: false})
+
+        this.setState({
+            unrecognisedPopoverOpen: false
+        })
 
         TokenActions.addUserToken(tokenToRegister)
     }
@@ -81,7 +85,7 @@ export default class UnrecognisedToken extends React.Component {
                 <Conditional displayCondition={tokensLoaded && displayUnlisted}>
                     <div className="alert alert-secondary main-warning">Unlisted token <span id="unlisted-popover-target" onClick={this.toggleUnlistedPopover}><i className="fas fa-question-circle"></i></span></div>
 
-                    <Popover className="padded-popover" placement="bottom" isOpen={this.state.unlistedPopoverOpen} target={"unlisted-popover-target"} toggle={this.toggleUnlistedPopover}>
+                    <Popover className="padded-popover" placement="bottom" isOpen={this.state.unlistedPopoverOpen} target="unlisted-popover-target" toggle={this.toggleUnlistedPopover}>
                         <PopoverHeader>{selectedTokenSymbol} is not listed on GammaDEX</PopoverHeader>
                         <PopoverBody>
                             <div className="mt-2">You can still trade it but please exercise caution</div>
@@ -94,7 +98,7 @@ export default class UnrecognisedToken extends React.Component {
                 <Conditional displayCondition={tokensLoaded && displayUnrecognised}>
                     <div className="alert alert-warning main-warning">Unrecognized token <span id="unrecognised-popover-target" onClick={this.toggleUnrecognisedPopover}><i className="fas fa-question-circle"></i></span></div>
 
-                    <Popover className="padded-popover" placement="bottom" isOpen={this.state.unrecognisedPopoverOpen} target={"unrecognised-popover-target"} toggle={this.toggleUnrecognisedPopover}>
+                    <Popover className="padded-popover" placement="bottom" isOpen={this.state.unrecognisedPopoverOpen} target="unrecognised-popover-target" toggle={this.toggleUnrecognisedPopover}>
                         <PopoverHeader>Unrecognized token</PopoverHeader>
                         <PopoverBody>
                             <div>
