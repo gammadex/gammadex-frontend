@@ -85,7 +85,6 @@ class TokenChooser extends React.Component {
         } else {
             const newURL = `/exchange/${tokenName}`
             if (newURL !== this.props.history.location.pathname) {
-                setFavourite(Favourites.RECENT_TOKEN, tokenAddress)
                 this.props.history.push(newURL)
             }
         }

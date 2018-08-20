@@ -104,6 +104,7 @@ export default class OrderBox extends React.Component {
                               ids={{'order-box-body':'flex'}}
                     />
 
+
                     <UnrecognisedToken/>
                     <InvalidUrlTokenWarning/>
                 </div>

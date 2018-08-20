@@ -49,7 +49,7 @@ class TokenStats extends React.Component {
 
         const {token} = this.props
         const {serverTickers} = this.state
-        const percentChange = token ? _.pick(serverTickers[token.address.toLowerCase()], ['percentChange'])['percentChange'] : 0.0
+        const percentChange = token ? _.pick(serverTickers[(token.address || '').toLowerCase()], ['percentChange'])['percentChange'] : 0.0
         const {low, high, tokenVolume, ethVolume, last } = this.state.tradeStats
         const [title, contract, name, longName] = token ? [
             `${token.symbol}/ETH`,

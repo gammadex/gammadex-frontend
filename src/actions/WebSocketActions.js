@@ -5,6 +5,8 @@ import AccountStore from '../stores/AccountStore'
 import ActionNames from "./ActionNames"
 import Config from "../Config"
 import OrderFillNotifier from "../OrderFillNotifier"
+import * as WebSocketActions from "./TokenActions"
+import {getTokenFromUrl} from "../stores/UrlUtil"
 
 export function connect() {
     const url = Config.getSocket()
@@ -27,7 +29,7 @@ export function connect() {
                     event,
                 })
 
-                getMarket()
+                initialiseTokensAndGetMarket()
             },
             disconnect: (reason) => {
                 dispatcher.dispatch({
@@ -80,6 +82,15 @@ export function connect() {
                     funds,
                 })
             },
+            tokens: (message) => {
+                dispatcher.dispatch({
+                    type: ActionNames.MESSAGE_RECEIVED_TOKENS,
+                    message,
+                })
+
+                selectUrlToken()
+                getMarket()
+            }
         }
     )
 
@@ -87,6 +98,22 @@ export function connect() {
         type: ActionNames.WEB_SOCKET_CONSTRUCTED,
         url
     })
+}
+
+function selectUrlToken() {
+    const token = TokenStore.getTokenByAddressOrSymbol(getTokenFromUrl())
+    if (token) {
+        WebSocketActions.selectToken(token)
+    }
+}
+
+function initialiseTokensAndGetMarket() {
+    const tokenKnownToBrowser = !!TokenStore.getTokenByAddressOrSymbol(getTokenFromUrl())
+    if (tokenKnownToBrowser) {
+        getMarket()
+    } else {
+        EtherDeltaWebSocket.getTokens()
+    }
 }
 
 export function getMarket(notifyRequested = true) {

@@ -45,6 +45,12 @@ class EtherDeltaWebSocket {
         this.socket.emit('getMarket', message)
     }
 
+    getTokens() {
+        console.log("Requesting list of tokens")
+
+        this.socket.emit('getTokens', {})
+    }
+
     emitOrder(order) {
         const self = this
         return new Promise(function (resolve, reject) {

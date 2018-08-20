@@ -1,11 +1,17 @@
 import dispatcher from "../dispatcher"
 import ActionNames from "./ActionNames"
+import Favourites from "../util/Favourites"
+import {setFavourite} from "../util/FavouritesDao"
 
 export function selectToken(token) {
     dispatcher.dispatch({
         type: ActionNames.SELECT_TOKEN,
         token
     })
+
+    if (token && token.address) {
+        setFavourite(Favourites.RECENT_TOKEN, token.address)
+    }
 }
 
 export function searchToken(search) {

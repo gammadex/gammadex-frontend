@@ -18,10 +18,12 @@ class Ledger extends React.Component {
             customDerivationPath: "",
             addressPage: 0,
             addressOffset: null,
-            accounts: []
+            accounts: [],
+            connecting: false,
         }
 
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
+        this.connectToLedger = this.connectToLedger.bind(this)
     }
 
     componentDidMount() {
@@ -35,7 +37,7 @@ class Ledger extends React.Component {
     onWalletStoreChange() {
         this.setState((prevState, props) => {
             const {
-                accounts, errorName, errorMessage, selectedDerivationPathSource, customDerivationPath, addressPage, addressOffset
+                accounts, errorName, errorMessage, selectedDerivationPathSource, customDerivationPath, addressPage, addressOffset, connecting
             } = WalletStore.getLedger()
 
             return {
@@ -46,12 +48,18 @@ class Ledger extends React.Component {
                 selectedDerivationPathSource: selectedDerivationPathSource,
                 customDerivationPath: customDerivationPath,
                 addressPage: addressPage,
-                addressOffset: addressOffset
+                addressOffset: addressOffset,
+                connecting: connecting
             }
         })
     }
 
-    connectToLedger = (page) => {
+    connectToLedger(page) {
+        const {connectPossible, validCustomDerivationPath} = this.validate()
+        if (! connectPossible) {
+            return
+        }
+
         const derivationPath = this.getDerivationPath(page)
 
         LedgerApi.requestAddresses(derivationPath, page)
@@ -88,13 +96,21 @@ class Ledger extends React.Component {
         return this.getLedgerForm()
     }
 
-    getLedgerForm() {
-        const {
-            accounts, selectedDerivationPathSource, customDerivationPath, addressPage, addressOffset
-        } = this.state
+    validate = () => {
+        const {selectedDerivationPathSource, customDerivationPath, connecting} = this.state
 
         const validCustomDerivationPath = LedgerUtil.isDerivationPathValid(customDerivationPath)
-        const connectPossible = validCustomDerivationPath || selectedDerivationPathSource === "default"
+        const connectPossible = !connecting && (validCustomDerivationPath || selectedDerivationPathSource === "default")
+
+        return {connectPossible, validCustomDerivationPath}
+    }
+
+    getLedgerForm() {
+        const {
+            accounts, selectedDerivationPathSource, customDerivationPath, addressPage, addressOffset, connecting
+        } = this.state
+
+        const {connectPossible, validCustomDerivationPath} = this.validate()
         const connectButtonDisabledClass = connectPossible ? "" : "disabled"
         const customPathValidClass = (selectedDerivationPathSource === "custom" && validCustomDerivationPath) ? " is-valid" : ""
 
@@ -113,12 +129,13 @@ class Ledger extends React.Component {
 
         const errorBlock = this.getErrorBlock()
 
+        const connectingMessage = connecting ? <div className="alert alert-info" role="alert">Connecting to Ledger <i className=" ml-2 fas fa-lg fa-cog fa-spin"/></div> : null
+
         return <div>
             <h4>Use Ledger Wallet</h4>
 
             <h5>Choose HD derivation path</h5>
 
-            <form onSubmit={() => this.connectToLedger(0)}>
             <fieldset>
                 <div className="form-inline">
                     <div className="form-group">
@@ -156,11 +173,9 @@ class Ledger extends React.Component {
             </fieldset>
 
             <div className="form-group">
-                <button href="#" className={"btn btn-primary " + connectButtonDisabledClass}
-                        type="submit"
+                <button className={"btn btn-primary " + connectButtonDisabledClass}
                         onClick={() => this.connectToLedger(0)}>{accounts.length > 0 ? "Reconnect" : "Connect"}</button>
             </div>
-            </form>
 
             <Conditional displayCondition={accounts.length > 0}>
 
@@ -177,7 +192,7 @@ class Ledger extends React.Component {
                             </button>
                         </Conditional>
 
-                        <button className="btn btn-sm"
+                        <button className="btn btn-sm mt-2"
                                 onClick={() => this.connectToLedger(addressPage + 1)}>more accounts
                         </button>
                     </div>
@@ -187,11 +202,13 @@ class Ledger extends React.Component {
 
             <Conditional displayCondition={addressOffset !== null}>
                 <div className="form-group">
-                    <button href="#" className="btn btn-primary" onClick={this.initLedgerAccount}>Use account</button>
+                    <button className="btn btn-primary" onClick={this.initLedgerAccount}>Use account</button>
                 </div>
             </Conditional>
 
             {errorBlock}
+
+            {connectingMessage}
         </div>
     }
 
@@ -215,8 +232,8 @@ class Ledger extends React.Component {
         let text = null
         if (errorName === "TransportError") {
             text = errorMessage
-        } else if (errorName === "TransportStatusError") {
-            text = "Could not connect to Ledger hardware. Please make sure it is plugged in and unlocked then try again."
+        } else if (errorName === "TransportStatusError" || (errorMessage || "").toLowerCase().includes("transport") || (errorName || "").toLowerCase().includes("transport")) {
+            text = <div><div>Could not connect to Ledger hardware. Please make sure it is plugged in and unlocked then try again.</div><div style={{"margin-top":"10px"}}><i>{errorMessage}</i></div></div>
         } else if (refreshError) {
             text = "Sorry, there was a problem. Please try again."
         }
