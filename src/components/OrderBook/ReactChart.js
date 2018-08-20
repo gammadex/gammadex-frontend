@@ -42,7 +42,7 @@ class ReactChart extends Component {
 
     getChartType() {
         if(getFavourite(Favourites.CHART_TYPE) == null || ![ReactChartType.CANDLESTICK, ReactChartType.LINE].includes(getFavourite(Favourites.CHART_TYPE))) {
-            return ReactChartType.CANDLESTICK
+            return ReactChartType.LINE
         } else {
             return getFavourite(Favourites.CHART_TYPE)
         }
