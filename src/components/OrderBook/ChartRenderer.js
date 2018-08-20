@@ -184,9 +184,9 @@ class ChartRenderer extends React.Component {
                 </Chart>
                 <Chart id={2}
                     yExtents={d => d.volume}
-                    height={volumeChartHeight} origin={(w, h) => [0, priceChartHeight + 20]}>
+                    height={volumeChartHeight} origin={(w, h) => [0, priceChartHeight + 30]}>
                     <YAxis axisAt="right" orient="right" ticks={2} tickFormat={format(".3f")}
-                        stroke='#C0C0C0' tickStroke="#C0C0C0" />
+                        stroke='#C0C0C0' tickStroke="#C0C0C0"  />
                     <BarSeries
                         yAccessor={d => d.volume}
                         fill={volumeBarFill}
