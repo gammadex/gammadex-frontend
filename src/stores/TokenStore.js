@@ -98,6 +98,10 @@ class TokenStore extends EventEmitter {
     }
 
     getTokenByAddress(address) {
+        if (! address) {
+            return null
+        }
+
         if (address === Config.getBaseAddress()) {
             return Config.getEnv().defaultPair.base
         } else {
@@ -105,7 +109,25 @@ class TokenStore extends EventEmitter {
         }
     }
 
+    getTokenByAddressOrSymbol(addressOrSymbol) {
+        if (! addressOrSymbol) {
+            return null
+        }
+
+        if (addressOrSymbol === Config.getBaseAddress()) {
+            return Config.getEnv().defaultPair.base
+        } else if(addressOrSymbol.startsWith("0x")) {
+            return _.find(this.getAllTokens(), t => t.address.toLowerCase() === addressOrSymbol.toLowerCase())
+        } else {
+            return _.find(this.getListedTokens(), t => t.symbol.toLowerCase() === addressOrSymbol.toLowerCase())
+        }
+    }
+
     getTokenName(address) {
+        if (! address) {
+            return null
+        }
+
         const token = this.getTokenByAddress(address)
 
         return token ? token.symbol : null
@@ -187,6 +209,22 @@ class TokenStore extends EventEmitter {
                     if (action.message.returnTicker || action.message.tokens) {
                         this.emitChange()
                     }
+                }
+
+                break
+            }
+            case ActionNames.MESSAGE_RECEIVED_TOKENS: {
+                if (action.message) {
+                    if (action.message.tokens) {
+                        CachedTokensDao.saveServerTokensAndVersion(action.message.tokens)
+                        const {list, version} = action.message.tokens
+                        this.listedTokens = list
+                        this.listedTokensVersion = version
+
+                        this._updateAllTokens()
+                    }
+
+                    this.emitChange()
                 }
 
                 break

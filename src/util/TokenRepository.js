@@ -38,11 +38,19 @@ class TokenRepository {
     }
 
     isListedOrUserToken(address) {
+        if (! address) {
+            return null
+        }
+
         return _.some(this.getSystemTokens(), t => t.address.toLowerCase() === address.toLowerCase())
             || _.some(this.getUserTokens(), t => t.address.toLowerCase() === address.toLowerCase())
     }
 
     isListedToken(address) {
+        if (! address) {
+            return null
+        }
+
         return _.some(this.getSystemTokens(), t => t.address.toLowerCase() === address.toLowerCase())
     }
 
