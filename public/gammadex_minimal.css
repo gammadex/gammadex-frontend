@@ -18,11 +18,16 @@ body {
     align-items: center;
     flex-direction: column;
     height:100%;
-    background:var(--gray-dark);
-    color: var(--gray-light);
+    background: #303030;
+    color: #ced2d5;
+    font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-#error {
+body div {
     margin-top:40px;
-    font-family: var(--font-family-monospace);
+}
+
+.browsers a {
+    margin: 20px 20px;
+    color: #375a7f;
 }
