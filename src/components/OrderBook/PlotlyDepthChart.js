@@ -98,7 +98,7 @@ export default class PlotlyDepthChart extends React.Component {
                 //title: 'Cumulative Volume',
             },
             margin: {
-                l: 50,
+                l: 40,
                 r: 20,
                 b: 10,
                 t: 10,
