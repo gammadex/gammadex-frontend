@@ -125,7 +125,7 @@ export default class PlotlyDepthChart extends React.Component {
         return (
             <Box id="order-depth-chart-container" className="chart-component order-depth-chart-component">
                 <div className="card-header">
-                    <BoxTitle title="Order Depth Chart"
+                    <BoxTitle title="Order Depth Chart (ETH)"
                               componentId="order-depth-chart-container"
                     />
                 </div>

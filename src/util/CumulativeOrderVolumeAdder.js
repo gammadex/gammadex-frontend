@@ -30,7 +30,7 @@ export function cumulativeAdd(orders, addType) {
 
     const res = _.reduce(orders, (acc, curr) => {
         let currentPrice = parseFloat(curr.price)
-        let currentVolume = parseFloat(curr.ethAvailableVolume)
+        let currentVolume = parseFloat(curr.ethAvailableVolumeBase)
 
         acc.result.prices.push(currentPrice)
 
