@@ -31,7 +31,7 @@
     </style>
     <title>GammaDEX</title>
     <script>
-        if (window.navigator.userAgent.indexOf('MSIE ') > 0 || window.navigator.userAgent.indexOf('Trident/') > 0) {
+        if (/MSIE |Trident\//.test(window.navigator.userAgent)) {
             window.location = "/error_pages/browser_warning.html"
         }
     </script>
