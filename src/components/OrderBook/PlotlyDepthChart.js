@@ -52,8 +52,8 @@ export default class PlotlyDepthChart extends React.Component {
     }
 
     getDataAndLayout(bids, offers) {
-        const cumulativeBuys = cumulativeAdd(bids)
-        const cumulativeSells = cumulativeAdd(offers)
+        const cumulativeBuys = cumulativeAdd(bids, 'bids')
+        const cumulativeSells = cumulativeAdd(offers, 'offers')
 
         const buyTrace = {
             x: cumulativeBuys.prices,
@@ -87,6 +87,9 @@ export default class PlotlyDepthChart extends React.Component {
                 gridcolor: '#999',
                 showline: false,
                 //title: 'Price',
+                type: 'log',
+                autotick: false,
+                visible: false,
             },
             yaxis: {
                 color: '#999',
@@ -97,7 +100,7 @@ export default class PlotlyDepthChart extends React.Component {
             margin: {
                 l: 50,
                 r: 20,
-                b: 30,
+                b: 10,
                 t: 10,
                 pad: 4
             }, font: {
