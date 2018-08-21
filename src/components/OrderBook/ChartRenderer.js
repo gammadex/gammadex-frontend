@@ -98,10 +98,12 @@ class ChartRenderer extends React.Component {
         const priceChartHeightPct = 0.55
         const priceChartHeight = Math.floor(containerHeight * priceChartHeightPct)
 
-        const volumeChartHeightPct = 0.2
-        const volumeChartHeight = Math.floor(containerHeight * volumeChartHeightPct)
-
         const margin = { left: 20, right: 60, top: 10, bottom: 10 }
+
+        const volumeChartPadding = { top: 10, bottom: 20 }
+        const volumeChartYOffsetFromPriceChart = 40
+
+        const volumeChartHeight = containerHeight - priceChartHeight - margin.top - margin.bottom - volumeChartYOffsetFromPriceChart
 
         const gridHeight = height - margin.top - margin.bottom
         const gridWidth = containerWidth - margin.left - margin.right
@@ -163,7 +165,7 @@ class ChartRenderer extends React.Component {
 
                 <Chart id={1} height={priceChartHeight}
                     yExtents={[d => [d.high, d.low]]}
-                    padding={{ top: 10, bottom: 20 }}
+                    padding={volumeChartPadding}
                 >
                     <YAxis axisAt="right" orient="right" ticks={5} {...yGrid} inverted={true}
                         stroke="#C0C0C0" tickStroke="#C0C0C0" />
@@ -182,9 +184,11 @@ class ChartRenderer extends React.Component {
                     />
 
                 </Chart>
+
                 <Chart id={2}
                     yExtents={d => d.volume}
-                    height={volumeChartHeight} origin={(w, h) => [0, priceChartHeight + 30]}>
+                    height={volumeChartHeight}
+                       origin={(w, h) => [0, priceChartHeight + volumeChartYOffsetFromPriceChart]}>
                     <YAxis axisAt="right" orient="right" ticks={2} tickFormat={format(".3f")}
                         stroke='#C0C0C0' tickStroke="#C0C0C0"  />
                     <BarSeries
