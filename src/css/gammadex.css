@@ -383,6 +383,12 @@ h1.main-header {
     text-transform: uppercase;
 }
 
+.tx-error-detail {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    word-break: break-word;    
+}
+
 .token-creator-form {
     display: flex;
     width: 100%;

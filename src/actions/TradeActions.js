@@ -110,7 +110,7 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                     .then(res => {
                         const error = `Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${order.user}`
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeFailed(amount, tokenName, error), 'danger')
+                            GlobalMessageFormatters.getTestTradeFailed(amount, tokenName), 'warning')
                     })
             }
         })

@@ -7,22 +7,21 @@ export function getApprovalInitiated(amount, type, unit, txHash) {
         <div>
             <div>Generated transaction 1 of 2: Token Approval for {type} of {amount} {unit}</div>
             <div><strong>If using MetaMask please ensure you check and approve the second transaction to complete the token deposit.</strong></div>
-            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+            <div><Etherscan type="tx" address={txHash.toString()} /></div>
         </div>
     )
 }
 
 export function getApprovalFailed(amount, type, unit, error) {
     const ucType = _.capitalize(type)
-    const errorMessage = extractMessage(error)
-    return `Transaction 1 of 2 ${ucType} of ${amount} ${unit} failed ${errorMessage}`
+    return getErrorWithTrace(`Transaction 1 of 2 ${ucType} of ${amount} ${unit} failed`, error)
 }
 
 export function getTransferInitiated(amount, type, unit, txHash) {
     return (
         <div>
             <div>Generated transaction for {type} of {amount} {unit}</div>
-            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+            <div><Etherscan type="tx" address={txHash.toString()} /></div>
         </div>
     )
 }
@@ -31,7 +30,7 @@ export function getTokenTransferInitiated(amount, type, unit, txHash) {
     return (
         <div>
             <div>Generated transaction 2 of 2: Token Transfer for {type} of {amount} {unit}</div>
-            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+            <div><Etherscan type="tx" address={txHash.toString()} /></div>
         </div>
     )
 }
@@ -43,15 +42,14 @@ export function getTransferComplete(amount, type, unit) {
 
 export function getTransferFailed(amount, type, unit, error) {
     const ucType = _.capitalize(type)
-    const errorMessage = extractMessage(error)
-    return `${ucType} of ${amount} ${unit} failed ${errorMessage}`
+    return getErrorWithTrace(`${ucType} of ${amount} ${unit} failed`, error)
 }
 
 export function getCancelInitiated(unit, txHash) {
     return (
         <div>
             <div>Generated transaction for cancel of {unit} order</div>
-            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+            <div><Etherscan type="tx" address={txHash.toString()} /></div>
         </div>
     )
 }
@@ -61,15 +59,14 @@ export function getCancelComplete(unit) {
 }
 
 export function getCancelFailed(unit, error) {
-    const errorMessage = extractMessage(error)
-    return `Cancel open order of ${unit} failed ${errorMessage}`
+    return getErrorWithTrace(`Cancel open order of ${unit} failed`, error)
 }
 
 export function getTradeInitiated(amount, unit, txHash) {
     return (
         <div>
             <div>Generated transaction for trade of {amount} {unit}</div>
-            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+            <div><Etherscan type="tx" address={txHash.toString()} /></div>
         </div>
     )
 }
@@ -79,8 +76,28 @@ export function getTradeComplete(amount, unit) {
 }
 
 export function getTradeFailed(amount, unit, error) {
+    return getErrorWithTrace(`Transaction Failed - Trade of ${amount} ${unit}`, error)
+}
+
+export function getErrorWithTrace(errorTitle, error) {
     const errorMessage = extractMessage(error)
-    return `Trade of ${amount} ${unit} failed ${errorMessage}`
+    const collapseId = `err${Math.random().toString().slice(2)}`
+    return (
+        <div>
+            <div>{errorTitle}</div>
+
+            <button class="btn btn-danger" type="button" data-toggle="collapse" data-target={`#${collapseId}`} aria-expanded="false" aria-controls={collapseId}>
+                Error Details
+            </button>
+            <div class="collapse" id={collapseId}>
+                <div className="tx-error-detail">{errorMessage}</div>
+            </div>
+        </div>
+    )
+}
+
+export function getTestTradeFailed(amount, unit) {
+    return `Transaction not sent - Trade of ${amount} ${unit} is no longer valid`
 }
 
 export function getOrderInitiated(makerSide, unit) {
@@ -118,7 +135,7 @@ export function getOnChainOrderInitiated(makerSide, unit, txHash) {
     return (
         <div>
             <div>Generated transaction for on-chain Order to {makerSide} {unit}</div>
-            <div><Etherscan type="tx" address={txHash.toString()}/></div>
+            <div><Etherscan type="tx" address={txHash.toString()} /></div>
         </div>
     )
 }
@@ -128,8 +145,7 @@ export function getOnChainOrderComplete(makerSide, unit) {
 }
 
 export function getOnChainOrderFailed(makerSide, unit, error) {
-    const errorMessage = extractMessage(error)
-    return `On-chain Order to ${makerSide} ${unit} failed ${errorMessage}`
+    return getErrorWithTrace(`On-chain Order to ${makerSide} ${unit} failed`, error)
 }
 
 function extractMessage(error) {
@@ -142,11 +158,11 @@ export function metamaskNetworkWarning(netDescription, mainNetDescription) {
     return (
         <span>
             <div>
-                <h3><i className="fas fa-exclamation-triangle"/> MetaMask is connected to the {netDescription}
+                <h3><i className="fas fa-exclamation-triangle" /> MetaMask is connected to the {netDescription}
                 </h3>
             </div>
             <div>
-            If you wish to use MetaMask as your wallet, please connect to the {mainNetDescription}
+                If you wish to use MetaMask as your wallet, please connect to the {mainNetDescription}
             </div>
         </span>
     )
@@ -156,11 +172,11 @@ export function metamaskDisconnectionWarning() {
     return (
         <span>
             <div>
-                <h3><i className="fas fa-exclamation-triangle"/> MetaMask disconnected
+                <h3><i className="fas fa-exclamation-triangle" /> MetaMask disconnected
                 </h3>
             </div>
             <div>
-            Please check your network connection
+                Please check your network connection
             </div>
         </span>
     )
