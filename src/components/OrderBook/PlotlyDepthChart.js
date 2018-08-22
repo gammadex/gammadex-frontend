@@ -83,9 +83,9 @@ export default class PlotlyDepthChart extends React.Component {
             dragmode: 'zoom',
             showlegend: false,
             xaxis: {
-                color: '#aaa',
-                gridcolor: '#aaa',
-                linecolor: '#aaa',
+                color: '#9B9B9B',
+                gridcolor: '#9B9B9B',
+                linecolor: '#9B9B9B',
                 showline: true,
                 //title: 'Price',
                 type: 'log',
@@ -96,9 +96,9 @@ export default class PlotlyDepthChart extends React.Component {
                 linewidth: 1,
             },
             yaxis: {
-                color: '#aaa',
-                gridcolor: '#aaa',
-                linecolor: '#aaa',
+                color: '#9B9B9B',
+                gridcolor: '#9B9B9B',
+                linecolor: '#9B9B9B',
                 zeroline: false,
                 //title: 'Cumulative Volume',
                 //showline: false,
@@ -109,7 +109,7 @@ export default class PlotlyDepthChart extends React.Component {
             },
             margin: {
                 l: 15,
-                r: 55,
+                r: 60,
                 b: 20,
                 t: 10,
                 pad: 4
