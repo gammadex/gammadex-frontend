@@ -52,8 +52,8 @@ export default class PlotlyDepthChart extends React.Component {
     }
 
     getDataAndLayout(bids, offers) {
-        const cumulativeBuys = cumulativeAdd(bids)
-        const cumulativeSells = cumulativeAdd(offers)
+        const cumulativeBuys = cumulativeAdd(bids, 'bids')
+        const cumulativeSells = cumulativeAdd(offers, 'offers')
 
         const buyTrace = {
             x: cumulativeBuys.prices,
@@ -83,21 +83,34 @@ export default class PlotlyDepthChart extends React.Component {
             dragmode: 'zoom',
             showlegend: false,
             xaxis: {
-                color: '#999',
-                gridcolor: '#999',
-                showline: false,
+                color: '#9B9B9B',
+                gridcolor: '#9B9B9B',
+                linecolor: '#9B9B9B',
+                showline: true,
                 //title: 'Price',
+                type: 'log',
+                autotick: false,
+                visible: true,
+                showgrid: false,
+                zeroline: false,
+                linewidth: 1,
             },
             yaxis: {
-                color: '#999',
-                gridcolor: '#999',
-                showline: false,
+                color: '#9B9B9B',
+                gridcolor: '#9B9B9B',
+                linecolor: '#9B9B9B',
+                zeroline: false,
                 //title: 'Cumulative Volume',
+                //showline: false,
+                side: 'right',
+                showline: true,
+                showgrid: false,
+                linewidth: 1,
             },
             margin: {
-                l: 50,
-                r: 20,
-                b: 30,
+                l: 15,
+                r: 60,
+                b: 20,
                 t: 10,
                 pad: 4
             }, font: {
@@ -122,7 +135,7 @@ export default class PlotlyDepthChart extends React.Component {
         return (
             <Box id="order-depth-chart-container" className="chart-component order-depth-chart-component">
                 <div className="card-header">
-                    <BoxTitle title="Order Depth Chart"
+                    <BoxTitle title="Order Depth Chart (ETH)"
                               componentId="order-depth-chart-container"
                     />
                 </div>

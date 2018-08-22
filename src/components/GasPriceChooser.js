@@ -169,7 +169,7 @@ export default class GasPriceChooser extends React.Component {
                             <Box>
                                 <BoxSection>
 
-                                    <span className={"badge " + badgeType} style={{ "padding": "7px", "width": "100%", "fontSize": "100%", "verticalAlign": "middle", "line-height" :  "1.225em" }}>Balance: {availableEth} ETH <br />Enough gas for {walletBalanceEth !== "0" ? 'approx.' : ''} {availableTrades} trades</span>
+                                    <span className={"badge " + badgeType} style={{ "padding": "7px", "width": "100%", "fontSize": "100%", "verticalAlign": "middle", "lineHeight" :  "1.225em" }}>Balance: {availableEth} ETH <br />Enough gas for {walletBalanceEth !== "0" ? 'approx.' : ''} {availableTrades} trades</span>
                                     &nbsp;&nbsp;
 
                                     <div className="row">
