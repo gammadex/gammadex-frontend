@@ -82,12 +82,14 @@ export function getTradeFailed(amount, unit, error) {
 export function getErrorWithTrace(errorTitle, error) {
     const errorMessage = extractMessage(error)
     const collapseId = `err${Math.random().toString().slice(2)}`
+
+
     return (
         <div>
             <div>{errorTitle}</div>
 
-            <button class="btn btn-danger" type="button" data-toggle="collapse" data-target={`#${collapseId}`} aria-expanded="false" aria-controls={collapseId}>
-                Error Details
+            <button class="btn btn-danger btn-link text-white ml-0 p-0 text-underline" type="button" data-toggle="collapse" data-target={`#${collapseId}`} aria-expanded="false" aria-controls={collapseId}>
+                view error details
             </button>
             <div class="collapse" id={collapseId}>
                 <div className="tx-error-detail">{errorMessage}</div>
