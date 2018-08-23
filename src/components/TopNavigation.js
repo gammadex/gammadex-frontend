@@ -9,6 +9,7 @@ import TokenStats from "./TokenStats"
 import MarketResponseSpinner from "./MarketResponseSpinner"
 import AccountDropdown from "./AccountDropdown"
 import SupportDropdown from "./SupportDropdown"
+import ClickThrottle from "./CustomComponents/ClickThrottle"
 
 class TopNavigation extends Component {
     constructor() {
@@ -34,6 +35,10 @@ class TopNavigation extends Component {
         }))
     }
 
+    someAction = () => {
+        console.log("Whoohooooooooooooooooooooooooooo")
+    }
+
     render() {
         const {token} = this.state
 
@@ -50,6 +55,11 @@ class TopNavigation extends Component {
                                 </li>
                                 <li className="nav-item">
                                     <Link to={Routes.History} className="nav-link">History</Link>
+                                </li>
+                                <li>
+                                    <ClickThrottle>
+                                        <button onClick={this.someAction}>test button</button>
+                                    </ClickThrottle>
                                 </li>
                             </ul>
                         </nav>
