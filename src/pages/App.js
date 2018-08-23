@@ -15,6 +15,7 @@ import SplashScreen from "./SplashScreen"
 import GlobalMessages from "../components/GlobalMessages"
 import '../css/bootstrap.css'
 import '../css/gammadex.css'
+import ClickThrottle from "../components/CustomComponents/ClickThrottle"
 
 class App extends Component {
     constructor(props) {
@@ -56,6 +57,7 @@ class App extends Component {
 
         return (
             <HashRouter hashType="hashbang">
+                <ClickThrottle>
                 <div className="page-content">
                     <TopNavigation/>
                     {contents}
@@ -63,6 +65,7 @@ class App extends Component {
                     <GreetingLoginModals/>
                     <GlobalMessages/>
                 </div>
+                </ClickThrottle>
             </HashRouter>
         )
 
