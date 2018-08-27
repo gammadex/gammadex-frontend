@@ -1,0 +1,4 @@
+export default {
+    CREATE_WALLET: "CREATE_WALLET",
+    UNLOCK_WALLET: "UNLOCK_WALLET"
+}

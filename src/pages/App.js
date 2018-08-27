@@ -8,6 +8,7 @@ import Exchange from './Exchange'
 import Wallets from './Wallets'
 import History from './History'
 import NewWallet from './NewWallet'
+import UserGuide from './UserGuide'
 import Debug from './Debug'
 import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
@@ -51,6 +52,7 @@ class App extends Component {
                 <Route path={Routes.Wallets} exact component={Wallets}/>
                 <Route path={Routes.NewWallet} exact component={NewWallet}/>
                 <Route path={Routes.History} exact component={History}/>
+                <Route path={Routes.UserGuide} exact component={UserGuide}/>
                 <Route path={Routes.Debug} exact component={Debug}/>
             </div>
         }

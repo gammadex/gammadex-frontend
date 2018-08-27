@@ -587,6 +587,30 @@ input[type="number"] {
     padding: 0px var(--main-padding);
 }
 
+.user-guide-menu-container {
+    padding-top: 20px;
+    font-size: 14px;
+    line-height: 1.825em;    
+}
+
+.user-guide-detail-container {
+    padding-top: 20px;
+    font-size: 14px;
+    line-height: 1.425em;    
+}
+
+.user-guide-detail-container p {
+    margin-top: 20px;
+}
+
+.user-guide-detail-container h4 {
+    margin-bottom: 20px;
+}
+
+.user-guide-create-new-wallet-image {
+    margin-bottom: 20px;
+}
+
 /* history page layout */
 
 .history-row {

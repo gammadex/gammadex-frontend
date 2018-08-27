@@ -3,6 +3,7 @@ const Routes = {
     Wallets: "/wallets/",
     NewWallet: "/new-wallet/",
     History: "/history/",
+    UserGuide: "/user-guide/",
     Debug: "/debug/"
 }
 
