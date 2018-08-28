@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { Box, BoxSection } from "./CustomComponents/Box"
 import { withRouter } from "react-router-dom"
 import CreateWallet from "./UserGuide/CreateWallet"
-import UnlockWallet from "./UserGuide/UnlockWallet"
+import UnlockMetaMaskWallet from "./UserGuide/UnlockMetaMaskWallet"
+import UnlockPrivateKeyWallet from "./UserGuide/UnlockPrivateKeyWallet"
 import UserGuideType from "./UserGuide/UserGuideType"
 
 class UserGuideChooser extends Component {
@@ -35,7 +36,8 @@ class UserGuideChooser extends Component {
                             <div className="user-guide-menu-container">
                                 <ul>
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.CREATE_WALLET, e)}>Create a new wallet</a></li>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_WALLET, e)}>Unlock an existing wallet</a></li>
+                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</a></li>
+                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -55,8 +57,10 @@ class UserGuideChooser extends Component {
             panel = <div>&nbsp;</div>
         } else if (selectedUserGuideType === UserGuideType.CREATE_WALLET) {
             panel = <CreateWallet/>
-        } else if (selectedUserGuideType === UserGuideType.UNLOCK_WALLET) {
-            panel = <UnlockWallet/>
+        } else if (selectedUserGuideType === UserGuideType.UNLOCK_METAMASK) {
+            panel = <UnlockMetaMaskWallet/>
+        } else if (selectedUserGuideType === UserGuideType.UNLOCK_PRIVATE_KEY) {
+            panel = <UnlockPrivateKeyWallet/>
         }
 
         return panel
