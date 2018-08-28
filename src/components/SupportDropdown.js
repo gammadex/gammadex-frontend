@@ -19,9 +19,16 @@ import {withRouter} from "react-router-dom"
 import Routes from '../Routes'
 import Etherscan from "../components/CustomComponents/Etherscan"
 
-export default class SupportDropdown extends React.Component {
+class SupportDropdown extends React.Component {
     state = {
         popoverOpen: false,
+    }
+
+    howToGuides(event) {
+        this.togglePopover(event)
+        if (Routes.UserGuide !== this.props.history.location.pathname) {
+            this.props.history.push(Routes.UserGuide)
+        }
     }
 
     togglePopover = (event) => {
@@ -47,8 +54,10 @@ export default class SupportDropdown extends React.Component {
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i><span className="support-text">Twitter</span></a>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i><span className="support-text">Reddit</span></a>
                         <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="/terms.html"><i className="fas fa-pen-nib"></i><span className="support-text">Terms of Use</span></a>
+                        <a className="dropdown-item" onClick={(event) => this.howToGuides(event)}><i className="fas fa-graduation-cap"></i><span className="support-text">How-to Guides</span></a>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://etherscan.io/address/0x8d12a197cb00d4747a1fe03395095ce2a5cc6819"><i className="fas fa-code-branch"></i><span className="support-text">Smart Contract</span></a>
+                        <div className="dropdown-divider"></div>
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="/terms.html"><i className="fas fa-pen-nib"></i><span className="support-text">Terms of Use</span></a>
                     </PopoverBody>
                 </Popover>
             </li>
@@ -56,3 +65,5 @@ export default class SupportDropdown extends React.Component {
     }
 
 }
+
+export default withRouter(SupportDropdown)
