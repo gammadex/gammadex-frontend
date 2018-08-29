@@ -7,7 +7,6 @@ class UnlockPrivateKeyWallet extends Component {
             <div className="user-guide-detail-container">
                 <h4>Unlock wallet using a Private Key</h4>
                 <img className="user-guide-image" src="/user_guide/unlock-private-key.gif" />
-                <p>Ensure your <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/">MetaMask</a> Extension is unlocked and connected to the Main Ethereum Network.</p>
                 {clickPersonIcon()}
                 <p>Click [ <i className="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;Unlock Wallet ]</p>
                 <p>Click [ Private Key ]</p>
