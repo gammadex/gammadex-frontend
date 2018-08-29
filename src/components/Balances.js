@@ -30,11 +30,24 @@ export default class Balances extends React.Component {
     componentWillMount() {
         BalancesStore.on("change", this.updateBalances)
         AccountStore.on("change", this.updateAccount)
+
+        if (this.state.account) {
+            WebSocketActions.getTokenBalances(this.state.account)
+        }
     }
 
     componentWillUnmount() {
         BalancesStore.removeListener("change", this.updateBalances)
         AccountStore.removeListener("change", this.updateAccount)
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const prevAccount = prevState.account
+        const account = this.state.account
+
+        if (account && prevAccount !== account && !this.state.refreshInProgress) {
+            setTimeout(() => WebSocketActions.getTokenBalances(this.state.account), 1)
+        }
     }
 
     updateAccount() {
@@ -154,12 +167,12 @@ export default class Balances extends React.Component {
     }
 
     applyValueFiltering(balances) {
-        const ethThreshold = new BigNumber("0.0005")
+        const ethThreshold = new BigNumber("0.001")
 
         const {filterLowValueBalances} = this.state
 
         return balances.filter(b => {
-            const showAllBalances = (! filterLowValueBalances)
+            const showAllBalances = (!filterLowValueBalances)
             const largeWalletBalance = new BigNumber(String(b.walletBalanceEth || "0")).isGreaterThan(ethThreshold)
             const largeExchangeBalance = new BigNumber(String(b.exchangeBalanceEth || "0")).isGreaterThan(ethThreshold)
 
