@@ -50,7 +50,10 @@ class TopNavigation extends Component {
                                     <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to={Routes.History} className="nav-link">History</Link>
+                                    <Link to={Routes.History} className="nav-link">My History</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to={Routes.Balances} className="nav-link">My Balances</Link>
                                 </li>
                             </ul>
                         </nav>

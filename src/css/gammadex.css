@@ -611,6 +611,16 @@ input[type="number"] {
     margin-bottom: 20px;
 }
 
+/* all balances page layout */
+
+.all-balances-component {
+    height:100%;
+}
+
+.all-balances-component .card {
+    height: 100%;
+}
+
 /* history page layout */
 
 .history-row {
@@ -720,6 +730,10 @@ input[type="number"] {
 
 .market-trades-component {
     height: 100%
+}
+
+.all-balances-component {
+
 }
 
 .exchange-middle-col {
@@ -1376,7 +1390,7 @@ body {
 
     .open-orders-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
     .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component,
-    .history-component {
+    .history-component, .all-balances-component {
         height: 42px;
         min-height: 42px;
         max-height: 42px;

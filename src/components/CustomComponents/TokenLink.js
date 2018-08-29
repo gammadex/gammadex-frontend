@@ -16,7 +16,13 @@ class TokenLink extends React.Component {
     }
 
     onTokenSelect() {
-        const newURL = this.tokenName ? `/exchange/${this.tokenName}` : `/exchange/${this.props.tokenAddress}`
+        let newURL = this.tokenName ? `/exchange/${this.tokenName}` : `/exchange/${this.props.tokenAddress}`
+        if (this.props.linkByName === true) {
+            newURL = `/exchange/${this.tokenName}`
+        } else if (this.props.linkByName === false) {
+            newURL = `/exchange/${this.props.tokenAddress}`
+        }
+
         if (newURL !== this.props.history.location.pathname) {
             this.props.history.push(newURL)
         }
@@ -37,7 +43,8 @@ class TokenLink extends React.Component {
 TokenLink.propTypes = {
     tokenAddress: PropTypes.string.isRequired,
     tokenName: PropTypes.string,
-    pair: PropTypes.bool
+    pair: PropTypes.bool,
+    linkByName: PropTypes.bool,
 }
 
 export default withRouter(TokenLink)

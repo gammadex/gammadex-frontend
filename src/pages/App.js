@@ -17,6 +17,7 @@ import GlobalMessages from "../components/GlobalMessages"
 import '../css/bootstrap.css'
 import '../css/gammadex.css'
 import ClickThrottle from "../components/CustomComponents/ClickThrottle"
+import Balances from "../components/Balances"
 
 class App extends Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class App extends Component {
                 <Route path={Routes.History} exact component={History}/>
                 <Route path={Routes.UserGuide} exact component={UserGuide}/>
                 <Route path={Routes.Debug} exact component={Debug}/>
+                <Route path={Routes.Balances} exact component={Balances}/>
             </div>
         }
 
