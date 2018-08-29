@@ -53,7 +53,7 @@ class App extends Component {
                 <Route path={Routes.NewWallet} exact component={NewWallet}/>
                 <Route path={Routes.History} exact component={History}/>
                 <Route path={Routes.UserGuide} exact component={UserGuide}/>
-                <Route path={Routes.Debug} exact component={Debug}/>
+                <Route path={Routes.Debug + "*"} exact component={Debug}/>
             </div>
         }
 

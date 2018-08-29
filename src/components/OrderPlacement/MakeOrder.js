@@ -196,6 +196,7 @@ export default class MakeOrder extends React.Component {
         } = this.state
 
         return !orderValid
+            || AccountStore.selectedAccountType === AccountType.DEBUG
             || orderHasPriceWarning
             || total === ""
             || safeBigNumber(total).isZero()

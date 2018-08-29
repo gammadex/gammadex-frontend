@@ -29,6 +29,7 @@ class AccountDropdown extends React.Component {
         this.createNewWallet = this.createNewWallet.bind(this)
         this.unlockWallet = this.unlockWallet.bind(this)
         this.disconnectWallet = this.disconnectWallet.bind(this)
+        this.viewWallet = this.viewWallet.bind(this)
     }
 
     state = {
@@ -82,6 +83,14 @@ class AccountDropdown extends React.Component {
         if (Routes.NewWallet !== this.props.history.location.pathname) {
             this.props.history.push(Routes.NewWallet)
         }
+        this.closePopover()
+    }
+
+    viewWallet() {
+        if (Routes.Debug !== this.props.history.location.pathname) {
+            this.props.history.push(Routes.Debug)
+        }
+
         this.closePopover()
     }
 
@@ -148,6 +157,7 @@ class AccountDropdown extends React.Component {
                         </Conditional>
                         <button className="dropdown-item clickable" type="button" onClick={this.unlockWallet}><i className="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;{unlockText}</button>
                         <button className="dropdown-item clickable" type="button" onClick={this.createNewWallet}><i className="fas fa-plus text-muted"></i>&nbsp;&nbsp;Create New Wallet</button>
+                        <button className="dropdown-item clickable" type="button" onClick={this.viewWallet}><i className="fas fa-eye text-muted"></i>&nbsp;&nbsp;View Wallet</button>
                         <Conditional displayCondition={account != null}>
                             <div className="dropdown-divider"></div>
                             <button className="dropdown-item clickable" type="button" onClick={this.disconnectWallet}><i className="fas fa-sign-out-alt text-muted"></i>&nbsp;&nbsp;Disconnect</button>

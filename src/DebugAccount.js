@@ -7,13 +7,18 @@ import AccountType from "./AccountType"
 import {withRouter} from "react-router-dom"
 import * as WalletDao from "./util/WalletDao"
 
+function genState(props) {
+    const account = (props && props.match && props.match.params && props.match.params[0]) ? props.match.params[0] : ""
+    return {
+        account,
+        valid: EthJsUtil.isValidAddress(account)
+    }
+}
+
 class DebugAccount extends Component {
-    constructor() {
-        super()
-        this.state = {
-            account: "",
-            valid: false,
-        }
+    constructor(props) {
+        super(props)
+        this.state = genState(props)
     }
 
     accountChanged = (event) => {
@@ -31,7 +36,7 @@ class DebugAccount extends Component {
 
         if (valid) {
             EtherDeltaWeb3.initForPrivateKey(account, "")
-            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, this.props.history)
+            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.DEBUG, this.props.history)
             WalletDao.saveDebugWallet(account)
             this.props.history.push("/")
         }
