@@ -54,7 +54,6 @@ class BalancesStore extends EventEmitter {
     handleActions(action) {
         switch (action.type) {
             case ActionNames.MESSAGE_REQUESTED_TOKEN_BALANCES: {
-                this._clearState()
                 this.refreshInProgress = true
                 this.emitChange()
                 break

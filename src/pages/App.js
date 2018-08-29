@@ -17,7 +17,7 @@ import GlobalMessages from "../components/GlobalMessages"
 import '../css/bootstrap.css'
 import '../css/gammadex.css'
 import ClickThrottle from "../components/CustomComponents/ClickThrottle"
-import Balances from "../components/Balances"
+import Balances from "../pages/Balances"
 
 class App extends Component {
     constructor(props) {

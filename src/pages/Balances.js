@@ -1,15 +1,16 @@
 import React from "react"
 import AccountStore from "../stores/AccountStore"
 import BalancesStore from "../stores/BalancesStore"
-import Download from "./CustomComponents/Download"
+import Download from "../components/CustomComponents/Download"
 import * as WebSocketActions from "../actions/WebSocketActions"
 import * as TokenBalancesActions from "../actions/TokenBalancesActions"
-import RefreshButton from "./CustomComponents/RefreshButton"
-import Scroll from "./CustomComponents/Scroll"
-import {BoxTitle} from "./CustomComponents/Box"
-import BalancesTable from "./Balances/BalancesTable"
+import RefreshButton from "../components/CustomComponents/RefreshButton"
+import Scroll from "../components/CustomComponents/Scroll"
+import {BoxTitle} from "../components/CustomComponents/Box"
+import BalancesTable from "../components/Balances/BalancesTable"
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
+import EmptyTableMessage from "../components/CustomComponents/EmptyTableMessage"
 
 export default class Balances extends React.Component {
     constructor(props) {
@@ -85,6 +86,7 @@ export default class Balances extends React.Component {
         const filteredBalances = this.applyValueFiltering(this.getFilteredBalances())
         const csvContent = this.toCsv(filteredBalances)
         const disabledClass = (!filteredBalances || filteredBalances.length === 0) ? 'disabled' : ''
+        let content = this.getTableContent(filteredBalances)
 
         return (
             <div id="all-balances-container" className="all-balances-component">
@@ -117,11 +119,27 @@ export default class Balances extends React.Component {
                         </div>
                     </div>
                     <Scroll>
-                        <BalancesTable balances={filteredBalances} sort={sort}/>
+                        {content}
                     </Scroll>
                 </div>
             </div>
         )
+    }
+
+    getTableContent(filteredBalances) {
+        const {account, refreshInProgress, sort, balances} = this.state
+
+        let content = <EmptyTableMessage>You have no token balances</EmptyTableMessage>
+        if (balances.length === 0 && refreshInProgress) {
+            content = <EmptyTableMessage>Checking token balances</EmptyTableMessage>
+        }
+        if (!account) {
+            content = <EmptyTableMessage>Please unlock a wallet to see your token balances</EmptyTableMessage>
+        } else if (balances && balances.length > 0) {
+            content = <BalancesTable balances={filteredBalances} sort={sort}/>
+        }
+
+        return content
     }
 
     getFilteredBalances() {
