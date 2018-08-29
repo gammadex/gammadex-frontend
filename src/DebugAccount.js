@@ -19,6 +19,7 @@ class DebugAccount extends Component {
     constructor(props) {
         super(props)
         this.state = genState(props)
+        this.selectAccount()
     }
 
     accountChanged = (event) => {

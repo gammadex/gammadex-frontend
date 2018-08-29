@@ -17,7 +17,7 @@ export function initAccounts() {
     } else if (WalletDao.isWalletSaved(AccountType.DEBUG)) {
         const address = WalletDao.readWallet().data.address
         EtherDeltaWeb3.initForPrivateKey(address, "")
-        return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY)
+        return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.DEBUG)
     } else {
         LifeCycleActions.web3Initialised()
         EtherDeltaWeb3.initForAnonymous()
