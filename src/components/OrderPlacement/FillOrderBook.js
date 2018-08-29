@@ -166,7 +166,7 @@ export default class FillOrderBook extends React.Component {
         const { balanceRetrieved } = this.props
         const { fillOrder } = this.state
 
-        return !fillOrder.fillAmountValid || !balanceRetrieved || AccountStore.selectedAccountType === AccountType.DEBUG
+        return !fillOrder.fillAmountValid || !balanceRetrieved || AccountStore.selectedAccountType === AccountType.VIEW
     }
 
     toggleExchangeFeePopOver = () => {

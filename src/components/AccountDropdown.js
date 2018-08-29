@@ -87,8 +87,8 @@ class AccountDropdown extends React.Component {
     }
 
     viewWallet() {
-        if (Routes.Debug !== this.props.history.location.pathname) {
-            this.props.history.push(Routes.Debug)
+        if (Routes.View !== this.props.history.location.pathname) {
+            this.props.history.push(Routes.View)
         }
 
         this.closePopover()
@@ -117,8 +117,8 @@ class AccountDropdown extends React.Component {
                 return 'Key file'
             case AccountType.LEDGER:
                 return 'Ledger'
-            case AccountType.DEBUG:
-                return 'Debug'
+            case AccountType.VIEW:
+                return 'View'
         }
 
         return ""

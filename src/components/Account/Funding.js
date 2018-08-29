@@ -245,7 +245,7 @@ export default class Funding extends React.Component {
     }
 
     disableFundingAction(fundingState) {
-        return fundingState === FundingState.EMPTY || fundingState === FundingState.ERROR || AccountStore.selectedAccountType === AccountType.DEBUG
+        return fundingState === FundingState.EMPTY || fundingState === FundingState.ERROR || AccountStore.selectedAccountType === AccountType.VIEW
     }
 
     fundingActionValid(fundingState) {

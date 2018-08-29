@@ -15,7 +15,7 @@ function genState(props) {
     }
 }
 
-class DebugAccount extends Component {
+class ViewAccountSelector extends Component {
     constructor(props) {
         super(props)
         this.state = genState(props)
@@ -37,8 +37,8 @@ class DebugAccount extends Component {
 
         if (valid) {
             EtherDeltaWeb3.initForPrivateKey(account, "")
-            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.DEBUG, this.props.history)
-            WalletDao.saveDebugWallet(account)
+            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.VIEW, this.props.history)
+            WalletDao.saveViewOnlyWallet(account)
             this.props.history.push("/")
         }
     }
@@ -50,7 +50,7 @@ class DebugAccount extends Component {
         const validClass = valid ? "is-valid" : ""
 
         return (
-            <Box title="Debug an account">
+            <Box title="View an account">
                 <BoxSection>
                     <div className="form-group">
                         <input className={"form-control " + validClass}
@@ -70,4 +70,4 @@ class DebugAccount extends Component {
     }
 }
 
-export default withRouter(DebugAccount)
+export default withRouter(ViewAccountSelector)

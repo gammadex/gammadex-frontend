@@ -35,7 +35,7 @@ export default class OpenOrdersRow extends React.Component {
         }
 
         const cancelOrderButton =
-            <button className={"btn btn-danger btn-tiny"} disabled={isPendingCancel || AccountStore.selectedAccountType === AccountType.DEBUG}
+            <button className={"btn btn-danger btn-tiny"} disabled={isPendingCancel || AccountStore.selectedAccountType === AccountType.VIEW}
                 onClick={this.cancelOrder}><i className="fas fa-times" />
             </button>
             

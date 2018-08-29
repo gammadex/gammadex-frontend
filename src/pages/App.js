@@ -9,7 +9,7 @@ import Wallets from './Wallets'
 import History from './History'
 import NewWallet from './NewWallet'
 import UserGuide from './UserGuide'
-import Debug from './Debug'
+import ViewAccount from './ViewAccount'
 import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
 import SplashScreen from "./SplashScreen"
@@ -53,7 +53,7 @@ class App extends Component {
                 <Route path={Routes.NewWallet} exact component={NewWallet}/>
                 <Route path={Routes.History} exact component={History}/>
                 <Route path={Routes.UserGuide} exact component={UserGuide}/>
-                <Route path={Routes.Debug + "*"} exact component={Debug}/>
+                <Route path={Routes.View + "*"} exact component={ViewAccount}/>
             </div>
         }
 
