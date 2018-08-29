@@ -7,6 +7,7 @@ import RefreshButton from "./CustomComponents/RefreshButton"
 import Scroll from "./CustomComponents/Scroll"
 import {BoxTitle} from "./CustomComponents/Box"
 import BalancesTable from "./Balances/BalancesTable"
+import _ from 'lodash'
 
 export default class Balances extends React.Component {
     constructor(props) {
@@ -59,10 +60,10 @@ export default class Balances extends React.Component {
     }
 
     render() {
-        const {account, balances, refreshInProgress, sort} = this.state
-
-        const csvContent = {}
-        const disabledClass = (! balances || balances.length === 0) ?  'disabled' : ''
+        const {account, refreshInProgress, sort} = this.state
+        const filteredBalances = this.getFilteredBalances()
+        const csvContent = this.toCsv(filteredBalances)
+        const disabledClass = (!filteredBalances || filteredBalances.length === 0) ? 'disabled' : ''
 
         return (
             <div id="all-balances-container" className="all-balances-component">
@@ -84,10 +85,53 @@ export default class Balances extends React.Component {
                         </div>
                     </div>
                     <Scroll>
-                        <BalancesTable balances={balances} sort={sort}/>
+                        <BalancesTable balances={filteredBalances} sort={sort}/>
                     </Scroll>
                 </div>
             </div>
         )
     }
+
+    getFilteredBalances() {
+        const {balances, filter} = this.state
+
+        if (filter && filter.length > 0) {
+            return balances.filter(b => {
+                const row = _.join(_.values(b.token), '::::')
+                const keep = row.includes(filter)
+
+                return keep
+            })
+        } else {
+            return balances
+        }
+    }
+
+    toCsv(balances) {
+        const header = ["Token Symbol", "Token Name", "Wallet Balance","Wallet Balance ETH","Wallet Balance USD",
+            "Exchange Balance","Exchange Balance ETH","Exchange Balance USD","Token Address" ].join(",")
+
+        const content = balances.map(b => {
+            return [
+                b.token.symbol,
+                b.token.name,
+                b.walletBalance,
+                b.walletBalanceEth,
+                b.walletBalanceUsd,
+                b.exchangeBalance,
+                b.exchangeBalanceEth,
+                b.exchangeBalanceUsd,
+                b.token.address
+            ].map(x => {
+                if (_.isString(x)) {
+                    return x.replace(",", "")
+                } else {
+                    return x
+                }
+            }).join(",")
+        })
+
+        return [header, ...content].join("\r\n")
+    }
+
 }

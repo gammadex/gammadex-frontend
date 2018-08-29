@@ -30,15 +30,15 @@ export default class BalancesTable extends React.Component {
                 <table className="table table-bordered">
                     <thead>
                     <tr>
-                        <th>Token symbol {this.sorter(TokenBalanceSort.SYMBOL)}</th>
-                        <th>Token name {this.sorter(TokenBalanceSort.NAME)}</th>
-                        <th>Wallet balance {this.sorter(TokenBalanceSort.WALLET_BALANCE)}</th>
-                        <th>ETH {this.sorter(TokenBalanceSort.WALLET_BALANCE_ETH)}</th>
-                        <th>USD {this.sorter(TokenBalanceSort.WALLET_BALANCE_USD)}</th>
-                        <th>Exchange balance {this.sorter(TokenBalanceSort.EXCHANGE)}</th>
-                        <th>ETH {this.sorter(TokenBalanceSort.EXCHANGE_ETH)}</th>
-                        <th>USD {this.sorter(TokenBalanceSort.EXCHANGE_USD)}</th>
-                        <th>Token address {this.sorter(TokenBalanceSort.TOKEN_ADDRESS)}</th>
+                        {this.sorter("Token Symbol", TokenBalanceSort.SYMBOL)}
+                        {this.sorter("Token Name", TokenBalanceSort.NAME)}
+                        {this.sorter("Wallet Balance", TokenBalanceSort.WALLET_BALANCE)}
+                        {this.sorter("ETH", TokenBalanceSort.WALLET_BALANCE_ETH)}
+                        {this.sorter("USD", TokenBalanceSort.WALLET_BALANCE_USD)}
+                        {this.sorter("Exchange Balance", TokenBalanceSort.EXCHANGE)}
+                        {this.sorter("ETH", TokenBalanceSort.EXCHANGE_ETH)}
+                        {this.sorter("USD", TokenBalanceSort.EXCHANGE_USD)}
+                        {this.sorter("Token Address", TokenBalanceSort.TOKEN_ADDRESS)}
                     </tr>
                     </thead>
                     <tbody>
@@ -49,13 +49,14 @@ export default class BalancesTable extends React.Component {
         )
     }
 
-    sorter = (column) => {
+    sorter = (colText, column) => {
         const {sort} = this.props
         const [sortColumn, sortOrder] = sort
 
         const sortClass = sortColumn === column ? (sortOrder === "asc" ? "fas fa-sort-up" : "fas fa-sort-down") : "fas fa-sort"
         const onClickOrder = (sortColumn === column && sortOrder === "asc") ? "desc" : "asc"
+        const sortFunc = () => this.onSort(column, onClickOrder)
 
-        return <span className={"clickable " + sortClass} onClick={() => this.onSort(column, onClickOrder)}/>
+        return <th><span className="clickable" onClick={sortFunc}>{colText} </span><span className={"clickable " + sortClass} onClick={sortFunc}/></th>
     }
 }
