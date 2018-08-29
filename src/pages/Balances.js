@@ -83,7 +83,7 @@ export default class Balances extends React.Component {
 
     render() {
         const {account, refreshInProgress, sort, filterLowValueBalances} = this.state
-        const filteredBalances = this.applyValueFiltering(this.getFilteredBalances())
+        const filteredBalances = this.ensureEthTokenIsFirst(this.applyValueFiltering(this.getFilteredBalances()))
         const csvContent = this.toCsv(filteredBalances)
         const disabledClass = (!filteredBalances || filteredBalances.length === 0) ? 'disabled' : ''
         let content = this.getTableContent(filteredBalances)
@@ -196,5 +196,24 @@ export default class Balances extends React.Component {
 
             return showAllBalances || largeWalletBalance || largeExchangeBalance
         })
+    }
+
+    ensureEthTokenIsFirst(balances) {
+        let eth = balances.filter(b => b.token.address === '0x0000000000000000000000000000000000000000')
+        if (balances.length > 0 && eth.length === 0) {
+            eth = [{
+                token: {
+                    symbol: 'ETH',
+                    name: 'Ethereum',
+                    address: null
+                },
+                walletBalance: 0,
+                exchangeBalance: 0
+            }]
+        }
+
+        const nonEth = balances.filter(b => b.token.address !== '0x0000000000000000000000000000000000000000')
+
+        return [...eth, ...nonEth]
     }
 }
