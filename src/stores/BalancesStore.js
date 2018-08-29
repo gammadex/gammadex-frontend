@@ -1,8 +1,10 @@
-import { EventEmitter } from "events"
+import {EventEmitter} from "events"
 import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import TokenBalanceSort from "../TokenBalanceSort"
 import _ from 'lodash'
+import {filterLowValueBalances} from "../actions/TokenBalancesActions"
+import * as FavouritesDao from "../util/FavouritesDao"
 
 class BalancesStore extends EventEmitter {
     constructor() {
@@ -15,13 +17,14 @@ class BalancesStore extends EventEmitter {
         this.updateBalancesWithPrices = this.updateBalancesWithPrices.bind(this)
         this.sortColumn = TokenBalanceSort.SYMBOL
         this.sortOrder = TokenBalanceSort.SYMBOL
+        this.ethereumPriceUsd = null
+        this.filterLowValue = FavouritesDao.getFavourite('filterLowValueBalances', true)
     }
 
     _clearState() {
         this.refreshInProgress = false
         this.balances = []
         this.lastUpdateTime = null
-        this.ethereumPriceUsd = null
     }
 
     getBalances() {
@@ -38,6 +41,10 @@ class BalancesStore extends EventEmitter {
 
     getSort() {
         return [this.sortColumn, this.sortOrder]
+    }
+
+    isFilterLowValue() {
+        return this.filterLowValue
     }
 
     emitChange() {
@@ -85,19 +92,24 @@ class BalancesStore extends EventEmitter {
             }
             case ActionNames.ETHEREUM_PRICE_RETRIEVED: {
                 if (action.ethereumPriceUsd) {
-                    this.ethereumPriceUsd =  action.ethereumPriceUsd
+                    this.ethereumPriceUsd = action.ethereumPriceUsd
                 }
                 this.emitChange()
                 break
             }
             case ActionNames.TOKEN_BALANCE_SORT: {
-                this.sortColumn =  action.sortColumn
-                this.sortOrder =  action.sortOrder
+                this.sortColumn = action.sortColumn
+                this.sortOrder = action.sortOrder
                 this.sortBalances()
                 this.emitChange()
                 break
             }
-
+            case ActionNames.TOKEN_BALANCE_FILTER_LOW_VALUE: {
+                this.filterLowValue = action.filterLowValue
+                FavouritesDao.setFavourite('filterLowValueBalances', action.filterLowValue)
+                this.emitChange()
+                break
+            }
         }
     }
 
@@ -106,7 +118,7 @@ class BalancesStore extends EventEmitter {
             if (b.lastPrice) {
                 const walletBalanceEth = b.lastPrice * b.walletBalance
                 const walletBalanceUsd = (walletBalanceEth && this.ethereumPriceUsd) ? walletBalanceEth * this.ethereumPriceUsd : null
-                const exchangeBalanceEth =  b.lastPrice * b.exchangeBalance
+                const exchangeBalanceEth = b.lastPrice * b.exchangeBalance
                 const exchangeBalanceUsd = (b.exchangeBalance && this.ethereumPriceUsd) ? exchangeBalanceEth * this.ethereumPriceUsd : null
 
                 return Object.assign({}, b, {

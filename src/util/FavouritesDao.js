@@ -1,4 +1,5 @@
 import Config from '../Config'
+import _ from 'lodash'
 
 function key(name) {
     return Config.getReactEnv() + '.' + name
@@ -11,8 +12,15 @@ export function getFavouritesFromLocalStorage() {
     return {}
 }
 
-export function getFavourite(propName) {
-    return getFavouritesFromLocalStorage()[propName]
+export function getFavourite(propName, defaultValue) {
+    const favourites = getFavouritesFromLocalStorage()
+
+    if (! _.isUndefined(favourites[propName])) {
+        return favourites[propName]
+    } else if (! _.isUndefined(defaultValue)) {
+        setFavourite(propName, defaultValue)
+        return defaultValue
+    }
 }
 
 export function setFavourite(propName, propVal) {

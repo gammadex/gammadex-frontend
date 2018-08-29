@@ -3,11 +3,13 @@ import AccountStore from "../stores/AccountStore"
 import BalancesStore from "../stores/BalancesStore"
 import Download from "./CustomComponents/Download"
 import * as WebSocketActions from "../actions/WebSocketActions"
+import * as TokenBalancesActions from "../actions/TokenBalancesActions"
 import RefreshButton from "./CustomComponents/RefreshButton"
 import Scroll from "./CustomComponents/Scroll"
 import {BoxTitle} from "./CustomComponents/Box"
 import BalancesTable from "./Balances/BalancesTable"
 import _ from 'lodash'
+import BigNumber from 'bignumber.js'
 
 export default class Balances extends React.Component {
     constructor(props) {
@@ -18,6 +20,7 @@ export default class Balances extends React.Component {
             account: AccountStore.getAccountState().account,
             refreshInProgress: BalancesStore.isRefreshInProgress(),
             sort: BalancesStore.getSort(),
+            filterLowValueBalances: BalancesStore.isFilterLowValue(),
         }
 
         this.updateBalances = this.updateBalances.bind(this)
@@ -45,6 +48,7 @@ export default class Balances extends React.Component {
             balances: BalancesStore.getBalances(),
             refreshInProgress: BalancesStore.isRefreshInProgress(),
             sort: BalancesStore.getSort(),
+            filterLowValueBalances: BalancesStore.isFilterLowValue(),
         })
     }
 
@@ -59,9 +63,13 @@ export default class Balances extends React.Component {
         this.setState({filter})
     }
 
+    handleHideLowValueTokens = (event) => {
+        TokenBalancesActions.filterLowValueBalances(event.target.checked)
+    }
+
     render() {
-        const {account, refreshInProgress, sort} = this.state
-        const filteredBalances = this.getFilteredBalances()
+        const {account, refreshInProgress, sort, filterLowValueBalances} = this.state
+        const filteredBalances = this.applyValueFiltering(this.getFilteredBalances())
         const csvContent = this.toCsv(filteredBalances)
         const disabledClass = (!filteredBalances || filteredBalances.length === 0) ? 'disabled' : ''
 
@@ -72,6 +80,17 @@ export default class Balances extends React.Component {
                         <BoxTitle title="My Token Balances"
                                   componentId="all-balances-container"
                         />
+
+                        <div className="custom-control custom-checkbox my-1 mr-lg-2 no-mobile">
+                            <input type="checkbox"
+                                   className="custom-control-input"
+                                   id="hideLowValueTokensCheckbox"
+                                   onChange={this.handleHideLowValueTokens}
+                                   value="true"
+                                   checked={filterLowValueBalances}
+                            />
+                            <label className="custom-control-label center-label" htmlFor="hideLowValueTokensCheckbox">Hide low balances</label>
+                        </div>
 
                         <div className="form-inline all-balances-search">
                             <input placeholder="Search" className={"form-control  mr-2 " + disabledClass}
@@ -97,8 +116,8 @@ export default class Balances extends React.Component {
 
         if (filter && filter.length > 0) {
             return balances.filter(b => {
-                const row = _.join(_.values(b.token), '::::')
-                const keep = row.includes(filter)
+                const row = _.join(_.values(b.token), '::::').toLowerCase()
+                const keep = row.includes(filter.toLowerCase())
 
                 return keep
             })
@@ -108,8 +127,8 @@ export default class Balances extends React.Component {
     }
 
     toCsv(balances) {
-        const header = ["Token Symbol", "Token Name", "Wallet Balance","Wallet Balance ETH","Wallet Balance USD",
-            "Exchange Balance","Exchange Balance ETH","Exchange Balance USD","Token Address" ].join(",")
+        const header = ["Token Symbol", "Token Name", "Wallet Balance", "Wallet Balance ETH", "Wallet Balance USD",
+            "Exchange Balance", "Exchange Balance ETH", "Exchange Balance USD", "Token Address"].join(",")
 
         const content = balances.map(b => {
             return [
@@ -134,4 +153,17 @@ export default class Balances extends React.Component {
         return [header, ...content].join("\r\n")
     }
 
+    applyValueFiltering(balances) {
+        const ethThreshold = new BigNumber("0.0005")
+
+        const {filterLowValueBalances} = this.state
+
+        return balances.filter(b => {
+            const showAllBalances = (! filterLowValueBalances)
+            const largeWalletBalance = new BigNumber(String(b.walletBalanceEth || "0")).isGreaterThan(ethThreshold)
+            const largeExchangeBalance = new BigNumber(String(b.exchangeBalanceEth || "0")).isGreaterThan(ethThreshold)
+
+            return showAllBalances || largeWalletBalance || largeExchangeBalance
+        })
+    }
 }

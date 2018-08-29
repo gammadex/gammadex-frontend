@@ -96,7 +96,6 @@ export function connect() {
                 if (message.status === 'error') {
                     TokenBalancesActions.tokenBalancesFailed()
                 } else {
-                    console.log("tokenBalances message", JSON.stringify(message))
                     TokenBalancesActions.tokenBalancesRetrieved(message)
                 }
             }

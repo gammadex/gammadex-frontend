@@ -27,3 +27,10 @@ export function tokenBalancesSort(sortColumn, sortOrder) {
         sortOrder
     })
 }
+
+export function filterLowValueBalances(filterOrNot) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_BALANCE_FILTER_LOW_VALUE,
+        filterLowValue: filterOrNot
+    })
+}
