@@ -10,6 +10,7 @@ import MarketResponseSpinner from "./MarketResponseSpinner"
 import AccountDropdown from "./AccountDropdown"
 import SupportDropdown from "./SupportDropdown"
 import ClickThrottle from "./CustomComponents/ClickThrottle"
+import TokenBalancesSpinner from "./TokenBalancesSpinner"
 
 class TopNavigation extends Component {
     constructor() {
@@ -63,6 +64,7 @@ class TopNavigation extends Component {
 
                     <div className="user-buttons full-height-lg">
                         <MarketResponseSpinner/>
+                        <TokenBalancesSpinner/>
                         <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav navbar-right mr-auto">
                                 <SupportDropdown/>
