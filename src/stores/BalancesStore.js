@@ -89,6 +89,11 @@ class BalancesStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.RETRIEVING_ACCOUNT: {
+                this._clearState()
+                this.emitChange()
+                break
+            }
             case ActionNames.ETHEREUM_PRICE_RETRIEVED: {
                 if (action.ethereumPriceUsd) {
                     this.ethereumPriceUsd = action.ethereumPriceUsd
