@@ -31,12 +31,13 @@ class TokenLink extends React.Component {
     render() {
         const {tokenName, tokenAddress, tokenIdentifier} = this.props
         const tokenId = tokenName ? tokenName : tokenIdentifier
+        const className = this.props.className || ''
 
         if (tokenId === 'ETH') {
             return <span>ETH</span>
         }
 
-        return <span className='clickable' onClick={this.onTokenSelect}>{tokenId}{this.props.pair ? '/ETH' : ''}</span>
+        return <span className={'clickable ' + className} onClick={this.onTokenSelect}>{tokenId}{this.props.pair ? '/ETH' : ''}</span>
     }
 }
 
@@ -45,6 +46,7 @@ TokenLink.propTypes = {
     tokenName: PropTypes.string,
     pair: PropTypes.bool,
     linkByName: PropTypes.bool,
+    className: PropTypes.string
 }
 
 export default withRouter(TokenLink)

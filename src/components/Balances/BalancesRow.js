@@ -2,6 +2,7 @@ import React from "react"
 import Round from "../../components/CustomComponents/Round"
 import Etherscan from "../CustomComponents/Etherscan"
 import Truncated from "../CustomComponents/Truncated"
+import TokenLink from "../CustomComponents/TokenLink"
 
 export default class BalancesRow extends React.Component {
     render() {
@@ -12,7 +13,7 @@ export default class BalancesRow extends React.Component {
 
         return (
             <tr className={refreshClass}>
-                <td>{token.symbol}</td>
+                <td><TokenLink tokenName={token.symbol} tokenAddress={token.address} linkByName={token.isListed} className="btn-link"/></td>
                 <td><Truncated left={25} right="0">{token.name}</Truncated></td>
                 <td><Round softZeros>{walletBalance}</Round></td>
                 <td><Round softZeros suffix=" ETH">{walletBalanceEth}</Round></td>
