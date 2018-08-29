@@ -22,6 +22,18 @@ class ViewAccountSelector extends Component {
         this.selectAccount()
     }
 
+    componentDidUpdate(prevProps) {
+        const pState = genState(prevProps)
+        const cState = genState(this.props)
+
+        if (pState.account !== cState.account) {
+            this.setState(cState)
+            if (cState.valid) {
+                this.switchAccount(cState.account)
+            }
+        }
+    }
+
     accountChanged = (event) => {
         const account = event.target.value
         const valid = EthJsUtil.isValidAddress(account)
@@ -32,14 +44,17 @@ class ViewAccountSelector extends Component {
         })
     }
 
+    switchAccount(account) {
+        EtherDeltaWeb3.initForPrivateKey(account, "")
+        AccountApi.refreshAccountThenEthAndTokBalance(AccountType.VIEW, this.props.history)
+        WalletDao.saveViewOnlyWallet(account)
+        this.props.history.push("/")
+    }
+
     selectAccount = () => {
         const {account, valid} = this.state
-
         if (valid) {
-            EtherDeltaWeb3.initForPrivateKey(account, "")
-            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.VIEW, this.props.history)
-            WalletDao.saveViewOnlyWallet(account)
-            this.props.history.push("/")
+            this.switchAccount(account)
         }
     }
 
