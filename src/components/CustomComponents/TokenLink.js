@@ -16,9 +16,9 @@ class TokenLink extends React.Component {
     }
 
     onTokenSelect() {
-        let newURL = this.tokenName ? `/exchange/${this.tokenName}` : `/exchange/${this.props.tokenAddress}`
+        let newURL = this.props.tokenName ? `/exchange/${this.props.tokenName}` : `/exchange/${this.props.tokenAddress}`
         if (this.props.linkByName === true) {
-            newURL = `/exchange/${this.tokenName}`
+            newURL = `/exchange/${this.props.tokenName}`
         } else if (this.props.linkByName === false) {
             newURL = `/exchange/${this.props.tokenAddress}`
         }
