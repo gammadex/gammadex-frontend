@@ -1443,12 +1443,12 @@ body {
         z-index: 100;
     }
 
-    .history-search {
+    .history-search, .all-balances-search {
         display: flex;
         justify-content: flex-end;
     }
 
-    .history-search input {
+    .history-search input, .all-balances-search input {
         width: 20vw;
     }
 

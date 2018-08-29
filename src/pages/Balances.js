@@ -108,7 +108,7 @@ export default class Balances extends React.Component {
                         </div>
 
                         <div className="form-inline all-balances-search">
-                            <input placeholder="Search" className={"form-control  mr-2 " + disabledClass}
+                            <input placeholder="Search" className={"form-control mr-2 " + disabledClass}
                                    onChange={this.filterChanged}/>
                             <Download fileName="balances.csv" contents={csvContent} mimeType="text/csv"
                                       className={"btn btn-primary btn-sm mr-2 " + disabledClass}><i
