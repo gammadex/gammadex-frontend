@@ -23,7 +23,7 @@ export default class BalancesRow extends React.Component {
                 <td><Round softZeros>{exchangeBalance}</Round></td>
                 <td><Round softZeros suffix=" ETH">{exchangeBalanceEth}</Round></td>
                 <td><Round softZeros decimals={2} prefix="$">{exchangeBalanceUsd}</Round></td>
-                <td><Conditional displayCondition={!!token.address}><Etherscan type="address" display="long-truncate">{token.address}</Etherscan>&nbsp;<Etherscan type="address" display="icon">{token.address}</Etherscan></Conditional></td>
+                <td><Conditional displayCondition={!!token.address && token.address !== '0x0000000000000000000000000000000000000000'}><Etherscan type="address" display="long-truncate">{token.address}</Etherscan>&nbsp;<Etherscan type="address" display="icon">{token.address}</Etherscan></Conditional></td>
             </tr>
         )
     }
