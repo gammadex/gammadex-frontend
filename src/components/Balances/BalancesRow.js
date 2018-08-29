@@ -20,7 +20,7 @@ export default class BalancesRow extends React.Component {
                 <td><Round softZeros>{exchangeBalance}</Round></td>
                 <td><Round softZeros suffix=" ETH">{exchangeBalanceEth}</Round></td>
                 <td><Round softZeros decimals={2} prefix="$">{exchangeBalanceUsd}</Round></td>
-                <td><Etherscan type="address" display="long-truncate" tab="code">{token.address}</Etherscan>&nbsp;<Etherscan type="address" display="icon">{token.address}</Etherscan></td>
+                <td><Etherscan type="address" display="long-truncate">{token.address}</Etherscan>&nbsp;<Etherscan type="address" display="icon">{token.address}</Etherscan></td>
             </tr>
         )
     }
