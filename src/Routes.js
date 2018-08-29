@@ -4,7 +4,8 @@ const Routes = {
     NewWallet: "/new-wallet/",
     History: "/history/",
     UserGuide: "/user-guide/",
-    View: "/view/"
+    View: "/view/",
+    Balances: "/balances/"
 }
 
 export default Routes

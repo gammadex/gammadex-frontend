@@ -16,7 +16,13 @@ class TokenLink extends React.Component {
     }
 
     onTokenSelect() {
-        const newURL = this.tokenName ? `/exchange/${this.tokenName}` : `/exchange/${this.props.tokenAddress}`
+        let newURL = this.tokenName ? `/exchange/${this.tokenName}` : `/exchange/${this.props.tokenAddress}`
+        if (this.props.linkByName === true) {
+            newURL = `/exchange/${this.tokenName}`
+        } else if (this.props.linkByName === false) {
+            newURL = `/exchange/${this.props.tokenAddress}`
+        }
+
         if (newURL !== this.props.history.location.pathname) {
             this.props.history.push(newURL)
         }
@@ -25,19 +31,22 @@ class TokenLink extends React.Component {
     render() {
         const {tokenName, tokenAddress, tokenIdentifier} = this.props
         const tokenId = tokenName ? tokenName : tokenIdentifier
+        const className = this.props.className || ''
 
         if (tokenId === 'ETH') {
             return <span>ETH</span>
         }
 
-        return <span className='clickable' onClick={this.onTokenSelect}>{tokenId}{this.props.pair ? '/ETH' : ''}</span>
+        return <span className={'clickable ' + className} onClick={this.onTokenSelect}>{tokenId}{this.props.pair ? '/ETH' : ''}</span>
     }
 }
 
 TokenLink.propTypes = {
     tokenAddress: PropTypes.string.isRequired,
     tokenName: PropTypes.string,
-    pair: PropTypes.bool
+    pair: PropTypes.bool,
+    linkByName: PropTypes.bool,
+    className: PropTypes.string
 }
 
 export default withRouter(TokenLink)

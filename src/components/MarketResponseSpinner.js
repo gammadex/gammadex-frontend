@@ -3,8 +3,9 @@ import WebSocketStore from "../stores/WebSocketStore"
 import AccountStore from "../stores/AccountStore"
 import OpenOrdersStore from "../stores/OpenOrdersStore"
 import Spinner from "./CustomComponents/Spinner"
+import {withRouter} from "react-router-dom"
 
-export default class MarketResponseSpinner extends React.Component {
+class MarketResponseSpinner extends React.Component {
     constructor(props) {
         super()
 
@@ -13,6 +14,7 @@ export default class MarketResponseSpinner extends React.Component {
         }
 
         this.updateMarketResponseState = this.updateMarketResponseState.bind(this)
+        this.onExchangePage = this.onExchangePage.bind(this)
     }
 
     componentWillMount() {
@@ -29,9 +31,17 @@ export default class MarketResponseSpinner extends React.Component {
         })
     }
 
+    onExchangePage() {
+        const path = this.props.location ? this.props.location.pathname : ''
+        return path.includes('/exchange/')
+    }
+
     render() {
         const {isMarketResponseReceived} = this.state
 
-        return isMarketResponseReceived ? null : <Spinner/>
+        return isMarketResponseReceived || (! this.onExchangePage()) ? null : <Spinner/>
     }
 }
+
+
+export default withRouter(MarketResponseSpinner)

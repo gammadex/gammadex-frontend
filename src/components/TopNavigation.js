@@ -10,6 +10,7 @@ import MarketResponseSpinner from "./MarketResponseSpinner"
 import AccountDropdown from "./AccountDropdown"
 import SupportDropdown from "./SupportDropdown"
 import ClickThrottle from "./CustomComponents/ClickThrottle"
+import TokenBalancesSpinner from "./TokenBalancesSpinner"
 
 class TopNavigation extends Component {
     constructor() {
@@ -50,7 +51,10 @@ class TopNavigation extends Component {
                                     <Link to={Routes.Exchange} className="nav-link">Exchange</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to={Routes.History} className="nav-link">History</Link>
+                                    <Link to={Routes.History} className="nav-link">My History</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to={Routes.Balances} className="nav-link">My Balances</Link>
                                 </li>
                             </ul>
                         </nav>
@@ -60,6 +64,7 @@ class TopNavigation extends Component {
 
                     <div className="user-buttons full-height-lg">
                         <MarketResponseSpinner/>
+                        <TokenBalancesSpinner/>
                         <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav navbar-right mr-auto">
                                 <SupportDropdown/>
