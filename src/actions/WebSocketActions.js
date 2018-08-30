@@ -7,6 +7,7 @@ import Config from "../Config"
 import OrderFillNotifier from "../OrderFillNotifier"
 import * as WebSocketActions from "./TokenActions"
 import {getTokenFromUrl} from "../stores/UrlUtil"
+import * as TokenBalancesActions from "./TokenBalancesActions"
 
 export function connect() {
     const url = Config.getSocket()
@@ -90,6 +91,13 @@ export function connect() {
 
                 selectUrlToken()
                 getMarket()
+            },
+            tokenBalances: (message) => {
+                if (message.status === 'error') {
+                    TokenBalancesActions.tokenBalancesFailed()
+                } else {
+                    TokenBalancesActions.tokenBalancesRetrieved(message)
+                }
             }
         }
     )
@@ -127,5 +135,12 @@ export function getMarket(notifyRequested = true) {
             })
         }
         EtherDeltaWebSocket.getMarket(tokenAddress, account, TokenStore.getListedTokensVersion())
+    }
+}
+
+export function getTokenBalances(account) {
+    if (account) {
+        EtherDeltaWebSocket.getTokenBalances(account)
+        TokenBalancesActions.sentGetTokenBalances()
     }
 }

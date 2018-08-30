@@ -51,9 +51,9 @@ export function saveMetamaskWallet() {
     localStorage.wallet = JSON.stringify(wallet)
 }
 
-export function saveDebugWallet(address) {
+export function saveViewOnlyWallet(address) {
     const wallet = {
-        type: AccountType.DEBUG,
+        type: AccountType.VIEW,
         data: {
             address,
         }

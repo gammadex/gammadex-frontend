@@ -7,12 +7,30 @@ import AccountType from "./AccountType"
 import {withRouter} from "react-router-dom"
 import * as WalletDao from "./util/WalletDao"
 
-class DebugAccount extends Component {
-    constructor() {
-        super()
-        this.state = {
-            account: "",
-            valid: false,
+function genState(props) {
+    const account = (props && props.match && props.match.params && props.match.params[0]) ? props.match.params[0] : ""
+    return {
+        account,
+        valid: EthJsUtil.isValidAddress(account)
+    }
+}
+
+class ViewAccountSelector extends Component {
+    constructor(props) {
+        super(props)
+        this.state = genState(props)
+        this.selectAccount()
+    }
+
+    componentDidUpdate(prevProps) {
+        const pState = genState(prevProps)
+        const cState = genState(this.props)
+
+        if (pState.account !== cState.account) {
+            this.setState(cState)
+            if (cState.valid) {
+                this.switchAccount(cState.account)
+            }
         }
     }
 
@@ -26,14 +44,17 @@ class DebugAccount extends Component {
         })
     }
 
+    switchAccount(account) {
+        EtherDeltaWeb3.initForPrivateKey(account, "")
+        AccountApi.refreshAccountThenEthAndTokBalance(AccountType.VIEW, this.props.history)
+        WalletDao.saveViewOnlyWallet(account)
+        this.props.history.push("/")
+    }
+
     selectAccount = () => {
         const {account, valid} = this.state
-
         if (valid) {
-            EtherDeltaWeb3.initForPrivateKey(account, "")
-            AccountApi.refreshAccountThenEthAndTokBalance(AccountType.PRIVATE_KEY, this.props.history)
-            WalletDao.saveDebugWallet(account)
-            this.props.history.push("/")
+            this.switchAccount(account)
         }
     }
 
@@ -44,7 +65,7 @@ class DebugAccount extends Component {
         const validClass = valid ? "is-valid" : ""
 
         return (
-            <Box title="Debug an account">
+            <Box title="View an account">
                 <BoxSection>
                     <div className="form-group">
                         <input className={"form-control " + validClass}
@@ -64,4 +85,4 @@ class DebugAccount extends Component {
     }
 }
 
-export default withRouter(DebugAccount)
+export default withRouter(ViewAccountSelector)

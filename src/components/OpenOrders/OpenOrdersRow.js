@@ -1,7 +1,4 @@
 import React from "react"
-import Config from '../../Config'
-import { Button } from "reactstrap"
-import OrderState from "../../OrderState"
 import OrderSide from "../../OrderSide"
 import Date from "../CustomComponents/Date"
 import Round from "../CustomComponents/Round"
@@ -10,11 +7,12 @@ import TokenRepository from "../../util/TokenRepository"
 import * as OpenOrderApi from "../../apis/OpenOrderApi"
 import { tokenAddress, makerSide, tokenAmountWei } from "../../OrderUtil"
 import { tokWeiToEth, safeBigNumber } from "../../EtherConversion"
+import AccountStore from "../../stores/AccountStore"
+import AccountType from "../../AccountType"
 
 export default class OpenOrdersRow extends React.Component {
-    constructor(props) {
-        super(props)
-
+    constructor() {
+        super()
         this.cancelOrder = this.cancelOrder.bind(this)
     }
 
@@ -37,7 +35,7 @@ export default class OpenOrdersRow extends React.Component {
         }
 
         const cancelOrderButton =
-            <button className={"btn btn-danger btn-tiny"} disabled={isPendingCancel}
+            <button className={"btn btn-danger btn-tiny"} disabled={isPendingCancel || AccountStore.selectedAccountType === AccountType.VIEW}
                 onClick={this.cancelOrder}><i className="fas fa-times" />
             </button>
             

@@ -9,7 +9,7 @@ import Wallets from './Wallets'
 import History from './History'
 import NewWallet from './NewWallet'
 import UserGuide from './UserGuide'
-import Debug from './Debug'
+import ViewAccount from './ViewAccount'
 import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
 import SplashScreen from "./SplashScreen"
@@ -17,6 +17,7 @@ import GlobalMessages from "../components/GlobalMessages"
 import '../css/bootstrap.css'
 import '../css/gammadex.css'
 import ClickThrottle from "../components/CustomComponents/ClickThrottle"
+import Balances from "../pages/Balances"
 
 class App extends Component {
     constructor(props) {
@@ -53,7 +54,8 @@ class App extends Component {
                 <Route path={Routes.NewWallet} exact component={NewWallet}/>
                 <Route path={Routes.History} exact component={History}/>
                 <Route path={Routes.UserGuide} exact component={UserGuide}/>
-                <Route path={Routes.Debug} exact component={Debug}/>
+                <Route path={Routes.View + "*"} exact component={ViewAccount}/>
+                <Route path={Routes.Balances} exact component={Balances}/>
             </div>
         }
 

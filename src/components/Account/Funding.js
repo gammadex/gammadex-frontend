@@ -1,33 +1,21 @@
 import React from "react"
-import _ from "lodash"
-import {TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, FormText, ModalBody, Modal, ModalFooter} from 'reactstrap'
-import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
-import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
-import OrderBookStore from "../../stores/OrderBookStore"
-import TradeStore from "../../stores/TradeStore"
+import {Button, Alert, ModalBody, Modal, ModalFooter} from 'reactstrap'
+import {BoxSection} from "../CustomComponents/Box"
 import AccountStore from "../../stores/AccountStore"
 import GasPriceStore from "../../stores/GasPriceStore"
 import FundingStore from "../../stores/FundingStore"
 import NumericInput from "../OrderPlacement/NumericInput"
-import {priceOf, isTakerSell} from "../../OrderUtil.js"
-import OrderSide from "../../OrderSide"
 import AccountType from "../../AccountType"
-import OrderEntryField from "../../OrderEntryField"
-import * as TradeActions from "../../actions/TradeActions"
 import * as FundingActions from "../../actions/FundingActions"
-import Config from "../../Config"
-import Conditional from "../CustomComponents/Conditional"
 import GasPriceChooser from "../GasPriceChooser"
-import {OperationCosts} from "../../ContractOperations"
 import {gweiToEth, safeBigNumber} from "../../EtherConversion"
 import FundingModalType from "./FundingModalType"
 import FundingState from "./FundingState"
-import {findBin} from "plotly.js/src/lib";
 import Round from "../CustomComponents/Round"
 
 export default class Funding extends React.Component {
-    constructor(props) {
-        super(props)
+    constructor() {
+        super()
         this.state = {
             accountState: {},
             currentGasPriceWei: null,
@@ -188,7 +176,7 @@ export default class Funding extends React.Component {
         FundingActions.abortFundingAction()
     }
 
-    confirmFundingAction = (event) => {
+    confirmFundingAction = () => {
         FundingActions.confirmFundingAction()
     }
 
@@ -257,7 +245,7 @@ export default class Funding extends React.Component {
     }
 
     disableFundingAction(fundingState) {
-        return fundingState === FundingState.EMPTY || fundingState === FundingState.ERROR
+        return fundingState === FundingState.EMPTY || fundingState === FundingState.ERROR || AccountStore.selectedAccountType === AccountType.VIEW
     }
 
     fundingActionValid(fundingState) {
@@ -287,8 +275,6 @@ export default class Funding extends React.Component {
 
         const {
             accountState,
-            currentGasPriceWei,
-            ethereumPriceUsd,
             ethDepositAmountControlled,
             tokDepositAmountControlled,
             ethWithdrawalAmountControlled,
@@ -310,7 +296,7 @@ export default class Funding extends React.Component {
 
         const {tokDepositDisabled, tokDepositValid, tokDepositErrorText, tokDepositFeedbackIcon} = this.tokDepositInputProps()
         const {ethWithdrawalDisabled, ethWithdrawalValid, ethWithdrawalErrorText, ethWithdrawalFeedbackIcon} = this.ethWithdrawalInputProps()
-        const {tokWithdrawalDisabled, tokWithdrawalValid, tokWithdrawalErrorText, tokWithdrawalFeedbackIcon} = this.tokWithdrawalInputProps()
+        const {tokWithdrawalDisabled, tokWithdrawalValid, tokWithdrawalErrorText} = this.tokWithdrawalInputProps()
 
         let confirmModalName = ""
         switch (modalType) {
