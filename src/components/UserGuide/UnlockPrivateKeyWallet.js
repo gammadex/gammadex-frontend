@@ -15,7 +15,8 @@ class UnlockPrivateKeyWallet extends Component {
                     You will be asked to choose a strong password of your choice, which is used to encrypt and securely store the private key in your browser's local storage.</p>
                 <p>Click [ Unlock ]</p>
                 {exchangePageDisplayed()}
-                <h4>Next steps</h4>              
+                <div className="dropdown-divider divider-padding"></div>
+                <h4>Next steps</h4>
             </div>
         )
     }

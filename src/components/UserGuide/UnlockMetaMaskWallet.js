@@ -12,6 +12,7 @@ class UnlockMetaMaskWallet extends Component {
                 <p>Click [ <i className="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;Unlock Wallet ]</p>
                 <p>Click [ MetaMask ]</p>
                 {exchangePageDisplayed()}
+                <div className="dropdown-divider divider-padding"></div>
                 <h4>Next steps</h4>              
             </div>
         )

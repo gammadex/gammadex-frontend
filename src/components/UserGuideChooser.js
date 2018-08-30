@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom"
 import CreateWallet from "./UserGuide/CreateWallet"
 import UnlockMetaMaskWallet from "./UserGuide/UnlockMetaMaskWallet"
 import UnlockPrivateKeyWallet from "./UserGuide/UnlockPrivateKeyWallet"
+import DepositEth from "./UserGuide/DepositEth"
 import UserGuideType from "./UserGuide/UserGuideType"
 
 class UserGuideChooser extends Component {
@@ -38,6 +39,7 @@ class UserGuideChooser extends Component {
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.CREATE_WALLET, e)}>Create a new wallet</a></li>
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</a></li>
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</a></li>
+                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_ETH, e)}>Deposit ETH to exchange</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -61,6 +63,8 @@ class UserGuideChooser extends Component {
             panel = <UnlockMetaMaskWallet/>
         } else if (selectedUserGuideType === UserGuideType.UNLOCK_PRIVATE_KEY) {
             panel = <UnlockPrivateKeyWallet/>
+        } else if (selectedUserGuideType === UserGuideType.DEPOSIT_ETH) {
+            panel = <DepositEth/>
         }
 
         return panel

@@ -19,6 +19,7 @@ class CreateWallet extends Component {
                 <p>GammaDEX will display your private key. Keep it safe and do not share the private key with anyone as you may risk losing your funds.</p>
                 <p>Click [ Understood. Go to Exchange ]</p>
                 {exchangePageDisplayed()}
+                <div className="dropdown-divider divider-padding"></div>
                 <h4>Next steps</h4>
                 <Alert color="info">
                 <i className="fas fa-gas-pump"></i>&nbsp;&nbsp;<strong>You need gas!</strong>
