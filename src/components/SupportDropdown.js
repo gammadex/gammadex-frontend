@@ -54,7 +54,7 @@ class SupportDropdown extends React.Component {
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i><span className="support-text">Twitter</span></a>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i><span className="support-text">Reddit</span></a>
                         <div className="dropdown-divider"></div>
-                        {/* <a className="dropdown-item" onClick={(event) => this.howToGuides(event)}><i className="fas fa-graduation-cap"></i><span className="support-text">How-to Guides</span></a> */}
+                        <a className="dropdown-item" onClick={(event) => this.howToGuides(event)}><i className="fas fa-graduation-cap"></i><span className="support-text">How-to Guides</span></a>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://etherscan.io/address/0x8d12a197cb00d4747a1fe03395095ce2a5cc6819"><i className="fas fa-code-branch"></i><span className="support-text">Smart Contract</span></a>
                         <div className="dropdown-divider"></div>
                         <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="/terms.html"><i className="fas fa-pen-nib"></i><span className="support-text">Terms of Use</span></a>
