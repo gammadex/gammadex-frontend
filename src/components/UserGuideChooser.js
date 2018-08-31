@@ -8,21 +8,37 @@ import DepositEth from "./UserGuide/DepositEth"
 import DepositToken from "./UserGuide/DepositToken"
 import Trade from "./UserGuide/Trade"
 import UserGuideType from "./UserGuide/UserGuideType"
+import UserGuideStore from "../stores/UserGuideStore"
+import * as UserGuideActions from "../actions/UserGuideActions"
 
 class UserGuideChooser extends Component {
     constructor(props) {
         super(props)
 
+        this.onUserGuideStoreChange = this.onUserGuideStoreChange.bind(this)
+
         this.state = {
-            selectedUserGuideType: null
+            selectedUserGuideType: UserGuideStore.getSelectedUserGuideType()
         }
+    }
+
+    componentDidMount() {
+        UserGuideStore.on("change", this.onUserGuideStoreChange)
+    }
+
+    componentWillUnmount() {
+        UserGuideStore.removeListener("change", this.onUserGuideStoreChange)
+    }
+
+    onUserGuideStoreChange() {
+        this.setState({
+            selectedUserGuideType: UserGuideStore.getSelectedUserGuideType()
+        })
     }
 
     selectUserGuide = (userGuideType, e) => {
         e.preventDefault()
-        this.setState({
-            selectedUserGuideType: userGuideType
-        })
+        UserGuideActions.selectUserGuide(userGuideType)
     }
 
     render() {
