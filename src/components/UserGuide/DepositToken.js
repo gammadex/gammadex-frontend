@@ -21,7 +21,7 @@ class DepositToken extends Component {
                 <p>Click [ Deposit ]</p>
                 <p>A popup will appear confirming the deposit amount. Check the amount and confirm by clicking [ Deposit ].</p>
                 <p><strong>If you are using MetaMask</strong>, you will be required to confirm two Ethereum transactions in the MetaMask extension. Click [ CONFIRM ] for both.</p>
-                <div className="user-guide-inline"><img className="user-guide-image-inline" src="/user_guide/metamask-pending.png" />MetaMask may minimize pending confirmations, if this happens click on the MetaMask icon in the browser toolbar to bring up the confirmation window.</div>
+                <div className="user-guide-inline">MetaMask may minimize pending confirmations, if this happens click on the MetaMask icon in the browser toolbar <img className="user-guide-image-inline" src="/user_guide/metamask-pending.png" /> to show the confirmation window.</div>
 
                 <p>A blue (pending) popup will appear at the bottom left of the screen when each of the two transactions has been submitted to the Ethereum network. Click on the transaction hash link to view your transaction in Etherscan.</p>
                 <img className="user-guide-image" src="/user_guide/deposit-token-confirmation.png" />

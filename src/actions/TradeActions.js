@@ -53,12 +53,11 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
     // amount is in amountGet terms
     let amountWei = 0
     let amount = 0
-    let tokenName = 'ETH'
+    const tokenName = TokenRepository.getTokenName(tokenAddress)
     if (OrderUtil.isTakerSell(order)) {
         // taker is selling, amountWei is in wei units of TOK
         amountWei = weiFillAmount
         amount = tokWeiToEth(amountWei, tokenAddress).toString()
-        tokenName = TokenRepository.getTokenName(tokenAddress)
     } else {
         // taker is buying, amountWei in is wei units of ETH
         amountWei = weiTotalEth
@@ -95,22 +94,22 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                         })
                         clearFillOrder(OrderUtil.takerSide(order))
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeInitiated(amount, tokenName, hash))
+                            GlobalMessageFormatters.getTradeInitiated(fillAmountControlled, tokenName, hash))
                     })
                     .on('error', error => {
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeFailed(amount, tokenName, error), 'danger')
+                            GlobalMessageFormatters.getTradeFailed(fillAmountControlled, tokenName, error), 'danger')
                     })
                     .then(receipt => {
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeComplete(amount, tokenName), 'success')
+                            GlobalMessageFormatters.getTradeComplete(fillAmountControlled, tokenName), 'success')
                     })
             } else {
                 Promise.all([EtherDeltaWeb3.promiseAvailableVolume(order), EtherDeltaWeb3.promiseAmountFilled(order)])
                     .then(res => {
                         const error = `Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${order.user}`
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTestTradeFailed(amount, tokenName), 'warning')
+                            GlobalMessageFormatters.getTestTradeFailed(fillAmountControlled, tokenName), 'warning')
                     })
             }
         })

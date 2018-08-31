@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
 import { clickPersonIcon, exchangePageDisplayed } from './CommonText'
+import { Alert } from 'reactstrap'
 
 class UnlockPrivateKeyWallet extends Component {
     render() {
         return (
             <div className="user-guide-detail-container">
                 <h4>Unlock wallet using a Private Key</h4>
+                <Alert color="warning">
+                <i className="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;<strong>This is not a recommended way to access your wallet.</strong> Entering your private key on a website is risky, which can leave you open to phishing attacks and loss of funds.
+                </Alert>
                 <img className="user-guide-image" src="/user_guide/unlock-private-key.gif" />
                 {clickPersonIcon()}
                 <p>Click [ <i className="fas fa-sign-in-alt text-muted"></i>&nbsp;&nbsp;Unlock Wallet ]</p>
