@@ -1558,6 +1558,10 @@ body {
     margin-left:10px;
 }
 
+.support-icon {
+    width: 20px;
+}
+
 .custom-file-label  {
     color: var(--gray-light) !important;
     background-color: #333;

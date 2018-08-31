@@ -49,15 +49,15 @@ class SupportDropdown extends React.Component {
 
                 <Popover target="navbarSupportDropdown" isOpen={popoverOpen} placement="bottom" toggle={this.togglePopover}>
                     <PopoverBody>
-                        {/* <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://t.me/GammaDEXchat"><i className="fab fa-telegram-plane"></i><span className="support-text">Telegram chat</span></a> */}
-                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/RANPVZ5"><i className="fab fa-discord"></i><span className="support-text">Discord chat</span></a>
-                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter"></i><span className="support-text">Twitter</span></a>
-                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien"></i><span className="support-text">Reddit</span></a>
+                        {/* <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://t.me/GammaDEXchat"><i className="fab fa-telegram-plane support-icon"></i><span className="support-text">Telegram chat</span></a> */}
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://discord.gg/RANPVZ5"><i className="fab fa-discord support-icon"></i><span className="support-text">Discord chat</span></a>
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://twitter.com/_GammaDEX"><i className="fab fa-twitter support-icon"></i><span className="support-text">Twitter</span></a>
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://www.reddit.com/r/GammaDEX"><i className="fab fa-reddit-alien support-icon"></i><span className="support-text">Reddit</span></a>
                         <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" onClick={(event) => this.howToGuides(event)}><i className="fas fa-graduation-cap"></i><span className="support-text">How-to Guides</span></a>
-                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://etherscan.io/address/0x8d12a197cb00d4747a1fe03395095ce2a5cc6819"><i className="fas fa-code-branch"></i><span className="support-text">Smart Contract</span></a>
+                        <a className="dropdown-item clickable" onClick={(event) => this.howToGuides(event)}><i className="fas fa-graduation-cap support-icon"></i><span className="support-text">How-to Guides</span></a>
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="https://etherscan.io/address/0x8d12a197cb00d4747a1fe03395095ce2a5cc6819"><i className="fas fa-code-branch support-icon"></i><span className="support-text">Smart Contract</span></a>
                         <div className="dropdown-divider"></div>
-                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="/terms.html"><i className="fas fa-pen-nib"></i><span className="support-text">Terms of Use</span></a>
+                        <a className="dropdown-item" target="_blank" rel="noopener noreferrer" href="/terms.html"><i className="fas fa-pen-nib support-icon"></i><span className="support-text">Terms of Use</span></a>
                     </PopoverBody>
                 </Popover>
             </li>
