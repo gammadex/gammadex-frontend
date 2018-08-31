@@ -5,6 +5,7 @@ import CreateWallet from "./UserGuide/CreateWallet"
 import UnlockMetaMaskWallet from "./UserGuide/UnlockMetaMaskWallet"
 import UnlockPrivateKeyWallet from "./UserGuide/UnlockPrivateKeyWallet"
 import DepositEth from "./UserGuide/DepositEth"
+import DepositToken from "./UserGuide/DepositToken"
 import UserGuideType from "./UserGuide/UserGuideType"
 
 class UserGuideChooser extends Component {
@@ -40,6 +41,7 @@ class UserGuideChooser extends Component {
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</a></li>
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</a></li>
                                     <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_ETH, e)}>Deposit ETH to exchange</a></li>
+                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_TOKEN, e)}>Deposit a Token to exchange</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -65,6 +67,8 @@ class UserGuideChooser extends Component {
             panel = <UnlockPrivateKeyWallet/>
         } else if (selectedUserGuideType === UserGuideType.DEPOSIT_ETH) {
             panel = <DepositEth/>
+        } else if (selectedUserGuideType === UserGuideType.DEPOSIT_TOKEN) {
+            panel = <DepositToken/>
         }
 
         return panel

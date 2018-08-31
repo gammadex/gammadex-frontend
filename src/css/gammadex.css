@@ -613,6 +613,16 @@ input[type="number"] {
     margin-bottom: 30px;
 }
 
+.user-guide-image-inline {
+    max-height: 25px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.user-guide-inline {
+    display: inline-block;
+}
+
 .divider-padding {
     margin-top: 20px;
     margin-bottom: 20px;
