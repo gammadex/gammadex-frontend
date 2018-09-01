@@ -593,6 +593,10 @@ input[type="number"] {
     line-height: 1.825em;    
 }
 
+.user-guide-menu-container h5 {
+    padding: 8px; 
+}
+
 .user-guide-detail-container {
     padding-top: 20px;
     font-size: 14px;
@@ -608,7 +612,7 @@ input[type="number"] {
 }
 
 .user-guide-image {
-    max-width:100%;
+    width:100%;
     margin-top: 20px;
     margin-bottom: 30px;
 }

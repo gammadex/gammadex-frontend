@@ -31,11 +31,12 @@ class Trade extends Component {
                 <p>If you want to buy the token (and pay ETH), click on an order in the top OFFERS (red) table.</p>
                 <p>If you want to sell the token (and receive ETH), click on an order in the bottom BIDS (green) table.</p>
                 <p>The TRADE section to the left BIDS AND OFFERS will be populated with the price you have chosen.</p>
-                <p>You control the amount of tokens to buy or sell. You can either type an amount or use the slider. You can also use the two shortcuts directly beneath the slider to pre-populate the relevant balance or order maximum amounts: [ Your ETH Balance ] or [ ETH remaining on order ].</p>
+                <p>You control the amount of tokens to buy or sell. You can either type an amount or use the slider. You can also use the two shortcuts directly beneath the slider to pre-populate the relevant value based on your available balance or the max amount available on the order: [ Your ETH Balance ] or [ ETH remaining on order ].</p>
                 <p>The total field (in ETH) will change with the amount and can be calculated as price * amount.</p>
                 <p>To send the trade transaction click on [ BUY / SELL ] underneath the total field.</p>
                 <p>You will be prompted to confirm the transaction either by GammaDEX (if using a private key based account) or in MetaMask.</p>
                 <p>A blue (pending) popup will appear at the bottom left of the screen when the transaction has been submitted to the Ethereum network. Click on the transaction hash link to view your transaction in Etherscan.</p>
+                <p>If you click on [ Pending Trades ] in the table at the bottom of the screen you will see a list of all your pending trades.</p>
                 <img className="user-guide-image" src="/user_guide/trade-confirmation.png" />
                 <p>A green (confirmation) popup will appear at the bottom left of the screen when your transaction has been mined by the network.</p>
                 <p>Your token and ETH exchange balance will update to reflect your trade in the BALANCES section.</p>
