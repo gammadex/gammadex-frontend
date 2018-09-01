@@ -45,38 +45,29 @@ class UserGuideChooser extends Component {
     render() {
         const panel = this.getPanelContents()
         return (
-            <Box>
-                <BoxSection>
-                    <div className="card-header">
-                        <div className="card-title">How-to Guides</div>
+            <div className="row">
+                <div className="col-lg-3">
+                    <div className="user-guide-menu-container">
+                        <h5>Wallets</h5>
+                        <ul>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.CREATE_WALLET, e)}>Create a new wallet</a></li>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</a></li>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</a></li>
+                        </ul>
+                        <h5>Funding</h5>
+                        <ul>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_ETH, e)}>Deposit ETH to exchange</a></li>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_TOKEN, e)}>Deposit a Token to exchange</a></li>
+                        </ul>
+                        <h5>Trading</h5>
+                        <ul>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.TRADE, e)}>Trade against an order on the book</a></li>
+                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.ORDER, e)}>Place a new order</a></li>
+                        </ul>
                     </div>
-
-                    <div className="row">
-                        <div className="col-lg-3">
-                            <div className="user-guide-menu-container">
-                                <h5>Wallets</h5>
-                                <ul>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.CREATE_WALLET, e)}>Create a new wallet</a></li>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</a></li>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</a></li>
-                                </ul>
-                                <h5>Funding</h5>
-                                <ul>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_ETH, e)}>Deposit ETH to exchange</a></li>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_TOKEN, e)}>Deposit a Token to exchange</a></li>
-                                </ul>
-                                <h5>Trading</h5>
-                                <ul>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.TRADE, e)}>Trade against an order on the book</a></li>
-                                    <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.ORDER, e)}>Place a new order</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="col-lg-9">{panel}</div>
-                    </div>
-
-                </BoxSection>
-            </Box>
+                </div>
+                <div className="col-lg-9">{panel}</div>
+            </div>
         )
     }
 
