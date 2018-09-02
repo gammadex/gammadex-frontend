@@ -21,7 +21,7 @@ export function sortByDateThenPriceRemovingDuplicates(orders, ascendingPriceOrde
     const deDupedOrders = MessageUtils.removeDups(orders, 'id')
         .filter(o => !isDelete(o) && withinSmallOrderThreshold(o))
 
-    const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.date), o => o.price)
+    const sorted = _.sortBy(_.sortBy(deDupedOrders, o => o.date), o => Number(o.price))
 
     if (ascendingPriceOrder) {
         return sorted
