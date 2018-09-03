@@ -45,8 +45,8 @@ class UserGuideChooser extends Component {
     render() {
         const panel = this.getPanelContents()
         return (
-            <div className="row">
-                <div className="col-lg-3">
+            <div className="row m-0">
+                <div className="col-lg-3 m-0">
                     <div className="user-guide-menu-container">
                         <h5>Wallets</h5>
                         <ul>
@@ -66,7 +66,7 @@ class UserGuideChooser extends Component {
                         </ul>
                     </div>
                 </div>
-                <div className="col-lg-9">{panel}</div>
+                <div className="col-lg-9 m-0">{panel}</div>
             </div>
         )
     }

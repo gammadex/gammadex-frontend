@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import UserGuideChooser from '../components/UserGuideChooser'
-import { BoxTitle } from "../components/CustomComponents/Box"
+import Scroll from "../components/CustomComponents/Scroll"
+import {BoxTitle} from "../components/CustomComponents/Box"
 
 class UserGuide extends Component {
     render() {
@@ -8,9 +9,13 @@ class UserGuide extends Component {
             <div id="user-guide-container" className="user-guide-component">
                 <div className="card">
                     <div className="card-header">
-                        <div className="card-title">How-to guides</div>
+                        <BoxTitle title="How-to guides"
+                                  componentId="user-guide-container"
+                        />
                     </div>
-                    <UserGuideChooser />
+                    <Scroll>
+                        <UserGuideChooser/>
+                    </Scroll>
                 </div>
             </div>
         )

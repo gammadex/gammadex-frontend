@@ -587,6 +587,10 @@ input[type="number"] {
     padding: 0px var(--main-padding);
 }
 
+user-guide-component {
+
+}
+
 .user-guide-menu-container {
     padding-top: 20px;
     font-size: 14px;
@@ -602,7 +606,10 @@ input[type="number"] {
     padding-left: 8px;
     padding-top: 20px;
     font-size: 14px;
-    line-height: 1.425em;    
+    line-height: 1.425em;
+    height:100%;
+    max-height: 100%;
+    overflow:hidden;
 }
 
 .user-guide-detail-container p {
@@ -640,6 +647,15 @@ input[type="number"] {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+.user-guide-component {
+    height:100%;
+}
+
+.user-guide-component .card {
+    height: 100%;
+}
+
 /* all balances page layout */
 
 .all-balances-component {
