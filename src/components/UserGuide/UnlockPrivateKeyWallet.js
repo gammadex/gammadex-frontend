@@ -7,7 +7,7 @@ class UnlockPrivateKeyWallet extends Component {
         return (
             <div className="user-guide-detail-container">
                 <h4>Unlock wallet using a Private Key</h4>
-                <Alert color="warning">
+                <Alert color="warning" transition={{ baseClass: '', timeout: 0 }}>
                 <i className="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;<strong>This is not a recommended way to access your wallet.</strong> Entering your private key on a website is risky, which can leave you open to phishing attacks and loss of funds.
                 </Alert>
                 <img className="user-guide-image" src="/user_guide/unlock-private-key.gif" />
