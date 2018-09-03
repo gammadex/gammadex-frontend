@@ -50,19 +50,19 @@ class UserGuideChooser extends Component {
                     <div className="user-guide-menu-container">
                         <h5>Wallets</h5>
                         <ul>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.CREATE_WALLET, e)}>Create a new wallet</a></li>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</a></li>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</a></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.CREATE_WALLET, e)}>Create a new wallet</button></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_METAMASK, e)}>Unlock a MetaMask wallet</button></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.UNLOCK_PRIVATE_KEY, e)}>Unlock wallet using a Private Key</button></li>
                         </ul>
                         <h5>Funding</h5>
                         <ul>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_ETH, e)}>Deposit ETH to exchange</a></li>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_TOKEN, e)}>Deposit a Token to exchange</a></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_ETH, e)}>Deposit ETH to exchange</button></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.DEPOSIT_TOKEN, e)}>Deposit a Token to exchange</button></li>
                         </ul>
                         <h5>Trading</h5>
                         <ul>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.TRADE, e)}>Trade against an order on the book</a></li>
-                            <li><a href="#" onClick={(e) => this.selectUserGuide(UserGuideType.ORDER, e)}>Place a new order</a></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.TRADE, e)}>Trade against an order on the book</button></li>
+                            <li><button className="btn btn-link btn-lg" onClick={(e) => this.selectUserGuide(UserGuideType.ORDER, e)}>Place a new order</button></li>
                         </ul>
                     </div>
                 </div>
