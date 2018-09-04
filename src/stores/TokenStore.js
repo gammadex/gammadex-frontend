@@ -290,7 +290,7 @@ class TokenStore extends EventEmitter {
                 this.unrecognisedToken = token
                 this.checkingUnrecognisedAddress = null
                 this.unrecognisedTokenCheckError = error
-
+                this._updateAllTokens()
                 this.emitChange()
                 break
             }
