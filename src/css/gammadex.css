@@ -587,16 +587,29 @@ input[type="number"] {
     padding: 0px var(--main-padding);
 }
 
+user-guide-component {
+
+}
+
 .user-guide-menu-container {
     padding-top: 20px;
     font-size: 14px;
     line-height: 1.825em;    
 }
 
+.user-guide-menu-container h5 {
+    padding: 8px; 
+}
+
 .user-guide-detail-container {
+    padding-right: 8px;
+    padding-left: 8px;
     padding-top: 20px;
     font-size: 14px;
-    line-height: 1.425em;    
+    line-height: 1.425em;
+    height:100%;
+    max-height: 100%;
+    overflow:hidden;
 }
 
 .user-guide-detail-container p {
@@ -608,7 +621,39 @@ input[type="number"] {
 }
 
 .user-guide-image {
+    width:100%;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.user-guide-image-small {
+    max-width:50%;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.user-guide-image-inline {
+    max-height: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.user-guide-inline {
+    display: inline-block;
+}
+
+.divider-padding {
+    margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.user-guide-component {
+    height:100%;
+}
+
+.user-guide-component .card {
+    height: 100%;
 }
 
 /* all balances page layout */
@@ -1533,6 +1578,10 @@ body {
 
 .support-text {
     margin-left:10px;
+}
+
+.support-icon {
+    width: 20px;
 }
 
 .custom-file-label  {

@@ -1,13 +1,22 @@
 import React, {Component} from 'react'
 import UserGuideChooser from '../components/UserGuideChooser'
+import Scroll from "../components/CustomComponents/Scroll"
+import {BoxTitle} from "../components/CustomComponents/Box"
 
 class UserGuide extends Component {
     render() {
         return (
-            <div className="row">
-                <div className="col-lg-1"></div>
-                <div className="col-lg-10"><UserGuideChooser/></div>
-                <div className="col-lg-1"></div>
+            <div id="user-guide-container" className="user-guide-component">
+                <div className="card">
+                    <div className="card-header">
+                        <BoxTitle title="How-to guides"
+                                  componentId="user-guide-container"
+                        />
+                    </div>
+                    <Scroll>
+                        <UserGuideChooser/>
+                    </Scroll>
+                </div>
             </div>
         )
     }

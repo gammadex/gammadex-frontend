@@ -319,12 +319,12 @@ export default class Funding extends React.Component {
         let modalBody = <ModalBody>{modalText}</ModalBody>
         if (selectedAccountType === AccountType.METAMASK && modalType === FundingModalType.TOK_DEPOSIT) {
             modalBody =
-                <ModalBody>{modalText}
-                    <Alert color="warning">
-                        <h4 className="alert-heading">MetaMask detected</h4>
+                <ModalBody>
+                    <Alert color="info">
+                        <h4 className="alert-heading">{modalText}</h4>
                         Depositing a Token involves submitting two transactions to the Ethereum network: Transfer Approval (1) followed by Deposit (2).
                         <hr/>
-                        <strong>Please ensure you confirm transaction 1 before 2 in MetaMask, or the deposit will fail.</strong>
+                        <strong>You will need to confirm both transactions in MetaMask.</strong>
                     </Alert>
                 </ModalBody>
         }
