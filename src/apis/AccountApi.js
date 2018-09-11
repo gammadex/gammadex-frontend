@@ -14,6 +14,7 @@ import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 import { baseWeiToEth, tokWeiToEth } from "../EtherConversion"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import TokenRepository from "../util/TokenRepository"
+import {setUserId} from '../util/Analytics'
 
 export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
     if (notify) {
@@ -45,7 +46,7 @@ export function refreshAccount(accountType, history, getMarket = true) {
 
     return EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
-
+            setUserId(`${accountType}:${addressNonce.address}`)
             AccountActions.accountRetrieved(addressNonce, accountType)
 
             if (history) {

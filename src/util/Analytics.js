@@ -40,3 +40,9 @@ export function withAnalytics(WrappedComponent) {
     }
   }
 }
+
+export function setUserId(userId) {
+  if (prod) {
+    ReactGA.set({ userId })
+  }
+}
