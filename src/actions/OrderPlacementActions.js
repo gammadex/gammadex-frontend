@@ -26,6 +26,7 @@ import * as GlobalMessageActions from "./GlobalMessageActions"
 import TokenRepository from "../util/TokenRepository"
 import React from "react"
 import lifecycleStore from "../stores/LifecycleStore"
+import {trackEvent} from '../util/Analytics'
 
 /**
  * Calculate a total value when the price changes
@@ -568,6 +569,7 @@ export function sendOrder(order) {
             const tokenName = TokenRepository.getTokenName(OrderUtil.tokenAddress(signedOrderObject))
             GlobalMessageActions.sendGlobalMessage(
                 GlobalMessageFormatters.getOrderInitiated(side, tokenName))
+            trackEvent("order",side,`${tokenName}:${account}:${order.orderHash}`)
             EtherDeltaSocket.emitOrder(signedOrderObject)
                 .then((result) => {
                     if (result && result.status === 202) {

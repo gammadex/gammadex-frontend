@@ -47,3 +47,9 @@ export function setUserId(userId) {
     ReactGA.set({ userId })
   }
 }
+
+export function trackEvent(category, action, label) {
+  if (enabled) {
+    ReactGA.event({ category, action, label })
+  }
+}

@@ -12,6 +12,7 @@ import ActionNames from "../actions/ActionNames"
 import dispatcher from "../dispatcher"
 import { setFavourite } from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
+import {trackEvent} from '../util/Analytics'
 
 export function requestOrderCancel(openOrder, gasPriceWei) {
     dispatcher.dispatch({
@@ -61,6 +62,7 @@ export function cancelOpenOrder(openOrder, gasPriceWei) {
             AccountActions.nonceUpdated(nonce + 1)
             GlobalMessageActions.sendGlobalMessage(
                 GlobalMessageFormatters.getCancelInitiated(tokenName, hash))
+            trackEvent("order","cancel",`${tokenName}:${account}:${hash}`)                
         })
         .on('error', error => {
             GlobalMessageActions.sendGlobalMessage(

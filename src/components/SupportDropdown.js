@@ -18,6 +18,7 @@ import * as EthereumNetworks from "../util/EthereumNetworks"
 import {withRouter} from "react-router-dom"
 import Routes from '../Routes'
 import Etherscan from "../components/CustomComponents/Etherscan"
+import {trackEvent} from '../util/Analytics'
 
 class SupportDropdown extends React.Component {
     state = {
@@ -33,6 +34,9 @@ class SupportDropdown extends React.Component {
 
     togglePopover = (event) => {
         event.preventDefault()
+        if(!this.state.popoverOpen) {
+            trackEvent("menu","open support")
+        }
         this.setState({
             popoverOpen: !this.state.popoverOpen
         })
