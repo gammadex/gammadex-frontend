@@ -2,10 +2,11 @@ import React from 'react'
 import ReactGA from 'react-ga'
 import Config from '../Config'
 
-const prod = Config.isProduction()
+const noTrack = localStorage.noTrack == "true"
+const enabled = !noTrack && Config.isProduction()
 
 export function initAnalytics() {
-  if (prod) {
+  if (enabled) {
     ReactGA.initialize('UA-124438522-1')
   }
 }
@@ -29,7 +30,7 @@ export function withAnalytics(WrappedComponent) {
     }
 
     trackPage(page) {
-      if (prod) {
+      if (enabled) {
         ReactGA.set({ page })
         ReactGA.pageview(page)
       }
@@ -42,7 +43,7 @@ export function withAnalytics(WrappedComponent) {
 }
 
 export function setUserId(userId) {
-  if (prod) {
+  if (enabled) {
     ReactGA.set({ userId })
   }
 }

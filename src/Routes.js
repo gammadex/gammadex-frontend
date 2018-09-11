@@ -5,7 +5,8 @@ const Routes = {
     History: "/history/",
     UserGuide: "/user-guide/",
     View: "/view/",
-    Balances: "/balances/"
+    Balances: "/balances/",
+    NoTrack: "/notrack/"
 }
 
 export default Routes
