@@ -21,6 +21,7 @@ import OrderBoxType from "../components/OrderPlacement/OrderBoxType"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import * as GlobalMessageActions from "./GlobalMessageActions"
 import TokenRepository from "../util/TokenRepository"
+import {trackEvent} from '../util/Analytics'
 
 // fillAmount is in order.availableVolume terms = wei units of TOK
 export function validateFillAmount(weiFillAmount, weiTotalEth, order) {
@@ -95,6 +96,7 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                         clearFillOrder(OrderUtil.takerSide(order))
                         GlobalMessageActions.sendGlobalMessage(
                             GlobalMessageFormatters.getTradeInitiated(fillAmountControlled, tokenName, hash))
+                        trackEvent("trade",`${OrderUtil.takerSide(order)}`,`${fillAmountControlled}:${tokenName}:${hash}`)                                  
                     })
                     .on('error', error => {
                         GlobalMessageActions.sendGlobalMessage(

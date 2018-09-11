@@ -10,6 +10,7 @@ import History from './History'
 import NewWallet from './NewWallet'
 import UserGuide from './UserGuide'
 import ViewAccount from './ViewAccount'
+import NoTrack from './NoTrack'
 import Routes from '../Routes'
 import LifecycleStore from "../stores/LifecycleStore"
 import SplashScreen from "./SplashScreen"
@@ -18,6 +19,8 @@ import '../css/bootstrap.css'
 import '../css/gammadex.css'
 import ClickThrottle from "../components/CustomComponents/ClickThrottle"
 import Balances from "../pages/Balances"
+import ReactGA from 'react-ga'
+import { initAnalytics } from '../util/Analytics'
 
 class App extends Component {
     constructor(props) {
@@ -28,6 +31,7 @@ class App extends Component {
         }
 
         this.onLifecycleStoreChange = this.onLifecycleStoreChange.bind(this)
+        initAnalytics()
     }
 
     componentWillMount() {
@@ -56,6 +60,7 @@ class App extends Component {
                 <Route path={Routes.UserGuide} exact component={UserGuide}/>
                 <Route path={Routes.View + "*"} exact component={ViewAccount}/>
                 <Route path={Routes.Balances} exact component={Balances}/>
+                <Route path={Routes.NoTrack} exact component={NoTrack}/>
             </div>
         }
 

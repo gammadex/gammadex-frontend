@@ -5,6 +5,10 @@ class Config {
         return this.getReactEnv() === "development"
     }
 
+    isProduction() {
+        return this.getReactEnv() === "production"
+    }
+
     getReactEnv() {
         // Why we use a custom env var and not NODE_ENV:
         // https://github.com/facebook/create-react-app/issues/436

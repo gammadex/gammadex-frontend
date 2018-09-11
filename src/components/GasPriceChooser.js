@@ -15,6 +15,7 @@ import { setFavourite } from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
 import Round from "./CustomComponents/Round"
 import BigNumber from 'bignumber.js'
+import {trackEvent} from '../util/Analytics'
 
 export default class GasPriceChooser extends React.Component {
     constructor(props) {
@@ -92,6 +93,9 @@ export default class GasPriceChooser extends React.Component {
 
     toggleGasPrice = (event) => {
         event.preventDefault()
+        if(!this.state.popoverOpen) {
+            trackEvent("menu","open gas")
+        }
         this.setState({
             popoverOpen: !this.state.popoverOpen
         })

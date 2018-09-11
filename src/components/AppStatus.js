@@ -14,6 +14,7 @@ import AccountType from "../AccountType"
 import * as EthereumNetworks from "../util/EthereumNetworks"
 import Conditional from "./CustomComponents/Conditional"
 import { safeBigNumber } from "../EtherConversion"
+import {trackEvent} from '../util/Analytics'
 
 export default class AppStatus extends React.Component {
     constructor(props) {
@@ -116,6 +117,9 @@ export default class AppStatus extends React.Component {
     }
 
     toggleShowStatus = () => {
+        if(!this.state.popoverOpen) {
+            trackEvent("menu","open status")
+        }
         this.setState({ popoverOpen: !this.state.popoverOpen })
     }
 

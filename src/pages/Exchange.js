@@ -12,6 +12,7 @@ import ReactChart from "../components/OrderBook/ReactChart"
 import OrderBox from "../components/OrderPlacement/OrderBox"
 import OrderBook from "../components/OrderBook"
 import Title from "../components/Title"
+import {withAnalytics} from '../util/Analytics'
 
 class Exchange extends Component {
     constructor() {
@@ -83,4 +84,4 @@ class Exchange extends Component {
     }
 }
 
-export default withRouter(Exchange)
+export default withAnalytics(withRouter(Exchange))

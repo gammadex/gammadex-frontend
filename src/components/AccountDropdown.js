@@ -20,6 +20,7 @@ import Routes from '../Routes'
 import Etherscan from "../components/CustomComponents/Etherscan"
 import {copyToClipboard} from "../util/Clipboard"
 import Truncated from "./CustomComponents/Truncated"
+import {trackEvent} from '../util/Analytics'
 
 class AccountDropdown extends React.Component {
     constructor(props) {
@@ -96,6 +97,9 @@ class AccountDropdown extends React.Component {
 
     togglePopover = (event) => {
         event.preventDefault()
+        if(!this.state.popoverOpen) {
+            trackEvent("menu","open account")
+        }
         this.setState({
             popoverOpen: !this.state.popoverOpen
         })
