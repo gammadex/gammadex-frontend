@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
 import Transfers from '../components/Transfers'
 import MyTrades from '../components/MyTrades'
+import {withRouter} from "react-router-dom"
+import {withAnalytics} from '../util/Analytics'
 
 class History extends Component {
     render() {
@@ -24,4 +26,4 @@ class History extends Component {
     }
 }
 
-export default History
+export default withAnalytics(withRouter(History))

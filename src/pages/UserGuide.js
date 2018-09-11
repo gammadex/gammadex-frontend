@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import UserGuideChooser from '../components/UserGuideChooser'
 import Scroll from "../components/CustomComponents/Scroll"
 import {BoxTitle} from "../components/CustomComponents/Box"
+import {withRouter} from "react-router-dom"
+import {withAnalytics} from '../util/Analytics'
 
 class UserGuide extends Component {
     render() {
@@ -22,4 +24,4 @@ class UserGuide extends Component {
     }
 }
 
-export default UserGuide
+export default withAnalytics(withRouter(UserGuide))

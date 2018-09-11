@@ -18,6 +18,8 @@ import '../css/bootstrap.css'
 import '../css/gammadex.css'
 import ClickThrottle from "../components/CustomComponents/ClickThrottle"
 import Balances from "../pages/Balances"
+import ReactGA from 'react-ga'
+import { initAnalytics } from '../util/Analytics'
 
 class App extends Component {
     constructor(props) {
@@ -28,6 +30,7 @@ class App extends Component {
         }
 
         this.onLifecycleStoreChange = this.onLifecycleStoreChange.bind(this)
+        initAnalytics()
     }
 
     componentWillMount() {

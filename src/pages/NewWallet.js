@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import WalletCreator from '../components/WalletCreator'
+import {withRouter} from "react-router-dom"
+import {withAnalytics} from '../util/Analytics'
 
 class NewWallet extends Component {
     render() {
@@ -13,4 +15,4 @@ class NewWallet extends Component {
     }
 }
 
-export default NewWallet
+export default withAnalytics(withRouter(NewWallet))

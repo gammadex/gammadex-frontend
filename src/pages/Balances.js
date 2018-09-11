@@ -11,8 +11,10 @@ import BalancesTable from "../components/Balances/BalancesTable"
 import _ from 'lodash'
 import BigNumber from 'bignumber.js'
 import EmptyTableMessage from "../components/CustomComponents/EmptyTableMessage"
+import {withRouter} from "react-router-dom"
+import {withAnalytics} from '../util/Analytics'
 
-export default class Balances extends React.Component {
+class Balances extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -217,3 +219,5 @@ export default class Balances extends React.Component {
         return [...eth, ...nonEth]
     }
 }
+
+export default withAnalytics(withRouter(Balances))
