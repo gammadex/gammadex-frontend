@@ -1,6 +1,6 @@
 import React from "react"
 import { Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap'
-import {trackEvent} from '../util/Analytics'
+import {trackEvent} from '../../util/Analytics'
 
 export default class DisclaimerModal extends React.Component {
 
