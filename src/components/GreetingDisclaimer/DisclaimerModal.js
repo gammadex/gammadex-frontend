@@ -1,5 +1,6 @@
 import React from "react"
 import { Modal, ModalHeader, ModalBody, ModalFooter, Alert } from 'reactstrap'
+import {trackEvent} from '../util/Analytics'
 
 export default class DisclaimerModal extends React.Component {
 
@@ -15,6 +16,8 @@ export default class DisclaimerModal extends React.Component {
 
     handleAgree = (event) => {
         event.preventDefault()
+
+        trackEvent("user","accepted disclaimer")
 
         localStorage.acceptedDisclaimerVersion = this.state.disclaimerVersion
         this.setState({
