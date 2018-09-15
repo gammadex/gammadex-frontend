@@ -1,0 +1,70 @@
+.DayPicker {
+    background:var(--gray-dark);
+}
+
+.DayPickerInput input {
+
+}
+
+.DayPicker-NavButton {
+    color: #8B9898;
+}
+
+.DayPicker-NavButton:hover {
+    opacity: 0.8;
+}
+
+.DayPicker-Weekday {
+    color: #8B9898;
+}
+
+.DayPicker-WeekNumber {
+    border-right: 1px solid #EAECEC;
+    color: #8B9898;
+}
+
+.DayPicker-TodayButton {
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    color: var(--primary);
+}
+
+.DayPicker-Day--today {
+    color: inherit;
+}
+
+.DayPicker-Day--outside {
+    color: #8B9898;
+}
+
+.DayPicker-Day--disabled {
+    color: #DCE0E0;
+    /* background-color: #eff1f1; */
+}
+
+.DayPicker-Day--sunday {
+    background-color: #F7F8F8;
+}
+
+.DayPicker-Day--sunday:not(.DayPicker-Day--today) {
+    color: #DCE0E0;
+}
+
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+    background-color: var(--primary);
+    color: #F0F8FF;
+}
+
+.DayPicker-Day--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside):hover {
+    background-color: var(--primary);
+}
+
+.DayPicker:not(.DayPicker--interactionDisabled)
+.DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+    background-color: var(--background);
+}
+
+.DayPickerInput-Overlay {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}

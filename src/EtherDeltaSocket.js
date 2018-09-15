@@ -67,6 +67,28 @@ class EtherDeltaWebSocket {
         this.socket.emit('getTokenBalances', {user})
     }
 
+    getTokenVolume(reason, fromDate, toDate, token = null, timeGroup = null) {
+        if (!this.socket) {
+            console.warn("Can't request token volume - not connected")
+            return
+        }
+
+        const request = { fromDate, toDate}
+        if (token) {
+            request['token'] = token
+        }
+        if (timeGroup) {
+            request['timeGroup'] = timeGroup
+        }
+        if (reason) {
+            request['reason'] = reason
+        }
+
+        console.log("Requesting token volume", request)
+
+        this.socket.emit('getTokenVolume', request)
+    }
+
     emitOrder(order) {
         const self = this
         return new Promise(function (resolve, reject) {

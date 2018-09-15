@@ -21,6 +21,7 @@ import ClickThrottle from "../components/CustomComponents/ClickThrottle"
 import Balances from "../pages/Balances"
 import ReactGA from 'react-ga'
 import { initAnalytics } from '../util/Analytics'
+import Stats from "./Stats"
 
 class App extends Component {
     constructor(props) {
@@ -61,6 +62,7 @@ class App extends Component {
                 <Route path={Routes.View + "*"} exact component={ViewAccount}/>
                 <Route path={Routes.Balances} exact component={Balances}/>
                 <Route path={Routes.NoTrack} exact component={NoTrack}/>
+                <Route path={Routes.Stats} exact component={Stats}/>
             </div>
         }
 

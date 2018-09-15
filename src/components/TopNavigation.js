@@ -56,6 +56,9 @@ class TopNavigation extends Component {
                                 <li className="nav-item">
                                     <Link to={Routes.Balances} className="nav-link">My Balances</Link>
                                 </li>
+                                <li className="nav-item">
+                                    <Link to={Routes.Stats} className="nav-link">Token Stats</Link>
+                                </li>
                             </ul>
                         </nav>
                     </div>

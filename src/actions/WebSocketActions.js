@@ -8,6 +8,8 @@ import OrderFillNotifier from "../OrderFillNotifier"
 import * as WebSocketActions from "./TokenActions"
 import {getTokenFromUrl} from "../stores/UrlUtil"
 import * as TokenBalancesActions from "./TokenBalancesActions"
+import * as StatsActions from "./StatsActions"
+import * as StatsApi from "../apis/StatsApi"
 
 export function connect() {
     const url = Config.getSocket()
@@ -98,6 +100,9 @@ export function connect() {
                 } else {
                     TokenBalancesActions.tokenBalancesRetrieved(message)
                 }
+            },
+            tokenVolume: (message) => {
+                StatsApi.handleTokenVolumeResponse(message)
             }
         }
     )
