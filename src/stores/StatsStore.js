@@ -14,8 +14,9 @@ class StatsStore extends EventEmitter {
             stats: [],
             date: null,
             selectedDate: new Date().addDays(-1),
-            numDisplayTokens: 10,
+            displayNum: 10,
             includeOther: false,
+            rawVolumes: []
         }
     }
 
@@ -44,11 +45,33 @@ class StatsStore extends EventEmitter {
             case ActionNames.TOKEN_VOLUME_DAY_VOLUME_REQUEST_RETRIEVED: {
                 console.log("volume retrieved", action)
                 this.dayVolume.date = action.message.request.fromDate
-                this.dayVolume.stats = StatsUtil.topStats(action.message.volumes, this.dayVolume.numDisplayTokens, this.dayVolume.includeOther)
+                this.dayVolume.rawVolumes = action.message.volumes
+                this.updateStats(action)
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_DAY_CHANGE_DATE: {
+                this.dayVolume.selectedDate = action.date
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_DAY_CHANGE_DISPLAY_NUM: {
+                this.dayVolume.displayNum = action.displayNum
+                this.updateStats(action)
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_DAY_CHANGE_SHOW_OTHER: {
+                this.dayVolume.includeOther = action.isShow
+                this.updateStats(action)
                 this.emitChange()
                 break
             }
         }
+    }
+
+    updateStats(action) {
+        this.dayVolume.stats = StatsUtil.topStats(this.dayVolume.rawVolumes, this.dayVolume.displayNum, this.dayVolume.includeOther)
     }
 }
 

@@ -11,8 +11,8 @@ export function topStats(tokenVolume, num, includeOther) {
         if (otherTotal > 0) {
             top.push({
                 "volumeInEth": otherTotal,
-                "tokenName": "other",
-                "tokenSymbol": "other",
+                "tokenName": "others",
+                "tokenSymbol": "others",
                 "tokenAddress": null
             })
         }

@@ -7,10 +7,11 @@ import {BoxSection, BoxTitle} from "../CustomComponents/Box"
 import * as StatsApi from "../../apis/StatsApi"
 import Plotly from "plotly.js/dist/plotly-finance"
 import ReactResizeDetector from 'react-resize-detector'
-import DayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 import '../../css/react-day-picker.css'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
+import * as StatsActions from "../../actions/StatsActions"
+import {Input} from "reactstrap"
 
 class DayVolume extends React.Component {
     constructor(props) {
@@ -99,7 +100,7 @@ class DayVolume extends React.Component {
                 l: 60,
                 r: 60,
                 b: 60,
-                t: 60,
+                t: 0,
                 pad: 4
             },
         }
@@ -117,16 +118,23 @@ class DayVolume extends React.Component {
     }
 
     handleDayChange = (day) => {
+        const {selectedDate} = this.state
+
+        if (day.toString('yyyy-MM-dd') !== selectedDate.toString('yyyy-MM-dd')) {
+            StatsApi.changeDayVolumeDayThenRefresh(day)
+        }
     }
 
     handleShowOtherChange = (event) => {
+        StatsActions.changeDailyVolumeShowOther(event.target.checked)
     }
 
     handleNumDisplayTokensChange = (event) => {
+        StatsActions.changeDailyVolumeDisplayNum(parseInt(event.target.value))
     }
 
     render() {
-        const {retrievingDayVolumeStats, retrievingDayVolumeError, stats, date, selectedDate, numDisplayTokens, includeOther} = this.state
+        const {retrievingDayVolumeStats, retrievingDayVolumeError, stats, date, selectedDate, displayNum, includeOther} = this.state
 
         const inputDate = selectedDate.toString('yyyy-MM-dd')
 
@@ -142,11 +150,23 @@ class DayVolume extends React.Component {
                     <div className="full-height">
                         <div className="token-stats-inputs">
                             <div className="form-inline">
-                                Top <input className="form-control day-picker-num-days" type="number" value={numDisplayTokens} onChange={this.handleNumDisplayTokensChange}/>
+
+                                <span className="mr-2">Top</span>
+
+                                <Input type="select" i
+                                       value={displayNum}
+                                       onChange={this.handleNumDisplayTokensChange}>
+                                    <option>5</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                </Input>
+
+                                <span className="ml-2">tokens</span>
+
                             </div>
 
                             <div className="form-inline day-picker">
-                                Date: <DayPickerInput onDayChange={this.handleDayChange} value={inputDate} inputProps={{"class": "form-control"}}/>
+                                <span className="mr-2">Date</span> <DayPickerInput onDayChange={this.handleDayChange} value={inputDate} inputProps={{"class": "form-control"}}/>
                             </div>
 
                             <div className="form-inline">
@@ -158,7 +178,7 @@ class DayVolume extends React.Component {
                                            checked={includeOther}
                                            onChange={this.handleShowOtherChange}
                                     />
-                                    <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Show other</label>
+                                    <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Include others total</label>
                                 </div>
                             </div>
                         </div>
@@ -174,14 +194,5 @@ class DayVolume extends React.Component {
         )
     }
 }
-
-/*
-                    <div id="dayVolumeChart"/>
-
-                    <BoxSection id="day-volume-chart-resize-container">
-                        <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="day-volume-chart-resize-container"/>
-                        <div id="dayVolumeChart"/>
-                    </BoxSection>
- */
 
 export default withAnalytics(withRouter(DayVolume))
