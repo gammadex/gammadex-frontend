@@ -8,7 +8,7 @@ import * as StatsApi from "../../apis/StatsApi"
 import Plotly from "plotly.js/dist/plotly-finance"
 import ReactResizeDetector from 'react-resize-detector'
 import 'react-day-picker/lib/style.css'
-import '../../css/react-day-picker.css'
+//import '../../css/react-day-picker.css'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 import * as StatsActions from "../../actions/StatsActions"
 import {Input} from "reactstrap"
@@ -68,7 +68,7 @@ class DayVolume extends React.Component {
     handleDayChange = (day) => {
         const {selectedDate} = this.state
 
-        if (day.toString('yyyy-MM-dd') !== selectedDate.toString('yyyy-MM-dd')) {
+        if (day && day.toString('yyyy-MM-dd') !== selectedDate.toString('yyyy-MM-dd')) {
             StatsApi.changeDayVolumeDayThenRefresh(day)
         }
     }
@@ -101,7 +101,7 @@ class DayVolume extends React.Component {
 
                                 <span className="mr-2">Top</span>
 
-                                <Input type="select" i
+                                <Input type="select"
                                        value={displayNum}
                                        onChange={this.handleNumDisplayTokensChange}>
                                     <option>5</option>
@@ -114,7 +114,12 @@ class DayVolume extends React.Component {
                             </div>
 
                             <div className="form-inline day-picker">
-                                <span className="mr-2">Date</span> <DayPickerInput  onDayChange={this.handleDayChange} value={inputDate} inputProps={{"class": "form-control"}}/>
+                                <span className="mr-2">Date</span>
+                                <DayPickerInput
+                                    onDayChange={this.handleDayChange}
+                                    dayPickerProps={{disabledDays:StatsVolumeChartUtil.statsDayRange()}}
+                                    value={inputDate}
+                                    inputProps={{"className": "form-control"}}/>
                             </div>
 
                             <div className="form-inline">
@@ -124,7 +129,7 @@ class DayVolume extends React.Component {
                                            id="showOtherDayVolume"
                                            value="true"
                                            checked={includeOther}
-                                           onChange={this.handleShowOtherChange}
+                                            onChange={this.handleShowOtherChange}
                                     />
                                     <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Include others total</label>
                                 </div>

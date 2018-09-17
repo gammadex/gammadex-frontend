@@ -1,4 +1,7 @@
-export function getDataAndLayout(stats, chartContainerWidth, chartContainerHeight) {
+import datejs from 'datejs'
+import moment from 'moment'
+
+export function getDataAndLayout(stats, chartContainerWidth, chartContainerHeight, barColour='#3498DB') {
     const data = [{
 
         y: stats.map(s => s.volumeInEth),
@@ -8,8 +11,8 @@ export function getDataAndLayout(stats, chartContainerWidth, chartContainerHeigh
         type: 'bar',
         showlegend: false,
         marker: {
-            color: '#3498DB',
-            bgcolor: '#3498DB',
+            color: barColour,
+            bgcolor: barColour,
             /* size: 12,*/
             line: {
                 color: 'transparent',
@@ -39,12 +42,43 @@ export function getDataAndLayout(stats, chartContainerWidth, chartContainerHeigh
             l: 60,
             r: 60,
             b: 60,
-            t: 0,
+            t: 20,
             pad: 4
         },
     }
 
     return {
         data, layout
+    }
+}
+
+export function getWeekRange(date) {
+    return {
+        from: moment(date)
+            .startOf('week')
+            .toDate(),
+        to: moment(date)
+            .endOf('week')
+            .toDate(),
+    }
+}
+
+export function statsDayRange() {
+    return {
+        before: new Date(2017, 2, 9),
+        after: new Date().addDays(-1),
+    }
+}
+
+export function statsWeekRange() {
+    return {
+        before: moment(new Date(2017, 2, 9))
+            .startOf('week')
+            .toDate(),
+        after: moment()
+            .startOf('week')
+            .subtract(1, 'days')
+            .endOf('week')
+            .toDate(),
     }
 }
