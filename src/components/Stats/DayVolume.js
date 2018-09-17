@@ -12,6 +12,7 @@ import '../../css/react-day-picker.css'
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 import * as StatsActions from "../../actions/StatsActions"
 import {Input} from "reactstrap"
+import * as StatsVolumeChartUtil from "../../util/StatsVolumeChartUtil"
 
 class DayVolume extends React.Component {
     constructor(props) {
@@ -51,62 +52,9 @@ class DayVolume extends React.Component {
 
         if (stats && stats.length > 0 && chartContainerWidth > 0 && chartContainerHeight > 0) {
             Plotly.purge('dayVolumeChart')
-            const {data, layout} = this.getDataAndLayout()
+            const {data, layout} = StatsVolumeChartUtil.getDataAndLayout(stats, chartContainerWidth, chartContainerHeight)
 
             Plotly.newPlot('dayVolumeChart', data, layout, {displayModeBar: false})
-        }
-    }
-
-    getDataAndLayout() {
-        const {stats, chartContainerWidth, chartContainerHeight} = this.state
-
-        const data = [{
-
-            y: stats.map(s => s.volumeInEth),
-            x: stats.map(s => s.tokenSymbol),
-            labels: stats.map(s => s.tokenName),
-            hole: .5,
-            type: 'bar',
-            showlegend: false,
-            marker: {
-                color: '#3498DB',
-                bgcolor: '#3498DB',
-                /* size: 12,*/
-                line: {
-                    color: 'transparent',
-                    width: 2
-                }
-            },
-            textinfo: 'text'
-        }]
-
-        const layout = {
-            width: chartContainerWidth,
-            height: chartContainerHeight,
-            color: '#555555',
-            plot_bgcolor: 'transparent',
-            xaxis: {
-                linecolor: '#555555',
-                gridcolor: 'transparent',
-                color: '#ced2d5',
-            },
-            yaxis: {
-                linecolor: 'transparent',
-                gridcolor: '#555555',
-                color: '#ced2d5',
-                zeroline: false,
-            },
-            margin: {
-                l: 60,
-                r: 60,
-                b: 60,
-                t: 0,
-                pad: 4
-            },
-        }
-
-        return {
-            data, layout
         }
     }
 
@@ -166,7 +114,7 @@ class DayVolume extends React.Component {
                             </div>
 
                             <div className="form-inline day-picker">
-                                <span className="mr-2">Date</span> <DayPickerInput onDayChange={this.handleDayChange} value={inputDate} inputProps={{"class": "form-control"}}/>
+                                <span className="mr-2">Date</span> <DayPickerInput  onDayChange={this.handleDayChange} value={inputDate} inputProps={{"class": "form-control"}}/>
                             </div>
 
                             <div className="form-inline">
