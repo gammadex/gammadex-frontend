@@ -7,6 +7,7 @@ import AppStatus from "./AppStatus"
 import TokenStore from "../stores/TokenStore"
 import TokenStats from "./TokenStats"
 import MarketResponseSpinner from "./MarketResponseSpinner"
+import TokenStatsSpinner from "./TokenStatsSpinner"
 import AccountDropdown from "./AccountDropdown"
 import SupportDropdown from "./SupportDropdown"
 import ClickThrottle from "./CustomComponents/ClickThrottle"
@@ -68,6 +69,7 @@ class TopNavigation extends Component {
                     <div className="user-buttons full-height-lg">
                         <MarketResponseSpinner/>
                         <TokenBalancesSpinner/>
+                        <TokenStatsSpinner/>
                         <nav className="navbar navbar-dark bg-primary navbar-expand">
                             <ul className="navbar-nav navbar-right mr-auto">
                                 <SupportDropdown/>

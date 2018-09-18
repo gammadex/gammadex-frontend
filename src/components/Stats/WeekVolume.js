@@ -84,8 +84,8 @@ class WeekVolume extends React.Component {
     createChart() {
         const {stats, chartContainerWidth, chartContainerHeight} = this.state
 
+        Plotly.purge('weekVolumeChart')
         if (stats && stats.length > 0 && chartContainerWidth > 0 && chartContainerHeight > 0) {
-            Plotly.purge('weekVolumeChart')
             const {data, layout} = StatsVolumeChartUtil.getDataAndLayout(stats, chartContainerWidth, chartContainerHeight, '#00bc8c')
 
             Plotly.newPlot('weekVolumeChart', data, layout, {displayModeBar: false})

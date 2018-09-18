@@ -12,7 +12,7 @@ class StatsStore extends EventEmitter {
             retrievingStats: false,
             retrievedStats: false,
             retrieveError: null,
-            stats: [],
+            stats: null,
             date: null,
             selectedDate: new Date().addDays(-1),
             displayNum: 10,
@@ -24,7 +24,7 @@ class StatsStore extends EventEmitter {
             retrievingStats: false,
             retrievedStats: false,
             retrieveError: null,
-            stats: [],
+            stats: null,
             date: null,
             selectedDate: new Date().addDays(-1),
             displayNum: 10,
@@ -36,7 +36,7 @@ class StatsStore extends EventEmitter {
             retrievingStats: false,
             retrievedStats: false,
             retrieveError: null,
-            stats: [],
+            stats: null,
             fromDate: null,
             toDate: null,
             selectedFromDate: new Date().addDays(-30),
@@ -59,6 +59,10 @@ class StatsStore extends EventEmitter {
         return this.rangeByDayVolume
     }
 
+    isRefreshInProgress = () => {
+        return this.dayVolume.retrievingStats || this.weekVolume.retrievingStats || this.rangeByDayVolume.retrievingStats
+    }
+
     emitChange() {
         this.emit("change")
     }
@@ -69,6 +73,7 @@ class StatsStore extends EventEmitter {
                 this.dayVolume.retrievingStats = true
                 this.dayVolume.retrieveError = null
                 this.dayVolume.retrievedStats = false
+                this.dayVolume.stats = null
                 this.emitChange()
                 break
             }
@@ -82,6 +87,7 @@ class StatsStore extends EventEmitter {
             case ActionNames.TOKEN_VOLUME_DAY_VOLUME_REQUEST_RETRIEVED: {
                 this.dayVolume.date = action.message.request.fromDate
                 this.dayVolume.rawVolumes = action.message.volumes
+                this.dayVolume.retrievingStats = false
                 this.dayVolume.retrievedStats = true
                 this.updateDayStats()
                 this.emitChange()
@@ -109,6 +115,7 @@ class StatsStore extends EventEmitter {
                 this.weekVolume.retrievingStats = true
                 this.weekVolume.retrieveError = null
                 this.weekVolume.retrievedStats = false
+                this.weekVolume.stats = null
                 this.emitChange()
                 break
             }
@@ -122,6 +129,7 @@ class StatsStore extends EventEmitter {
             case ActionNames.TOKEN_VOLUME_WEEK_VOLUME_REQUEST_RETRIEVED: {
                 this.weekVolume.date = action.message.request.fromDate
                 this.weekVolume.rawVolumes = action.message.volumes
+                this.weekVolume.retrievingStats = false
                 this.weekVolume.retrievedStats = true
                 this.updateWeekStats()
                 this.emitChange()
@@ -144,10 +152,12 @@ class StatsStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+
             case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_SENT: {
                 this.rangeByDayVolume.retrievingStats = true
                 this.rangeByDayVolume.retrieveError = null
                 this.rangeByDayVolume.retrievedStats = false
+                this.rangeByDayVolume.stats = null
                 this.emitChange()
                 break
             }
@@ -161,8 +171,8 @@ class StatsStore extends EventEmitter {
             case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_RETRIEVED: {
                 this.rangeByDayVolume.date = action.message.request.fromDate
                 this.rangeByDayVolume.rawVolumes = action.message.volumes
+                this.rangeByDayVolume.retrievingStats = false
                 this.rangeByDayVolume.retrievedStats = true
-                window.xxx = action.message.volumes
                 this.updateRangeByDayStats()
                 this.emitChange()
                 break

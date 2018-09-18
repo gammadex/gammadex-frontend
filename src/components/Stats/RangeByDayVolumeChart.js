@@ -65,8 +65,8 @@ class RangeByDayVolumeChart extends React.Component {
     createChart() {
         const {stats, chartContainerWidth, chartContainerHeight} = this.state
 
+        Plotly.purge('stackedVolumeChart')
         if (stats && stats.dates && stats.dates.length > 0 && chartContainerWidth > 0 && chartContainerHeight > 0) {
-            Plotly.purge('stackedVolumeChart')
             const {data, layout} = this.getDataAndLayout(stats, chartContainerWidth, chartContainerHeight)
 
             Plotly.newPlot('stackedVolumeChart', data, layout, {displayModeBar: false})
@@ -136,7 +136,6 @@ class RangeByDayVolumeChart extends React.Component {
         const {selectedFromDate} = this.state
 
         if (day && day.toString('yyyy-MM-dd') !== selectedFromDate.toString('yyyy-MM-dd')) {
-            console.log("from day", day)
             StatsApi.changeRangeByDayFromDayThenRefresh(day)
         }
     }
@@ -145,7 +144,6 @@ class RangeByDayVolumeChart extends React.Component {
         const {selectedToDate} = this.state
 
         if (day && day.toString('yyyy-MM-dd') !== selectedToDate.toString('yyyy-MM-dd')) {
-            console.log("to day", day)
             StatsApi.changeRangeByDayToDayThenRefresh(day)
         }
     }

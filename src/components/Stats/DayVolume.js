@@ -68,8 +68,8 @@ class DayVolume extends React.Component {
     createChart() {
         const {stats, chartContainerWidth, chartContainerHeight} = this.state
 
+        Plotly.purge('dayVolumeChart')
         if (stats && stats.length > 0 && chartContainerWidth > 0 && chartContainerHeight > 0) {
-            Plotly.purge('dayVolumeChart')
             const {data, layout} = StatsVolumeChartUtil.getDataAndLayout(stats, chartContainerWidth, chartContainerHeight)
 
             Plotly.newPlot('dayVolumeChart', data, layout, {displayModeBar: false})
