@@ -61,10 +61,12 @@ class TokenStats extends React.Component {
             '', '', '', '', ''
         ]
 
+        const namePart = longName == name ? "" : ` - ${name}`
+
         return (
             <Conditional displayCondition={inExchange && !! token}>
                 <div className="token-stats">
-                    <b>{longName} - {name}</b>
+                    <b>{longName} {namePart}</b>
                 </div>
 
                 <div className="token-stats">
