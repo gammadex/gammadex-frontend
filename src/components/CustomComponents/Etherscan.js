@@ -6,7 +6,7 @@ import PropTypes from "prop-types"
 export default class Etherscan extends React.Component {
     render() {
         const childContent = this.getChildContent()
-        const linkText = this.getLinkText(childContent)
+        const linkText = this.props.linkText || this.getLinkText(childContent)
         const type = this.props.type
         const typeDescription = this.getTypeDescription(type)
         const address = this.props.address || childContent

@@ -3,6 +3,8 @@ import dispatcher from "../dispatcher"
 import ActionNames from "../actions/ActionNames"
 import * as StatsUtil from "../util/StatsUtil"
 import datejs from 'datejs'
+import * as StatsVolumeChartUtil from "../util/StatsVolumeChartUtil"
+import moment from 'moment'
 
 class StatsStore extends EventEmitter {
     constructor() {
@@ -26,7 +28,7 @@ class StatsStore extends EventEmitter {
             retrieveError: null,
             stats: null,
             date: null,
-            selectedDate: new Date().addDays(-1),
+            selectedDate: moment().startOf('week').subtract(1, 'day').startOf('week').toDate(),
             displayNum: 10,
             includeOther: false,
             rawVolumes: []

@@ -523,15 +523,19 @@ input[type="number"] {
     display: flex;
     align-items: center;
     justify-content: start;
-    flex-basis: 33%;
+}
+
+.upper-header > div.logo-and-main-nav {
+    flex-basis: 40%;
 }
 
 .upper-header > div.token-summary {
+    flex-basis: 20%;
     justify-content: center;
 }
 
 .upper-header > div.user-buttons {
-    flex-basis: 34%;
+    flex-basis: 40%;
     justify-content: flex-end;
 }
 

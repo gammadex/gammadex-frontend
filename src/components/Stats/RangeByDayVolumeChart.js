@@ -158,7 +158,7 @@ class RangeByDayVolumeChart extends React.Component {
         const inputFromDate = selectedFromDate.toString('yyyy-MM-dd')
         const inputToDate = selectedToDate.toString('yyyy-MM-dd')
         const dateRangeErrorClass = rangeTooWideDays > 0 ? " is-invalid " : ""
-        const dateRangeTextErrorClass =  rangeTooWideDays > 0 ? " alert-danger " : " alert-info "
+        const dateRangeTextErrorClass =  rangeTooWideDays > 0 ? " alert-danger " : " alert-secondary "
 
         return (
             <div id="stacked-volume-container" className="stacked-volume-component chart-component">
