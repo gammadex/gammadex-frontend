@@ -43,7 +43,8 @@ class StatsStore extends EventEmitter {
             selectedToDate: new Date().addDays(-1),
             displayNum: 10,
             includeOther: false,
-            rawVolumes: []
+            rawVolumes: [],
+            rangeTooWideDays: 0,
         }
     }
 
@@ -158,6 +159,7 @@ class StatsStore extends EventEmitter {
                 this.rangeByDayVolume.retrieveError = null
                 this.rangeByDayVolume.retrievedStats = false
                 this.rangeByDayVolume.stats = null
+                this.rangeByDayVolume.rangeTooWideDays = 0
                 this.emitChange()
                 break
             }
@@ -199,6 +201,13 @@ class StatsStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_RANGE_TOO_WIDE: {
+                this.rangeByDayVolume.rangeTooWideDays = action.rangeInDays
+                this.emitChange()
+                break
+            }
+
+
         }
     }
 

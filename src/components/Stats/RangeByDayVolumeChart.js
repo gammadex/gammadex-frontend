@@ -153,10 +153,12 @@ class RangeByDayVolumeChart extends React.Component {
     }
 
     render() {
-        const {selectedFromDate, selectedToDate, displayNum} = this.state
+        const {selectedFromDate, selectedToDate, displayNum, rangeTooWideDays} = this.state
 
         const inputFromDate = selectedFromDate.toString('yyyy-MM-dd')
         const inputToDate = selectedToDate.toString('yyyy-MM-dd')
+        const dateRangeErrorClass = rangeTooWideDays > 0 ? " is-invalid " : ""
+        const dateRangeTextErrorClass =  rangeTooWideDays > 0 ? " alert-danger " : " alert-info "
 
         return (
             <div id="stacked-volume-container" className="stacked-volume-component chart-component">
@@ -175,14 +177,16 @@ class RangeByDayVolumeChart extends React.Component {
                                     onDayChange={this.handleFromDayChange}
                                     dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
                                     value={inputFromDate}
-                                    inputProps={{"className": "form-control mr-2"}}/>
+                                    inputProps={{"className": "form-control mr-2 " + dateRangeErrorClass}}/>
 
                                 <span className="mr-2 ml-2">To date</span>
                                 <DayPickerInput
                                     onDayChange={this.handleToDayChange}
                                     dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
                                     value={inputToDate}
-                                    inputProps={{"className": "form-control"}}/>
+                                    inputProps={{"className": "form-control " + dateRangeErrorClass}}/>
+
+                                <div className={" alert ml-2 mb-0 p-1 " + dateRangeTextErrorClass}><i className="fas fa-clock"/> Max range 31 days</div>
                             </div>
 
                             <div className="form-inline">

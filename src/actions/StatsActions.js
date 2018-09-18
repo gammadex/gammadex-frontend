@@ -128,3 +128,10 @@ export function rangeByDayVolumeRetrieved(message) {
         message
     })
 }
+
+export function rangeByDayRangeTooWideError(rangeInDays) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_RANGE_TOO_WIDE,
+        rangeInDays
+    })
+}

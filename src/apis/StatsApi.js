@@ -13,12 +13,24 @@ const RequestReason = {
 
 export function changeRangeByDayFromDayThenRefresh(day) {
     StatsActions.changeRangeByDayVolumeFromDate(day)
-    requestRangeByDayVolume()
+    requestRangeByDayVolumeIfRangeIsOk()
 }
 
 export function changeRangeByDayToDayThenRefresh(day) {
     StatsActions.changeRangeByDayVolumeToDate(day)
-    requestRangeByDayVolume()
+    requestRangeByDayVolumeIfRangeIsOk()
+}
+
+function requestRangeByDayVolumeIfRangeIsOk() {
+    const fromDate = moment(StatsStore.getRangeByDayVolume().selectedFromDate)
+    const toDate =  moment(StatsStore.getRangeByDayVolume().selectedToDate)
+    const duration = moment.duration(toDate.diff(fromDate)).asDays()
+
+    if (duration > 31) {
+        StatsActions.rangeByDayRangeTooWideError(duration)
+    } else {
+        requestRangeByDayVolume()
+    }
 }
 
 export function requestRangeByDayVolume() {
@@ -41,13 +53,13 @@ export function requestDayVolume() {
 }
 
 export function changeWeekVolumeWeekThenRefresh(day) {
-    const {to, from}  = StatsVolumeChartUtil.getWeekRange(day)
+    const {to, from} = StatsVolumeChartUtil.getWeekRange(day)
     StatsActions.changeWeeklyVolumeDate(from)
     requestWeekVolume()
 }
 
 export function requestWeekVolume() {
-    const {to, from}  = StatsVolumeChartUtil.getWeekRange(StatsStore.getWeekVolume().selectedDate)
+    const {to, from} = StatsVolumeChartUtil.getWeekRange(StatsStore.getWeekVolume().selectedDate)
     EtherDeltaWebSocket.getTokenVolume(RequestReason.WeekVolume, from, to)
     StatsActions.weekVolumeRequested(from)
 }
