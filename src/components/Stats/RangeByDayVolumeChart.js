@@ -17,7 +17,7 @@ class RangeByDayVolumeChart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            ...StatsStore.getStackedVolume(),
+            ...StatsStore.getRangeByDayVolume(),
             chartContainerWidth: 100,
             chartContainerHeight: 100,
         }
@@ -136,6 +136,7 @@ class RangeByDayVolumeChart extends React.Component {
         const {selectedFromDate} = this.state
 
         if (day && day.toString('yyyy-MM-dd') !== selectedFromDate.toString('yyyy-MM-dd')) {
+            console.log("from day", day)
             StatsApi.changeRangeByDayFromDayThenRefresh(day)
         }
     }
@@ -144,6 +145,7 @@ class RangeByDayVolumeChart extends React.Component {
         const {selectedToDate} = this.state
 
         if (day && day.toString('yyyy-MM-dd') !== selectedToDate.toString('yyyy-MM-dd')) {
+            console.log("to day", day)
             StatsApi.changeRangeByDayToDayThenRefresh(day)
         }
     }
@@ -154,10 +156,6 @@ class RangeByDayVolumeChart extends React.Component {
 
     render() {
         const {selectedFromDate, selectedToDate, displayNum} = this.state
-
-        if (! selectedFromDate || ! selectedToDate) {
-            return null
-        }
 
         const inputFromDate = selectedFromDate.toString('yyyy-MM-dd')
         const inputToDate = selectedToDate.toString('yyyy-MM-dd')

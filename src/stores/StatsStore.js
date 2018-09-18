@@ -45,11 +45,6 @@ class StatsStore extends EventEmitter {
             includeOther: false,
             rawVolumes: []
         }
-
-        this.stackedVolume = {
-            stats: [],
-            rawVolumes: []
-        }
     }
 
     getDayVolume = () => {
@@ -58,10 +53,6 @@ class StatsStore extends EventEmitter {
 
     getWeekVolume = () => {
         return this.weekVolume
-    }
-
-    getStackedVolume = () => {
-        return this.stackedVolume
     }
 
     getRangeByDayVolume = () => {
