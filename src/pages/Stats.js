@@ -10,15 +10,15 @@ class Stats extends Component {
         return (
             <div>
                 <div className="row history-row">
-                    <div className="col-lg-6 deposit-history-container">
+                    <div className="col-lg-6 deposit-history-container full-height">
                         <DayVolume/>
                     </div>
-                    <div className="col-lg-6 withdraw-history-container">
+                    <div className="col-lg-6 withdraw-history-container full-height">
                         <WeekVolume/>
                     </div>
                 </div>
                 <div className="row history-row">
-                    <div className="col-lg-12 trade-history-container">
+                    <div className="col-lg-12 trade-history-container full-height">
                         <RangeByDayVolumeChart/>
                     </div>
                 </div>

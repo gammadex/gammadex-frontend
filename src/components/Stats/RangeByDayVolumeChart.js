@@ -128,7 +128,7 @@ class RangeByDayVolumeChart extends React.Component {
     onResize = (width, height) => {
         this.setState({
             chartContainerWidth: width,
-            chartContainerHeight: height - 60
+            chartContainerHeight: height
         })
     }
 
@@ -169,39 +169,39 @@ class RangeByDayVolumeChart extends React.Component {
                         />
                     </div>
 
-                    <BoxSection id="stacked-volume-chart-resize-container">
-                        <div className="token-stats-inputs">
-                            <div className="form-inline day-picker">
-                                <span className="mr-2">From date</span>
-                                <DayPickerInput
-                                    onDayChange={this.handleFromDayChange}
-                                    dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
-                                    value={inputFromDate}
-                                    inputProps={{"className": "form-control mr-2 " + dateRangeErrorClass}}/>
+                    <div className="token-stats-inputs">
+                        <div className="form-inline day-picker">
+                            <span className="mr-2">From date</span>
+                            <DayPickerInput
+                                onDayChange={this.handleFromDayChange}
+                                dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
+                                value={inputFromDate}
+                                inputProps={{"className": "form-control mr-2 " + dateRangeErrorClass}}/>
 
-                                <span className="mr-2 ml-2">To date</span>
-                                <DayPickerInput
-                                    onDayChange={this.handleToDayChange}
-                                    dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
-                                    value={inputToDate}
-                                    inputProps={{"className": "form-control " + dateRangeErrorClass}}/>
+                            <span className="mr-2 ml-2">To date</span>
+                            <DayPickerInput
+                                onDayChange={this.handleToDayChange}
+                                dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
+                                value={inputToDate}
+                                inputProps={{"className": "form-control " + dateRangeErrorClass}}/>
 
-                                <div className={" alert ml-2 mb-0 p-1 " + dateRangeTextErrorClass}><i className="fas fa-clock"/> Max range 31 days</div>
-                            </div>
-
-                            <div className="form-inline">
-                                <span className="mr-2">Top</span>
-                                <Input type="select"
-                                       value={displayNum}
-                                       onChange={this.handleNumDisplayTokensChange}>
-                                    <option>5</option>
-                                    <option>10</option>
-                                    <option>20</option>
-                                </Input>
-                                <span className="ml-2">tokens</span>
-                            </div>
+                            <div className={" alert ml-2 mb-0 p-1 " + dateRangeTextErrorClass}><i className="fas fa-clock"/> Max range 31 days</div>
                         </div>
 
+                        <div className="form-inline">
+                            <span className="mr-2">Top</span>
+                            <Input type="select"
+                                   value={displayNum}
+                                   onChange={this.handleNumDisplayTokensChange}>
+                                <option>5</option>
+                                <option>10</option>
+                                <option>20</option>
+                            </Input>
+                            <span className="ml-2">tokens</span>
+                        </div>
+                    </div>
+
+                    <BoxSection id="stacked-volume-chart-resize-container">
                         <ReactResizeDetector handleWidth handleHeight onResize={this.onResize} resizableElementId="stacked-volume-chart-resize-container"/>
                         <div id="stackedVolumeChart"/>
                     </BoxSection>
