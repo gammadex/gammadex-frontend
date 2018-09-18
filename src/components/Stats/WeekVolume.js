@@ -208,7 +208,7 @@ class WeekVolume extends React.Component {
                                            checked={includeOther}
                                            onChange={this.handleShowOtherChange}
                                     />
-                                    <label className="custom-control-label center-label" htmlFor="showOtherWeekVolume">Include others</label>
+                                    <label className="custom-control-label center-label" htmlFor="showOtherWeekVolume">Include other tokens</label>
                                 </div>
                             </div>
                         </div>

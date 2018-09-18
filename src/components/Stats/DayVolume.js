@@ -147,7 +147,7 @@ class DayVolume extends React.Component {
                                            checked={includeOther}
                                            onChange={this.handleShowOtherChange}
                                     />
-                                    <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Include others</label>
+                                    <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Include other tokens</label>
                                 </div>
                             </div>
                         </div>
