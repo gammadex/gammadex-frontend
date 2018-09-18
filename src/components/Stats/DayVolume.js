@@ -1,5 +1,6 @@
 import React from "react"
 import StatsStore from "../../stores/StatsStore"
+import WebSocketStore from "../../stores/WebSocketStore"
 import _ from 'lodash'
 import {withRouter} from "react-router-dom"
 import {withAnalytics} from '../../util/Analytics'
@@ -21,30 +22,47 @@ class DayVolume extends React.Component {
             ...StatsStore.getDayVolume(),
             chartContainerWidth: 100,
             chartContainerHeight: 100,
+            websocketConnected: WebSocketStore.getConnectionState().connected
         }
 
         this.statsStoreUpdated = this.statsStoreUpdated.bind(this)
-    }
-
-    componentWillMount() {
-        StatsStore.on("change", this.statsStoreUpdated)
-        StatsApi.requestDayVolume()
+        this.ensureChartDataPresent = this.ensureChartDataPresent.bind(this)
+        this.websocketChanged = this.websocketChanged.bind(this)
+        this.requested = false
     }
 
     componentWillUnmount() {
         StatsStore.removeListener("change", this.statsStoreUpdated)
+        WebSocketStore.removeListener("change", this.websocketChanged)
     }
 
     componentDidMount() {
+        StatsStore.on("change", this.statsStoreUpdated)
+        WebSocketStore.on("change", this.websocketChanged)
         this.createChart()
+        this.ensureChartDataPresent()
     }
 
     componentDidUpdate() {
+        this.ensureChartDataPresent()
         this.createChart()
     }
 
     statsStoreUpdated() {
         this.setState(StatsStore.getDayVolume())
+    }
+
+    ensureChartDataPresent() {
+        const {retrievingStats, retrievedStats, retrieveError, websocketConnected} = this.state
+
+        if (!this.requested && !retrievingStats && !retrievedStats && !retrieveError && websocketConnected) {
+            this.requested = true
+            setTimeout(() => StatsApi.requestDayVolume(), 1)
+        }
+    }
+
+    websocketChanged() {
+        this.setState({websocketConnected: WebSocketStore.getConnectionState().connected})
     }
 
     createChart() {
@@ -82,7 +100,7 @@ class DayVolume extends React.Component {
     }
 
     render() {
-        const {retrievingDayVolumeStats, retrievingDayVolumeError, stats, date, selectedDate, displayNum, includeOther} = this.state
+        const {retrievingStats, retrieveError, stats, date, selectedDate, displayNum, includeOther} = this.state
 
         const inputDate = selectedDate.toString('yyyy-MM-dd')
 
@@ -97,8 +115,16 @@ class DayVolume extends React.Component {
 
                     <div className="full-height">
                         <div className="token-stats-inputs">
-                            <div className="form-inline">
+                            <div className="form-inline day-picker">
+                                <span className="mr-2">Date</span>
+                                <DayPickerInput
+                                    onDayChange={this.handleDayChange}
+                                    dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
+                                    value={inputDate}
+                                    inputProps={{"className": "form-control"}}/>
+                            </div>
 
+                            <div className="form-inline">
                                 <span className="mr-2">Top</span>
 
                                 <Input type="select"
@@ -110,16 +136,6 @@ class DayVolume extends React.Component {
                                 </Input>
 
                                 <span className="ml-2">tokens</span>
-
-                            </div>
-
-                            <div className="form-inline day-picker">
-                                <span className="mr-2">Date</span>
-                                <DayPickerInput
-                                    onDayChange={this.handleDayChange}
-                                    dayPickerProps={{disabledDays:StatsVolumeChartUtil.statsDayRange()}}
-                                    value={inputDate}
-                                    inputProps={{"className": "form-control"}}/>
                             </div>
 
                             <div className="form-inline">
@@ -129,9 +145,9 @@ class DayVolume extends React.Component {
                                            id="showOtherDayVolume"
                                            value="true"
                                            checked={includeOther}
-                                            onChange={this.handleShowOtherChange}
+                                           onChange={this.handleShowOtherChange}
                                     />
-                                    <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Include others total</label>
+                                    <label className="custom-control-label center-label" htmlFor="showOtherDayVolume">Include others</label>
                                 </div>
                             </div>
                         </div>

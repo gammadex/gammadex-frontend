@@ -9,8 +9,9 @@ class StatsStore extends EventEmitter {
         super()
 
         this.dayVolume = {
-            retrievingDayVolumeStats: false,
-            retrievingDayVolumeError: null,
+            retrievingStats: false,
+            retrievedStats: false,
+            retrieveError: null,
             stats: [],
             date: null,
             selectedDate: new Date().addDays(-1),
@@ -20,13 +21,33 @@ class StatsStore extends EventEmitter {
         }
 
         this.weekVolume = {
-            retrievingDayVolumeStats: false,
-            retrievingDayVolumeError: null,
+            retrievingStats: false,
+            retrievedStats: false,
+            retrieveError: null,
             stats: [],
             date: null,
             selectedDate: new Date().addDays(-1),
             displayNum: 10,
             includeOther: false,
+            rawVolumes: []
+        }
+
+        this.rangeByDayVolume = {
+            retrievingStats: false,
+            retrievedStats: false,
+            retrieveError: null,
+            stats: [],
+            fromDate: null,
+            toDate: null,
+            selectedFromDate: new Date().addDays(-30),
+            selectedToDate: new Date().addDays(-1),
+            displayNum: 10,
+            includeOther: false,
+            rawVolumes: []
+        }
+
+        this.stackedVolume = {
+            stats: [],
             rawVolumes: []
         }
     }
@@ -39,6 +60,14 @@ class StatsStore extends EventEmitter {
         return this.weekVolume
     }
 
+    getStackedVolume = () => {
+        return this.stackedVolume
+    }
+
+    getRangeByDayVolume = () => {
+        return this.rangeByDayVolume
+    }
+
     emitChange() {
         this.emit("change")
     }
@@ -46,20 +75,23 @@ class StatsStore extends EventEmitter {
     handleActions(action) {
         switch (action.type) {
             case ActionNames.TOKEN_VOLUME_DAY_VOLUME_REQUEST_SENT: {
-                this.dayVolume.retrievingDayVolumeStats = true
-                this.dayVolume.retrievingDayVolumeError = null
+                this.dayVolume.retrievingStats = true
+                this.dayVolume.retrieveError = null
+                this.dayVolume.retrievedStats = false
                 this.emitChange()
                 break
             }
             case ActionNames.TOKEN_VOLUME_DAY_VOLUME_REQUEST_FAILED: {
-                this.dayVolume.retrievingDayVolumeStats = false
-                this.dayVolume.retrievingDayVolumeError = action.error
+                this.dayVolume.retrievingStats = false
+                this.dayVolume.retrieveError = action.error
+                this.dayVolume.retrievedStats = false
                 this.emitChange()
                 break
             }
             case ActionNames.TOKEN_VOLUME_DAY_VOLUME_REQUEST_RETRIEVED: {
                 this.dayVolume.date = action.message.request.fromDate
                 this.dayVolume.rawVolumes = action.message.volumes
+                this.dayVolume.retrievedStats = true
                 this.updateDayStats()
                 this.emitChange()
                 break
@@ -81,22 +113,25 @@ class StatsStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+
             case ActionNames.TOKEN_VOLUME_WEEK_VOLUME_REQUEST_SENT: {
-                this.weekVolume.retrievingDayVolumeStats = true
-                this.weekVolume.retrievingDayVolumeError = null
+                this.weekVolume.retrievingStats = true
+                this.weekVolume.retrieveError = null
+                this.weekVolume.retrievedStats = false
                 this.emitChange()
                 break
             }
             case ActionNames.TOKEN_VOLUME_WEEK_VOLUME_REQUEST_FAILED: {
-                this.weekVolume.retrievingDayVolumeStats = false
-                this.weekVolume.retrievingDayVolumeError = action.error
+                this.weekVolume.retrievingStats = false
+                this.weekVolume.retrieveError = action.error
+                this.weekVolume.retrievedStats = false
                 this.emitChange()
                 break
             }
             case ActionNames.TOKEN_VOLUME_WEEK_VOLUME_REQUEST_RETRIEVED: {
-                console.log("volume retrieved", action)
                 this.weekVolume.date = action.message.request.fromDate
                 this.weekVolume.rawVolumes = action.message.volumes
+                this.weekVolume.retrievedStats = true
                 this.updateWeekStats()
                 this.emitChange()
                 break
@@ -118,6 +153,51 @@ class StatsStore extends EventEmitter {
                 this.emitChange()
                 break
             }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_SENT: {
+                this.rangeByDayVolume.retrievingStats = true
+                this.rangeByDayVolume.retrieveError = null
+                this.rangeByDayVolume.retrievedStats = false
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_FAILED: {
+                this.rangeByDayVolume.retrievingStats = false
+                this.rangeByDayVolume.retrieveError = action.error
+                this.rangeByDayVolume.retrievedStats = false
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_RETRIEVED: {
+                this.rangeByDayVolume.date = action.message.request.fromDate
+                this.rangeByDayVolume.rawVolumes = action.message.volumes
+                this.rangeByDayVolume.retrievedStats = true
+                window.xxx = action.message.volumes
+                this.updateRangeByDayStats()
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_FROM_DATE: {
+                this.rangeByDayVolume.selectedFromDate = action.date
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_TO_DATE: {
+                this.rangeByDayVolume.selectedToDate = action.date
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_DISPLAY_NUM: {
+                this.rangeByDayVolume.displayNum = action.displayNum
+                this.updateRangeByDayStats()
+                this.emitChange()
+                break
+            }
+            case ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_SHOW_OTHER: {
+                this.rangeByDayVolume.includeOther = action.isShow
+                this.updateRangeByDayStats()
+                this.emitChange()
+                break
+            }
         }
     }
 
@@ -127,6 +207,10 @@ class StatsStore extends EventEmitter {
 
     updateWeekStats() {
         this.weekVolume.stats = StatsUtil.topStats(this.weekVolume.rawVolumes, this.weekVolume.displayNum, this.weekVolume.includeOther)
+    }
+
+    updateRangeByDayStats() {
+        this.rangeByDayVolume.stats = StatsUtil.topStatsByDay(this.rangeByDayVolume.rawVolumes, this.rangeByDayVolume.displayNum, this.rangeByDayVolume.includeOther)
     }
 }
 

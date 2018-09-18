@@ -783,6 +783,18 @@ user-guide-component {
     min-height: calc(100% - 40px - 40px);
 }
 
+/**********/
+
+.stacked-volume-component {
+    height:100%;
+}
+
+.stacked-volume-component .card {
+    height:100%;
+}
+
+/**********/
+
 .price-chart-component .card-body {
     height: calc(100% - 40px - 40px);
     padding-top: 0;
@@ -1655,4 +1667,7 @@ body {
     justify-content: space-around;
     align-items: center;
     padding:8px;
+    height:60px;
+    max-height:60px;
+    min-height:60px;
 }

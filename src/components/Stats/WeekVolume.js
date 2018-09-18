@@ -15,6 +15,7 @@ import * as StatsActions from "../../actions/StatsActions"
 import {Input} from "reactstrap"
 import * as StatsVolumeChartUtil from "../../util/StatsVolumeChartUtil"
 import moment from 'moment'
+import WebSocketStore from "../../stores/WebSocketStore"
 
 function getWeekDays(weekStart) {
     const days = [weekStart]
@@ -37,40 +38,55 @@ class WeekVolume extends React.Component {
             chartContainerHeight: 100,
             hoverRange: undefined,
             selectedDays: [],
+            websocketConnected: WebSocketStore.getConnectionState().connected
         }
 
         this.statsStoreUpdated = this.statsStoreUpdated.bind(this)
-    }
-
-    componentWillMount() {
-        StatsStore.on("change", this.statsStoreUpdated)
-        StatsApi.requestWeekVolume()
+        this.ensureChartDataPresent = this.ensureChartDataPresent.bind(this)
+        this.websocketChanged = this.websocketChanged.bind(this)
+        this.requested = false
     }
 
     componentWillUnmount() {
         StatsStore.removeListener("change", this.statsStoreUpdated)
+        WebSocketStore.removeListener("change", this.websocketChanged)
     }
 
     componentDidMount() {
+        StatsStore.on("change", this.statsStoreUpdated)
+        WebSocketStore.on("change", this.websocketChanged)
         this.createChart()
+        this.ensureChartDataPresent()
     }
 
     componentDidUpdate() {
         this.createChart()
+        this.ensureChartDataPresent()
     }
 
     statsStoreUpdated() {
         this.setState(StatsStore.getWeekVolume())
     }
 
+    ensureChartDataPresent() {
+        const {retrievingStats, retrievedStats, retrieveError, websocketConnected} = this.state
+
+        if (!this.requested && !retrievingStats && !retrievedStats && !retrieveError && websocketConnected) {
+            this.requested = true
+            setTimeout(() => StatsApi.requestWeekVolume(), 1)
+        }
+    }
+
+    websocketChanged() {
+        this.setState({websocketConnected: WebSocketStore.getConnectionState().connected})
+    }
+
     createChart() {
         const {stats, chartContainerWidth, chartContainerHeight} = this.state
 
-        console.log("c", stats, chartContainerWidth, chartContainerHeight)
         if (stats && stats.length > 0 && chartContainerWidth > 0 && chartContainerHeight > 0) {
             Plotly.purge('weekVolumeChart')
             const {data, layout} = StatsVolumeChartUtil.getDataAndLayout(stats, chartContainerWidth, chartContainerHeight, '#00bc8c')
-        console.log("ccc")
 
             Plotly.newPlot('weekVolumeChart', data, layout, {displayModeBar: false})
         }
@@ -124,7 +140,7 @@ class WeekVolume extends React.Component {
     }
 
     render() {
-        const {retrievingWeekVolumeStats, retrievingWeekVolumeError, stats, date, selectedDate, displayNum, includeOther, hoverRange, selectedDays} = this.state
+        const {retrievingStats, retrieveError, stats, date, selectedDate, displayNum, includeOther, hoverRange, selectedDays} = this.state
 
         const daysAreSelected = selectedDays.length > 0
 
@@ -153,24 +169,8 @@ class WeekVolume extends React.Component {
 
                     <div className="full-height">
                         <div className="token-stats-inputs">
-                            <div className="form-inline">
-
-                                <span className="mr-2">Top</span>
-
-                                <Input type="select"
-                                       value={displayNum}
-                                       onChange={this.handleNumDisplayTokensChange}>
-                                    <option>5</option>
-                                    <option>10</option>
-                                    <option>20</option>
-                                </Input>
-
-                                <span className="ml-2">tokens</span>
-
-                            </div>
-
                             <div className="form-inline day-picker week-picker">
-                                <span className="mr-2">Date</span>
+                                <span className="mr-2">Week start date</span>
                                 <DayPickerInput
                                     onDayChange={this.handleWeekChange}
                                     dayPickerProps={{
@@ -188,6 +188,18 @@ class WeekVolume extends React.Component {
                             </div>
 
                             <div className="form-inline">
+                                <span className="mr-2">Top</span>
+                                <Input type="select"
+                                       value={displayNum}
+                                       onChange={this.handleNumDisplayTokensChange}>
+                                    <option>5</option>
+                                    <option>10</option>
+                                    <option>20</option>
+                                </Input>
+                                <span className="ml-2">tokens</span>
+                            </div>
+
+                            <div className="form-inline">
                                 <div className="custom-control custom-checkbox">
                                     <input type="checkbox"
                                            className="custom-control-input"
@@ -196,7 +208,7 @@ class WeekVolume extends React.Component {
                                            checked={includeOther}
                                            onChange={this.handleShowOtherChange}
                                     />
-                                    <label className="custom-control-label center-label" htmlFor="showOtherWeekVolume">Include others total</label>
+                                    <label className="custom-control-label center-label" htmlFor="showOtherWeekVolume">Include others</label>
                                 </div>
                             </div>
                         </div>

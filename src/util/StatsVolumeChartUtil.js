@@ -41,7 +41,7 @@ export function getDataAndLayout(stats, chartContainerWidth, chartContainerHeigh
         margin: {
             l: 60,
             r: 60,
-            b: 60,
+            b: 100,
             t: 20,
             pad: 4
         },

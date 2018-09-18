@@ -84,3 +84,47 @@ export function weekVolumeRetrieved(message) {
         message
     })
 }
+
+
+export function changeRangeByDayVolumeFromDate(date) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_FROM_DATE,
+        date
+    })
+}
+
+export function changeRangeByDayVolumeToDate(date) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_TO_DATE,
+        date
+    })
+}
+
+export function changeRangeByDayVolumeDisplayNum(displayNum) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_CHANGE_DISPLAY_NUM,
+        displayNum
+    })
+}
+
+export function rangeByDayVolumeRequested(fromDate, toDate) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_SENT,
+        fromDate,
+        toDate
+    })
+}
+
+export function rangeByDayVolumeRequestFailed(error) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_FAILED,
+        error
+    })
+}
+
+export function rangeByDayVolumeRetrieved(message) {
+    dispatcher.dispatch({
+        type: ActionNames.TOKEN_VOLUME_RANGE_BY_DAY_VOLUME_REQUEST_RETRIEVED,
+        message
+    })
+}

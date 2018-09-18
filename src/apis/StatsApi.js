@@ -1,13 +1,31 @@
 import * as StatsActions from "../actions/StatsActions"
 import StatsStore from "../stores/StatsStore"
 import EtherDeltaWebSocket from "../EtherDeltaSocket"
-import * as TokenBalancesActions from "../actions/TokenBalancesActions"
 import moment from 'moment'
 import * as StatsVolumeChartUtil from "../util/StatsVolumeChartUtil"
+
 
 const RequestReason = {
     DayVolume: 'DayVolume',
     WeekVolume: 'WeekVolume',
+    RangeByDayVolume: 'RangeByDayVolume',
+}
+
+export function changeRangeByDayFromDayThenRefresh(day) {
+    StatsActions.changeRangeByDayVolumeFromDate(day)
+    requestRangeByDayVolume()
+}
+
+export function changeRangeByDayToDayThenRefresh(day) {
+    StatsActions.changeRangeByDayVolumeToDate(day)
+    requestRangeByDayVolume()
+}
+
+export function requestRangeByDayVolume() {
+    const fromDate = StatsStore.getRangeByDayVolume().selectedFromDate
+    const toDate = StatsStore.getRangeByDayVolume().selectedToDate
+    EtherDeltaWebSocket.getTokenVolume(RequestReason.RangeByDayVolume, fromDate, toDate, null, 'day')
+    StatsActions.rangeByDayVolumeRequested(fromDate, toDate)
 }
 
 export function changeDayVolumeDayThenRefresh(day) {
@@ -42,12 +60,16 @@ export function handleTokenVolumeResponse(message) {
             StatsActions.dayVolumeRequestFailed(message.message)
         } else if (reason === 'WeekVolume') {
             StatsActions.weekVolumeRequestFailed(message.message)
+        } else if (reason === 'RangeByDayVolume') {
+            StatsActions.rangeByDayVolumeRequestFailed(message.message)
         }
     } else {
         if (reason === 'DayVolume') {
             StatsActions.dayVolumeRetrieved(message.tokenVolume)
         } else if (reason === 'WeekVolume') {
             StatsActions.weekVolumeRetrieved(message.tokenVolume)
+        } else if (reason === 'RangeByDayVolume') {
+            StatsActions.rangeByDayVolumeRetrieved(message.tokenVolume)
         }
     }
 }
