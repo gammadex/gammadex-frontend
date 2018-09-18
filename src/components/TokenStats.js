@@ -83,7 +83,7 @@ class TokenStats extends React.Component {
                 </div>
 
                 <div className="token-stats">
-                    <div className="token-stat-name">24h Price Change</div>
+                    <div className="token-stat-name">24h Change</div>
                     <div className="token-stat-value"><Round percent suffix="%" fallback="0" classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round></div>
                 </div>
 
