@@ -41,8 +41,8 @@ class RangeByDayVolumeChart extends React.Component {
     }
 
     componentDidUpdate() {
-        this.createChart()
         this.ensureChartDataPresent()
+        this.createChart()
     }
 
     statsStoreUpdated() {
@@ -50,7 +50,8 @@ class RangeByDayVolumeChart extends React.Component {
     }
 
     ensureChartDataPresent() {
-        const {retrievingStats, retrievedStats, retrieveError, websocketConnected} = this.state
+        const {retrievingStats, retrievedStats, retrieveError/*, websocketConnected*/} = this.state
+        const websocketConnected = WebSocketStore.getConnectionState().connected
 
         if (!this.requested && !retrievingStats && !retrievedStats && !retrieveError && websocketConnected) {
             this.requested = true
@@ -164,7 +165,7 @@ class RangeByDayVolumeChart extends React.Component {
             <div id="stacked-volume-container" className="stacked-volume-component chart-component">
                 <div className="card">
                     <div className="card-header">
-                        <BoxTitle title="Top Tokens By Date Range"
+                        <BoxTitle title="Top Tokens ETH Volume By Date Range"
                                   componentId="stacked-volume-container"
                         />
                     </div>

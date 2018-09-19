@@ -69,7 +69,8 @@ class WeekVolume extends React.Component {
     }
 
     ensureChartDataPresent() {
-        const {retrievingStats, retrievedStats, retrieveError, websocketConnected} = this.state
+        const {retrievingStats, retrievedStats, retrieveError/*, websocketConnected*/} = this.state
+        const websocketConnected = WebSocketStore.getConnectionState().connected
 
         if (!this.requested && !retrievingStats && !retrievedStats && !retrieveError && websocketConnected) {
             this.requested = true
@@ -162,7 +163,7 @@ class WeekVolume extends React.Component {
             <div id="week-volume-container" className="week-volume-component chart-component">
                 <div className="card">
                     <div className="card-header">
-                        <BoxTitle title="Top Tokens Volume By Week"
+                        <BoxTitle title="Top Tokens ETH Volume By Week"
                                   componentId="week-volume-container"
                         />
                     </div>
