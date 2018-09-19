@@ -117,7 +117,7 @@ class DayVolume extends React.Component {
                     <div className="full-height">
                         <div className="token-stats-inputs">
                             <div className="form-inline day-picker">
-                                <span className="mr-2">Date</span>
+                                <span className="mr-2 no-mobile">Date</span>
                                 <DayPickerInput
                                     onDayChange={this.handleDayChange}
                                     dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
@@ -126,7 +126,7 @@ class DayVolume extends React.Component {
                             </div>
 
                             <div className="form-inline">
-                                <span className="mr-2">Top</span>
+                                <span className="mr-2 no-mobile">Top</span>
 
                                 <Input type="select"
                                        value={displayNum}
@@ -136,10 +136,10 @@ class DayVolume extends React.Component {
                                     <option>20</option>
                                 </Input>
 
-                                <span className="ml-2">tokens</span>
+                                <span className="ml-2 no-mobile">tokens</span>
                             </div>
 
-                            <div className="form-inline">
+                            <div className="form-inline no-mobile">
                                 <div className="custom-control custom-checkbox">
                                     <input type="checkbox"
                                            className="custom-control-input"

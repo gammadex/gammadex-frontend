@@ -170,27 +170,27 @@ class RangeByDayVolumeChart extends React.Component {
                         />
                     </div>
 
-                    <div className="token-stats-inputs">
+                    <div className="token-stats-inputs no-mobile">
                         <div className="form-inline day-picker">
-                            <span className="mr-2">From date</span>
+                            <span className="mr-2 no-mobile">From date</span>
                             <DayPickerInput
                                 onDayChange={this.handleFromDayChange}
                                 dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
                                 value={inputFromDate}
                                 inputProps={{"className": "form-control mr-2 " + dateRangeErrorClass}}/>
 
-                            <span className="mr-2 ml-2">To date</span>
+                            <span className="mr-2 ml-2 no-mobile">To date</span>
                             <DayPickerInput
                                 onDayChange={this.handleToDayChange}
                                 dayPickerProps={{disabledDays: StatsVolumeChartUtil.statsDayRange()}}
                                 value={inputToDate}
                                 inputProps={{"className": "form-control " + dateRangeErrorClass}}/>
 
-                            <div className={" alert ml-2 mb-0 p-1 " + dateRangeTextErrorClass}><i className="fas fa-clock"/> Max range 31 days</div>
+                            <div className={" alert ml-2 mb-0 p-1 no-mobile " + dateRangeTextErrorClass}><i className="fas fa-clock"/> Max range 31 days</div>
                         </div>
 
                         <div className="form-inline">
-                            <span className="mr-2">Top</span>
+                            <span className="mr-2 no-mobile">Top</span>
                             <Input type="select"
                                    value={displayNum}
                                    onChange={this.handleNumDisplayTokensChange}>
@@ -198,7 +198,7 @@ class RangeByDayVolumeChart extends React.Component {
                                 <option>10</option>
                                 <option>20</option>
                             </Input>
-                            <span className="ml-2">tokens</span>
+                            <span className="ml-2 no-mobile">tokens</span>
                         </div>
                     </div>
 
