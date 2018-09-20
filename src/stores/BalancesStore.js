@@ -19,6 +19,7 @@ class BalancesStore extends EventEmitter {
         this.sortOrder = TokenBalanceSort.SYMBOL
         this.ethereumPriceUsd = null
         this.filterLowValue = FavouritesDao.getFavourite('filterLowValueBalances', true)
+        this.chunksReceivedMap = new Map()
     }
 
     _clearState() {
@@ -59,10 +60,20 @@ class BalancesStore extends EventEmitter {
                 break
             }
             case ActionNames.MESSAGE_RECEIVED_TOKEN_BALANCES: {
-                this._clearState()
-                this.refreshInProgress = false
                 if (action.balances && action.balances.balances) {
-                    this.balances = this.updateBalancesWithPrices(action.balances.balances)
+                    if(this.chunksReceivedMap.has(action.balances.sequenceNumber)) {
+                        const bumped = this.chunksReceivedMap.get(action.balances.sequenceNumber) + 1
+                        this.chunksReceivedMap.set(action.balances.sequenceNumber, bumped)
+                    } else {
+                        this.chunksReceivedMap.set(action.balances.sequenceNumber, 1)
+                    }
+
+                    if(this.chunksReceivedMap.get(action.balances.sequenceNumber) === action.balances.chunks) {
+                        this.refreshInProgress = false
+                    }
+                    const tokenAddressesInThisBatch = action.balances.balances.map(b => b.token.address)
+                    const balancesNoTokensFromNewBatch = this.balances.filter(b => !tokenAddressesInThisBatch.includes(b.token.address))
+                    this.balances = [...balancesNoTokensFromNewBatch, ...this.updateBalancesWithPrices(action.balances.balances)]
                     this.sortBalances()
                     this.lastUpdateTime = new Date().getTime()
                     this.emitChange()

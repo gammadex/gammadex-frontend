@@ -56,7 +56,7 @@ class EtherDeltaWebSocket {
         this.socket.emit('getTokens', {})
     }
 
-    getTokenBalances(user) {
+    getTokenBalances(user, sequenceNumber) {
         if (!this.socket) {
             console.warn("Can't request token balances - not connected")
             return
@@ -64,7 +64,7 @@ class EtherDeltaWebSocket {
 
         console.log("Requesting token balances")
 
-        this.socket.emit('getTokenBalances', {user})
+        this.socket.emit('getTokenBalances', {user, sequenceNumber})
     }
 
     emitOrder(order) {

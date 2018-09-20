@@ -96,7 +96,10 @@ export function connect() {
                 if (message.status === 'error') {
                     TokenBalancesActions.tokenBalancesFailed()
                 } else {
-                    TokenBalancesActions.tokenBalancesRetrieved(message)
+                    const hasSeqNum = localStorage.tokenBalancesSeqNum != null && localStorage.tokenBalancesSeqNum !== ""
+                    if(hasSeqNum && Number(localStorage.tokenBalancesSeqNum) === message.sequenceNumber) {
+                        TokenBalancesActions.tokenBalancesRetrieved(message)
+                    }
                 }
             }
         }
@@ -140,7 +143,10 @@ export function getMarket(notifyRequested = true) {
 
 export function getTokenBalances(account) {
     if (account) {
-        EtherDeltaWebSocket.getTokenBalances(account)
+        const hasSeqNum = localStorage.tokenBalancesSeqNum != null && localStorage.tokenBalancesSeqNum !== ""
+        const nextSeqNum = hasSeqNum ? Number(localStorage.tokenBalancesSeqNum) + 1 : 0
+        localStorage.tokenBalancesSeqNum = nextSeqNum
+        EtherDeltaWebSocket.getTokenBalances(account, nextSeqNum)
         TokenBalancesActions.sentGetTokenBalances()
     }
 }
