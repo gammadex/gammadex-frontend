@@ -523,15 +523,19 @@ input[type="number"] {
     display: flex;
     align-items: center;
     justify-content: start;
-    flex-basis: 33%;
+}
+
+.upper-header > div.logo-and-main-nav {
+    flex-basis: 40%;
 }
 
 .upper-header > div.token-summary {
+    flex-basis: 20%;
     justify-content: center;
 }
 
 .upper-header > div.user-buttons {
-    flex-basis: 34%;
+    flex-basis: 40%;
     justify-content: flex-end;
 }
 
@@ -753,6 +757,51 @@ user-guide-component {
 
 .price-chart-form {
     margin: 5px 0px 5px 3px;
+}
+
+.day-volume-component {
+    height:100%;
+}
+
+.day-volume-component .card {
+    height:100%;
+    min-height: calc(100% - 40px);
+}
+
+.day-volume-component .card-body {
+    height:100%;
+    min-height: calc(100% - 40px - 40px);
+}
+
+.week-volume-component {
+    height:100%;
+}
+
+.week-volume-component .card {
+    height:100%;
+    min-height: calc(100% - 40px);
+}
+
+.week-volume-component .card-body {
+    height:100%;
+    min-height: calc(100% - 40px - 40px);
+}
+
+/**********/
+
+.stacked-volume-component {
+    height:100%;
+}
+
+.stacked-volume-component .card {
+    height:100%;
+}
+
+/**********/
+
+.price-chart-component .card-body {
+    height: calc(100% - 40px - 40px);
+    padding-top: 0;
 }
 
 .order-depth-chart-component {
@@ -1435,7 +1484,7 @@ body {
 
     .open-orders-pending-trades-component, .token-chooser-component, .unlisted-tokens-component,
     .market-trades-component, .price-chart-component, .order-depth-chart-component, .bids-and-offers-component,
-    .history-component, .all-balances-component {
+    .history-component, .all-balances-component, .stacked-volume-component, .day-volume-component, .week-volume-component {
         height: 42px;
         min-height: 42px;
         max-height: 42px;
@@ -1607,4 +1656,31 @@ body {
 
 .highlight-eth {
     font-weight:bold;
+}
+
+.day-picker > div > div {
+    position: absolute;
+}
+
+.day-picker-num-days {
+    width:60px !important;
+}
+
+.token-stats-inputs {
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+    padding:0px;
+    height:50px;
+    max-height:50px;
+    min-height:50px;
+}
+
+.DayPickerInput {
+    width:80px;
+}
+
+.DayPickerInput input {
+    width:80px;
+    max-width:80px;
 }

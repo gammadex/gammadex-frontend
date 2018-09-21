@@ -6,7 +6,8 @@ const Routes = {
     UserGuide: "/user-guide/",
     View: "/view/",
     Balances: "/balances/",
-    NoTrack: "/notrack/"
+    NoTrack: "/notrack/",
+    Stats: "/token-stats/",
 }
 
 export default Routes

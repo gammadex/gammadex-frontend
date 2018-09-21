@@ -19,7 +19,7 @@ export default class Title extends React.Component {
     updateTitleText() {
         const {token} = this.props
 
-        const title = token ? `${token.symbol}/ETH | GammaDEX | Trade ${token.name}` : "GammaDEX"
+        const title = (token && token.symbol && token.name) ? `${token.symbol}/ETH | GammaDEX | Trade ${token.name}` : "GammaDEX"
 
         document.title = title
     }

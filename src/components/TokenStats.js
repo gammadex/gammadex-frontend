@@ -51,17 +51,24 @@ class TokenStats extends React.Component {
         const {serverTickers} = this.state
         const percentChange = token ? _.pick(serverTickers[(token.address || '').toLowerCase()], ['percentChange'])['percentChange'] : 0.0
         const {low, high, tokenVolume, ethVolume, last } = this.state.tradeStats
-        const [title, contract, name, longName] = token ? [
+        const [title, contract, name, longName, tokenAddress] = token ? [
             `${token.symbol}/ETH`,
             <EtherScan type="address" address={token.address} display="truncate"/>,
             token.symbol,
-            token.name ? token.name : token.symbol
+            token.name ? token.name : token.symbol,
+            token.address
         ] : [
-            '', '', '', ''
+            '', '', '', '', ''
         ]
+
+        const namePart = longName == name ? "" : ` - ${name}`
 
         return (
             <Conditional displayCondition={inExchange && !! token}>
+                <div className="token-stats">
+                    <b>{longName} {namePart}</b>
+                </div>
+
                 <div className="token-stats">
                     <div className="token-stat-name">24h Volume</div>
                     <div className="token-stat-value"><Round fallback="0">{ethVolume}</Round> ETH (<Round fallback="0">{tokenVolume}</Round> {name})</div>
@@ -78,9 +85,14 @@ class TokenStats extends React.Component {
                 </div>
 
                 <div className="token-stats">
-                    <div className="token-stat-name">24h Price Change</div>
+                    <div className="token-stat-name">24h Change</div>
                     <div className="token-stat-value"><Round percent suffix="%" fallback="0" classNameFunc={(num) => num > 0 ? 'buy-green' : 'sell-red'}>{percentChange}</Round></div>
                 </div>
+
+                <div className="token-stats">
+                    <EtherScan type="address" address={tokenAddress} linkText={name + " smart contract"}/>
+                </div>
+
             </Conditional>
         )
     }

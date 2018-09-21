@@ -111,7 +111,7 @@ export default class PlotlyDepthChart extends React.Component {
                 l: 15,
                 r: 60,
                 b: 20,
-                t: 10,
+                t: 0,
                 pad: 4
             }, font: {
                 size: 12,
