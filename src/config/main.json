@@ -52,6 +52,7 @@
       "default": "http://localhost:4301"
     },
     "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
+    "deltaBalancesAddress": "0xc723e50dEFcfD850C35d3635d7dC9980c488b7b7",
     "defaultPair": {
       "token": {
         "symbol": "TST",
@@ -76,6 +77,7 @@
       "default": "http://localhost:4300"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
     "defaultPair": {
       "token": {
         "symbol": "DAI",
@@ -99,6 +101,7 @@
       "default": "https://api.gammadex.com"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
     "defaultPair": {
       "token": {
         "symbol": "DAI",
@@ -122,6 +125,7 @@
       "default": "https://intapi.gammadex.com"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
     "defaultPair": {
       "token": {
         "symbol": "DAI",
@@ -145,6 +149,7 @@
       "default": "http://localhost:4300"
     },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
+    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
     "defaultPair": {
       "token": {
         "symbol": "DAI",

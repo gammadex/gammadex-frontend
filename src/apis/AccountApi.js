@@ -14,9 +14,9 @@ import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 import { baseWeiToEth, tokWeiToEth } from "../EtherConversion"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
 import TokenRepository from "../util/TokenRepository"
-import {setUserId,trackEvent} from '../util/Analytics'
+import { setUserId, trackEvent } from '../util/Analytics'
 
-export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
+export function refreshEthAndTokBalance(account, tokenAddress, notify = true, zeroAllBalances = true) {
     if (notify) {
         AccountActions.retrievingBalance()
     }
@@ -26,7 +26,7 @@ export function refreshEthAndTokBalance(account, tokenAddress, notify = true) {
             AccountActions.balanceRetrieved(balance, notify, tokenAddress)
         })
         .catch(error => {
-            AccountActions.balanceRetrievalFailed(error, notify)
+            AccountActions.balanceRetrievalFailed(error, notify, zeroAllBalances)
         })
 }
 
@@ -36,7 +36,7 @@ export function refreshEthAndTokBalanceUsingStore() {
     const tokenAddress = TokenStore.getSelectedTokenAddress()
 
     if (account && tokenAddress && !retrievingBalance) {
-        refreshEthAndTokBalance(account, tokenAddress, false)
+        refreshEthAndTokBalance(account, tokenAddress, false, false)
     }
 }
 
@@ -47,14 +47,14 @@ export function refreshAccount(accountType, history, getMarket = true) {
     return EtherDeltaWeb3.refreshAccount()
         .then(addressNonce => {
             setUserId(`${accountType}:${addressNonce.address}`)
-            trackEvent("user",`${accountType}`,addressNonce.address)
+            trackEvent("user", `${accountType}`, addressNonce.address)
             AccountActions.accountRetrieved(addressNonce, accountType)
 
             if (history) {
                 history.push(Routes.Exchange)
             }
 
-            if(getMarket) {
+            if (getMarket) {
                 WebSocketActions.getMarket()
             }
 
@@ -90,7 +90,7 @@ export function depositEth(account, accountRetrieved, nonce, tokenAddress, amoun
                 AccountActions.addPendingTransfer(DepositType.DEPOSIT, Config.getBaseAddress(), amount, hash)
                 GlobalMessageActions.sendGlobalMessage(
                     GlobalMessageFormatters.getTransferInitiated(ethAmount, 'deposit', 'ETH', hash))
-                trackEvent("funding","deposit Ether",`${ethAmount}:ETH:${hash}`)                    
+                trackEvent("funding", "deposit Ether", `${ethAmount}:ETH:${hash}`)
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
@@ -114,7 +114,7 @@ export function withdrawEth(account, accountRetrieved, nonce, tokenAddress, amou
                 AccountActions.addPendingTransfer(DepositType.WITHDRAWAL, Config.getBaseAddress(), amount, hash)
                 GlobalMessageActions.sendGlobalMessage(
                     GlobalMessageFormatters.getTransferInitiated(ethAmount, 'withdrawal', 'ETH', hash))
-                trackEvent("funding","withdraw Ether",`${ethAmount}:ETH:${hash}`)                    
+                trackEvent("funding", "withdraw Ether", `${ethAmount}:ETH:${hash}`)
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(
@@ -148,7 +148,7 @@ export function depositTok(account, accountRetrieved, nonce, tokenAddress, amoun
                             amount, hash)
                         GlobalMessageActions.sendGlobalMessage(
                             GlobalMessageFormatters.getTokenTransferInitiated(tokenAmount, 'deposit', tokenName, hash))
-                        trackEvent("funding","deposit token",`${tokenAmount}:${tokenName}:${hash}`)                             
+                        trackEvent("funding", "deposit token", `${tokenAmount}:${tokenName}:${hash}`)
                     })
                     .on('error', error => {
                         GlobalMessageActions.sendGlobalMessage(
@@ -177,7 +177,7 @@ export function withdrawTok(account, accountRetrieved, nonce, tokenAddress, amou
                 AccountActions.addPendingTransfer(DepositType.WITHDRAWAL, tokenAddress, amount, hash)
                 GlobalMessageActions.sendGlobalMessage(
                     GlobalMessageFormatters.getTransferInitiated(tokenAmount, 'withdrawal', tokenName, hash))
-                trackEvent("funding","withdraw token",`${tokenAmount}:${tokenName}:${hash}`)                             
+                trackEvent("funding", "withdraw token", `${tokenAmount}:${tokenName}:${hash}`)
             })
             .on('error', error => {
                 GlobalMessageActions.sendGlobalMessage(

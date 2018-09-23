@@ -38,11 +38,12 @@ export function balanceRetrieved(balance, notify, tokenAddress) {
     })
 }
 
-export function balanceRetrievalFailed(error, notify) {
+export function balanceRetrievalFailed(error, notify, zeroAllBalances = true) {
     dispatcher.dispatch({
         type: ActionNames.BALANCE_RETRIEVAL_FAILED,
         error,
-        notify
+        notify,
+        zeroAllBalances
     })
 }
 
