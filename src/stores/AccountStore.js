@@ -130,12 +130,14 @@ class AccountStore extends EventEmitter {
                 break
             }
             case ActionNames.BALANCE_RETRIEVAL_FAILED: {
-                this.walletBalanceEthWei = 0
-                this.walletBalanceTokWei = 0
-                this.exchangeBalanceEthWei = 0
-                this.exchangeBalanceTokWei = 0
-                this.tradableBalanceEthWei = 0
-                this.tradableBalanceTokWei = 0
+                if (action.zeroAllBalances) {
+                    this.walletBalanceEthWei = 0
+                    this.walletBalanceTokWei = 0
+                    this.exchangeBalanceEthWei = 0
+                    this.exchangeBalanceTokWei = 0
+                    this.tradableBalanceEthWei = 0
+                    this.tradableBalanceTokWei = 0
+                }
                 if (action.notify) {
                     this.retrievingBalance = false
                     this.balanceRetrievalFailed = true
@@ -159,7 +161,7 @@ class AccountStore extends EventEmitter {
                 this.accountPopoverOpen = action.accountPopoverOpen
                 this.emitChange()
                 break
-            }            
+            }
         }
     }
 }

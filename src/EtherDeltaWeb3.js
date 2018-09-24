@@ -1,4 +1,5 @@
 import abiEtherDelta from './config/etherdelta.json'
+import abiDeltaBalances from './config/deltabalances.json'
 import abiToken from './config/token.json'
 import Config from './Config'
 import Web3 from 'web3'
@@ -57,6 +58,8 @@ class EtherDeltaWeb3 {
     initContract() {
         this.contractEtherDelta = new this.web3.eth.Contract(abiEtherDelta)
         this.contractEtherDelta.options.address = Config.getEtherDeltaAddress()
+        this.contractDeltaBalances = new this.web3.eth.Contract(abiDeltaBalances)
+        this.contractDeltaBalances.options.address = Config.getDeltaBalancesAddress()
     }
 
     getOrCreateTokenContract(address) {
@@ -80,17 +83,18 @@ class EtherDeltaWeb3 {
     }
 
     refreshEthAndTokBalance(account, tokenAddress) {
-        const ethWalletLookup = account ? this.web3.eth.getBalance(account) : Promise.resolve(null)
-        const tokWalletLookup = account && tokenAddress ? this.promiseTokenBalance(account, tokenAddress) : Promise.resolve(null)
-        const ethContractLookup = account ? this.contractEtherDelta.methods.balanceOf(Config.getBaseAddress(), account).call() : Promise.resolve(null)
-        const tokContractLookup = account && tokenAddress ? this.contractEtherDelta.methods.balanceOf(tokenAddress, account).call() : Promise.resolve(null)
-
-        return Promise.all([
-            ethWalletLookup,
-            tokWalletLookup,
-            ethContractLookup,
-            tokContractLookup
-        ])
+        if(account && tokenAddress) {
+            return this.contractDeltaBalances.methods.allBalances(
+                Config.getEtherDeltaAddress(),
+                account,
+                [Config.getBaseAddress(), tokenAddress]
+            ).call()
+                .then(bal => {
+                    return [ bal[1], bal[3], bal[0], bal[2] ]
+                })
+        } else {
+            return Promise.resolve([null, null, null, null])
+        }
     }
 
     promiseTokenBalance(account, tokenAddress) {

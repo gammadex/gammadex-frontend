@@ -60,6 +60,10 @@ class Config {
         return this.getEnv().etherDeltaAddress
     }
 
+    getDeltaBalancesAddress() {
+        return this.getEnv().deltaBalancesAddress
+    }
+
     getEthereumNetworkId() {
         return this.getEnv().ethereumNetworkId
     }
