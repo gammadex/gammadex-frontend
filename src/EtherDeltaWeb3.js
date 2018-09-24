@@ -93,7 +93,7 @@ class EtherDeltaWeb3 {
                     return [ bal[1], bal[3], bal[0], bal[2] ]
                 })
         } else {
-            Promise.resolve([null, null, null, null])
+            return Promise.resolve([null, null, null, null])
         }
     }
 
