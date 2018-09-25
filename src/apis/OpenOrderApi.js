@@ -13,6 +13,7 @@ import dispatcher from "../dispatcher"
 import { setFavourite } from "../util/FavouritesDao"
 import Favourites from "../util/Favourites"
 import {trackEvent} from '../util/Analytics'
+import { safeBigNumber } from "../EtherConversion"
 
 export function requestOrderCancel(openOrder, gasPriceWei) {
     dispatcher.dispatch({
@@ -57,7 +58,14 @@ export function cancelOpenOrder(openOrder, gasPriceWei) {
 
     addPendingOrderCancel(openOrder.id)
 
-    EtherDeltaWeb3.promiseCancelOrder(account, nonce, openOrder, gasPriceWei)
+    // remove scientific notation
+    const safeOpenOrder = Object.assign({}, openOrder, {
+        amountGet: safeBigNumber(openOrder.amountGet).toFixed(),
+        amountGive: safeBigNumber(openOrder.amountGive).toFixed(),
+        expires: safeBigNumber(openOrder.expires).toFixed()
+    })
+
+    EtherDeltaWeb3.promiseCancelOrder(account, nonce, safeOpenOrder, gasPriceWei)
         .once('transactionHash', hash => {
             AccountActions.nonceUpdated(nonce + 1)
             GlobalMessageActions.sendGlobalMessage(
