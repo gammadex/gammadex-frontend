@@ -396,9 +396,13 @@ export function fairValueWarnings(orderSide, totalEthWei, priceControlled, amoun
             const orderPrice = Number(priceControlled)
             const change = (orderPrice - lastTradedPrice) / lastTradedPrice
     
-            if (Math.abs(change) > Config.getAwayFromLastTradeThreshold()) {
+            if (orderSide === OrderSide.BUY && change > Config.getAwayFromLastTradeThreshold()) {
                 hasPriceWarning = true
-                priceAwayFromLastTraded = <li>Your Price {priceControlled} is {(change * 100.0).toFixed(0)}% away from Last Market Trade {lastTradedPrice.toFixed(8)}</li>
+                priceAwayFromLastTraded = <li>Your BUY Price {priceControlled} is {(change * 100.0).toFixed(0)}% {">"} Last Market Trade {lastTradedPrice.toFixed(8)}</li>
+            }
+            if (orderSide === OrderSide.SELL && change < (Config.getAwayFromLastTradeThreshold() * -1.0)) {
+                hasPriceWarning = true
+                priceAwayFromLastTraded = <li>Your SELL Price {priceControlled} is {(change * 100.0).toFixed(0)}% {"<"} Last Market Trade {lastTradedPrice.toFixed(8)}</li>
             }
         }
 
