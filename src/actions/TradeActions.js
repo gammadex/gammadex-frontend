@@ -95,23 +95,23 @@ export function executeOrder(order, weiFillAmount, fillAmountControlled, weiTota
                         })
                         clearFillOrder(OrderUtil.takerSide(order))
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeInitiated(fillAmountControlled, tokenName, hash))
-                        trackEvent("trade",`${OrderUtil.takerSide(order)}`,`${fillAmountControlled}:${tokenName}:${hash}`)                                  
+                            GlobalMessageFormatters.getTradeInitiated(String(fillAmountControlled), tokenName, hash))
+                        trackEvent("trade",`${OrderUtil.takerSide(order)}`,`${String(fillAmountControlled)}:${tokenName}:${hash}`)                                  
                     })
                     .on('error', error => {
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeFailed(fillAmountControlled, tokenName, error), 'danger')
+                            GlobalMessageFormatters.getTradeFailed(String(fillAmountControlled), tokenName, error), 'danger')
                     })
                     .then(receipt => {
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTradeComplete(fillAmountControlled, tokenName), 'success')
+                            GlobalMessageFormatters.getTradeComplete(String(fillAmountControlled), tokenName), 'success')
                     })
             } else {
                 Promise.all([EtherDeltaWeb3.promiseAvailableVolume(order), EtherDeltaWeb3.promiseAmountFilled(order)])
                     .then(res => {
                         const error = `Failed to validate trade as of current block. availableVolume: ${res[0]} amountGet: ${amountWei}  amountFilled: ${res[1]} maker: ${order.user}`
                         GlobalMessageActions.sendGlobalMessage(
-                            GlobalMessageFormatters.getTestTradeFailed(fillAmountControlled, tokenName), 'warning')
+                            GlobalMessageFormatters.getTestTradeFailed(String(fillAmountControlled), tokenName), 'warning')
                     })
             }
         })
