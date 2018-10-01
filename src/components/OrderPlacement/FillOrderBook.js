@@ -1,29 +1,33 @@
 import React from "react"
 import _ from "lodash"
-import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, FormText, Modal, ModalBody, ModalFooter } from 'reactstrap'
-import { Box, BoxSection, BoxHeader } from "../CustomComponents/Box"
+import {TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col, FormGroup, Alert, FormText, Modal, ModalBody, ModalFooter} from 'reactstrap'
+import {Box, BoxSection, BoxHeader} from "../CustomComponents/Box"
 import EmptyTableMessage from "../CustomComponents/EmptyTableMessage"
 import OrderBookStore from "../../stores/OrderBookStore"
 import TradeStore from "../../stores/TradeStore"
+import LifecycleStore from "../../stores/LifecycleStore"
 import GasPriceStore from "../../stores/GasPriceStore"
 import AccountStore from "../../stores/AccountStore"
 import NumericInput from "./NumericInput.js"
-import { priceOf, isTakerSell, isTakerBuy } from "../../OrderUtil.js"
+import {priceOf, isTakerSell, isTakerBuy} from "../../OrderUtil.js"
 import OrderSide from "../../OrderSide"
 import OrderEntryField from "../../OrderEntryField"
 import * as TradeActions from "../../actions/TradeActions"
 import Config from "../../Config"
 import Conditional from "../CustomComponents/Conditional"
-import { gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth } from "../../EtherConversion"
+import {gweiToEth, safeBigNumber, baseWeiToEth, tokWeiToEth} from "../../EtherConversion"
 import AccountType from "../../AccountType"
 import {Popover, PopoverBody} from "reactstrap/dist/reactstrap"
 import OrderPercentageSlider from "./OrderPercentageSlider"
 import BigNumber from 'bignumber.js'
+import {getExpiryWarning} from "../../util/ExpiryWarning"
 
 export default class FillOrderBook extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
+            blockTime: GasPriceStore.getBlockTime(),
+            currentBlockNumber: LifecycleStore.getCurrentBlockNumber(),
             orders: [],
             fillOrder: null,
             currentGasPriceWei: null,
@@ -33,6 +37,7 @@ export default class FillOrderBook extends React.Component {
             selectedAccountType: null,
             confirmTradeModalSide: null,
             popOverOpenExchangeFee: false,
+            popOverOpenExpiry: false,
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
@@ -41,6 +46,7 @@ export default class FillOrderBook extends React.Component {
         this.checkFillOrder = this.checkFillOrder.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
         this.onConfirm = this.onConfirm.bind(this)
+        this.saveCurrentBlockNumber = this.saveCurrentBlockNumber.bind(this)
 
         // to avoid the ui flooring/snapping the amount, when the user changes the amount manually to overfill the order
         this.ignoreNextSliderChange = false
@@ -51,6 +57,7 @@ export default class FillOrderBook extends React.Component {
         TradeStore.on("change", this.onTradeStoreChange)
         GasPriceStore.on("change", this.saveGasPrices)
         AccountStore.on("change", this.saveAccountState)
+        LifecycleStore.on("change", this.saveCurrentBlockNumber)
         this.onTradeStoreChange()
         this.onOrderBookChange()
         this.saveGasPrices()
@@ -65,9 +72,16 @@ export default class FillOrderBook extends React.Component {
     }
 
     isTakerBuyComponent() {
-        const { type } = this.props
+        const {type} = this.props
         return type === OrderSide.BUY
     }
+
+    saveCurrentBlockNumber() {
+        this.setState({
+            currentBlockNumber: LifecycleStore.getCurrentBlockNumber(),
+        })
+    }
+
     onOrderBookChange() {
         this.setState({
             orders: this.isTakerBuyComponent() ? OrderBookStore.getOffers() : OrderBookStore.getBids()
@@ -80,7 +94,7 @@ export default class FillOrderBook extends React.Component {
     }
 
     saveAccountState() {
-        const { tradableBalanceEthWei, tradableBalanceTokWei, selectedAccountType } = AccountStore.getAccountState()
+        const {tradableBalanceEthWei, tradableBalanceTokWei, selectedAccountType} = AccountStore.getAccountState()
         this.setState({
             tradableBalanceEthWei: tradableBalanceEthWei,
             tradableBalanceTokWei: tradableBalanceTokWei,
@@ -89,7 +103,7 @@ export default class FillOrderBook extends React.Component {
     }
 
     checkFillOrder() {
-        const { fillOrder, orders } = this.state
+        const {fillOrder, orders} = this.state
         if (fillOrder && !this.ordersContains(orders, fillOrder)) {
             TradeActions.clearFillOrder(this.props.type)
         }
@@ -111,15 +125,16 @@ export default class FillOrderBook extends React.Component {
     }
 
     saveGasPrices() {
-        const { currentGasPriceWei, ethereumPriceUsd } = this.state
+        const {currentGasPriceWei, ethereumPriceUsd, blockTime} = this.state
         this.setState({
             currentGasPriceWei: GasPriceStore.getCurrentGasPriceWei() == null ? currentGasPriceWei : GasPriceStore.getCurrentGasPriceWei(),
-            ethereumPriceUsd: GasPriceStore.getEthereumPriceUsd() == null ? ethereumPriceUsd : GasPriceStore.getEthereumPriceUsd()
+            ethereumPriceUsd: GasPriceStore.getEthereumPriceUsd() == null ? ethereumPriceUsd : GasPriceStore.getEthereumPriceUsd(),
+            blockTime: GasPriceStore.getBlockTime() == null ? ethereumPriceUsd : GasPriceStore.getBlockTime(),
         })
     }
 
     ordersContains(orders, fillOrder) {
-        return typeof _.find(orders, { id: fillOrder.order.id }) !== 'undefined'
+        return typeof _.find(orders, {id: fillOrder.order.id}) !== 'undefined'
     }
 
     showTradeFields(orders, fillOrder) {
@@ -138,7 +153,7 @@ export default class FillOrderBook extends React.Component {
 
     onSubmit = event => {
         if (!this.isSubmitDisabled()) {
-            const { fillOrder, selectedAccountType } = this.state
+            const {fillOrder, selectedAccountType} = this.state
             if (selectedAccountType === AccountType.METAMASK || selectedAccountType === AccountType.LEDGER) {
                 TradeActions.executeFillOrder(fillOrder)
             } else {
@@ -163,8 +178,8 @@ export default class FillOrderBook extends React.Component {
     }
 
     isSubmitDisabled = () => {
-        const { balanceRetrieved } = this.props
-        const { fillOrder } = this.state
+        const {balanceRetrieved} = this.props
+        const {fillOrder} = this.state
 
         return !fillOrder.fillAmountValid || !balanceRetrieved || AccountStore.selectedAccountType === AccountType.VIEW
     }
@@ -175,8 +190,14 @@ export default class FillOrderBook extends React.Component {
         })
     }
 
+    toggleExpiryPopover = () => {
+        this.setState({
+            popOverOpenExpiry: !this.state.popOverOpenExpiry
+        })
+    }
+
     onSliderChange = (value) => {
-        if(this.ignoreNextSliderChange) {
+        if (this.ignoreNextSliderChange) {
             this.ignoreNextSliderChange = false
             return
         }
@@ -238,35 +259,35 @@ export default class FillOrderBook extends React.Component {
             if (type === OrderSide.BUY) {
                 const balanceEth = baseWeiToEth(tradableBalanceEthWei)
                 const orderMaxVolumeEth = safeBigNumber(fillOrder.order.ethAvailableVolumeBase)
-                const addendum= (
+                const addendum = (
                     <div>
                         <div>Your ETH balance (minus fee): <span className="clickable" onClick={() => this.onOrderTotalChange(String(balanceEth))}>{balanceEth.toFixed(3).toString()}</span></div>
                         <div className="mt-2">ETH remaining on order: <span className="clickable" onClick={() => this.onOrderTotalChange(orderMaxVolumeEth)}>{orderMaxVolumeEth.toFixed(3).toString()}</span></div>
                     </div>
                 )
-                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={balanceEth} addendum={addendum} />
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.totalEthControlled} minValue={safeBigNumber(0)} maxValue={balanceEth} addendum={addendum}/>
             } else {
                 const balanceTok = tokWeiToEth(tradableBalanceTokWei, tokenAddress)
                 const orderMaxVolumeTok = safeBigNumber(fillOrder.order.ethAvailableVolume)
-                const addendum= (
+                const addendum = (
                     <div>
                         <div>Your {tokenSymbol} balance (minus fee): <span className="clickable" onClick={() => this.onOrderAmountChange(String(balanceTok))}>{balanceTok.toFixed(3).toString()}</span></div>
                         <div className="mt-2">{tokenSymbol} remaining on order: <span className="clickable" onClick={() => this.onOrderAmountChange(orderMaxVolumeTok)}>{orderMaxVolumeTok.toFixed(3).toString()}</span></div>
                     </div>
                 )
-                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={balanceTok} addendum={addendum} />
+                slider = <OrderPercentageSlider onChange={this.onSliderChange} value={fillOrder.fillAmountControlled} minValue={safeBigNumber(0)} maxValue={balanceTok} addendum={addendum}/>
             }
 
             body =
                 <BoxSection className={"order-box"}>
                     <form onSubmit={this.onSubmit}>
                         <NumericInput name="Price" value={priceOf(fillOrder.order).toFixed(8)} unitName="ETH"
-                            fieldName={type + "OrderPrice"} disabled="true" />
+                                      fieldName={type + "OrderPrice"} disabled="true"/>
 
                         <NumericInput name="Amount" value={fillOrder.fillAmountControlled} unitName={tokenSymbol}
-                            onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
-                            valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
-                                      invalidFeedbackAbove />
+                                      onChange={this.onOrderAmountChange} fieldName={type + "OrderAmount"}
+                                      valid={amountFieldValid} errorMessage={amountFieldErrorMessage}
+                                      invalidFeedbackAbove/>
 
                         <Row>
                             <Col sm={3}/>
@@ -276,39 +297,48 @@ export default class FillOrderBook extends React.Component {
                         </Row>
 
                         <NumericInput name="Total" value={fillOrder.totalEthControlled.toFixed(3)} unitName="ETH"
-                            fieldName={type + "OrderTotal"}
-                            valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
-                            disabled="true" />
+                                      fieldName={type + "OrderTotal"}
+                                      valid={totalFieldValid} errorMessage={totalFieldErrorMessage}
+                                      disabled="true"/>
 
                         <div className="trading-fees">
-                        <table>
-                            <tbody>
-                            <tr>
-                                <td>0.3% Exchange Fee</td>
-                                <td>
-                                    {exchangeCost.toFixed(5)} {exchangeCostUnits}
-                                    <br/>{usdExchangeCost === "" ? "" : usdExchangeCost + " USD"}
-                                </td>
-                                <td>
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td>0.3% Exchange fee</td>
+                                    <td>
+                                        {exchangeCost.toFixed(5)} {exchangeCostUnits}
+                                        <br/>{usdExchangeCost === "" ? "" : usdExchangeCost + " USD"}
+                                    </td>
+                                    <td>
                                     <span id={type + "ExchangeFeePopover"} onClick={this.toggleExchangeFeePopOver}>
-                                        <i className="fas fa-question-circle"></i>
+                                        <i className="fas fa-question-circle dimmed"></i>
                                     </span>
-                                    <Popover placement="bottom" isOpen={this.state.popOverOpenExchangeFee} target={type + "ExchangeFeePopover"} toggle={this.toggleExchangeFeePopOver}>
-                                        <PopoverBody>
-                                            0.3% fee deducted by the EtherDelta smart contract
-                                        </PopoverBody>
-                                    </Popover>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                                        <Popover placement="bottom" isOpen={this.state.popOverOpenExchangeFee} target={type + "ExchangeFeePopover"} toggle={this.toggleExchangeFeePopOver}>
+                                            <PopoverBody>
+                                                0.3% fee deducted by the EtherDelta smart contract
+                                            </PopoverBody>
+                                        </Popover>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={2} style={{paddingTop: 0}}>
+                                        Expires in {this.getExpiry(fillOrder.order.expires, this.state.currentBlockNumber, this.state.blockTime)}
+                                    </td>
+                                    <td style={{paddingTop: 0}}>
+
+                                        {this.getExpiryPopup()}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
 
                         <FormGroup row className="hdr-stretch-ctr">
                             <Col sm={3}/>
                             <Col sm={9}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
-                                    onClick={this.onSubmit}>{buySell}</Button>
+                                        onClick={this.onSubmit}>{buySell}</Button>
                                 <Conditional displayCondition={!balanceRetrieved}>
                                     <FormText color="muted">{`Please unlock a wallet to enable ${buySell} trades`}</FormText>
                                 </Conditional>
@@ -318,7 +348,7 @@ export default class FillOrderBook extends React.Component {
 
                     {bestExecutionWarning}
 
-                    <Modal isOpen={confirmTradeModalSide!=null && confirmTradeModalSide === type} toggle={this.abortFundingAction} className={this.props.className} keyboard>
+                    <Modal isOpen={confirmTradeModalSide != null && confirmTradeModalSide === type} toggle={this.abortFundingAction} className={this.props.className} keyboard>
                         <ModalBody id={type + 'FillOrderModal'}>{`${buySell} ${fillOrder.fillAmountControlled} ${tokenSymbol}?`}</ModalBody>
                         <ModalFooter>
                             <Button color="secondary" onClick={this.onAbort}>Abort</Button>{' '}
@@ -334,5 +364,47 @@ export default class FillOrderBook extends React.Component {
         }
 
         return body
+    }
+
+    getExpiry(expires, currentBlockNumber, blockTime) {
+        const expiry = getExpiryWarning(expires, currentBlockNumber, blockTime)
+
+        if (expiry) {
+            const warning = (expiry.warning) ? <span> <i className="fas fa-clock"></i></span> : null
+
+            return <span>{expiry.description}{warning}</span>
+        } else {
+            return null
+        }
+    }
+
+    getExpiryPopup() {
+        const {type} = this.props
+
+        const {fillOrder} = this.state
+
+        return (
+            <div>
+                <span id={type + "ExpiryPopover"} onClick={this.toggleExpiryPopover}>
+                    <i className="fas fa-question-circle dimmed"></i>
+                </span>
+                <Popover placement="bottom" isOpen={this.state.popOverOpenExpiry} target={type + "ExpiryPopover"} toggle={this.toggleExpiryPopover}>
+                    <PopoverBody>
+                        <div>
+                            Order expires at block {fillOrder.order.expires}
+                        </div>
+                        <div>
+                            Current block is {this.state.currentBlockNumber}
+                        </div>
+                        <div>
+                            {safeBigNumber(fillOrder.order.expires).minus(safeBigNumber(this.state.currentBlockNumber)).toFixed(0)} blocks remaining
+                        </div>
+                        <div>
+                            Current block time is approximately {this.state.blockTime.toFixed(2)} seconds
+                        </div>
+                    </PopoverBody>
+                </Popover>
+            </div>
+        )
     }
 }

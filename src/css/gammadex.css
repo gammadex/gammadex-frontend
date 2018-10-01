@@ -1684,3 +1684,7 @@ body {
     width:80px;
     max-width:80px;
 }
+
+.dimmed {
+    opacity: 0.7;
+}
