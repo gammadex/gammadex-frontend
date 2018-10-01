@@ -323,7 +323,7 @@ export default class FillOrderBook extends React.Component {
                                 </tr>
                                 <tr>
                                     <td colSpan={2} style={{paddingTop: 0}}>
-                                        Expires in {this.getExpiry(fillOrder.order.expires, this.state.currentBlockNumber, this.state.blockTime)}
+                                        {this.getExpiry(fillOrder.order.expires, this.state.currentBlockNumber, this.state.blockTime)}
                                     </td>
                                     <td style={{paddingTop: 0}}>
 
@@ -369,10 +369,12 @@ export default class FillOrderBook extends React.Component {
     getExpiry(expires, currentBlockNumber, blockTime) {
         const expiry = getExpiryWarning(expires, currentBlockNumber, blockTime)
 
+        const text = (expiry.description === 'never') ? 'Never expires' : `Expires in ${expiry.description}`
+
         if (expiry) {
             const warning = (expiry.warning) ? <span> <i className="fas fa-clock"></i></span> : null
 
-            return <span>{expiry.description}{warning}</span>
+            return <span>{text}{warning}</span>
         } else {
             return null
         }
