@@ -528,7 +528,7 @@ export function expires(makerSide) {
 export function unsignedOrderOrNull(orderValid, makerSide, expireAfterBlocks, price, amount, tokenAddress) {
     const currentBlockNumber = lifecycleStore.getCurrentBlockNumber()
     if (orderValid && price != "" && amount != "" && currentBlockNumber && expireAfterBlocks != "" && expireAfterBlocks > 0) {
-        const expires = safeBigNumber(currentBlockNumber).plus(safeBigNumber(expireAfterBlocks))
+        const expires = BigNumber.min(safeBigNumber(currentBlockNumber).plus(safeBigNumber(expireAfterBlocks)), Number.MAX_SAFE_INTEGER)
         const unsignedOrder = OrderFactory.createUnsignedOrder(makerSide, expires, price, amount, tokenAddress)
         const {
             tokenGet,
