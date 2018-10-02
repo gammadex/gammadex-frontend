@@ -24,7 +24,7 @@ class OrderFactory {
         const amountGive = makerSide === OrderSide.SELL ?
             tokEthToWei(amountBigNum, tokenAddress) :
             baseEthToWei(amountBaseBigNum)
-        const nonce = Math.random().toString().slice(2)
+        const nonce = String(Math.floor((Math.random() * Number.MAX_SAFE_INTEGER)))
 
         const contractAddr = Config.getEtherDeltaAddress()
         const unsignedOrderObject = {
