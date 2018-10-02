@@ -609,7 +609,7 @@ export function sendOnChainOrder(order) {
         tokenGet,
         tokenGive,
         expires: order.expires,
-        nonce: Math.random().toString().slice(2)
+        nonce: String(Math.floor((Math.random() * Number.MAX_SAFE_INTEGER)))
     }
     const side = OrderUtil.isMakerBuy(orderObject) ? "BUY" : "SELL"
     const tokenName = TokenRepository.getTokenName(OrderUtil.tokenAddress(orderObject))

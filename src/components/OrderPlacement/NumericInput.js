@@ -2,6 +2,8 @@ import React from "react"
 import {FormGroup, FormFeedback, Label, Col, Input, FormText, InputGroupAddon, Button} from 'reactstrap'
 import Conditional from "../CustomComponents/Conditional"
 import 'rc-slider/assets/index.css'
+import BigNumber from 'bignumber.js'
+import { safeBigNumber } from "../../EtherConversion"
 
 export default class NumericInput extends React.Component {
     constructor(props) {
@@ -25,7 +27,7 @@ export default class NumericInput extends React.Component {
 
     cleanValue = (value) => {
         const {forceInteger = false} = this.props
-        return forceInteger ? NumericInput.cleanValueToInteger(value) : NumericInput.cleanValueToDecimal(value)
+        return forceInteger ? BigNumber.min(safeBigNumber(NumericInput.cleanValueToInteger(value)), Number.MAX_SAFE_INTEGER).toFixed(0): NumericInput.cleanValueToDecimal(value)
     }
 
     onChangeFilteringInput = (e) => {
