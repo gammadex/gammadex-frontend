@@ -11,6 +11,7 @@ import {truncate} from "../util/FormatUtil"
 import KeyStoreForm from "./WalletChooser/KeyStore/KeyStoreForm"
 import PrivateKeyForm from "./WalletChooser/PrivateKey/PrivateKeyForm"
 import MetaMaskForm from "./WalletChooser/MetaMask/MetaMaskForm"
+import {checkMetaMaskApprovalRequired, userPermissionForAccounts} from "../apis/WalletApi"
 
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as WalletDao from "../util/WalletDao"
@@ -25,13 +26,15 @@ class WalletChooser extends Component {
 
         this.state = {
             selectedAccountType: null,
-            providedWeb3: null
+            providedWeb3: null,
+            mmApprovalRequired: true
         }
 
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentWillMount() {
+        checkMetaMaskApprovalRequired()
         WalletStore.on("change", this.onWalletStoreChange)
     }
 
@@ -43,21 +46,26 @@ class WalletChooser extends Component {
     onWalletStoreChange() {
         this.setState((prevState, props) => ({
             selectedAccountType: WalletStore.getSelectedAccountType(),
-            providedWeb3: WalletStore.getProvidedWeb3Info()
+            providedWeb3: WalletStore.getProvidedWeb3Info(),
+            mmApprovalRequired: WalletStore.isMetaMaskApprovalRequired()
         }))
     }
 
     walletChanged = (type, event) => {
-        WalletActions.selectWallet(type)
+        if (type === AccountType.METAMASK && this.state.mmApprovalRequired) {
+            userPermissionForAccounts()
+        } else {
+            WalletActions.selectWallet(type)
 
-        if (type === AccountType.METAMASK) {
-            const {providedWeb3} = this.state
-            const {accountAvailable} = providedWeb3
+            if (type === AccountType.METAMASK) {
+                const {providedWeb3} = this.state
+                const {accountAvailable} = providedWeb3
 
-            if (accountAvailable) {
-                EtherDeltaWeb3.initForMetaMask()
-                WalletDao.saveMetamaskWallet()
-                AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
+                if (accountAvailable) {
+                    EtherDeltaWeb3.initForMetaMask()
+                    WalletDao.saveMetamaskWallet()
+                    AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
+                }
             }
         }
     }
@@ -87,14 +95,16 @@ class WalletChooser extends Component {
     }
 
     render() {
-        const {selectedAccountType, providedWeb3} = this.state
+        const {selectedAccountType, providedWeb3, mmApprovalRequired} = this.state
 
-        const metaMaskDisabled = providedWeb3 == null || !providedWeb3.isMainNet || !providedWeb3.accountAvailable
+        const metaMaskDisabled = !mmApprovalRequired && (providedWeb3 == null || !providedWeb3.isMainNet || !providedWeb3.accountAvailable)
         let panel = this.getPanelContents()
 
         let metaMaskInfo = null
         if (providedWeb3 != null) {
-            if (providedWeb3.isMainNet == null) {
+            if (mmApprovalRequired) {
+                metaMaskInfo = <span className="text-danger">MetaMask approval required</span>
+            } else if (providedWeb3.isMainNet == null) {
                 metaMaskInfo = <span className="text-muted">MetaMask not available</span>
             } else if (providedWeb3.isMainNet === false) {
                 metaMaskInfo = <span className="text-danger">Please connect to {EthereumNetworks.getMainNetDescription()}</span>

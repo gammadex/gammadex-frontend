@@ -24,6 +24,29 @@ export function stopMetaMaskCheckLoop() {
     Timer.stop(updateWalletStoreProvidedWeb3Details)
 }
 
+export function checkMetaMaskApprovalRequired() {
+    if (window.ethereum && window.ethereum._metamask) {
+        window.ethereum._metamask.isApproved()
+            .then(ir => {
+                WalletActions.setMetaMaskApprovalRequired(!ir)
+            })
+    } else {
+        WalletActions.setMetaMaskApprovalRequired(false)
+    }
+}
+
+export function userPermissionForAccounts() {
+    if (window.ethereum) {
+        window.ethereum.enable()
+            .then(() => {
+                WalletActions.setMetaMaskApprovalRequired(false)
+            })
+            .catch(() => {
+                WalletActions.setMetaMaskApprovalRequired(true)
+            })
+    }
+}
+
 export function updateWalletStoreProvidedWeb3Details() {
     if (!window.web3) {
         if (WalletStore.isProvidedWeb3Available()) {

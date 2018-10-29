@@ -235,3 +235,10 @@ export function metamaskNetworkWarningSent(messageId) {
         messageId
     })
 }
+
+export function setMetaMaskApprovalRequired(isRequired) {
+    dispatcher.dispatch({
+        type: ActionNames.METAMASK_ACCOUNT_APPROVAL,
+        isRequired
+    })
+}
