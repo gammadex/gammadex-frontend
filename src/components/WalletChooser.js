@@ -10,15 +10,13 @@ import {toDataUrl} from '../lib/blockies.js'
 import {truncate} from "../util/FormatUtil"
 import KeyStoreForm from "./WalletChooser/KeyStore/KeyStoreForm"
 import PrivateKeyForm from "./WalletChooser/PrivateKey/PrivateKeyForm"
-import MetaMaskForm from "./WalletChooser/MetaMask/MetaMaskForm"
-import {checkMetaMaskApprovalRequired, userPermissionForAccounts} from "../apis/WalletApi"
+import {userPermissionForAccounts} from "../apis/WalletApi"
 
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as WalletDao from "../util/WalletDao"
 import * as AccountApi from "../apis/AccountApi"
 
 import {withRouter} from "react-router-dom"
-import Routes from '../Routes'
 
 class WalletChooser extends Component {
     constructor(props) {
@@ -26,15 +24,13 @@ class WalletChooser extends Component {
 
         this.state = {
             selectedAccountType: null,
-            providedWeb3: null,
-            mmApprovalRequired: true
+            providedWeb3: null
         }
 
         this.onWalletStoreChange = this.onWalletStoreChange.bind(this)
     }
 
     componentWillMount() {
-        checkMetaMaskApprovalRequired()
         WalletStore.on("change", this.onWalletStoreChange)
     }
 
@@ -46,28 +42,29 @@ class WalletChooser extends Component {
     onWalletStoreChange() {
         this.setState((prevState, props) => ({
             selectedAccountType: WalletStore.getSelectedAccountType(),
-            providedWeb3: WalletStore.getProvidedWeb3Info(),
-            mmApprovalRequired: WalletStore.isMetaMaskApprovalRequired()
+            providedWeb3: WalletStore.getProvidedWeb3Info()
         }))
     }
 
     walletChanged = (type, event) => {
-        if (type === AccountType.METAMASK && this.state.mmApprovalRequired) {
-            userPermissionForAccounts()
-        } else {
-            WalletActions.selectWallet(type)
+        userPermissionForAccounts()
+            .then(() => {
+                WalletActions.selectWallet(type)
 
-            if (type === AccountType.METAMASK) {
-                const {providedWeb3} = this.state
-                const {accountAvailable} = providedWeb3
+                if (type === AccountType.METAMASK) {
+                    const {providedWeb3} = this.state
+                    const {accountAvailable} = providedWeb3
 
-                if (accountAvailable) {
-                    EtherDeltaWeb3.initForMetaMask()
-                    WalletDao.saveMetamaskWallet()
-                    AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
+                    if (accountAvailable) {
+                        EtherDeltaWeb3.initForMetaMask()
+                        WalletDao.saveMetamaskWallet()
+                        AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
+                    }
                 }
-            }
-        }
+            })
+            .catch(() => {
+                console.error("Unlock MetaMask from the toolbar icon")
+            })
     }
 
     onBack = (event) => {
@@ -95,16 +92,13 @@ class WalletChooser extends Component {
     }
 
     render() {
-        const {selectedAccountType, providedWeb3, mmApprovalRequired} = this.state
+        const {selectedAccountType, providedWeb3} = this.state
 
-        const metaMaskDisabled = !mmApprovalRequired && (providedWeb3 == null || !providedWeb3.isMainNet || !providedWeb3.accountAvailable)
         let panel = this.getPanelContents()
 
         let metaMaskInfo = null
         if (providedWeb3 != null) {
-            if (mmApprovalRequired) {
-                metaMaskInfo = <span className="text-danger">MetaMask approval required</span>
-            } else if (providedWeb3.isMainNet == null) {
+            if (providedWeb3.isMainNet == null) {
                 metaMaskInfo = <span className="text-muted">MetaMask not available</span>
             } else if (providedWeb3.isMainNet === false) {
                 metaMaskInfo = <span className="text-danger">Please connect to {EthereumNetworks.getMainNetDescription()}</span>
@@ -125,7 +119,7 @@ class WalletChooser extends Component {
 
                         <div className="wallet-buttons">
                             <div className="wallet-button-row">
-                                <button disabled={metaMaskDisabled} onClick={this.walletChanged.bind(this, AccountType.METAMASK)} className="btn btn-secondary btn-wallet-type">
+                                <button onClick={this.walletChanged.bind(this, AccountType.METAMASK)} className="btn btn-secondary btn-wallet-type">
                                     <img src={require("../images/wallets/metamask_less_detail.svg")} className="img-wallet-type"/><br/>
                                     <h5>MetaMask</h5>
                                     {metaMaskInfo}

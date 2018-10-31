@@ -9,6 +9,7 @@ import AccountType from "../AccountType"
 import _ from "lodash"
 import * as GlobalMessageActions from "../actions/GlobalMessageActions"
 import * as GlobalMessageFormatters from "../util/GlobalMessageFormatters"
+import { Promise } from "es6-promise"
 
 /**
  * Poll for MetaMask login / logout - nasty but current best practice
@@ -24,27 +25,39 @@ export function stopMetaMaskCheckLoop() {
     Timer.stop(updateWalletStoreProvidedWeb3Details)
 }
 
-export function checkMetaMaskApprovalRequired() {
-    if (window.ethereum && window.ethereum._metamask) {
-        window.ethereum._metamask.isApproved()
-            .then(ir => {
-                WalletActions.setMetaMaskApprovalRequired(!ir)
-            })
-    } else {
-        WalletActions.setMetaMaskApprovalRequired(false)
-    }
-}
-
 export function userPermissionForAccounts() {
     if (window.ethereum) {
-        window.ethereum.enable()
+        return window.ethereum.enable()
             .then(() => {
-                WalletActions.setMetaMaskApprovalRequired(false)
-            })
-            .catch(() => {
-                WalletActions.setMetaMaskApprovalRequired(true)
+                return getAccount()
             })
     }
+
+    return Promise.resolve()
+}
+
+function getAccount() {
+    return new Promise((resolve, reject) => {
+        window.web3.eth.getAccounts((e, accounts) => {
+            if (accounts.length > 0) {
+                WalletActions.updateProvidedWeb3AccountAvailable(true, accounts[0])
+                if (AccountStore.getSelectedAccountType()
+                    && AccountStore.getSelectedAccountType() === AccountType.METAMASK
+                    && _.toLower(accounts[0]) !== _.toLower(AccountStore.getAccount())) {
+                    EtherDeltaWeb3.initForMetaMask()
+                    AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK)
+                }
+
+                resolve()
+            } else {
+                if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {
+                    WalletActions.updateProvidedWeb3AccountAvailable(false)
+                }
+
+                reject()
+            }
+        })
+    })
 }
 
 export function updateWalletStoreProvidedWeb3Details() {
@@ -68,22 +81,7 @@ export function updateWalletStoreProvidedWeb3Details() {
 
             if (isMainNet) {
                 closeMetamaskWarningMessageIfPresent()
-                window.web3.eth.getAccounts((e, accounts) => {
-                    if (accounts.length > 0) {
-                        WalletActions.updateProvidedWeb3AccountAvailable(true, accounts[0])
-                        if (AccountStore.getSelectedAccountType()
-                            && AccountStore.getSelectedAccountType() === AccountType.METAMASK
-                            && _.toLower(accounts[0]) !== _.toLower(AccountStore.getAccount())) {
-
-                            EtherDeltaWeb3.initForMetaMask()
-                            return AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK)
-                        }
-                    } else {
-                        if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {
-                            WalletActions.updateProvidedWeb3AccountAvailable(false)
-                        }
-                    }
-                })
+                getAccount()
             } else {
                 if (WalletStore.isProvidedWeb3AccountAvailable() !== false) {
                     WalletActions.updateProvidedWeb3AccountAvailable(null)

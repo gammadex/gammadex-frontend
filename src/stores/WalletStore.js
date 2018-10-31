@@ -41,7 +41,6 @@ class WalletStore extends EventEmitter {
         this.keyStorePasswordError = null
         this.rememberMetamask = true
         this.metamastNetworkWarningSentMessageId = null
-        this.metaMaskApprovalRequired = true
 
         this.displayUnlockKeyStoreModal = WalletDao.isWalletSaved(AccountType.KEY_STORE_FILE) && !this.unlocked
         this.displayUnlockPrivateKeyModal = WalletDao.isWalletSaved(AccountType.PRIVATE_KEY) && WalletDao.readWallet().data.encrypted && !this.unlocked
@@ -183,10 +182,6 @@ class WalletStore extends EventEmitter {
 
     isMetamastNetworkWarningSentMessageId() {
         return this.metamastNetworkWarningSentMessageId
-    }
-
-    isMetaMaskApprovalRequired() {
-        return this.metaMaskApprovalRequired
     }
 
     handleActions(action) {
@@ -430,11 +425,6 @@ class WalletStore extends EventEmitter {
             }
             case ActionNames.METAMASK_NETWORK_WARNING_SENT: {
                 this.metamastNetworkWarningSentMessageId = action.messageId
-                this.emitChange()
-                break
-            }
-            case ActionNames.METAMASK_ACCOUNT_APPROVAL: {
-                this.metaMaskApprovalRequired = action.isRequired
                 this.emitChange()
                 break
             }
