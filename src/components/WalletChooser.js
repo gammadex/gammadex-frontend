@@ -96,18 +96,20 @@ class WalletChooser extends Component {
 
         let panel = this.getPanelContents()
 
-        let metaMaskDisabled = false
+        let metaMaskDisabled = true
         let metaMaskInfo = null
         if (providedWeb3 != null) {
             if (providedWeb3.isMainNet == null) {
                 metaMaskInfo = <span className="text-muted">MetaMask not available</span>
-                metaMaskDisabled = true
             } else if (providedWeb3.isMainNet === false) {
                 metaMaskInfo = <span className="text-danger">Please connect to {EthereumNetworks.getMainNetDescription()}</span>
+                metaMaskDisabled = false
             } else if (!providedWeb3.accountAvailable) {
                 metaMaskInfo = <span className="text-danger">Please unlock MetaMask</span>
+                metaMaskDisabled = false
             } else if (providedWeb3.accountAddress) {
                 metaMaskInfo = <span className="text-muted"><img width="14" height="14" src={toDataUrl(providedWeb3.accountAddress)}/>&nbsp;{truncate(providedWeb3.accountAddress, {left: 7, right: 5})}</span>
+                metaMaskDisabled = false
             }
         }
 
