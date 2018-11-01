@@ -428,7 +428,6 @@ class WalletStore extends EventEmitter {
                 this.emitChange()
                 break
             }
-
         }
     }
 }

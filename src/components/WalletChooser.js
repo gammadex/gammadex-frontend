@@ -10,14 +10,13 @@ import {toDataUrl} from '../lib/blockies.js'
 import {truncate} from "../util/FormatUtil"
 import KeyStoreForm from "./WalletChooser/KeyStore/KeyStoreForm"
 import PrivateKeyForm from "./WalletChooser/PrivateKey/PrivateKeyForm"
-import MetaMaskForm from "./WalletChooser/MetaMask/MetaMaskForm"
+import {userPermissionForAccounts} from "../apis/WalletApi"
 
 import EtherDeltaWeb3 from "../EtherDeltaWeb3"
 import * as WalletDao from "../util/WalletDao"
 import * as AccountApi from "../apis/AccountApi"
 
 import {withRouter} from "react-router-dom"
-import Routes from '../Routes'
 
 class WalletChooser extends Component {
     constructor(props) {
@@ -48,18 +47,24 @@ class WalletChooser extends Component {
     }
 
     walletChanged = (type, event) => {
-        WalletActions.selectWallet(type)
+        userPermissionForAccounts()
+            .then(() => {
+                WalletActions.selectWallet(type)
 
-        if (type === AccountType.METAMASK) {
-            const {providedWeb3} = this.state
-            const {accountAvailable} = providedWeb3
+                if (type === AccountType.METAMASK) {
+                    const {providedWeb3} = this.state
+                    const {accountAvailable} = providedWeb3
 
-            if (accountAvailable) {
-                EtherDeltaWeb3.initForMetaMask()
-                WalletDao.saveMetamaskWallet()
-                AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
-            }
-        }
+                    if (accountAvailable) {
+                        EtherDeltaWeb3.initForMetaMask()
+                        WalletDao.saveMetamaskWallet()
+                        AccountApi.refreshAccountThenEthAndTokBalance(AccountType.METAMASK, this.props.history)
+                    }
+                }
+            })
+            .catch(() => {
+                console.error("Unlock MetaMask from the toolbar icon")
+            })
     }
 
     onBack = (event) => {
@@ -89,19 +94,22 @@ class WalletChooser extends Component {
     render() {
         const {selectedAccountType, providedWeb3} = this.state
 
-        const metaMaskDisabled = providedWeb3 == null || !providedWeb3.isMainNet || !providedWeb3.accountAvailable
         let panel = this.getPanelContents()
 
+        let metaMaskDisabled = true
         let metaMaskInfo = null
         if (providedWeb3 != null) {
             if (providedWeb3.isMainNet == null) {
                 metaMaskInfo = <span className="text-muted">MetaMask not available</span>
             } else if (providedWeb3.isMainNet === false) {
                 metaMaskInfo = <span className="text-danger">Please connect to {EthereumNetworks.getMainNetDescription()}</span>
+                metaMaskDisabled = false
             } else if (!providedWeb3.accountAvailable) {
                 metaMaskInfo = <span className="text-danger">Please unlock MetaMask</span>
+                metaMaskDisabled = false
             } else if (providedWeb3.accountAddress) {
                 metaMaskInfo = <span className="text-muted"><img width="14" height="14" src={toDataUrl(providedWeb3.accountAddress)}/>&nbsp;{truncate(providedWeb3.accountAddress, {left: 7, right: 5})}</span>
+                metaMaskDisabled = false
             }
         }
 
