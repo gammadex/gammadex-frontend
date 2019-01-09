@@ -48,9 +48,6 @@
     "ethereumNetworkId": 3,
     "web3": "https://ropsten.infura.io",
     "etherscan": "https://ropsten.etherscan.io",
-    "sockets": {
-      "default": "http://localhost:4301"
-    },
     "etherDeltaAddress": "0x228344536a03c0910fb8be9c2755c1a0ba6f89e1",
     "deltaBalancesAddress": "0xc723e50dEFcfD850C35d3635d7dC9980c488b7b7",
     "defaultPair": {
@@ -69,85 +66,10 @@
       }
     }
   },
-  "prodlocal": {
-    "ethereumNetworkId": 1,
-    "web3": "https://mainnet.infura.io",
-    "etherscan": "https://etherscan.io",
-    "sockets": {
-      "default": "http://localhost:4300"
-    },
-    "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
-    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
-    "defaultPair": {
-      "token": {
-        "symbol": "DAI",
-        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
-        "decimals": 18,
-        "isListed": true
-      },
-      "base": {
-        "address": "0x0000000000000000000000000000000000000000",
-        "symbol": "ETH",
-        "name": "Ethereum",
-        "decimals": 18
-      }
-    }
-  },  
   "production": {
     "ethereumNetworkId": 1,
     "web3": "https://mainnet.infura.io",
     "etherscan": "https://etherscan.io",
-    "sockets": {
-      "default": "https://api.gammadex.com"
-    },
-    "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
-    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
-    "defaultPair": {
-      "token": {
-        "symbol": "DAI",
-        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
-        "decimals": 18,
-        "isListed": true
-      },
-      "base": {
-        "address": "0x0000000000000000000000000000000000000000",
-        "symbol": "ETH",
-        "name": "Ethereum",
-        "decimals": 18
-      }
-    }
-  },
-  "integration": {
-    "ethereumNetworkId": 1,
-    "web3": "https://mainnet.infura.io",
-    "etherscan": "https://etherscan.io",
-    "sockets": {
-      "default": "https://intapi.gammadex.com"
-    },
-    "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
-    "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
-    "defaultPair": {
-      "token": {
-        "symbol": "DAI",
-        "address": "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359",
-        "decimals": 18,
-        "isListed": true
-      },
-      "base": {
-        "address": "0x0000000000000000000000000000000000000000",
-        "symbol": "ETH",
-        "name": "Ethereum",
-        "decimals": 18
-      }
-    }
-  },
-  "local-integration": {
-    "ethereumNetworkId": 1,
-    "web3": "https://mainnet.infura.io",
-    "etherscan": "https://etherscan.io",
-    "sockets": {
-      "default": "http://localhost:4300"
-    },
     "etherDeltaAddress": "0x8d12a197cb00d4747a1fe03395095ce2a5cc6819",
     "deltaBalancesAddress": "0x3E25F0BA291F202188Ae9Bda3004A7B3a803599a",
     "defaultPair": {
