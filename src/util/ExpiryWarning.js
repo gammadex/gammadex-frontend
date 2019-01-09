@@ -11,14 +11,11 @@ const ONE_YEAR = safeBigNumber(ONE_DAY).times(365)
 const TEN_YEARS = safeBigNumber(ONE_YEAR).times(10)
 
 export function getExpiryWarning(expiryBlock, currentBlock, blockTime) {
-    if (!expiryBlock) {
-        return null
-    }
-    if (!currentBlock) {
-        return null
-    }
-    if (!blockTime) {
-        return null
+    if (!expiryBlock || !currentBlock || !blockTime) {
+        return {
+            description: "?",
+            warning: false
+        }
     }
 
     const expirySeconds = safeBigNumber(expiryBlock).minus(safeBigNumber(currentBlock)).multipliedBy(Math.floor(blockTime))

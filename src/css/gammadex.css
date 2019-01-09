@@ -1688,3 +1688,11 @@ body {
 .dimmed {
     opacity: 0.7;
 }
+
+.demo-warning {
+    text-align: center;
+}
+
+.demo-warning div {
+    padding:5px;
+}

@@ -15,6 +15,10 @@ class Config {
         return process.env.REACT_APP_ENV
     }
 
+    isDemoMode() {
+        return (process.env.REACT_APP_DEMO_MODE || '').toLowerCase() === 'true'
+    }
+
     getEnv() {
         const env = this.getReactEnv() ? this.getReactEnv() : 'production' // default set so tests can use Config.xxx
         return config[env]

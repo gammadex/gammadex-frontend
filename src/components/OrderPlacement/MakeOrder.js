@@ -19,6 +19,7 @@ import { Popover, PopoverBody } from "reactstrap/dist/reactstrap"
 import { truncate } from "../../util/FormatUtil"
 import ReactMarkdown from 'react-markdown'
 import wording from './OrderHashWording'
+import Config from '../../Config'
 
 export default class MakeOrder extends React.Component {
     constructor(props) {
@@ -41,7 +42,8 @@ export default class MakeOrder extends React.Component {
             exchangeBalanceTokWei: 0,
             popOverOpenOrderHash: false,
             orderHashText: wording,
-            orderUnsigned: null
+            orderUnsigned: null,
+            isDemoMode: Config.isDemoMode(),
         }
         this.saveOrderPlacementState = this.saveOrderPlacementState.bind(this)
         this.saveAccountState = this.saveAccountState.bind(this)
@@ -238,7 +240,8 @@ export default class MakeOrder extends React.Component {
             exchangeBalanceEthWei,
             exchangeBalanceTokWei,
             orderHashText,
-            orderUnsigned
+            orderUnsigned,
+            isDemoMode
         } = this.state
 
         let available = safeBigNumber(0)
@@ -266,6 +269,15 @@ export default class MakeOrder extends React.Component {
             priceWarningAlert = <Row>
                 <Col>
                     <Alert color="danger" isOpen={orderHasPriceWarning} toggle={this.onDismissPriceWarningAlert}>{orderPriceWarning}</Alert>
+                </Col>
+            </Row>
+        }
+
+        let demoModeAlert = null
+        if (isDemoMode) {
+            demoModeAlert = <Row>
+                <Col>
+                    <Alert color="info" isOpen={true} className="demo-warning"><div><strong><i className="fas fa-exclamation-circle"></i> Running in demo mode</strong></div><div>trading is disabled</div></Alert>
                 </Col>
             </Row>
         }
@@ -383,18 +395,21 @@ export default class MakeOrder extends React.Component {
                     </Conditional>
 
                     {priceWarningAlert}
+
                     <Conditional displayCondition={orderValid && !orderHasPriceWarning}>
                         <FormGroup row className="hdr-stretch-ctr">
                             <Col sm={3} />
                             <Col sm={9}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
                                     onClick={this.onSubmit}>PLACE {type === OrderSide.BUY ? 'BUY' : 'SELL'} ORDER</Button>
-                                <Conditional displayCondition={!balanceRetrieved}>
+                                <Conditional displayCondition={!balanceRetrieved && ! isDemoMode}>
                                     <FormText color="muted">{`Please unlock a wallet to place ${type === OrderSide.BUY ? 'BUY' : 'SELL'} orders`}</FormText>
                                 </Conditional>
                             </Col>
                         </FormGroup>
                     </Conditional>
+
+                    {demoModeAlert}
                 </form>
             </BoxSection>
         )
