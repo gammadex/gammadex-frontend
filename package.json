@@ -1,7 +1,7 @@
 {
-  "name": "ethergamma2",
+  "name": "gammadex-frontend",
   "version": "0.1.5",
-  "private": true,
+  "license": "GPL-3.0",
   "dependencies": {
     "@ledgerhq/hw-transport-u2f": "^4.21.0",
     "@ledgerhq/web3-subprovider": "^4.21.0",
