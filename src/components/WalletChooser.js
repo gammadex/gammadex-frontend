@@ -47,7 +47,7 @@ class WalletChooser extends Component {
     }
 
     walletChanged = (type, event) => {
-        userPermissionForAccounts()
+        userPermissionForAccounts(type)
             .then(() => {
                 WalletActions.selectWallet(type)
 

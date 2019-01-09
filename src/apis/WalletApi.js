@@ -25,8 +25,8 @@ export function stopMetaMaskCheckLoop() {
     Timer.stop(updateWalletStoreProvidedWeb3Details)
 }
 
-export function userPermissionForAccounts() {
-    if (window.ethereum) {
+export function userPermissionForAccounts(type) {
+    if (type === 'METAMASK' && window.ethereum) {
         return window.ethereum.enable()
             .then(() => {
                 return getAccount()
