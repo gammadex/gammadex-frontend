@@ -72,13 +72,12 @@ class Config {
         return this.getEnv().ethereumNetworkId
     }
 
-    getSocketEnv() {
-        return process.env.SOCKET
-    }
-
     getSocket() {
-        const env = this.getSocketEnv() ? this.getSocketEnv() : 'default'
-        return this.getEnv().sockets[env]
+        if (! process.env.REACT_APP_SOCKET_URL) {
+            throw new Error("REACT_APP_SOCKET_URL is not set")
+        }
+
+        return process.env.REACT_APP_SOCKET_URL
     }
 
     getGasLimit(action) {
