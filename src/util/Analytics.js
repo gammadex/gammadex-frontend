@@ -7,7 +7,7 @@ const enabled = !noTrack && Config.isProduction()
 
 export function initAnalytics() {
   if (enabled) {
-    ReactGA.initialize('UA-124438522-1')
+    ReactGA.initialize('__GOOGLE_ANALYTICS_ID__')
   }
 }
 
