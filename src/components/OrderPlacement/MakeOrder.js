@@ -194,10 +194,12 @@ export default class MakeOrder extends React.Component {
             orderValid,
             expiryType,
             expireAfterBlocks,
-            orderHasPriceWarning
+            orderHasPriceWarning,
+            isDemoMode
         } = this.state
 
-        return !orderValid
+        return isDemoMode
+            || !orderValid
             || AccountStore.selectedAccountType === AccountType.VIEW
             || orderHasPriceWarning
             || total === ""

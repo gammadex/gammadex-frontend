@@ -38,6 +38,7 @@ export default class FillOrderBook extends React.Component {
             confirmTradeModalSide: null,
             popOverOpenExchangeFee: false,
             popOverOpenExpiry: false,
+            isDemoMode: Config.isDemoMode(),
         }
         this.saveGasPrices = this.saveGasPrices.bind(this)
         this.onOrderBookChange = this.onOrderBookChange.bind(this)
@@ -179,9 +180,9 @@ export default class FillOrderBook extends React.Component {
 
     isSubmitDisabled = () => {
         const {balanceRetrieved} = this.props
-        const {fillOrder} = this.state
+        const {fillOrder, isDemoMode} = this.state
 
-        return !fillOrder.fillAmountValid || !balanceRetrieved || AccountStore.selectedAccountType === AccountType.VIEW
+        return isDemoMode || !fillOrder.fillAmountValid || !balanceRetrieved || AccountStore.selectedAccountType === AccountType.VIEW
     }
 
     toggleExchangeFeePopOver = () => {
@@ -219,11 +220,21 @@ export default class FillOrderBook extends React.Component {
             ethereumPriceUsd,
             tradableBalanceEthWei,
             tradableBalanceTokWei,
-            confirmTradeModalSide
+            confirmTradeModalSide,
+            isDemoMode
         } = this.state
 
         let body = null
         if (this.showTradeFields(orders, fillOrder)) {
+            let demoModeAlert = null
+            if (isDemoMode) {
+                demoModeAlert = <Row>
+                    <Col>
+                        <Alert color="info" isOpen={true} className="demo-warning"><div><strong><i className="fas fa-exclamation-circle"></i> Running in demo mode</strong></div><div>trading is disabled</div></Alert>
+                    </Col>
+                </Row>
+            }
+
             // https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/SMART_CONTRACT.md
             // fees:
             // amount in amountGet terms
@@ -339,11 +350,13 @@ export default class FillOrderBook extends React.Component {
                             <Col sm={9}>
                                 <Button block color={type === OrderSide.BUY ? 'success' : 'danger'} id={type + "Button"} disabled={submitDisabled} type="submit"
                                         onClick={this.onSubmit}>{buySell}</Button>
-                                <Conditional displayCondition={!balanceRetrieved}>
+                                <Conditional displayCondition={!balanceRetrieved && ! isDemoMode}>
                                     <FormText color="muted">{`Please unlock a wallet to enable ${buySell} trades`}</FormText>
                                 </Conditional>
                             </Col>
                         </FormGroup>
+
+                        {demoModeAlert}
                     </form>
 
                     {bestExecutionWarning}
