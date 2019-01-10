@@ -1,32 +1,80 @@
-# EtherGamma ReactJS Spike
+# GammaDEX
+
+GammaDEX is an open-source Ethereum token exchange written in ReactJS.
+
+A live demo version with trading disabled is at [demo.gammadex.com](https://demo.gammadex.com)
+
+![GammaDEX Logo](https://raw.githubusercontent.com/gammadex/gammadex-frontend/master/docs/gammadex-screenshot.png)
+
 
 ## Running
 
-```
-npm install
-npm run dev
+### Prerequisites for running
+
+`gammadex-frontend` needs a running instance of the [gammadex-backend](https://github.com/gammadex/gammadex-backend) websocket.
+
+The websocket provides the frontend with a list of tradeable tokens, order book contents and so on. 
+
+### Environment variables 
+
+When running or building there are three environment variables that can be set, two of which are required.
+
+| Environment variable | Description                                      | Optionality |  
+|----------------------|--------------------------------------------------|-------------|
+| RACT_APP_ENV         | Either `production` or `development`             | required    |
+| REACT_APP_SOCKET_URL | URL of the `gammadex-backend` websocket server   | required    |
+| REACT_APP_DEMO_MODE  | When `true` trading is disabled                  | optional, default `false` |
+
+The `production` environment uses the Ethereum mainnet. The `development` environment uses Ropsten.
+
+### NodeJS Run Profiles
+
+`gammadex-frontend` is a [create-react-app](https://github.com/facebook/create-react-app) based application so it can either be run 
+as a node webapp (for development) or it can be built into a static website (for release purposes). Running as a node webapp is good for developing because it supports auto-reload whenever a file is edited. The following run profiles are provided:
+
+| Name  | Description |
+|-------|------|
+| dev   | env is set to `development` but `REACT_APP_SOCKET_URL` is not set |
+| prod  | env is set to `production` but `REACT_APP_SOCKET_URL` is not set  |
+| demo  | demo mode is enabled, `REACT_APP_SOCKET_URL` is set to the demo URL (which has limited functionality) |
+
+Assuming you have a production `gammadex-backend` websocket listening on `https://api.example.com` you can run like this on a UNIXy system (Linux/MacOS):
+
+```bash
+npm install # one-off npm install to ensure JS dependencies are installed in project
+export REACT_APP_SOCKET_URL=https://api.example.com
 npm run prod
-```
+``` 
 
-## Debug Mode
+## Building / Releasing
 
-To use wallet address (read-only) without private key:
+To build `gammadex-frontend` as a static site for releasing to a live environment you must set `RACT_APP_ENV`, `REACT_APP_SOCKET_URL` and `REACT_APP_DEMO_MODE` before building. React will populate these variables in the static site.
 
-https://localhost:3000/#!/debug/ 
+For example, this builds a mainnnet instance pointing at websocket `https://api.example.com`
+
+```bash
+npm install # one-off npm install to ensure JS dependencies are installed in project
+export REACT_APP_SOCKET_URL=https://api.example.com
+export REACT_APP_ENV=production
+export REACT_APP_DEMO_MODE=false
+npm run build
+``` 
+
+This will create a static site in the `build` directory.
 
 ## Testing
 
-**The EtherDeltaWeb3 test requires a local ganache blockchain to be running.**
+**The tests requires a local [Ganache](https://truffleframework.com/ganache) blockchain to be running.**
 
 ### Ganache
 
 Globally install:
 
-```
+```bash
 npm install -g ganache-cli@6.1.3
 ```
 
-**Note - ganache version `6.1.5` doesn't work so please use `6.1.3`**
+**Note - Version `6.1.3` is known to work - `6.1.5` doesn't work. Newer versions may or may not work**
 
 In a new terminal start ganache, which also creates a test wallet populated with 1000 ETH (this exact wallet is used by the tests)
 
@@ -36,7 +84,7 @@ ganache-cli --account="0x0123456789abcdef0123456789abcdef0123456789abcdef0123456
 
 ### Running Tests
 
-```
+```bash
 npm run test
 ```
 
@@ -68,107 +116,3 @@ Error: Error watching file for changes: EMFILE
 Workaround:
 
 * https://github.com/facebook/create-react-app/issues/871
-
-### Test coverage of critical codepaths (#117)
-
-The general goal here is to have high confidence in the funds, trading and gas management sections of the codebase. It is not meant to be fully comprehensive, but the bare minimum MVP to ensure client funds are not at risk.
-
-#### EtherDeltaWeb3
-
-This is Gammadex's interface to the EtherDelta Smart Contract and web3 common methods (e.g. get current block number).
-
-`EtherDeltaWeb3.test.js` exercises all of the class's methods, against a local ganache blockchain. What we're testing here is that the input params to each function are propogated through to the blockchain and have the necessary side effects. Input params for example for filling an order would include: the order itself, the amount to fill and the gas passed in by the caller.
-
-We crucially test two distinct providers that get injected into EtherDeltaWeb3: MetaMask and Wallet (private key). The former calls the contract methods directly, the latter signs and sends raw transactions (with the contract method call as the payload).
-
-#### React Component Testing
-
-Here we test the major account affecting areas: Funding, Trading, Order Creation and Gas Management.
-
-We wrap the components (e.g. `FillOrderBook.js`) using the `enzyme` library which allows us to perform headless testing. For that component for example we might test:
-
-* That when the user clicks on an order it populates the fill component with those details
-* When the user adjusts the fill quantity the total (eth) gets recalculated
-* **When the user submits the trade, we call into `EtherDeltaWeb3` with the expected parameters (in most cases expanded to wei). This test is crucial to ensuring no client funds are at risk due to: price/amount/total miscalculation, wei miscalcuation or gas mismanagement.**
-* We test two distinct ERC-20 tokens, one with 18 decimals the other with 9.
-
-## Useful Links
-
-### React
-
-* https://reactjs.org/tutorial/tutorial.html
-* https://reactjs.org/docs/state-and-lifecycle.html
-* https://reactstrap.github.io/components
-* https://github.com/rrag/react-stockcharts
-* https://github.com/markerikson/react-redux-links/blob/master/react-component-patterns.md
-
-### Why reactstrap ^5.0.0-beta?
-
-* https://github.com/reactstrap/reactstrap/issues/659
-
-### React Testing
-
-* *Running tests* https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests
-* *Testing React components* https://facebook.github.io/jest/docs/en/tutorial-react.html
-* *Available insertion functions*: https://facebook.github.io/jest/docs/en/expect.html#content
-
-### BootStrap
-
-* https://bootstrapcreative.com/resources/bootstrap-4-css-classes-index/
-
-### Font Awesome 
-
-* https://fontawesome.com/
-
-### EtherDelta API
-
-* https://github.com/etherdelta/etherdelta.github.io/blob/master/docs/API.md
-
-### EtherDelta Smart Contract on Ropsten
-
-* https://ropsten.etherscan.io/address/0x228344536a03c0910fb8be9c2755c1a0ba6f89e1
-
-### Socket.IO
-
-* https://github.com/socketio/socket.io-client/blob/HEAD/docs/API.md#manager
-
-## JS
-
-* http://exploringjs.com/es6/ch_destructuring.html
-
-### Potential NPM packages for charting:
-
-* https://www.npmjs.com/package/time-spans
-* https://www.npmjs.com/package/technicalindicators
-
-### D3 / Charting
-
-* *Using D3 and React* https://medium.com/@Elijah_Meeks/interactive-applications-with-react-d3-f76f7b3ebc71
-* *TechchanJS* http://bl.ocks.org/andredumas/af8674d57980790137a0
-
-### ERC-20 Test Tokenw:
-
-* TST - https://github.com/uzyn/ERC20-TST
-
-#### To request TST tokens:
-
-* go to https://www.myetherwallet.com/#contracts
-* ensure you are connected to ropsten (infura.io works)
-* paste in the address and interface from the github
-* scroll down to read/write contract and select showMeTheMoney
-* set "_to" to your address
-* set "_value" to 10000000000000000000  (this is 10 tokens = 10 * power(10,18))
-* click write
-* go to metamask and export your private key then paste it into myetherwallet to unlock, hit send
-* this should give you 10 tokens
-
-* BARRY - http://www.darrenbeck.co.uk/ethereum/crypto/solidity/barry/
-
-#### To request BARRY tokens:
-
-* send ETH to 0x7d3613dd9b10999115fe455c0295e4b8ab8dc35e and you will receive double the amount in BARRY
-
-### Ledger Nano
-
-* https://github.com/Neufund/ledger-wallet-provider
-* https://github.com/LedgerHQ/ledgerjs/blob/master/docs/ethereum_ledger_integration.md
